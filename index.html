@@ -223,16 +223,24 @@ color:var(--txt);font-size:1.05rem;cursor:pointer;font-family:inherit}
 font-size:.72rem;cursor:pointer;font-family:inherit}
 .fbar{height:4px;background:var(--sf);border-radius:2px;margin-top:11px;flex:0 0 auto;overflow:hidden}
 .fbar i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2));width:0}
+/* La navigation et la progression restent figées en haut ; seul le contenu
+   défile, et seulement si l'écran est trop court pour tout montrer. */
+.fbody{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+padding-bottom:10px;overscroll-behavior:contain}
+.fsec{margin-top:17px}
+.fsec .lbl{font-size:.63rem;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);
+margin-bottom:8px;font-weight:600}
+.fsec .btns{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
 .fname{font-size:1.05rem;font-weight:650;margin:11px 0 8px;flex:0 0 auto;line-height:1.2}
 .fname .ix{color:var(--brand);font-size:.78rem;margin-right:6px}
 .fchips{display:flex;flex-wrap:wrap;gap:6px;flex:0 0 auto;margin-bottom:10px}
 /* les animations sont des sources de 190 px : on les laisse grandir un peu
    pour remplir le cadre, sans le laisser devenir un grand aplat blanc */
-.fanim{flex:1 1 auto;min-height:90px;max-height:min(44vh,330px);background:#fff;border-radius:12px;
+.fanim{flex:0 0 auto;height:min(38vh,300px);background:#fff;border-radius:12px;
 display:flex;align-items:center;justify-content:center;overflow:hidden;padding:6px}
 .fanim img{height:100%;width:auto;max-width:100%;object-fit:contain}
 .fanim .na{color:#64748b;font-size:.72rem;text-align:center;padding:14px}
-.fsets{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-top:13px;flex:0 0 auto}
+.fsets{display:flex;gap:9px;flex-wrap:wrap}
 .fsets .s{display:flex;flex-direction:column;align-items:center;gap:3px}
 .fsets input{appearance:none;width:52px;height:52px;border-radius:14px;border:2px solid var(--line);
 background:var(--sf2);cursor:pointer;position:relative;margin:0}
@@ -241,21 +249,18 @@ background:var(--sf2);cursor:pointer;position:relative;margin:0}
 justify-content:center;color:#052e16;font-weight:800;font-size:1.45rem}
 .fsets .s.dim input{border-style:dashed;opacity:.5}
 .fsets .s span{font-size:.62rem;color:var(--mut)}
-.frow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px;flex:0 0 auto}
-.frow input[type=number]{width:88px;background:var(--sf2);border:1px solid var(--line);border-radius:9px;
-padding:9px;color:var(--txt);font-size:.84rem;font-variant-numeric:tabular-nums;font-family:inherit}
-.frow label{font-size:.68rem;color:var(--mut)}
-.ffb{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:10px;flex:0 0 auto}
-.ffb button{border:1px solid var(--line);background:var(--sf2);color:var(--mut);border-radius:9px;
-padding:8px 11px;font-size:.71rem;cursor:pointer;font-family:inherit}
-.ffb button.oui{background:#052e16;border-color:var(--ok);color:var(--ok)}
-.ffb button.non{background:#2A0F0F;border-color:var(--dang);color:var(--dang)}
-.ffb button.dsel{background:#0F2A2A;border-color:var(--brand);color:var(--brand)}
-.ffb .lb{font-size:.66rem;color:var(--mut)}
+.fsec input[type=number]{width:96px;background:var(--sf2);border:1px solid var(--line);border-radius:10px;
+padding:11px;color:var(--txt);font-size:.9rem;font-variant-numeric:tabular-nums;font-family:inherit}
+.fsec .btns button{border:1px solid var(--line);background:var(--sf2);color:var(--mut);border-radius:10px;
+padding:11px 15px;font-size:.78rem;cursor:pointer;font-family:inherit}
+.fsec .btns button.oui{background:#052e16;border-color:var(--ok);color:var(--ok)}
+.fsec .btns button.non{background:#2A0F0F;border-color:var(--dang);color:var(--dang)}
+.fsec .btns button.dsel{background:#0F2A2A;border-color:var(--brand);color:var(--brand)}
 @media (max-height:680px){
-  .fanim{min-height:70px;max-height:38vh}
-  .fsets input{width:44px;height:44px}
+  .fanim{height:32vh}
+  .fsets input{width:46px;height:46px}
   .fname{font-size:.96rem;margin:8px 0 6px}
+  .fsec{margin-top:13px}
 }
 #mdl{position:fixed;inset:0;z-index:60;background:#020509CC;backdrop-filter:blur(3px);
 display:none;align-items:center;justify-content:center;padding:18px}
@@ -636,6 +641,10 @@ const GOALS={
   sport:{n:"Objectif sportif",reps:"5-8",setsC:4,setsI:2,rpe:"RPE 7",restMul:1.2,pctMul:1.05}
 };
 const LVL={1:"Débutant",2:"Intermédiaire",3:"Avancé"};
+/* Libellés affichés du ressenti. Les valeurs stockées restent en minuscules
+   sans accent pour ne pas casser les historiques déjà enregistrés. */
+const DIFFS=["facile","correct","dur","echec"];
+const DIFFL={facile:"Facile",correct:"Correct",dur:"Dur",echec:"Échec"};
 /* Zones sensibles. Le filtre est purement mecanique : il ecarte les
    exercices qui chargent l'articulation designee. L'app ne juge pas si
    la douleur permet de s'entrainer — cela ne se decide pas dans une app. */
@@ -1627,6 +1636,7 @@ function renderFocus(p,s,ti,plan,order){
     +'<button class="fnav" data-fnav="1"'+(i===nb-1?" disabled":"")+' aria-label="Suivant">→</button>'
     +'<button class="fx" id="fquit">Quitter</button></div>';
   h+='<div class="fbar"><i style="width:'+t.pct+'%"></i></div>';
+  h+='<div class="fbody">';
   h+='<div class="fname"><span class="ix">'+(xi+1)+'</span>'+esc(e.n)+'</div>';
   h+='<div class="fchips"><span class="chip"><b>'+x.sets+'</b> × '+x.reps+'</span>'
     +'<span class="chip'+(ch!=null&&!isNaN(ch)&&ov==null&&x.src==="auto"?" auto":"")+'">'
@@ -1639,22 +1649,34 @@ function renderFocus(p,s,ti,plan,order){
     +'</div>';
   h+='<div class="fanim">'+(img?'<img alt="'+esc(e.n)+'" decoding="async" src="'+img+'">'
     :'<div class="na">Animation non fournie</div>')+'</div>';
-  h+='<div class="fsets">';
+
+  h+='<div class="fsec"><div class="lbl">Séries'
+    +(x.inPlan&&allS>x.sets?' — les pointillées sont hors format du jour':'')+'</div><div class="fsets">';
   for(let k=0;k<allS;k++){
     const key="chk_"+sKey(p,s.sid,x.id,k);
     const dim=x.inPlan&&k>=x.sets;
     h+='<div class="s'+(dim?" dim":"")+'"><input type="checkbox" data-fck="'+k+'"'+(G(key,false)?" checked":"")+'><span>S'+(k+1)+'</span></div>';
   }
-  h+='</div>';
-  h+='<div class="frow">'
-    +(e.eq!=="pdc"?'<label>Charge</label><input type="number" step="0.5" inputmode="decimal" id="fch" value="'+(ch!=null&&!isNaN(ch)?ch:"")+'">':'')
-    +'<button class="fx" id="ftech">Technique</button></div>';
-  h+='<div class="ffb"><span class="lb">Objectif</span>'
+  h+='</div></div>';
+
+  if(e.eq!=="pdc")
+    h+='<div class="fsec"><div class="lbl">Charge utilisée</div><div class="btns">'
+      +'<input type="number" step="0.5" inputmode="decimal" id="fch" value="'+(ch!=null&&!isNaN(ch)?ch:"")+'">'
+      +'<span class="mut" style="font-size:.72rem">kg</span></div></div>';
+
+  h+='<div class="fsec"><div class="lbl">Objectif atteint ?</div><div class="btns">'
     +'<button data-fok="oui" class="'+(fb.ok==="oui"?"oui":"")+'">Oui</button>'
     +'<button data-fok="non" class="'+(fb.ok==="non"?"non":"")+'">Non</button>'
-    +'<span class="lb">Ressenti</span>'
-    +["facile","correct","dur","echec"].map(d=>'<button data-fdf="'+d+'" class="'+(fb.diff===d?"dsel":"")+'">'+d+'</button>').join("")
-    +'</div>';
+    +'</div></div>';
+
+  h+='<div class="fsec"><div class="lbl">Ressenti</div><div class="btns">'
+    +DIFFS.map(d=>'<button data-fdf="'+d+'" class="'+(fb.diff===d?"dsel":"")+'">'+DIFFL[d]+'</button>').join("")
+    +'</div></div>';
+
+  h+='<div class="fsec"><div class="lbl">Exécution</div><div class="btns">'
+    +'<button id="ftech">Technique &amp; erreurs fréquentes</button></div></div>';
+
+  h+='</div>';
   FOC.innerHTML=h;FOC.className="on";document.body.classList.add("focus-on");
 
   const go=d=>{FOCUS["i"+ti]=Math.min(nb-1,Math.max(0,i+d));renderMain(p)};
@@ -1807,7 +1829,7 @@ function renderSession(p,s,ti,pg){
       +'<button data-ok="'+ti+"|"+xi+'|oui" class="'+(fb.ok==="oui"?"oui":"")+'">Oui</button>'
       +'<button data-ok="'+ti+"|"+xi+'|non" class="'+(fb.ok==="non"?"non":"")+'">Non</button>'
       +'<span class="lb">Ressenti</span>'
-      +["facile","correct","dur","echec"].map(d=>'<button data-df="'+ti+"|"+xi+"|"+d+'" class="'+(fb.diff===d?"dsel":"")+'">'+d+'</button>').join("")
+      +DIFFS.map(d=>'<button data-df="'+ti+"|"+xi+"|"+d+'" class="'+(fb.diff===d?"dsel":"")+'">'+DIFFL[d]+'</button>').join("")
       +'</div></div>';
     h+='<details class="tech"><summary>Technique &amp; alternatives</summary><div class="tb">'
       +'<p><span class="k">Départ :</span> '+esc(e.d.a)+'</p>'
