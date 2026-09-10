@@ -101,8 +101,19 @@ color:var(--txt);font-size:.86rem;font-family:inherit;width:100%;font-variant-nu
 .exo.bonus{border-style:dashed}
 .exo.spared{border-style:dashed;border-color:#5A4A1E}
 .exo.spared .eh .nm{opacity:.55;text-decoration:line-through}
-.motiv{font-size:.8rem;color:var(--txt);border-left:2px solid var(--brand);
-padding:2px 0 2px 11px;margin:2px 0 14px;line-height:1.45}
+/* La phrase du jour se lit en premier : un lavis de la couleur de marque
+   qui s'eteint vers la droite, un filet plus franc, et une apparition
+   discrete. L'animation est desactivee si le systeme demande moins de
+   mouvement — c'est la recommandation, pas une option. */
+.motiv{position:relative;font-size:.92rem;color:var(--txt);
+border-left:3px solid var(--brand);border-radius:0 12px 12px 0;
+background:linear-gradient(90deg,rgba(61,214,196,.13),rgba(124,92,255,.06) 55%,transparent);
+padding:13px 16px 13px 15px;margin:4px 0 15px;line-height:1.5;
+font-style:italic;font-weight:450;
+animation:motivIn .45s cubic-bezier(.22,.61,.36,1) both}
+.motiv::first-letter{color:var(--brand);font-weight:650}
+@keyframes motivIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.motiv{animation:none}}
 .chip.tog.ex{border-color:var(--dang);background:#2A0F0F;color:var(--dang)}
 .mini.ex{border-color:var(--warn);color:var(--warn)}
 .sum{font-size:.86rem;line-height:1.7}
@@ -274,9 +285,11 @@ margin-bottom:8px;font-weight:600;display:flex;align-items:center;gap:7px}
    pour remplir le cadre, sans le laisser devenir un grand aplat blanc */
 .fanim{flex:0 0 auto;background:#fff;border-radius:14px;
 display:flex;align-items:center;justify-content:center;overflow:hidden;padding:10px;
-width:100%;max-width:440px;margin:2px auto 0;box-shadow:0 1px 0 rgba(255,255,255,.06)}
-.fanim img{display:block;height:auto;width:auto;max-width:100%;
-max-height:min(23vh,190px);object-fit:contain}
+width:100%;max-width:440px;height:28vh;max-height:250px;min-height:150px;
+margin:2px auto 0;box-shadow:0 1px 0 rgba(255,255,255,.06)}
+/* sans hauteur ni largeur imposees, l'image se rend a sa taille naturelle ;
+   les max-* ne peuvent que la reduire, jamais l'agrandir */
+.fanim img{display:block;height:auto;width:auto;max-width:100%;max-height:100%}
 .fanim .na{color:#64748b;font-size:.72rem;text-align:center;padding:14px;min-width:190px}
 .fsets{display:flex;gap:9px;flex-wrap:wrap}
 .fsets .s{display:flex;flex-direction:column;align-items:center;gap:3px}
@@ -295,7 +308,7 @@ padding:11px 15px;font-size:.78rem;cursor:pointer;font-family:inherit}
 .fsec .btns button.non{background:#2A0F0F;border-color:var(--dang);color:var(--dang)}
 .fsec .btns button.dsel{background:#0F2A2A;border-color:var(--brand);color:var(--brand)}
 @media (max-height:680px){
-  .fanim img{max-height:min(20vh,170px)}
+  .fanim{height:26vh;min-height:130px}
   .fsets input{width:46px;height:46px}
   .fname{font-size:.96rem;margin:8px 0 6px}
   .fsec{margin-top:13px}
@@ -1948,10 +1961,10 @@ function renderSession(p,s,ti,pg){
     +'<button class="mini dd'+(op==="dur"?" open on":(dm!==def?" on":""))+'" data-pan="dur">'+dm+' min</button>'
     +'<button class="mini dd'+(op==="zones"?" open":"")+(pain.length?" ex":"")+'" data-pan="zones">Zones'
     +(pain.length?' · '+pain.length:'')+'</button>'
-    +'<button class="mini dd'+(op==="vary"?" open":"")+(varyRank(p,s)?" on":"")+'" data-pan="vary" aria-label="Varier tous les exercices de la séance" title="Varier tous les exercices de la séance">⇄ all'
-    +(varyRank(p,s)?' '+varyRank(p,s):'')+'</button>'
     +'<button class="mini'+(foc?" on":"")+'" id="fmode">Focus</button>'
     +'<button class="mini'+(p.set.timer?" on":"")+'" id="tmode">Minuteur</button>'
+    +'<button class="mini dd'+(op==="vary"?" open":"")+(varyRank(p,s)?" on":"")+'" data-pan="vary" aria-label="Varier tous les exercices de la séance" title="Varier tous les exercices de la séance">⇄ all'
+    +(varyRank(p,s)?' '+varyRank(p,s):'')+'</button>'
     +'</div>';
 
   if(op==="dur"){
