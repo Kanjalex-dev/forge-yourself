@@ -113,7 +113,11 @@ font-size:.62rem;letter-spacing:.06em;text-transform:uppercase}
 .plansep::before,.plansep::after{content:"";flex:1;height:1px;background:var(--line)}
 /* Une seule ligne de reglages ; ce qui demande une saisie s'ouvre juste
    en dessous et se referme des que le choix est fait. */
-.srow{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.srow{display:flex;gap:7px;flex-wrap:nowrap;align-items:center;margin-bottom:8px;
+overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+padding-bottom:2px}
+.srow::-webkit-scrollbar{display:none}
+.srow .mini{flex:0 0 auto;padding:9px 12px}
 .estline{font-size:.68rem;color:var(--brand);font-variant-numeric:tabular-nums;margin-bottom:12px}
 .estline s{color:var(--mut);text-decoration:none}
 .mini.dd::after{content:"";display:inline-block;width:5px;height:5px;margin-left:7px;
@@ -126,6 +130,16 @@ padding:13px;margin-bottom:12px}
 .spanel .sd{font-size:.72rem;color:var(--mut);margin:0 0 11px;line-height:1.45}
 .spanel .sd b{color:var(--txt);font-weight:600}
 .spanel .sf{font-size:.7rem;color:var(--mut);margin:10px 0 0;line-height:1.45}
+.vbtns{display:flex;gap:8px;flex-wrap:wrap}
+.vbtns .btn{width:auto;flex:1 1 auto;min-width:150px}
+.swl{display:flex;align-items:center;gap:9px;margin-top:12px;cursor:pointer;
+font-size:.74rem;color:var(--txt)}
+.swl input{appearance:none;width:40px;height:23px;border-radius:12px;background:var(--sf2);
+border:1px solid var(--line);position:relative;flex:0 0 auto;cursor:pointer;transition:.15s}
+.swl input::after{content:"";position:absolute;top:2px;left:2px;width:17px;height:17px;
+border-radius:50%;background:var(--mut);transition:.15s}
+.swl input:checked{background:#0F2A2A;border-color:var(--brand)}
+.swl input:checked::after{transform:translateX(17px);background:var(--brand)}
 .seg{display:inline-flex;background:var(--sf2);border:1px solid var(--line);
 border-radius:11px;padding:3px;gap:2px}
 .seg button{border:0;background:0;color:var(--mut);font-family:inherit;font-size:.76rem;
@@ -140,10 +154,15 @@ font-weight:600;padding:8px 15px;border-radius:8px;cursor:pointer;font-variant-n
 padding:2px 8px;font-size:.8rem;cursor:pointer;margin-left:8px;line-height:1.3;
 font-family:inherit;vertical-align:middle}
 .vbtn:hover,.vbtn:focus-visible{border-color:var(--brand);color:var(--brand)}
-#mdl .vrow{display:block;width:100%;text-align:left;background:var(--sf2);border:1px solid var(--line);
+#mdl .vrow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--sf2);border:1px solid var(--line);
 border-radius:10px;padding:10px 12px;margin-bottom:7px;color:var(--txt);font-family:inherit;
 font-size:.82rem;cursor:pointer}
 #mdl .vrow small{display:block;color:var(--mut);font-size:.7rem;margin-top:2px}
+#mdl .vrow .vth{flex:0 0 auto;width:46px;height:46px;border-radius:9px;background:#fff;
+display:flex;align-items:center;justify-content:center;overflow:hidden}
+#mdl .vrow .vth img{width:100%;height:100%;object-fit:contain}
+#mdl .vrow .vth.none{background:var(--sf);color:var(--mut);font-size:.55rem;text-align:center;line-height:1.1}
+#mdl .vrow .vtx{flex:1 1 auto;min-width:0}
 #mdl .vrow:hover,#mdl .vrow:focus-visible{border-color:var(--brand)}
 .exo .eh .ix{color:var(--brand);font-size:.72rem;font-weight:700;margin-right:6px}
 .exo .body{padding:0 13px 12px}
@@ -245,10 +264,12 @@ margin-bottom:8px;font-weight:600}
 .fchips{display:flex;flex-wrap:wrap;gap:6px;flex:0 0 auto;margin-bottom:10px}
 /* les animations sont des sources de 190 px : on les laisse grandir un peu
    pour remplir le cadre, sans le laisser devenir un grand aplat blanc */
-.fanim{flex:0 0 auto;height:min(38vh,300px);background:#fff;border-radius:12px;
-display:flex;align-items:center;justify-content:center;overflow:hidden;padding:6px}
-.fanim img{height:100%;width:auto;max-width:100%;object-fit:contain}
-.fanim .na{color:#64748b;font-size:.72rem;text-align:center;padding:14px}
+.fanim{flex:0 0 auto;background:#fff;border-radius:14px;
+display:flex;align-items:center;justify-content:center;overflow:hidden;padding:8px;
+width:fit-content;max-width:100%;margin:2px auto 0;box-shadow:0 1px 0 rgba(255,255,255,.06)}
+.fanim img{display:block;height:auto;width:auto;max-width:100%;
+max-height:min(23vh,190px);object-fit:contain}
+.fanim .na{color:#64748b;font-size:.72rem;text-align:center;padding:14px;min-width:190px}
 .fsets{display:flex;gap:9px;flex-wrap:wrap}
 .fsets .s{display:flex;flex-direction:column;align-items:center;gap:3px}
 .fsets input{appearance:none;width:52px;height:52px;border-radius:14px;border:2px solid var(--line);
@@ -266,7 +287,7 @@ padding:11px 15px;font-size:.78rem;cursor:pointer;font-family:inherit}
 .fsec .btns button.non{background:#2A0F0F;border-color:var(--dang);color:var(--dang)}
 .fsec .btns button.dsel{background:#0F2A2A;border-color:var(--brand);color:var(--brand)}
 @media (max-height:680px){
-  .fanim{height:32vh}
+  .fanim img{max-height:min(20vh,170px)}
   .fsets input{width:46px;height:46px}
   .fname{font-size:.96rem;margin:8px 0 6px}
   .fsec{margin-top:13px}
@@ -1213,8 +1234,12 @@ function variantDialog(p,ti,xi){
     v.forEach(o=>{
       if(o.rang!==cur){cur=o.rang;
         html+='<div style="font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:10px 0 6px">'+lab[cur]+'</div>';}
-      html+='<button class="vrow" data-vs="'+o.e.id+'">'+esc(o.e.n)
-        +'<small>'+(EQL[o.e.eq]||o.e.eq)+' · '+LVL[o.e.lvl]+' · repos '+mmss(o.e.rest)+'</small></button>';
+      const th=o.e.img&&IMG(o.e.img);
+      html+='<button class="vrow" data-vs="'+o.e.id+'">'
+        +(th?'<span class="vth"><img alt="" decoding="async" src="'+th+'"></span>'
+            :'<span class="vth none">sans<br>visuel</span>')
+        +'<span class="vtx">'+esc(o.e.n)
+        +'<small>'+(EQL[o.e.eq]||o.e.eq)+' · '+LVL[o.e.lvl]+' · repos '+mmss(o.e.rest)+'</small></span></button>';
     });
   }
   mdOpen({title:"Remplacer « "+e.n+" »",
@@ -1226,6 +1251,96 @@ function variantDialog(p,ti,xi){
     pruneChecks(p);saveP();mdClose(null);
     toast("Remplacé par « "+ne.n+" »");renderMain(p);
   });
+}
+
+/* ---------------- Variation de toute la seance ----------------
+   Remplace d'un coup chaque exercice non impose par une variante du meme
+   schema moteur, en avancant d'un cran a chaque appel : deux appels ne
+   donnent pas la meme seance, et le rang 0 rend le programme d'origine.
+   L'exercice d'origine est memorise dans x.orig, jamais perdu. */
+function varyRank(p,s){return (p.vary&&p.vary[s.sid])||0}
+function setVaryRank(p,s,v){if(!p.vary)p.vary={};if(v)p.vary[s.sid]=v;else delete p.vary[s.sid]}
+function varySession(p,ti,dir){
+  const s=p.prog.sessions[ti];
+  const rank=Math.max(0,varyRank(p,s)+(dir==null?1:dir));
+  let changed=0;const taken=[];
+  s.exos.forEach((x,xi)=>{
+    if(!x.orig)x.orig=x.id;
+    const orig=x.orig,base=byId(orig);
+    if(!base||x.forced){taken.push(x.id);return}
+    if(rank===0){
+      if(x.id!==orig){s.exos[xi]=Object.assign({id:orig},prescribe(base,p.cfg),{orig:orig});changed++}
+      taken.push(s.exos[xi].id);return;
+    }
+    /* on ecarte ce qui est deja pris dans la seance, dans sa version courante
+       comme dans sa version d'origine, pour ne pas creer de doublon */
+    const busy=taken.concat(s.exos.filter((y,j)=>j!==xi).map(y=>y.orig||y.id))
+                    .concat(s.exos.filter((y,j)=>j!==xi).map(y=>y.id));
+    const v=variantsOf(base,p.cfg,busy);
+    if(!v.length){taken.push(x.id);return}
+    const pick=v[(rank-1)%v.length].e;
+    if(pick.id!==x.id){
+      s.exos[xi]=Object.assign({id:pick.id},prescribe(pick,p.cfg),{orig:orig});
+      changed++;
+    }
+    taken.push(s.exos[xi].id);
+  });
+  setVaryRank(p,s,rank);
+  pruneChecks(p);saveP();
+  return {rank:rank,changed:changed};
+}
+
+/* ---------------- Depense par exercice ----------------
+   L'estimation de seance reste la reference : on repartit ce total entre les
+   exercices au prorata du temps sous tension et du repos. La somme des parts
+   vaut donc le total affiche, sans second chiffre qui le contredirait. */
+function kcalSplit(p,plan,total){
+  if(total==null)return null;
+  const raw={};let sum=0;
+  plan.items.forEach(y=>{
+    if(y.inPlan===false)return;
+    const e=byId(y.id);if(!e)return;
+    const w=y.sets*((e.pat==="core")?40:repsMidF(y.reps)*(e.typ==="c"?3.5:3));
+    const v=w+y.sets*y.rest;raw[y.id]=v;sum+=v;
+  });
+  if(!sum)return null;
+  const out={};Object.keys(raw).forEach(k=>{out[k]=Math.round(total*raw[k]/sum/5)*5});
+  return out;
+}
+
+/* ---------------- Mise a jour depuis l'historique ----------------
+   Rejoue les seances archivees de la plus ancienne a la plus recente et
+   applique, exercice par exercice, la meme regle de progression qu'en fin
+   de seance. Deux echecs consecutifs signalent un exercice a remplacer.
+   Sans apply, la fonction ne change rien : elle sert d'apercu. */
+function historyUpdate(p,apply){
+  const out={charges:[],alertes:[]},ids={};
+  p.prog.sessions.forEach(s=>s.exos.forEach(x=>{ids[x.id]=1}));
+  const hist=p.hist.slice().sort((a,b)=>a.date<b.date?-1:1),st={};
+  hist.forEach(r=>{(r.ex||[]).forEach(x=>{
+    if(!x.id||!ids[x.id])return;
+    const e=byId(x.id);if(!e)return;
+    if(!st[x.id])st[x.id]={kg:null,fail:0,n:0};
+    const o=st[x.id];o.n++;
+    const base=(x.kg!=null&&!isNaN(x.kg))?x.kg:o.kg;
+    if(base==null)return;
+    const step=e.typ==="c"?2.5:1;
+    if(x.ok==="oui"&&(x.diff==="facile"||x.diff==="correct")){o.kg=base+step;o.fail=0}
+    else if(x.ok==="non"||x.diff==="echec"){o.kg=r25(base*.95);o.fail++}
+    else{o.kg=base;o.fail=0}
+  })});
+  Object.keys(st).forEach(id=>{
+    const o=st[id],e=byId(id);
+    if(!e||o.kg==null||!(o.kg>0))return;
+    const cur=p.ovr[id]!=null?parseFloat(p.ovr[id]):null;
+    if(cur==null||Math.abs(cur-o.kg)>=.5){
+      out.charges.push({n:e.n,de:cur,a:o.kg,seances:o.n});
+      if(apply)p.ovr[id]=String(o.kg);
+    }
+    if(o.fail>=2)out.alertes.push({n:e.n,fail:o.fail});
+  });
+  if(apply)saveP();
+  return out;
 }
 
 /* Sauvegarde d'un profil : enregistrer le fichier ou copier le texte,
@@ -1797,6 +1912,8 @@ function renderSession(p,s,ti,pg){
     +'<button class="mini dd'+(op==="dur"?" open on":(dm!==def?" on":""))+'" data-pan="dur">'+dm+' min</button>'
     +'<button class="mini dd'+(op==="zones"?" open":"")+(pain.length?" ex":"")+'" data-pan="zones">Zones'
     +(pain.length?' · '+pain.length:'')+'</button>'
+    +'<button class="mini dd'+(op==="vary"?" open":"")+(varyRank(p,s)?" on":"")+'" data-pan="vary">Varier'
+    +(varyRank(p,s)?' · '+varyRank(p,s):'')+'</button>'
     +'<button class="mini'+(foc?" on":"")+'" id="fmode">Focus</button>'
     +'<button class="mini'+(p.set.timer?" on":"")+'" id="tmode">Minuteur</button>'
     +'</div>';
@@ -1809,6 +1926,23 @@ function renderSession(p,s,ti,pg){
       +'<div class="seg">'+DURS.map(o=>'<button'+(o.m===dm?' class="on"':'')+' data-dur="'+o.m+'">'+o.m+'</button>').join("")+'</div>'
       +'<p class="sf"><b>'+d.m+' min — '+d.n+'</b> · '+d.s+'. '+d.d+'</p>'
       +'<p class="sf">Le choix ne vaut que pour aujourd\'hui ; demain tu retrouves ton format habituel.</p>'
+      +'</div>';
+  }
+  if(op==="vary"){
+    const r=varyRank(p,s);
+    h+='<div class="spanel"><h5>Varier toute la séance</h5>'
+      +'<p class="sd">Remplace d\'un coup chaque exercice par une variante qui travaille le même schéma moteur. '
+      +'Le nombre de séries, les répétitions et le format de la séance ne bougent pas — seuls les mouvements changent.</p>'
+      +(r?'<p class="sd">Variante <b>n° '+r+'</b> en cours.</p>':'')
+      +'<div class="vbtns">'
+      +'<button class="btn sm" id="vgo">'+(r?"Variante suivante":"Varier la séance")+'</button>'
+      +(r?'<button class="btn g sm" id="vrst">Revenir aux exercices d\'origine</button>':'')
+      +'</div>'
+      +'<label class="swl"><input type="checkbox" id="vauto"'+(p.set.autovary?" checked":"")+'>'
+      +'<span>Alterner automatiquement chaque semaine</span></label>'
+      +'<p class="sf">Avec l\'alternance automatique, la séance passe à la variante suivante à chaque archivage. '
+      +'Les charges suivent l\'exercice et non sa position : revenir à l\'origine retrouve les charges d\'origine. '
+      +'Les exercices que tu as imposés dans l\'assistant ne sont jamais remplacés.</p>'
       +'</div>';
   }
   if(op==="zones"){
@@ -1931,6 +2065,20 @@ function renderSession(p,s,ti,pg){
     const k=c.dataset.pz,i=PANELSEL.indexOf(k);
     if(i>=0){PANELSEL.splice(i,1);c.classList.remove("ex")}
     else{PANELSEL.push(k);c.classList.add("ex")}});
+  const vgo=document.getElementById("vgo");
+  if(vgo)vgo.onclick=()=>{
+    const r=varySession(p,ti,1);
+    PANEL[ti]=null;
+    toast(r.changed?r.changed+" exercice"+(r.changed>1?"s":"")+" remplacé"+(r.changed>1?"s":""):"Aucune variante disponible");
+    renderMain(p);window.scrollTo(0,0)};
+  const vrst=document.getElementById("vrst");
+  if(vrst)vrst.onclick=()=>{
+    varySession(p,ti,-99);
+    PANEL[ti]=null;toast("Exercices d'origine rétablis");
+    renderMain(p);window.scrollTo(0,0)};
+  const vauto=document.getElementById("vauto");
+  if(vauto)vauto.onchange=()=>{p.set.autovary=vauto.checked;saveP();
+    toast(vauto.checked?"Alternance automatique activée":"Alternance automatique désactivée")};
   const zok=document.getElementById("zok");
   if(zok)zok.onclick=()=>{
     p.cfg.pain=(PANELSEL||[]).slice();saveP();
@@ -2032,12 +2180,28 @@ function renderSession(p,s,ti,pg){
     const ratio=tl.tot?(tl.done+tl.bonus)/tl.tot:0;
     const kc=sessionKcal(p,plan,dm,ratio);
     rec.kcal=kc;
+    /* repartition de cette depense entre les exercices reellement travailles */
+    const split=kcalSplit(p,plan,kc);
+    if(split)rec.ex.forEach(x=>{if(split[x.id]!=null&&x.done>0)x.kcal=split[x.id]});
+    /* alternance automatique des exercices, si elle est demandee */
+    if(p.set.autovary){
+      const vr=varySession(p,ti,1);
+      if(vr.changed)prop.push("Séance variée pour la prochaine fois : "+vr.changed+" exercice"+(vr.changed>1?"s":"")+" remplacé"+(vr.changed>1?"s":""));
+    }
     saveP();
     let hh='<p class="sum"><b>'+(tl.done+tl.bonus)+'</b> séries effectuées sur '+tl.tot+' prévues<br>';
     if(kc!=null) hh+='Dépense estimée : <b>'+kc+' kcal</b><br>';
     hh+='Format : <b>'+dm+' min</b></p>';
     if(kc==null) hh+='<p class="mut">Renseigne ton poids dans l\'onglet Nutrition pour obtenir une estimation de la dépense.</p>';
     else hh+='<p class="mut">Ordre de grandeur, pas une mesure : ce type d\'estimation a une marge de 20 à 30 % d\'une personne à l\'autre.</p>';
+    const detail=rec.ex.filter(x=>x.kcal!=null);
+    if(detail.length){
+      hh+='<p class="mut" style="margin-top:10px"><b style="color:var(--brand)">Dépense par exercice</b></p>'
+        +'<table class="t" style="margin-top:6px"><tr><th>Exercice</th><th class="r">Séries</th><th class="r">kcal</th></tr>'
+        +detail.map(x=>'<tr><td>'+esc(x.n)+'</td><td class="r">'+x.done+'</td><td class="r">'+x.kcal+'</td></tr>').join("")
+        +'</table>'
+        +'<p class="mut">Le total de la séance est réparti au prorata du temps sous tension et du repos ; ces parts s\'additionnent pour donner la dépense totale.</p>';
+    }
     if(prop.length) hh+='<p class="mut" style="margin-top:8px"><b style="color:var(--brand)">Ajusté pour la prochaine fois</b><br>'+prop.map(esc).join('<br>')+'</p>';
     mdOpen({title:"Séance terminée",msg:"",html:hh,ok:"Fermer",noCancel:true,cb:function(){}});
     renderMain(p)};
@@ -2327,6 +2491,30 @@ function renderHist(p,pg){
   }
   h+='</div>';
 
+  const hu=historyUpdate(p,false);
+  h+='<div class="card"><h4>Mise à jour du programme</h4>';
+  if(!p.hist.length)
+    h+='<div class="empty">Archive au moins une séance : les charges de tes prochaines séances seront recalculées à partir de ce que tu as réellement soulevé.</div>';
+  else if(!hu.charges.length&&!hu.alertes.length)
+    h+='<p class="mut">Tes séances sont déjà alignées sur ton historique. Rien à rattraper.</p>';
+  else{
+    if(hu.charges.length){
+      h+='<p class="mut">'+hu.charges.length+' charge'+(hu.charges.length>1?"s":"")+' à ajuster d\'après tes '+p.hist.length+' séance'+(p.hist.length>1?"s":"")+' archivée'+(p.hist.length>1?"s":"")+' :</p>'
+        +'<table class="t"><tr><th>Exercice</th><th class="r">Actuel</th><th class="r">Proposé</th></tr>'
+        +hu.charges.slice(0,12).map(c=>'<tr><td>'+esc(c.n)+'</td><td class="r">'+(c.de!=null?kg(c.de):"—")+'</td><td class="r">'+kg(c.a)+'</td></tr>').join("")
+        +'</table>';
+      if(hu.charges.length>12)h+='<p class="mut">… et '+(hu.charges.length-12)+' autre'+(hu.charges.length-12>1?"s":"")+'.</p>';
+    }
+    if(hu.alertes.length){
+      h+='<div class="alert w"><b>À surveiller</b>'
+        +hu.alertes.map(a=>esc(a.n)+' — '+a.fail+' échecs consécutifs').join('<br>')
+        +'<br>Deux échecs de suite sur le même mouvement, ce n\'est pas une charge à baisser encore : c\'est souvent un exercice qui ne te convient pas. Utilise ⇄ sur la ligne de l\'exercice pour le remplacer.</div>';
+    }
+    h+='<button class="btn sm" id="hupd">Mettre à jour mes séances</button>'
+      +'<p class="mut">Applique ces charges à toutes tes séances. Les séances sont déjà ajustées automatiquement à chaque archivage : ce bouton sert à rattraper un historique importé, une longue coupure, ou une charge que tu as corrigée à la main.</p>';
+  }
+  h+='</div>';
+
   h+='<div class="card"><h4>Charges par exercice</h4>';
   const ids=Object.keys(p.used);
   if(!ids.length) h+='<div class="empty">Saisis des charges pendant tes séances pour voir les courbes.</div>';
@@ -2360,6 +2548,12 @@ function renderHist(p,pg){
   pg.innerHTML=h;
 
   pg.querySelectorAll("[data-hdel]").forEach(x=>x.onclick=()=>{p.hist.splice(+x.dataset.hdel,1);saveP();renderMain(p)});
+
+  const hup=document.getElementById("hupd");
+  if(hup)hup.onclick=()=>{
+    const r=historyUpdate(p,true);
+    toast(r.charges.length?r.charges.length+" charge"+(r.charges.length>1?"s":"")+" mise"+(r.charges.length>1?"s":"")+" à jour":"Rien à mettre à jour");
+    renderMain(p)};
 
   const bs=document.getElementById("bsave");
   if(bs)bs.onclick=()=>{
