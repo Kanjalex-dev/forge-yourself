@@ -1320,6 +1320,8 @@ function historyUpdate(p,apply){
   hist.forEach(r=>{(r.ex||[]).forEach(x=>{
     if(!x.id||!ids[x.id])return;
     const e=byId(x.id);if(!e)return;
+    /* un mouvement au poids de corps n'a pas de charge a prescrire */
+    if(e.eq==="pdc")return;
     if(!st[x.id])st[x.id]={kg:null,fail:0,n:0};
     const o=st[x.id];o.n++;
     const base=(x.kg!=null&&!isNaN(x.kg))?x.kg:o.kg;
@@ -1824,8 +1826,7 @@ function renderFocus(p,s,ti,plan,order){
   h+='<div class="fname"><span class="ix">'+(xi+1)+'</span>'+esc(e.n)
     +'<button class="vbtn" data-fvar="'+xi+'" title="Remplacer par un exercice similaire" aria-label="Remplacer cet exercice">⇄</button></div>';
   h+='<div class="fchips"><span class="chip"><b>'+x.sets+'</b> × '+x.reps+'</span>'
-    +'<span class="chip'+(ch!=null&&!isNaN(ch)&&ov==null&&x.src==="auto"?" auto":"")+'">'
-    +(ch!=null&&!isNaN(ch)?kg(ch)+(ov!=null?" · manuel":(x.src==="auto"?" · auto":"")):"charge libre")+'</span>'
+    +'<span class="chip'+loadTxt(p,x,e,ov,ch).c+'">'+loadTxt(p,x,e,ov,ch).t+'</span>'
     +'<span class="chip">'+x.rpe+'</span><span class="chip">repos <b>'+mmss(x.rest)+'</b></span>'
     +(x.swapFrom?'<span class="chip" style="border:1px solid var(--warn);color:var(--warn)">remplace '+esc(x.swapFrom)+'</span>':'')
     +(x.inPlan?'':(x.spared
@@ -1844,6 +1845,17 @@ function renderFocus(p,s,ti,plan,order){
   }
   h+='</div></div>';
 
+  if(e.eq==="pdc"&&bwCoef(e)!=null){
+    const bl=bwLoad(p,e,null),lv=lestOf(p,e);
+    h+='<div class="fsec"><div class="lbl">'+(LEST_OK[e.id]?"Lest ajouté":"Charge effective")+'</div><div class="btns">'
+      +(LEST_OK[e.id]?'<input type="number" step="0.5" inputmode="decimal" id="flest" value="'+(lv||"")+'">'
+        +'<span class="mut" style="font-size:.72rem">kg</span>':'')
+      +'</div><div class="leg" style="margin-top:7px">'
+      +(bl!=null?'≈ '+esc(kg(bl))+' déplacés, soit '+Math.round(bwCoef(e)*100)+' % de ton poids de corps'
+        +(lv?' + '+esc(kg(lv))+' de lest':'')+'.'
+        :'Renseigne ton poids pour que ces séries comptent dans ton volume.')
+      +'</div></div>';
+  }
   if(e.eq!=="pdc")
     h+='<div class="fsec"><div class="lbl">Charge utilisée</div><div class="btns">'
       +'<input type="number" step="0.5" inputmode="decimal" id="fch" value="'+(ch!=null&&!isNaN(ch)?ch:"")+'">'
@@ -1875,6 +1887,12 @@ function renderFocus(p,s,ti,plan,order){
     b.checked?S(key,true):DEL(key);
     if(b.checked)startT(x.rest,"Repos · "+e.n+" — série "+(+k+1)+"/"+x.sets);
     refreshProgress(p,s,null,plan)});
+  const fl=document.getElementById("flest");
+  if(fl)fl.onchange=()=>{
+    const v=fl.value.trim();
+    if(!p.lest)p.lest={};
+    if(v===""||parseFloat(v)===0)delete p.lest[x.id];else p.lest[x.id]=v;
+    saveP();toast("Lest enregistré");renderMain(p)};
   const fc=document.getElementById("fch");
   if(fc)fc.onchange=()=>{
     const v=fc.value.trim();
@@ -2004,8 +2022,7 @@ function renderSession(p,s,ti,pg){
       +(x.inPlan?'':(x.spared
         ?'<span class="chip" style="border:1px solid var(--warn);color:var(--warn)">sans équivalent</span>'
         :'<span class="chip" style="border:1px solid var(--mut);color:var(--mut)">bonus</span>'))
-      +'<span data-cc="'+xi+'" class="chip'+(ch!=null&&!isNaN(ch)&&ov==null&&x.src==="auto"?" auto":"")+'">'
-        +(ch!=null&&!isNaN(ch)?kg(ch)+(ov!=null?" · manuel":(x.src==="auto"?" · auto":"")):"charge libre")+'</span>'
+      +'<span data-cc="'+xi+'" class="chip'+loadTxt(p,x,e,ov,ch).c+'">'+loadTxt(p,x,e,ov,ch).t+'</span>'
       +'<span class="chip">'+x.rpe+'</span><span class="chip">repos <b>'+mmss(x.rest)+'</b></span>'
       +(x.forced?'<span class="chip" style="border:1px solid var(--brand2);color:var(--brand2)">imposé</span>':'')
       +'</div>';
@@ -2025,6 +2042,19 @@ function renderSession(p,s,ti,pg){
     h+='</div>';
     if(x.inPlan&&allS>x.sets)
       h+='<div class="leg">Les séries en pointillé sont retirées par le format du jour — fais-les si tu te sens bien.</div>';
+    if(e.eq==="pdc"&&bwCoef(e)!=null){
+      const bl=bwLoad(p,e,null),lv=lestOf(p,e);
+      h+='<div class="cbar"><label>'+(LEST_OK[e.id]?"Lest ajouté":"Charge effective")+'</label>'
+        +(LEST_OK[e.id]?'<input type="number" step="0.5" inputmode="decimal" data-lest="'+xi+'" value="'+(lv||"")+'">':'')
+        +'<button class="mini" data-hi="'+xi+'">Courbe</button></div>'
+        +'<div class="leg" style="margin:-2px 0 8px">'
+        +(bl!=null
+          ?'≈ '+esc(kg(bl))+' déplacés — '+Math.round(bwCoef(e)*100)+' % de ton poids de corps'
+            +(lv?' + '+esc(kg(lv))+' de lest':'')+'. Ordre de grandeur : la part réellement déplacée dépend de tes appuis.'
+          :'Renseigne ton poids dans Nutrition ou un relevé dans Suivi pour que ces séries comptent dans ton volume.')
+        +'</div>'
+        +'<div data-hb="'+xi+'" hidden style="margin-bottom:8px"><canvas class="ch"></canvas></div>';
+    }
     if(e.eq!=="pdc"){
       h+='<div class="cbar"><label>Charge utilisée</label>'
         +'<input type="number" step="0.5" inputmode="decimal" data-ch="'+xi+'" value="'+(ch!=null&&!isNaN(ch)?ch:"")+'">'
@@ -2114,6 +2144,11 @@ function renderSession(p,s,ti,pg){
       btn.onclick=()=>{delete p.ovr[x.id];saveP();toast("Retour au calcul automatique");renderMain(p)};
       bar.appendChild(btn)}
     else if(ov==null&&old)old.remove();});
+  pg.querySelectorAll("[data-lest]").forEach(i=>i.onchange=()=>{
+    const x=plan.items[+i.dataset.lest],v=i.value.trim();
+    if(!p.lest)p.lest={};
+    if(v===""||parseFloat(v)===0)delete p.lest[x.id];else p.lest[x.id]=v;
+    saveP();toast("Lest enregistré");renderMain(p)});
   pg.querySelectorAll("[data-ra]").forEach(b=>b.onclick=()=>{
     delete p.ovr[plan.items[+b.dataset.ra].id];saveP();toast("Retour au calcul automatique");renderMain(p)});
   pg.querySelectorAll("[data-hi]").forEach(b=>b.onclick=()=>{
@@ -2149,7 +2184,9 @@ function renderSession(p,s,ti,pg){
       const e=byId(x.id),l=p.logs.find(z=>z.k===logKey(s.sid,x.id))||{};
       const ov=p.ovr[x.id],ch=ov!=null?parseFloat(ov):x.charge;
       let d2=0;for(let i=0;i<(x.allSets||x.sets);i++)if(G("chk_"+sKey(p,s.sid,x.id,i),false))d2++;
-      rec.ex.push({n:e.n,id:x.id,sets:x.sets,reps:x.reps,done:d2,kg:(ch!=null&&!isNaN(ch))?ch:null,ok:l.ok||null,diff:l.diff||null});
+      const bl=(ch==null||isNaN(ch))?bwLoad(p,e,today()):null;
+      rec.ex.push({n:e.n,id:x.id,sets:x.sets,reps:x.reps,done:d2,
+        kg:(ch!=null&&!isNaN(ch))?ch:null,bw:bl,ok:l.ok||null,diff:l.diff||null});
       /* La charge réellement soulevée alimente les courbes et les records,
          y compris quand elle vient du calcul automatique et n'a jamais été
          saisie à la main : sinon suivre le programme sans rien taper ne
@@ -2157,6 +2194,14 @@ function renderSession(p,s,ti,pg){
       if(d2>0&&ch!=null&&!isNaN(ch)){
         const arr=p.used[x.id]||[],dd=today(),k=arr.findIndex(a=>a.date===dd);
         if(k>=0){if(ch>arr[k].kg)arr[k].kg=ch}else arr.push({date:dd,kg:ch});
+        p.used[x.id]=arr;
+      }
+      /* les mouvements au poids de corps alimentent aussi les courbes et
+         les records, avec leur charge effective — mais jamais p.ovr, qui
+         sert a prescrire : on ne prescrit pas un poids de corps */
+      else if(d2>0&&bl!=null){
+        const arr=p.used[x.id]||[],dd=today(),k=arr.findIndex(a=>a.date===dd);
+        if(k>=0){if(bl>arr[k].kg)arr[k].kg=bl}else arr.push({date:dd,kg:bl});
         p.used[x.id]=arr;
       }
     });
@@ -2171,6 +2216,17 @@ function renderSession(p,s,ti,pg){
       if(l.ok==="oui"&&(l.diff==="facile"||l.diff==="correct"))nv=base+step;
       else if(l.ok==="non"||l.diff==="echec")nv=r25(base*.95);
       if(nv!==base){p.ovr[x.id]=String(nv);prop.push(e.n+" → "+kg(nv))}
+    });
+    /* Sur traction et dips, une seance reussie et facile ne se traduisait
+       par rien : l'app n'avait aucun levier. Elle propose maintenant du lest. */
+    plan.items.forEach(x=>{
+      const e=byId(x.id);if(!e||!LEST_AUTO[e.id])return;
+      const l=p.logs.find(z=>z.k===logKey(s.sid,x.id))||{};
+      if(l.ok!=="oui"||l.diff!=="facile")return;
+      if(!p.lest)p.lest={};
+      const cur=lestOf(p,e),nv=cur+2.5;
+      p.lest[e.id]=String(nv);
+      prop.push(e.n+" → lest "+kg(nv));
     });
     s.exos.forEach(x=>{for(let i=0;i<x.sets;i++)DEL("chk_"+sKey(p,s.sid,x.id,i))});
     p.logs=p.logs.filter(l=>l.k.indexOf(s.sid+"_")!==0);delete p.notes[s.sid];
@@ -2400,11 +2456,78 @@ function shortDate(d){
   return isNaN(t)?d:t.toLocaleDateString("fr-FR",{day:"numeric",month:"short"});
 }
 /* Tonnage hebdomadaire : series effectuees x repetitions x charge. */
+/* ================================================================
+   POIDS DE CORPS
+   Sur un mouvement au poids du corps, la charge n'est pas nulle : c'est
+   une fraction du poids de corps. Sans ca, 4x8 tractions comptaient pour
+   zero tonne dans la courbe de volume, qui est pourtant presentee comme
+   le meilleur indicateur unique de charge de travail.
+
+   Ces coefficients sont des approximations assumees : la part du poids
+   reellement deplacee varie avec la position des mains et des appuis, et
+   les valeurs publiees ne s'accordent pas au dixieme. Ils servent a
+   comparer des semaines entre elles, pas a annoncer un chiffre exact.
+
+   Les gainages et les isometries n'y figurent pas : sans repetitions ni
+   amplitude, un tonnage n'aurait aucun sens. Ils restent comptes en temps.
+   ================================================================ */
+const BWC={
+  /* suspendu, corps entier */
+  traction:1,traction_sup:1,traction_lestee:1,dips:1,mollets_marche:1,
+  /* appuis partiels */
+  pike_pu:.7,pompe:.65,pompe_diamant:.65,dips_banc:.6,nordic:.6,
+  rowing_australien:.55,pompe_genoux:.5,good_morning_pdc:.5,pont_fessier:.45,
+  /* bas du corps debout : pieds et tibias ne montent pas */
+  squat_pdc:.85,squat_saute:.85,fentes_pdc:.85,pistol:.85
+};
+/* Exercices ou ajouter un lest est realiste (ceinture, haltere, disque). */
+const LEST_OK={traction:1,traction_sup:1,traction_lestee:1,dips:1,dips_banc:1,
+  mollets_marche:1,pont_fessier:1};
+/* Progression proposee automatiquement : seulement la famille traction/dips. */
+const LEST_AUTO={traction:1,traction_sup:1,traction_lestee:1,dips:1};
+
+function bwCoef(e){return e&&BWC[e.id]!=null?BWC[e.id]:null}
+/* Poids de corps a une date donnee : le releve date le plus proche avant
+   cette date, sinon le poids du profil. Sans ca la courbe de tonnage
+   bougerait retroactivement a chaque passage sur la balance. */
+function bwAt(p,date){
+  const b=(p.blog||[]).filter(x=>x.kg>0&&(!date||x.d<=date)).sort((a,c)=>a.d<c.d?-1:1);
+  if(b.length)return b[b.length-1].kg;
+  const w=parseFloat(body(p).wt);return w>0?w:null;
+}
+function lestOf(p,e){const v=p.lest&&p.lest[e.id];const f=v!=null?parseFloat(v):0;return isNaN(f)?0:f}
+function bwLoad(p,e,date){
+  const c=bwCoef(e);if(c==null)return null;
+  const w=bwAt(p,date);if(w==null)return null;
+  return Math.round((c*w+lestOf(p,e))*2)/2;
+}
+/* Libelle de la pastille de charge, commun a la liste et au mode focus. */
+function loadTxt(p,x,e,ov,ch){
+  if(ch!=null&&!isNaN(ch))
+    return{t:kg(ch)+(ov!=null?" · manuel":(x.src==="auto"?" · auto":"")),c:(ov==null&&x.src==="auto")?" auto":""};
+  const bl=bwLoad(p,e,null);
+  if(bl!=null)return{t:"≈ "+kg(bl)+" · poids de corps"+(lestOf(p,e)?" + lest":""),c:" auto"};
+  return{t:"charge libre",c:""};
+}
+/* Rattrapage des seances deja archivees : on leur attribue la charge
+   effective calculee avec le poids de corps de l'epoque. */
+function migrateBW(p){
+  if(!p.hist)return;
+  p.hist.forEach(r=>{(r.ex||[]).forEach(x=>{
+    if(x.kg!=null||x.bw!=null)return;
+    const e=byId(x.id),c=e?bwCoef(e):null;
+    if(c==null)return;
+    const w=bwAt(p,r.date);if(w==null)return;
+    x.bw=Math.round(c*w*2)/2;
+  })});
+}
+
 function weeklyVolume(p){
   const w={};
   p.hist.forEach(r=>{
     const k=weekStart(r.date);let v=0;
-    (r.ex||[]).forEach(e=>{if(e.kg!=null)v+=e.done*repsMid(e.reps)*e.kg});
+    (r.ex||[]).forEach(e=>{const L=(e.kg!=null)?e.kg:(e.bw!=null?e.bw:null);
+      if(L!=null)v+=e.done*repsMid(e.reps)*L});
     if(v>0)w[k]=(w[k]||0)+v;
   });
   return Object.keys(w).sort().map(k=>({d:shortDate(k),v:Math.round(w[k]/100)/10}));
@@ -2657,7 +2780,7 @@ function renderProfil(p,pg){
 }
 
 /* ---------------- Démarrage : profil actif rechargé automatiquement ---------------- */
-PROFILES.forEach(p=>{try{migrateKeys(p);pruneChecks(p)}catch(e){}});
+PROFILES.forEach(p=>{try{migrateKeys(p);pruneChecks(p);migrateBW(p)}catch(e){}});
 saveP();
 if(ACTIVE&&prof()) VIEW=prof().done?"app":"wiz";
 else VIEW="home";
