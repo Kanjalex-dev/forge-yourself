@@ -117,7 +117,8 @@ font-size:.62rem;letter-spacing:.06em;text-transform:uppercase}
 overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;
 padding-bottom:2px}
 .srow::-webkit-scrollbar{display:none}
-.srow .mini{flex:0 0 auto;padding:9px 12px}
+.srow .mini{flex:0 0 auto;padding:8px 12px;line-height:16px;
+display:inline-flex;align-items:center;justify-content:center}
 .estline{font-size:.68rem;color:var(--brand);font-variant-numeric:tabular-nums;margin-bottom:12px}
 .estline s{color:var(--mut);text-decoration:none}
 .mini.dd::after{content:"";display:inline-block;width:5px;height:5px;margin-left:7px;
@@ -186,6 +187,13 @@ justify-content:center;color:#052e16;font-weight:800;font-size:1.1rem}
 .sets .s.dim input{border-style:dashed;opacity:.5}
 .cbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
 .cbar label{font-size:.68rem;color:var(--mut)}
+/* Petit « i » : l'explication n'occupe l'ecran que si on la demande. */
+.ibtn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;
+border-radius:50%;border:1px solid var(--line);background:var(--sf2);color:var(--mut);
+font-size:.68rem;font-weight:700;font-style:italic;font-family:Georgia,serif;
+cursor:pointer;padding:0;flex:0 0 auto;line-height:1;margin-left:2px}
+.ibtn:hover,.ibtn:focus-visible{border-color:var(--brand);color:var(--brand)}
+.ibtn.on{border-color:var(--brand);color:var(--brand);background:#0F2A2A}
 .cbar input{width:86px;background:var(--sf2);border:1px solid var(--line);border-radius:8px;padding:8px;
 color:var(--txt);font-size:.84rem;font-variant-numeric:tabular-nums}
 .mini{background:var(--sf2);border:1px solid var(--line);color:var(--mut);border-radius:8px;padding:7px 10px;
@@ -257,7 +265,7 @@ font-size:.72rem;cursor:pointer;font-family:inherit}
 padding-bottom:10px;overscroll-behavior:contain}
 .fsec{margin-top:17px}
 .fsec .lbl{font-size:.63rem;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);
-margin-bottom:8px;font-weight:600}
+margin-bottom:8px;font-weight:600;display:flex;align-items:center;gap:7px}
 .fsec .btns{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
 .fname{font-size:1.05rem;font-weight:650;margin:11px 0 8px;flex:0 0 auto;line-height:1.2}
 .fname .ix{color:var(--brand);font-size:.78rem;margin-right:6px}
@@ -265,8 +273,8 @@ margin-bottom:8px;font-weight:600}
 /* les animations sont des sources de 190 px : on les laisse grandir un peu
    pour remplir le cadre, sans le laisser devenir un grand aplat blanc */
 .fanim{flex:0 0 auto;background:#fff;border-radius:14px;
-display:flex;align-items:center;justify-content:center;overflow:hidden;padding:8px;
-width:fit-content;max-width:100%;margin:2px auto 0;box-shadow:0 1px 0 rgba(255,255,255,.06)}
+display:flex;align-items:center;justify-content:center;overflow:hidden;padding:10px;
+width:100%;max-width:440px;margin:2px auto 0;box-shadow:0 1px 0 rgba(255,255,255,.06)}
 .fanim img{display:block;height:auto;width:auto;max-width:100%;
 max-height:min(23vh,190px);object-fit:contain}
 .fanim .na{color:#64748b;font-size:.72rem;text-align:center;padding:14px;min-width:190px}
@@ -1847,20 +1855,24 @@ function renderFocus(p,s,ti,plan,order){
 
   if(e.eq==="pdc"&&bwCoef(e)!=null){
     const bl=bwLoad(p,e,null),lv=lestOf(p,e);
-    h+='<div class="fsec"><div class="lbl">'+(LEST_OK[e.id]?"Lest ajouté":"Charge effective")+'</div><div class="btns">'
+    h+='<div class="fsec"><div class="lbl">'+(LEST_OK[e.id]?"Lest ajouté":"Charge effective")
+      +'<button class="ibtn" data-inf="fb" aria-label="D\'où vient cette charge" title="D\'où vient cette charge">i</button>'
+      +'</div><div class="btns">'
       +(LEST_OK[e.id]?'<input type="number" step="0.5" inputmode="decimal" id="flest" value="'+(lv||"")+'">'
         +'<span class="mut" style="font-size:.72rem">kg</span>':'')
-      +'</div><div class="leg" style="margin-top:7px">'
+      +'</div><div class="leg" data-infb="fb" hidden style="margin-top:7px">'
       +(bl!=null?'≈ '+esc(kg(bl))+' déplacés, soit '+Math.round(bwCoef(e)*100)+' % de ton poids de corps'
         +(lv?' + '+esc(kg(lv))+' de lest':'')+'.'
         :'Renseigne ton poids pour que ces séries comptent dans ton volume.')
       +'</div></div>';
   }
   if(e.eq!=="pdc")
-    h+='<div class="fsec"><div class="lbl">Charge utilisée</div><div class="btns">'
+    h+='<div class="fsec"><div class="lbl">Charge utilisée'
+      +((ch==null||isNaN(ch))?'<button class="ibtn" data-inf="fc" aria-label="Pourquoi ce champ est vide" title="Pourquoi ce champ est vide">i</button>':'')
+      +'</div><div class="btns">'
       +'<input type="number" step="0.5" inputmode="decimal" id="fch" value="'+(ch!=null&&!isNaN(ch)?ch:"")+'">'
       +'<span class="mut" style="font-size:.72rem">kg</span></div>'
-      +((ch==null||isNaN(ch))?'<div class="leg" style="margin-top:7px">'+esc(freeLoadWhy(e))+'</div>':'')
+      +((ch==null||isNaN(ch))?'<div class="leg" data-infb="fc" hidden style="margin-top:7px">'+esc(freeLoadWhy(e))+'</div>':'')
       +'</div>';
 
   h+='<div class="fsec"><div class="lbl">Objectif atteint ?</div><div class="btns">'
@@ -1887,6 +1899,12 @@ function renderFocus(p,s,ti,plan,order){
     b.checked?S(key,true):DEL(key);
     if(b.checked)startT(x.rest,"Repos · "+e.n+" — série "+(+k+1)+"/"+x.sets);
     refreshProgress(p,s,null,plan)});
+  FOC.querySelectorAll("[data-inf]").forEach(b=>b.onclick=()=>{
+    const box=FOC.querySelector('[data-infb="'+b.dataset.inf+'"]');
+    if(!box)return;
+    box.hidden=!box.hidden;
+    b.classList.toggle("on",!box.hidden);
+    b.setAttribute("aria-expanded",box.hidden?"false":"true")});
   const fl=document.getElementById("flest");
   if(fl)fl.onchange=()=>{
     const v=fl.value.trim();
@@ -1930,8 +1948,8 @@ function renderSession(p,s,ti,pg){
     +'<button class="mini dd'+(op==="dur"?" open on":(dm!==def?" on":""))+'" data-pan="dur">'+dm+' min</button>'
     +'<button class="mini dd'+(op==="zones"?" open":"")+(pain.length?" ex":"")+'" data-pan="zones">Zones'
     +(pain.length?' · '+pain.length:'')+'</button>'
-    +'<button class="mini dd'+(op==="vary"?" open":"")+(varyRank(p,s)?" on":"")+'" data-pan="vary">Varier'
-    +(varyRank(p,s)?' · '+varyRank(p,s):'')+'</button>'
+    +'<button class="mini dd'+(op==="vary"?" open":"")+(varyRank(p,s)?" on":"")+'" data-pan="vary" aria-label="Varier tous les exercices de la séance" title="Varier tous les exercices de la séance">⇄ all'
+    +(varyRank(p,s)?' '+varyRank(p,s):'')+'</button>'
     +'<button class="mini'+(foc?" on":"")+'" id="fmode">Focus</button>'
     +'<button class="mini'+(p.set.timer?" on":"")+'" id="tmode">Minuteur</button>'
     +'</div>';
@@ -2045,9 +2063,10 @@ function renderSession(p,s,ti,pg){
     if(e.eq==="pdc"&&bwCoef(e)!=null){
       const bl=bwLoad(p,e,null),lv=lestOf(p,e);
       h+='<div class="cbar"><label>'+(LEST_OK[e.id]?"Lest ajouté":"Charge effective")+'</label>'
+        +'<button class="ibtn" data-inf="b'+xi+'" aria-label="D\'où vient cette charge" title="D\'où vient cette charge">i</button>'
         +(LEST_OK[e.id]?'<input type="number" step="0.5" inputmode="decimal" data-lest="'+xi+'" value="'+(lv||"")+'">':'')
         +'<button class="mini" data-hi="'+xi+'">Courbe</button></div>'
-        +'<div class="leg" style="margin:-2px 0 8px">'
+        +'<div class="leg" data-infb="b'+xi+'" hidden style="margin:-2px 0 8px">'
         +(bl!=null
           ?'≈ '+esc(kg(bl))+' déplacés — '+Math.round(bwCoef(e)*100)+' % de ton poids de corps'
             +(lv?' + '+esc(kg(lv))+' de lest':'')+'. Ordre de grandeur : la part réellement déplacée dépend de tes appuis.'
@@ -2056,11 +2075,13 @@ function renderSession(p,s,ti,pg){
         +'<div data-hb="'+xi+'" hidden style="margin-bottom:8px"><canvas class="ch"></canvas></div>';
     }
     if(e.eq!=="pdc"){
+      const vide=(ch==null||isNaN(ch));
       h+='<div class="cbar"><label>Charge utilisée</label>'
-        +'<input type="number" step="0.5" inputmode="decimal" data-ch="'+xi+'" value="'+(ch!=null&&!isNaN(ch)?ch:"")+'">'
+        +(vide?'<button class="ibtn" data-inf="c'+xi+'" aria-label="Pourquoi ce champ est vide" title="Pourquoi ce champ est vide">i</button>':'')
+        +'<input type="number" step="0.5" inputmode="decimal" data-ch="'+xi+'" value="'+(vide?"":ch)+'">'
         +'<button class="mini" data-hi="'+xi+'">Courbe</button>'
         +(ov!=null?'<button class="mini on" data-ra="'+xi+'">Auto</button>':'')+'</div>'
-        +((ch==null||isNaN(ch))?'<div class="leg" style="margin:-2px 0 8px">'+esc(freeLoadWhy(e))+'</div>':'')
+        +(vide?'<div class="leg" data-infb="c'+xi+'" hidden style="margin:-2px 0 8px">'+esc(freeLoadWhy(e))+'</div>':'')
         +'<div data-hb="'+xi+'" hidden style="margin-bottom:8px"><canvas class="ch"></canvas></div>';
     }
     const fb=p.logs.find(l=>l.k===logKey(s.sid,x.id))||{};
@@ -2144,6 +2165,14 @@ function renderSession(p,s,ti,pg){
       btn.onclick=()=>{delete p.ovr[x.id];saveP();toast("Retour au calcul automatique");renderMain(p)};
       bar.appendChild(btn)}
     else if(ov==null&&old)old.remove();});
+  /* Le bouton i ne fait qu'afficher ou masquer son explication : aucun
+     rendu de page, rien de persiste. L'etat par defaut reste masque. */
+  pg.querySelectorAll("[data-inf]").forEach(b=>b.onclick=()=>{
+    const box=pg.querySelector('[data-infb="'+b.dataset.inf+'"]');
+    if(!box)return;
+    box.hidden=!box.hidden;
+    b.classList.toggle("on",!box.hidden);
+    b.setAttribute("aria-expanded",box.hidden?"false":"true")});
   pg.querySelectorAll("[data-lest]").forEach(i=>i.onchange=()=>{
     const x=plan.items[+i.dataset.lest],v=i.value.trim();
     if(!p.lest)p.lest={};
