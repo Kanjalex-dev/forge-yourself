@@ -1,0 +1,35 @@
+FORGE YOURSELF — paquet a heberger
+==================================
+
+Pourquoi : depuis le lien d'artifact Claude, la page s'ouvre dans l'habillage
+claude.ai. Safari retient donc l'icone et le nom de Claude au moment du
+« Sur l'ecran d'accueil ». Ce paquet sert la page seule, a sa propre adresse :
+l'icone et le nom deviennent ceux de l'app.
+
+Contenu
+  index.html                 l'application (tout est dedans)
+  manifest.json              nom, couleurs, icones
+  icon-180.png               icone iOS (Safari, ecran d'accueil)
+  icon-192 / 512 / maskable  icones Android et navigateurs
+
+Le plus rapide — Netlify Drop (2 minutes, gratuit)
+  1. https://app.netlify.com/drop
+  2. Glisser le DOSSIER entier (pas les fichiers un par un)
+  3. Une adresse en .netlify.app apparait : c'est le lien a partager
+  4. Creer un compte gratuit pour que le lien reste permanent
+
+Alternative durable — GitHub Pages (gratuit, sans expiration)
+  1. Nouveau depot public sur github.com
+  2. « Add file » > « Upload files » : deposer les 6 fichiers
+  3. Settings > Pages > Source : « Deploy from a branch », branche main, / (root)
+  4. L'adresse s'affiche apres une minute :
+     https://<pseudo>.github.io/<depot>/
+
+Ensuite, sur iPhone
+  Ouvrir l'adresse dans Safari (pas Chrome : seul Safari sait ajouter a
+  l'ecran d'accueil sur iOS), bouton Partager > « Sur l'ecran d'accueil ».
+  L'icone de l'halere et le nom « Forge » doivent apparaitre.
+
+Mettre a jour plus tard
+  Remplacer index.html par la nouvelle version. Les donnees des utilisateurs
+  ne bougent pas : elles vivent dans leur navigateur, pas dans le fichier.
