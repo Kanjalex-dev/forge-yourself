@@ -42,7 +42,9 @@ display:flex;align-items:center;justify-content:center;font-weight:700;color:var
 .tabs{display:flex;position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);
 overflow-x:auto;scrollbar-width:none;max-width:680px;margin:4px auto 0}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex:0 0 auto;min-width:76px;padding:9px 12px;text-align:center;font-weight:600;font-size:.75rem;color:var(--mut);
+/* onglets resserrés : le sixième dépasse volontairement du cadre, c'est
+   ce débord qui signale que la barre se fait défiler */
+.tab{flex:0 0 auto;min-width:64px;padding:9px 8px;text-align:center;font-weight:600;font-size:.74rem;color:var(--mut);
 border:0;background:0;cursor:pointer;border-bottom:2px solid transparent}
 .tab.on{color:var(--brand);border-bottom-color:var(--brand)}
 .tab s{display:block;font-size:.6rem;font-weight:400;text-decoration:none;margin-top:1px}
@@ -96,6 +98,42 @@ color:var(--txt);font-size:.86rem;font-family:inherit;width:100%;font-variant-nu
 .ptxt{font-size:.7rem;color:var(--mut);text-align:right;margin-bottom:8px}
 .exo{background:var(--sf);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden}
 .exo.hid{display:none}
+.exo.bonus{border-style:dashed}
+.exo.spared{border-style:dashed;border-color:#5A4A1E}
+.exo.spared .eh .nm{opacity:.55;text-decoration:line-through}
+.motiv{font-size:.8rem;color:var(--txt);border-left:2px solid var(--brand);
+padding:2px 0 2px 11px;margin:2px 0 14px;line-height:1.45}
+.chip.tog.ex{border-color:var(--dang);background:#2A0F0F;color:var(--dang)}
+.mini.ex{border-color:var(--warn);color:var(--warn)}
+.sum{font-size:.86rem;line-height:1.7}
+.sum b{color:var(--brand);font-variant-numeric:tabular-nums}
+.exo.bonus .eh .nm{opacity:.75}
+.plansep{display:flex;align-items:center;gap:10px;margin:18px 0 10px;color:var(--mut);
+font-size:.62rem;letter-spacing:.06em;text-transform:uppercase}
+.plansep::before,.plansep::after{content:"";flex:1;height:1px;background:var(--line)}
+/* Une seule ligne de reglages ; ce qui demande une saisie s'ouvre juste
+   en dessous et se referme des que le choix est fait. */
+.srow{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.estline{font-size:.68rem;color:var(--brand);font-variant-numeric:tabular-nums;margin-bottom:12px}
+.estline s{color:var(--mut);text-decoration:none}
+.mini.dd::after{content:"";display:inline-block;width:5px;height:5px;margin-left:7px;
+border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;
+transform:translateY(-2px) rotate(45deg);transition:transform .18s ease}
+.mini.dd.open::after{transform:translateY(1px) rotate(-135deg)}
+.spanel{background:var(--sf);border:1px solid var(--brand);border-radius:12px;
+padding:13px;margin-bottom:12px}
+.spanel h5{margin:0 0 3px;font-size:.8rem;font-weight:650;color:var(--txt)}
+.spanel .sd{font-size:.72rem;color:var(--mut);margin:0 0 11px;line-height:1.45}
+.spanel .sd b{color:var(--txt);font-weight:600}
+.spanel .sf{font-size:.7rem;color:var(--mut);margin:10px 0 0;line-height:1.45}
+.seg{display:inline-flex;background:var(--sf2);border:1px solid var(--line);
+border-radius:11px;padding:3px;gap:2px}
+.seg button{border:0;background:0;color:var(--mut);font-family:inherit;font-size:.76rem;
+font-weight:600;padding:8px 15px;border-radius:8px;cursor:pointer;font-variant-numeric:tabular-nums}
+.seg button.on{background:var(--brand);color:#04201C}
+.seg button:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid2 .fld{margin-bottom:0}
 .exo .eh{padding:12px 13px 6px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .exo .eh .nm{font-size:.92rem;font-weight:650}
 .exo .eh .ix{color:var(--brand);font-size:.72rem;font-weight:700;margin-right:6px}
@@ -176,6 +214,8 @@ width:100%;max-width:400px;box-shadow:0 18px 50px #0009}
 #mdl .mt{font-size:.95rem;font-weight:650;margin-bottom:4px}
 #mdl .mm{font-size:.76rem;color:var(--mut);margin-bottom:10px}
 #mdl .mm:empty{display:none}
+#mdl .mh{margin-bottom:2px}
+#mdl .mh p{margin:0 0 8px}
 #mdl input,#mdl textarea{background:var(--sf2);border:1px solid var(--line);border-radius:9px;padding:10px;
 color:var(--txt);font-size:.86rem;font-family:inherit;width:100%;margin-bottom:12px}
 #mdl textarea{min-height:130px;resize:vertical}
@@ -194,7 +234,9 @@ cursor:pointer;font-family:inherit;border:1px solid var(--line);background:var(-
 <div id="tst"></div>
 <div id="mdl"><div class="mbox" role="dialog" aria-modal="true">
 <div class="mt" id="mdl-t"></div><div class="mm" id="mdl-m"></div>
+<div class="mh" id="mdl-h" hidden></div>
 <input id="mdl-i" hidden><textarea id="mdl-x" hidden></textarea>
+<div id="mdl-c" class="chips" hidden></div>
 <div class="mb"><button id="mdl-e" hidden></button><span style="flex:1"></span>
 <button id="mdl-n">Annuler</button><button id="mdl-y" class="pr">OK</button></div>
 </div></div>
@@ -509,28 +551,28 @@ const byId=id=>EX.find(e=>e.id===id);
 const SPLITS={
   ppl:{n:"Push / Pull / Legs",d:"Pousser, tirer, jambes — le meilleur compromis volume/récupération à 3 ou 6 séances.",
     sess:[
-      {k:"Push",pats:["push_h","push_v","push_h","push_v_iso","arm_t","arm_t"]},
-      {k:"Pull",pats:["pull_v","pull_h","pull_h","pull_h_iso","arm_b","arm_b"]},
-      {k:"Legs",pats:["knee","hip","hip","knee_uni","knee_iso","core"]}
+      {k:"Push",pats:["push_h","push_v","push_h","push_v_iso","arm_t","arm_t"],xtra:["push_h_iso","push_v_iso"]},
+      {k:"Pull",pats:["pull_v","pull_h","pull_h","pull_h_iso","arm_b","arm_b"],xtra:["pull_h_iso","core"]},
+      {k:"Legs",pats:["knee","hip","hip","knee_uni","knee_iso","core"],xtra:["calf","hip_iso"]}
     ]},
   fullbody:{n:"Full body",d:"Tout le corps à chaque séance — idéal 2 à 3 séances par semaine, très efficace pour les débutants.",
     sess:[
-      {k:"Full A",pats:["knee","push_h","pull_h","hip_iso","push_v_iso","core"]},
-      {k:"Full B",pats:["hip","push_v","pull_v","knee_iso","arm_b","core"]},
-      {k:"Full C",pats:["knee_uni","push_h","pull_h","arm_t","calf","core"]}
+      {k:"Full A",pats:["knee","push_h","pull_h","hip_iso","push_v_iso","core"],xtra:["arm_b","calf"]},
+      {k:"Full B",pats:["hip","push_v","pull_v","knee_iso","arm_b","core"],xtra:["arm_t","calf"]},
+      {k:"Full C",pats:["knee_uni","push_h","pull_h","arm_t","calf","core"],xtra:["push_v_iso","hip_iso"]}
     ]},
   upperlower:{n:"Haut / Bas",d:"Haut du corps et bas du corps en alternance — bon rapport fréquence/récupération sur 4 séances.",
     sess:[
-      {k:"Haut",pats:["push_h","pull_v","push_v","pull_h","arm_b","arm_t"]},
-      {k:"Bas",pats:["knee","hip","knee_uni","hip_iso","calf","core"]}
+      {k:"Haut",pats:["push_h","pull_v","push_v","pull_h","arm_b","arm_t"],xtra:["push_h_iso","pull_h_iso"]},
+      {k:"Bas",pats:["knee","hip","knee_uni","hip_iso","calf","core"],xtra:["knee_iso","hip"]}
     ]},
   bro:{n:"Un groupe par séance",d:"Volume élevé par groupe musculaire, fréquence faible. À réserver aux niveaux avancés avec 5 séances ou plus.",
     sess:[
-      {k:"Pecs",pats:["push_h","push_h","push_h_iso","push_h_iso","arm_t"]},
-      {k:"Dos",pats:["pull_v","pull_h","pull_h","pull_h_iso","arm_b"]},
-      {k:"Jambes",pats:["knee","hip","knee_uni","knee_iso","hip_iso","calf"]},
-      {k:"Épaules",pats:["push_v","push_v_iso","push_v_iso","pull_h_iso","core"]},
-      {k:"Bras",pats:["arm_b","arm_t","arm_b","arm_t","core"]}
+      {k:"Pecs",pats:["push_h","push_h","push_h_iso","push_h_iso","arm_t"],xtra:["push_h","core"]},
+      {k:"Dos",pats:["pull_v","pull_h","pull_h","pull_h_iso","arm_b"],xtra:["pull_v","core"]},
+      {k:"Jambes",pats:["knee","hip","knee_uni","knee_iso","hip_iso","calf"],xtra:["knee","core"]},
+      {k:"Épaules",pats:["push_v","push_v_iso","push_v_iso","pull_h_iso","core"],xtra:["push_v_iso","arm_t"]},
+      {k:"Bras",pats:["arm_b","arm_t","arm_b","arm_t","core"],xtra:["arm_b","arm_t"]}
     ]}
 };
 const DAYS_FR=["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
@@ -542,6 +584,78 @@ const GOALS={
   sport:{n:"Objectif sportif",reps:"5-8",setsC:4,setsI:2,rpe:"RPE 7",restMul:1.2,pctMul:1.05}
 };
 const LVL={1:"Débutant",2:"Intermédiaire",3:"Avancé"};
+/* Zones sensibles. Le filtre est purement mecanique : il ecarte les
+   exercices qui chargent l'articulation designee. L'app ne juge pas si
+   la douleur permet de s'entrainer — cela ne se decide pas dans une app. */
+const ZONES={
+ epaule:{n:"Épaule",d:"développés, élévations, dips, tractions lestées"},
+ coude:{n:"Coude / poignet",d:"extensions triceps, curls, dips, pompes diamant"},
+ lombaires:{n:"Bas du dos",d:"soulevés de terre, squat barre, rowing penché"},
+ hanche:{n:"Hanche",d:"fentes, hip thrust, soulevés de terre"},
+ genou:{n:"Genou",d:"squats, presse, fentes, leg extension"},
+ cheville:{n:"Cheville",d:"mollets, squat sauté, pistol squat"},
+ nuque:{n:"Nuque",d:"shrugs, travail des trapèzes"}
+};
+const ZLIST={
+ genou:["pistol","squat_saute","fentes","fentes_pdc","bulgare","chaise","nordic"],
+ lombaires:["sdt","rdl","sdt_tendu","sdt_sumo","good_morning_pdc","rowing_barre","squat","front_squat","hip_thrust","superman","dragon_flag"],
+ epaule:["dips","dips_banc","dips_machine","traction_lestee","pullover","arnold","pompe","pike_pu"],
+ coude:["dips","dips_banc","dips_machine","pompe_diamant","ab_wheel"],
+ cheville:["squat_saute","pistol","mollets_marche"],
+ nuque:["shrug"]
+};
+function loadsZone(e,z){
+  const p=e.pat,m=e.prim.concat(e.sec||[]);
+  if((ZLIST[z]||[]).indexOf(e.id)>=0)return true;
+  if(z==="genou")   return /^knee/.test(p);
+  if(z==="hanche")  return /^hip/.test(p)||/_uni$/.test(p)||m.indexOf("add")>=0;
+  if(z==="lombaires")return m.indexOf("lomb")>=0;
+  if(z==="epaule")  return /^push_v/.test(p)||m.indexOf("delt_a")>=0||m.indexOf("delt_l")>=0||m.indexOf("delt_p")>=0;
+  if(z==="coude")   return /^arm_/.test(p);
+  if(z==="cheville")return p==="calf";
+  if(z==="nuque")   return m.indexOf("traps")>=0;
+  return false;
+}
+function spared(e,pain){return (pain||[]).some(z=>loadsZone(e,z))}
+/* Un exercice écarté pour cause de zone sensible est REMPLACÉ, pas
+   supprimé : on cherche le plus proche équivalent qui ne charge pas
+   l'articulation — même schéma moteur d'abord, puis même famille de
+   mouvement, puis à défaut même muscle principal. */
+function substitute(e,cfg,taken){
+  const allow=EQ_ALLOW[cfg.eq]||[];
+  const ok=x=>allow.indexOf(x.eq)>=0&&x.lvl<=cfg.lvl&&(cfg.excl||[]).indexOf(x.id)<0
+    &&taken.indexOf(x.id)<0&&!spared(x,cfg.pain)&&x.id!==e.id;
+  let c=EX.filter(x=>x.pat===e.pat&&ok(x));
+  if(!c.length){const fam=e.pat.replace(/_iso$|_uni$/,"");
+    c=EX.filter(x=>x.pat.indexOf(fam)===0&&ok(x));}
+  if(!c.length)c=EX.filter(x=>x.prim.some(m=>e.prim.indexOf(m)>=0)&&ok(x));
+  if(!c.length)c=EX.filter(x=>(x.sec||[]).some(m=>e.prim.indexOf(m)>=0)&&ok(x));
+  if(!c.length)return null;
+  const rank=EQ_RANK[cfg.eq]||{};
+  c.sort((a,b)=>((rank[a.eq]!=null?rank[a.eq]:5)-(rank[b.eq]!=null?rank[b.eq]:5))
+    ||Math.abs(a.lvl-cfg.lvl)-Math.abs(b.lvl-cfg.lvl));
+  return c[0];
+}
+function painLabel(pain){
+  if(!pain||!pain.length)return "";
+  return pain.map(z=>(ZONES[z]||{n:z}).n).join(", ");
+}
+/* Formats de seance. Les fourchettes ci-dessous correspondent au temps
+   reellement passe a s'entrainer, echauffement compris. La litterature
+   situe la zone utile autour de 45 a 75 minutes de travail effectif :
+   en dessous le volume manque, au-dela le rendement de chaque serie
+   supplementaire chute nettement. */
+const DURS=[
+ {m:20,n:"Express",s:"2 à 3 exercices",
+  d:"Les mouvements de base, rien d'autre. Sert à entretenir quand la journée ne laisse pas le choix — pas à progresser."},
+ {m:40,n:"Court",s:"4 exercices",
+  d:"Le meilleur rapport résultat/temps quand la semaine est chargée : tu gardes l'essentiel du stimulus et tu perds surtout de l'accessoire."},
+ {m:60,n:"Standard",s:"5 à 6 exercices",
+  d:"Le format de référence. Assez de volume pour progresser, et tu t'arrêtes avant que la qualité d'exécution ne se dégrade."},
+ {m:90,n:"Longue",s:"7 à 8 exercices",
+  d:"Volume élevé ou spécialisation sur un groupe. Au-delà d'environ 75 minutes de travail effectif, chaque série supplémentaire rapporte beaucoup moins."}
+];
+function durOf(m){return DURS.find(d=>d.m===m)||DURS[2]}
 const EQ_ALLOW={salle:["barre","halteres","machine","poulie","elastique","pdc"],
   restreint:["halteres","elastique","pdc"],pdc:["pdc"]};
 
@@ -554,7 +668,7 @@ function newProfile(name){
   const p={id:uid(),name:name||"Nouveau profil",created:today(),
     cfg:{lvl:2,split:"ppl",goal:"recomp",eventName:"",eventDate:"",startDate:today(),eq:"salle",
       rm:{dc:"",squat:"",sdt:"",row:""},days:[0,2,4],acts:{},must:[],excl:[],
-      body:{sex:"",age:"",ht:"",wt:"",act:"sed"}},
+      dur:60,pain:[],body:{sex:"",age:"",ht:"",wt:"",act:"sed"}},
     prog:null,logs:[],hist:[],used:{},ovr:{},notes:{},blog:[],
     set:{timer:true,sound:true,vib:true},wizStep:0,done:false};
   PROFILES.push(p);ACTIVE=p.id;saveP();return p;
@@ -568,7 +682,8 @@ const EQ_RANK={salle:{barre:0,machine:1,poulie:1,halteres:1,pdc:2,elastique:3},
 function pickFor(pat,cfg,taken,usedAll,seed){
   const allow=EQ_ALLOW[cfg.eq],rank=EQ_RANK[cfg.eq]||{};
   /* jamais deux fois le même exercice dans une séance */
-  const ok=e=>allow.indexOf(e.eq)>=0&&cfg.excl.indexOf(e.id)<0&&taken.indexOf(e.id)<0;
+  const ok=e=>allow.indexOf(e.eq)>=0&&cfg.excl.indexOf(e.id)<0&&taken.indexOf(e.id)<0
+    &&!spared(e,cfg.pain);
   let relax=false;
   let cands=EX.filter(e=>e.pat===pat&&e.lvl<=cfg.lvl&&ok(e));
   if(!cands.length){cands=EX.filter(e=>e.pat===pat&&ok(e));relax=true}      /* on relâche le niveau avant le schéma moteur */
@@ -610,7 +725,10 @@ function generate(cfg){
   days.forEach((d,i)=>{
     const tpl=split.sess[i%split.sess.length];
     const taken=[];const exos=[];
-    tpl.pats.forEach((pat,j)=>{
+    /* On genere toujours la seance la plus longue utile ; la duree du jour
+       decide ensuite combien d'exercices entrent dans le format. Changer de
+       duree ne regenere donc rien et ne perd aucune charge saisie. */
+    tpl.pats.concat(tpl.xtra||[]).forEach((pat,j)=>{
       const e=pickFor(pat,cfg,taken,usedAll,i*3+j+(cfg.rot||0));
       if(!e)return;
       taken.push(e.id);usedAll.push(e.id);
@@ -631,6 +749,184 @@ function generate(cfg){
     best.exos.push(Object.assign({id:id,forced:true},prescribe(e,cfg)));
   });
   return {gen:today(),split:cfg.split,sessions:sessions};
+}
+
+/* ---------------- Temps de séance ----------------
+   Une serie coute son temps de travail (repetitions x tempo) plus son
+   repos ; s'y ajoute l'installation de l'exercice — deplacement, reglage,
+   chargement — qui est loin d'etre negligeable sur les gros mouvements. */
+function repsMidF(r){
+  if(!r)return 10;
+  const m=String(r).match(/(\d+)\s*-\s*(\d+)/);
+  if(m)return (+m[1]+ +m[2])/2;
+  const n=String(r).match(/(\d+)/);
+  return n?+n[1]:10;
+}
+function exoTime(x,e){
+  const work=(e.pat==="core")?40:repsMidF(x.reps)*(e.typ==="c"?3.5:3);
+  const setup=(e.typ==="c")?75:45;
+  return Math.round(setup+x.sets*work+x.sets*x.rest);
+}
+function warmupTime(m){return m<=20?240:(m<=40?360:420)}
+function compLevel(m){return m<=20?2:(m<=40?1:0)}
+/* Compression des formats courts. On rogne d'abord sur le repos des
+   exercices d'isolation ; celui des gros mouvements est le dernier touche,
+   parce que c'est lui qui porte le stimulus. */
+function compress(x,e,lvl){
+  const y=Object.assign({},x);
+  if(lvl>=1&&e.typ==="i")y.rest=Math.round(x.rest*.85/5)*5;
+  if(lvl>=2){
+    if(e.typ==="i"){y.sets=Math.max(2,x.sets-1);y.rest=Math.round(x.rest*.7/5)*5}
+    else{y.sets=Math.max(3,x.sets-1);y.rest=Math.round(x.rest*.9/5)*5}
+  }
+  return y;
+}
+/* Les exercices sont ranges par priorite dans les trames : on tronque par
+   la fin, ce qui revient a garder les gros mouvements et a laisser tomber
+   les accessoires. Les exercices ecartes restent affichés en bonus. */
+function planSession(s,minutes,cfg){
+  cfg=cfg||{};
+  const pain=cfg.pain||[];
+  const lvl=compLevel(minutes),budget=minutes*60-warmupTime(minutes);
+  const items=[];let t=0,n=0,stop=false,sets=0,nSpared=0;
+  /* exercices déjà retenus, pour ne pas proposer deux fois le même */
+  const taken=s.exos.map(x=>x.id).filter(id=>{const b=byId(id);return b&&!spared(b,pain)});
+  s.exos.forEach(x0=>{
+    let x=x0;
+    let e=byId(x.id);
+    if(!e){items.push(Object.assign({},x,{inPlan:false,est:0}));return}
+    if(spared(e,pain)){
+      nSpared++;
+      const sub=cfg.eq?substitute(e,cfg,taken):null;
+      if(sub){
+        taken.push(sub.id);
+        x=Object.assign({id:sub.id},prescribe(sub,cfg),{swapFrom:e.n});
+        e=sub;
+      }else{
+        items.push(Object.assign({},x,{allSets:x.sets,inPlan:false,spared:true,est:0}));return;
+      }
+    }
+    const y=compress(x,e,lvl);
+    y.est=exoTime(y,e);
+    y.allSets=x.sets;
+    /* On retient l'exercice s'il rapproche du budget plutot que de l'en
+       eloigner : s'arreter net au premier depassement laisserait de longs
+       trous — dix minutes perdues sur un format de quarante. */
+    const better=Math.abs(t+y.est-budget)<Math.abs(t-budget);
+    if(!stop&&(n<2||better)){t+=y.est;n++;sets+=y.sets;y.inPlan=true;items.push(y)}
+    else{stop=true;
+      const z=Object.assign({},x);z.allSets=x.sets;z.inPlan=false;z.est=exoTime(x,e);items.push(z)}
+  });
+  /* Format long : si toute la trame tient et qu'il reste du temps, on ajoute
+     une serie aux gros mouvements plutot que d'empiler des accessoires —
+     c'est le volume sur les mouvements de base qui construit. */
+  if(!stop&&budget-t>budget*.10){
+    items.forEach(y=>{
+      const e=byId(y.id);
+      if(!e||e.typ!=="c"||budget-t<=0)return;
+      const extra=exoTime(Object.assign({},y,{sets:y.sets+1}),e)-y.est;
+      if(t+extra<=budget){y.sets++;y.allSets=Math.max(y.allSets,y.sets);
+        y.est+=extra;t+=extra;sets++;y.bump=true}
+    });
+  }
+  const nSwap=items.filter(y=>y.swapFrom).length;
+  return {items:items,n:n,sets:sets,minutes:minutes,lvl:lvl,spared:nSpared,swaps:nSwap,
+    est:Math.round((t+warmupTime(minutes))/60)};
+}
+/* Une ligne au debut de chaque seance. Deterministe : elle change d'un jour
+   a l'autre, pas a chaque affichage. Registre sobre — l'app ne joue pas au
+   coach enthousiaste, elle rappelle ce qui fait progresser. */
+const MOTIV=[
+"La séance que tu n'as pas envie de faire est celle qui compte double.",
+"Personne ne progresse uniquement les jours où il se sent bien.",
+"La barre ne s'intéresse pas à ton humeur.",
+"Trois séries propres valent mieux que cinq bâclées.",
+"La régularité bat l'intensité. Sur douze mois, ce n'est même pas serré.",
+"Tu n'as pas à être motivé. Tu as juste à commencer la première série.",
+"Amplitude complète, ou ça ne compte pas.",
+"Le progrès se mesure en semaines, pas en séances.",
+"Ce que tu fais aujourd'hui se lira dans la courbe dans six semaines.",
+"Contrôle la descente : c'est là que le muscle travaille.",
+"Une séance moyenne faite vaut mieux qu'une séance parfaite reportée.",
+"Le repos entre les séries fait partie du travail. Respecte-le.",
+"Ajoute du poids quand la technique tient, pas avant.",
+"La dernière répétition propre vaut les trois précédentes.",
+"Commence léger. Tu auras l'air moins malin en te blessant.",
+"L'ego reste au vestiaire, les charges suivront.",
+"Tu es venu. C'est la partie que la plupart ratent.",
+"Fais la séance prévue. L'improvisation, c'est pour les jours de forme.",
+"Une répétition de plus que la dernière fois, ça s'appelle du progrès.",
+"Le corps ne compte pas tes bonnes intentions, seulement tes séries."
+];
+function hashStr(str){let h=0;for(let i=0;i<str.length;i++)h=(h*31+str.charCodeAt(i))|0;return Math.abs(h)}
+function motivContext(p,s,plan){
+  if(!p.hist.length)
+    return "Première séance. Le seul objectif du jour : apprendre les mouvements, pas soulever lourd.";
+  const last=p.hist[0]&&p.hist[0].date;
+  if(last){
+    const j=Math.round((new Date(today())-new Date(last))/864e5);
+    if(j>=10) return j+" jours sans séance. Reprends 10 à 15 % sous tes charges habituelles, ça revient vite.";
+  }
+  const h3=p.hist.slice(0,3);
+  const hard=h3.reduce((n,r)=>n+(r.ex||[]).filter(e=>e.diff==="dur"||e.diff==="echec").length,0);
+  const rated=h3.reduce((n,r)=>n+(r.ex||[]).filter(e=>e.diff).length,0);
+  if(rated>=8&&hard>=rated*.6)
+    return "Le ressenti des dernières séances est lourd. Si les charges ne montent pas aujourd'hui, ce n'est pas un échec : c'est le signal d'alléger la semaine.";
+  if(plan&&plan.minutes<=20)
+    return "Vingt minutes. Fais les gros mouvements sérieusement et oublie le reste.";
+  return null;
+}
+/* Une phrase propre à chaque séance : tirée une fois par séance et par jour,
+   puis figée, et jamais reprise tant que les huit dernières n'ont pas défilé. */
+function motivation(p,s,plan){
+  const ctx=motivContext(p,s,plan);
+  if(ctx)return ctx;
+  if(!p.motiv)p.motiv={};
+  if(!p.motivSeen)p.motivSeen=[];
+  const cur=p.motiv[s.sid];
+  if(cur&&cur.d===today())return MOTIV[cur.i%MOTIV.length];
+  let pool=MOTIV.map((_,i)=>i).filter(i=>p.motivSeen.indexOf(i)<0);
+  if(!pool.length){p.motivSeen=[];pool=MOTIV.map((_,i)=>i)}
+  const i=pool[hashStr(s.sid+"|"+today())%pool.length];
+  p.motiv[s.sid]={d:today(),i:i};
+  p.motivSeen.push(i);
+  while(p.motivSeen.length>8)p.motivSeen.shift();
+  saveP();
+  return MOTIV[i];
+}
+
+/* Depense estimee : equivalent metabolique x poids x duree. La densite de
+   la seance — temps de travail rapporte au temps total — fait varier le MET
+   entre 3,5 (repos longs, charges lourdes) et 6,0 (seance enchainee).
+   Marge reelle de 20 a 30 % : c'est un ordre de grandeur, pas une mesure. */
+function sessionKcal(p,plan,minutes,ratio){
+  const w=parseFloat(body(p).wt);
+  if(!(w>0))return null;
+  let work=0,total=0;
+  plan.items.forEach(y=>{
+    if(y.inPlan===false)return;
+    const e=byId(y.id);if(!e)return;
+    work+=y.sets*((e.pat==="core")?40:repsMidF(y.reps)*(e.typ==="c"?3.5:3));
+    total+=y.est;
+  });
+  if(!total)return null;
+  const dens=Math.min(.5,Math.max(.12,work/total));
+  const met=3.5+(dens-.12)/(.38)*2.5;
+  const mn=minutes*(ratio==null?1:Math.max(0,Math.min(1,ratio)));
+  return Math.round(met*3.5*w/200*mn/5)*5;
+}
+
+/* Duree retenue pour une seance : le choix du jour s'il date d'aujourd'hui,
+   sinon la duree par defaut du profil. */
+function dayDur(p,s){
+  const d=p.dayDur&&p.dayDur[s.sid];
+  return (d&&d.d===today())?d.m:(p.cfg.dur||60);
+}
+function setDayDur(p,s,m){
+  if(!p.dayDur)p.dayDur={};
+  if(m===(p.cfg.dur||60))delete p.dayDur[s.sid];
+  else p.dayDur[s.sid]={d:today(),m:m};
+  saveP();
 }
 
 /* ---------------- Détection de conflits ---------------- */
@@ -658,6 +954,18 @@ function conflicts(cfg){
     d:"Le volume hebdomadaire par groupe musculaire sera trop faible. Passe à 3 séances, ou change d'objectif pour un maintien."});
   if(nd<=2&&cfg.goal==="seche") out.push({t:"Perte de gras sur 2 séances",
     d:"Le stimulus est insuffisant pour préserver la masse musculaire en déficit calorique. 3 séances minimum, full body de préférence."});
+  /* durée de séance */
+  const dur=cfg.dur||60;
+  if(dur<=20&&cfg.goal==="masse") out.push({t:"Prise de masse en séances de 20 minutes",
+    d:"Le volume hebdomadaire par groupe musculaire restera trop faible pour construire du muscle, même en multipliant les séances. C'est un format d'entretien : passe à 40 minutes au minimum, ou change d'objectif."});
+  if(dur<=20&&nd<=3) out.push({t:"Environ "+(nd*dur)+" minutes d'entraînement par semaine",
+    d:nd+" séances de "+dur+" minutes suffisent à entretenir, pas à progresser. Ajoute une séance, ou allonge le format."});
+  if(dur>=90&&cfg.lvl===1) out.push({t:"Séances de 90 minutes à un niveau débutant",
+    d:"À ce stade, 45 minutes produisent les mêmes progrès. Le temps supplémentaire ajoute de la fatigue et du risque d'abandon, pas du muscle."});
+  if(dur>=90&&nd>=5) out.push({t:nd+" séances de 90 minutes",
+    d:Math.round(nd*dur/60)+" heures d'entraînement par semaine. Peu de récupérations tiennent ce rythme en dehors d'un cadre professionnel. Réduis la durée ou la fréquence."});
+  if(cfg.split==="bro"&&dur<=40) out.push({t:"Un groupe par séance en "+dur+" minutes",
+    d:"Ce split mise sur un volume élevé par groupe, travaillé une seule fois par semaine. En "+dur+" minutes, chaque groupe recevra bien trop peu de séries. Choisis Haut/Bas ou Full body."});
   /* cohérence split / fréquence */
   if(cfg.split==="bro"&&nd<5) out.push({t:"Split par groupe musculaire sur "+nd+" séances",
     d:"Chaque groupe ne serait travaillé qu'une fois toutes les deux semaines. Choisis Push/Pull/Legs ou Haut/Bas à cette fréquence."});
@@ -725,18 +1033,28 @@ function toast(m){const e=document.getElementById("tst");e.textContent=m;e.class
    ils renvoient null / false sans rien afficher. Tout passe donc par
    ce modal, qui fonctionne aussi bien en local qu'en ligne. */
 const MDL=document.getElementById("mdl"),MDT=document.getElementById("mdl-t"),
-  MDM=document.getElementById("mdl-m"),MDI=document.getElementById("mdl-i"),
-  MDX=document.getElementById("mdl-x"),MDY=document.getElementById("mdl-y"),
+  MDM=document.getElementById("mdl-m"),MDH=document.getElementById("mdl-h"),MDI=document.getElementById("mdl-i"),
+  MDX=document.getElementById("mdl-x"),MDC=document.getElementById("mdl-c"),MDY=document.getElementById("mdl-y"),
   MDN=document.getElementById("mdl-n"),MDE=document.getElementById("mdl-e");
-let mdCb=null,mdField=null;
+let mdCb=null,mdField=null,mdSel=null;
 function mdClose(v){const cb=mdCb;mdCb=null;MDL.classList.remove("on");
-  MDI.hidden=true;MDX.hidden=true;if(cb)cb(v)}
+  MDI.hidden=true;MDX.hidden=true;MDC.hidden=true;MDH.hidden=true;MDH.innerHTML="";if(cb)cb(v)}
 function mdOpen(o){
   MDT.textContent=o.title||"";MDM.textContent=o.msg||"";
+  MDH.innerHTML=o.html||"";MDH.hidden=!o.html;
   mdField=o.field||null;
-  MDI.hidden=mdField!=="input";MDX.hidden=mdField!=="area";
+  MDI.hidden=mdField!=="input";MDX.hidden=mdField!=="area";MDC.hidden=mdField!=="chips";
   if(mdField==="input"){MDI.value=o.def||"";MDI.placeholder=o.ph||""}
   if(mdField==="area"){MDX.value=o.def||"";MDX.placeholder=o.ph||""}
+  if(mdField==="chips"){
+    mdSel=(o.sel||[]).slice();
+    MDC.innerHTML=(o.items||[]).map(it=>'<span class="chip tog'+(mdSel.indexOf(it.k)>=0?" ex":"")
+      +'" data-mk="'+it.k+'">'+esc(it.n)+'</span>').join("");
+    MDC.querySelectorAll("[data-mk]").forEach(cp=>cp.onclick=()=>{
+      const k=cp.dataset.mk,i=mdSel.indexOf(k);
+      if(i>=0){mdSel.splice(i,1);cp.classList.remove("ex")}
+      else{mdSel.push(k);cp.classList.add("ex")}});
+  }
   MDY.textContent=o.ok||"OK";MDN.textContent=o.cancel||"Annuler";
   MDY.className=o.danger?"dg":"pr";
   MDN.hidden=!!o.noCancel;
@@ -745,7 +1063,8 @@ function mdOpen(o){
   mdCb=o.cb||null;MDL.classList.add("on");
   setTimeout(()=>{if(mdField==="input"){MDI.focus();MDI.select()}else if(mdField==="area")MDX.focus();else MDY.focus()},30);
 }
-MDY.onclick=()=>{if(!mdCb)return;mdClose(mdField==="input"?MDI.value:(mdField==="area"?MDX.value:true))};
+MDY.onclick=()=>{if(!mdCb)return;
+  mdClose(mdField==="input"?MDI.value:(mdField==="area"?MDX.value:(mdField==="chips"?mdSel.slice():true)))};
 MDN.onclick=()=>{if(!mdCb)return;mdClose(mdField?null:false)};
 MDL.onclick=e=>{if(e.target===MDL&&mdCb)mdClose(mdField?null:false)};
 document.addEventListener("keydown",e=>{
@@ -757,6 +1076,26 @@ function askText(title,msg,def,ph,cb){mdOpen({title:title,msg:msg,def:def,ph:ph,
 function askArea(title,msg,ph,cb){mdOpen({title:title,msg:msg,ph:ph,field:"area",ok:"Importer",cb:cb})}
 /* cb recoit true / false */
 function askConfirm(title,msg,ok,cb){mdOpen({title:title,msg:msg,ok:ok||"Confirmer",danger:true,cb:cb})}
+/* Zones a menager. Filtre mecanique sur les exercices ; la reserve
+   medicale est affichee sans detour, parce qu'une douleur ne se regle
+   pas dans un ecran de reglages. */
+function painDialog(p){
+  mdOpen({title:"Zones à ménager",
+    msg:"Sélectionne ce qui te fait mal. Les exercices qui chargent cette articulation sortent de tes séances.",
+    field:"chips",ok:"Appliquer",
+    items:Object.keys(ZONES).map(k=>({k:k,n:ZONES[k].n})),
+    sel:(p.cfg.pain||[]).slice(),
+    cb:v=>{
+      if(v===null)return;
+      p.cfg.pain=v;saveP();
+      toast(v.length?"Zones ménagées : "+painLabel(v):"Plus aucune zone ménagée");
+      renderMain(p);
+    },
+    html:'<p class="mut" style="font-size:.72rem;margin:0 0 12px">Une douleur qui persiste au-delà de quelques jours, '
+      +'qui réveille la nuit ou qui fait suite à un choc relève d\'un avis médical, pas d\'un réglage d\'application. '
+      +'Ce filtre écarte des exercices ; il ne dit pas que tu peux t\'entraîner.</p>'});
+}
+
 /* Sauvegarde d'un profil : enregistrer le fichier ou copier le texte,
    deux chemins pour le meme contenu, derriere un seul bouton. */
 function backupDialog(p){
@@ -839,6 +1178,9 @@ function line(cv,pts,col){if(!cv)return;
    ================================================================ */
 const APP=document.getElementById("app");
 let VIEW="home",TAB=0,FOCUS={},WIZ=0;
+/* Panneau de reglages de seance : un seul ouvert a la fois, par onglet.
+   PANELSEL porte la selection en cours de saisie tant qu'elle n'est pas validee. */
+let PANEL={},PANELSEL=null;
 
 function render(){
   const p=prof();
@@ -925,7 +1267,7 @@ function renderHome(){
 }
 
 /* ---- Assistant de configuration ---- */
-const WSTEPS=["Niveau","Split","Objectif","Équipement","Charges","Jours","Exercices imposés","Exclusions","Vérification"];
+const WSTEPS=["Niveau","Split","Objectif","Durée","Équipement","Charges","Jours","Exercices imposés","Exclusions","Vérification"];
 function renderWiz(p){
   const c=p.cfg;
   let h='<div class="page on" style="padding-top:calc(16px + env(safe-area-inset-top))">';
@@ -960,6 +1302,15 @@ function renderWiz(p){
       +'<p class="mut">Renseigne les deux dates pour afficher la barre de progression temporelle en haut de l\'app.</p></div>';
   }
   if(WIZ===3){
+    h+='<h2 class="sc">Durée d\'une séance</h2><p class="scs">Le temps que tu comptes réellement passer à t\'entraîner, échauffement compris. Il détermine combien d\'exercices tiennent dans la séance et la longueur des repos.</p>';
+    DURS.forEach(o=>{h+='<div class="opt'+((c.dur||60)===o.m?" sel":"")+'" data-durw="'+o.m+'"><div class="rad"></div>'
+      +'<div><div class="l">'+o.m+' min — '+o.n+'</div><div class="d">'+o.s+'. '+o.d+'</div></div></div>'});
+    h+='<div class="alert i"><b>Ce choix n\'est pas définitif</b>'
+      +'Au début de chaque séance tu pourras basculer sur un format plus court ou plus long pour la journée. '
+      +'Le programme ne change pas pour autant : les exercices qui ne rentrent pas dans le format du jour restent affichés en bonus, '
+      +'et tes charges saisies ne bougent pas.</div>';
+  }
+  if(WIZ===4){
     h+='<h2 class="sc">Équipement disponible</h2><p class="scs">Les exercices proposés sont filtrés sur ce choix.</p>';
     [["salle","Salle complète","Barres, haltères, machines, poulies."],
      ["restreint","Équipement restreint","Haltères, élastiques, banc. Domicile équipé."],
@@ -967,7 +1318,7 @@ function renderWiz(p){
     .forEach(o=>{h+='<div class="opt'+(c.eq===o[0]?" sel":"")+'" data-eq="'+o[0]+'"><div class="rad"></div>'
       +'<div><div class="l">'+o[1]+'</div><div class="d">'+o[2]+'</div></div></div>'});
   }
-  if(WIZ===4){
+  if(WIZ===5){
     h+='<h2 class="sc">Charges de référence</h2><p class="scs">Elles pilotent toutes les charges affichées. Laisse vide ce que tu ne connais pas : l\'exercice s\'affichera en RPE.</p>';
     h+='<div class="alert i"><b>Le 1RM, c\'est quoi ?</b>'
       +'Ton <i>répétition maximale</i> : la charge la plus lourde que tu peux soulever <b>une seule fois</b> avec une technique correcte, sur cet exercice. '
@@ -996,7 +1347,7 @@ function renderWiz(p){
       h+='</div>';
     });
   }
-  if(WIZ===5){
+  if(WIZ===6){
     h+='<h2 class="sc">Jours d\'entraînement</h2><p class="scs">Sélectionne les jours de musculation, puis indique ce que tu fais les autres jours — le programme en tient compte pour la récupération.</p>';
     h+='<div class="chips">';
     DAYS_FR.forEach((d,i)=>{h+='<span class="chip tog'+(c.days.indexOf(i)>=0?" on":"")+'" data-day="'+i+'">'+d.slice(0,3)+'</span>'});
@@ -1009,8 +1360,8 @@ function renderWiz(p){
     });
     h+='</div>';
   }
-  if(WIZ===6||WIZ===7){
-    const isMust=WIZ===6;
+  if(WIZ===7||WIZ===8){
+    const isMust=WIZ===7;
     h+='<h2 class="sc">'+(isMust?"Exercices imposés":"Exercices exclus")+'</h2>'
       +'<p class="scs">'+(isMust?"Ceux que tu veux absolument voir dans ton programme. Ils seront placés en priorité dans la séance la plus cohérente."
         :"Blessure, matériel absent, préférence. Pour chaque exclusion, le générateur cherche une alternative sur le même schéma moteur.")+'</p>';
@@ -1024,7 +1375,7 @@ function renderWiz(p){
       h+='</div></div>';
     });
   }
-  if(WIZ===8){
+  if(WIZ===9){
     const cf=conflicts(c);
     h+='<h2 class="sc">Avant de générer</h2>';
     if(!cf.length) h+='<div class="alert i"><b>Aucun conflit détecté</b>Tes réglages sont cohérents entre eux. Tu peux générer le programme.</div>';
@@ -1033,7 +1384,7 @@ function renderWiz(p){
       cf.forEach(x=>{h+='<div class="alert w"><b>'+esc(x.t)+'</b>'+esc(x.d)+'</div>'});
     }
     h+='<div class="card"><h4>Récapitulatif</h4>'
-      +'<p>'+LVL[c.lvl]+' · '+SPLITS[c.split].n+' · '+GOALS[c.goal].n+'</p>'
+      +'<p>'+LVL[c.lvl]+' · '+SPLITS[c.split].n+' · '+GOALS[c.goal].n+' · séances de '+(c.dur||60)+' min</p>'
       +'<p class="mut">'+c.days.map(d=>DAYS_FR[d]).join(", ")+' · équipement : '+({salle:"salle complète",restreint:"restreint",pdc:"poids du corps"})[c.eq]+'</p>'
       +(c.must.length?'<p class="mut">Imposés : '+c.must.map(i=>(byId(i)||{}).n).join(", ")+'</p>':'')
       +(c.excl.length?'<p class="mut">Exclus : '+c.excl.map(i=>(byId(i)||{}).n).join(", ")+'</p>':'')
@@ -1042,7 +1393,7 @@ function renderWiz(p){
     h+='<button class="btn g" id="wback2">Revenir corriger</button>';
   }
 
-  if(WIZ<8){
+  if(WIZ<9){
     h+='<div class="row" style="gap:8px;margin-top:10px">'
       +(WIZ>0?'<button class="btn g" id="wprev" style="margin:0">Retour</button>':'')
       +'<button class="btn" id="wnext" style="margin:0">Continuer</button></div>';
@@ -1053,6 +1404,7 @@ function renderWiz(p){
   const q=s=>APP.querySelectorAll(s);
   q("[data-lvl]").forEach(o=>o.onclick=()=>{c.lvl=+o.dataset.lvl;saveP();renderWiz(p)});
   q("[data-split]").forEach(o=>o.onclick=()=>{c.split=o.dataset.split;saveP();renderWiz(p)});
+  q("[data-durw]").forEach(o=>o.onclick=()=>{c.dur=+o.dataset.durw;saveP();renderWiz(p)});
   q("[data-goal]").forEach(o=>o.onclick=()=>{c.goal=o.dataset.goal;saveP();renderWiz(p)});
   q("[data-eq]").forEach(o=>o.onclick=()=>{c.eq=o.dataset.eq;saveP();renderWiz(p)});
   q("[data-rm]").forEach(i=>i.onchange=()=>{c.rm[i.dataset.rm]=i.value;saveP();renderWiz(p)});
@@ -1087,7 +1439,7 @@ function renderWiz(p){
   const ed=document.getElementById("w-ed");if(ed)ed.onchange=()=>{c.eventDate=ed.value;saveP()};
   const sd=document.getElementById("w-sd");if(sd)sd.onchange=()=>{c.startDate=sd.value;saveP()};
   const nx=document.getElementById("wnext");if(nx)nx.onclick=()=>{
-    if(WIZ===5&&!c.days.length){toast("Sélectionne au moins un jour");return}
+    if(WIZ===6&&!c.days.length){toast("Sélectionne au moins un jour");return}
     WIZ=Math.min(WSTEPS.length-1,WIZ+1);renderWiz(p)};
   const pv=document.getElementById("wprev");if(pv)pv.onclick=()=>{WIZ=Math.max(0,WIZ-1);renderWiz(p)};
   const b2=document.getElementById("wback2");if(b2)b2.onclick=()=>{WIZ=0;renderWiz(p)};
@@ -1121,7 +1473,7 @@ function renderMain(p){
   h+='</div><div id="pg"></div>';
   APP.innerHTML=h;
   document.getElementById("switch").onclick=()=>{VIEW="home";render()};
-  APP.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{TAB=+b.dataset.tab;renderMain(p);window.scrollTo(0,0)});
+  APP.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{TAB=+b.dataset.tab;PANEL={};renderMain(p);window.scrollTo(0,0)});
   const pg=document.getElementById("pg");
   if(TAB<sess.length) renderSession(p,sess[TAB],TAB,pg);
   else if(TAB===sess.length) renderHist(p,pg);
@@ -1134,17 +1486,29 @@ function renderMain(p){
    deplace plus les charges ni les series cochees d'un exercice a l'autre. */
 function sKey(p,sid,exid,si){return p.id+"_"+sid+"_"+exid+"_"+si}
 /* Avancement d'une seance, recalcule a la demande. */
-function tally(p,s){
-  let tot=0,done=0;
-  s.exos.forEach(x=>{for(let i=0;i<x.sets;i++){tot++;if(G("chk_"+sKey(p,s.sid,x.id,i),false))done++}});
-  return {tot:tot,done:done,pct:tot?Math.round(100*done/tot):0};
+function tally(p,s,plan){
+  const items=(plan&&plan.items)||s.exos;
+  let tot=0,done=0,bonus=0;
+  items.forEach(y=>{
+    const planned=(y.inPlan===false)?0:y.sets;
+    const all=y.allSets||y.sets;
+    for(let i=0;i<all;i++){
+      const c=G("chk_"+sKey(p,s.sid,y.id,i),false);
+      if(i<planned){tot++;if(c)done++}else if(c)bonus++;
+    }
+  });
+  return {tot:tot,done:done,bonus:bonus,pct:tot?Math.round(100*done/tot):0};
+}
+function progressText(t){
+  return t.done+" / "+t.tot+" séries"+(t.bonus?" +"+t.bonus+" bonus":"")
+    +(t.pct===100?" — séance bouclée":"");
 }
 /* Mise a jour ciblee de la barre de progression, sans redessiner la page. */
-function refreshProgress(p,s,pg){
-  const t=tally(p,s);
+function refreshProgress(p,s,pg,plan){
+  const t=tally(p,s,plan);
   const bar=pg.querySelector(".prog i"),txt=pg.querySelector("#ptxt");
   if(bar)bar.style.width=t.pct+"%";
-  if(txt)txt.textContent=t.done+" / "+t.tot+" séries"+(t.pct===100?" — séance bouclée":"");
+  if(txt)txt.textContent=progressText(t);
 }
 function logKey(sid,exid){return sid+"_"+exid}
 /* Efface les series cochees qui ne correspondent plus a aucun exercice
@@ -1183,13 +1547,54 @@ function migrateKeys(p){
 }
 function renderSession(p,s,ti,pg){
   const foc=!!FOCUS[ti];
-  const t0=tally(p,s),tot=t0.tot,done=t0.done,pct=t0.pct;
+  const pain=p.cfg.pain||[];
+  const dm=dayDur(p,s),plan=planSession(s,dm,p.cfg),def=p.cfg.dur||60;
+  const t0=tally(p,s,plan),tot=t0.tot,done=t0.done,pct=t0.pct;
   let h='<div class="page on">';
-  h+='<div class="prog"><i style="width:'+pct+'%"></i></div><div class="ptxt" id="ptxt">'+done+' / '+tot+' séries'+(pct===100?" — séance bouclée":"")+'</div>';
-  h+='<div class="row wr" style="margin-bottom:10px;gap:8px">'
-    +'<button class="mini'+(foc?" on":"")+'" id="fmode">Mode focus</button>'
+  h+='<div class="motiv">'+esc(motivation(p,s,plan))+'</div>';
+  h+='<div class="prog"><i style="width:'+pct+'%"></i></div><div class="ptxt" id="ptxt">'+progressText(t0)+'</div>';
+  const op=PANEL[ti]||null;
+  h+='<div class="srow">'
+    +'<button class="mini dd'+(op==="dur"?" open on":(dm!==def?" on":""))+'" data-pan="dur">'+dm+' min</button>'
+    +'<button class="mini dd'+(op==="zones"?" open":"")+(pain.length?" ex":"")+'" data-pan="zones">Zones'
+    +(pain.length?' · '+pain.length:'')+'</button>'
+    +'<button class="mini'+(foc?" on":"")+'" id="fmode">Focus</button>'
     +'<button class="mini'+(p.set.timer?" on":"")+'" id="tmode">Minuteur</button>'
-    +'<button class="mini" id="regen">Varier les exercices</button></div>';
+    +'</div>';
+
+  if(op==="dur"){
+    const d=durOf(dm);
+    h+='<div class="spanel"><h5>Durée de la séance</h5>'
+      +'<p class="sd">Choisis un format : il s\'applique immédiatement et ce panneau se referme.'
+      +(dm!==def?' Ton format habituel est <b>'+def+' min</b>.':'')+'</p>'
+      +'<div class="seg">'+DURS.map(o=>'<button'+(o.m===dm?' class="on"':'')+' data-dur="'+o.m+'">'+o.m+'</button>').join("")+'</div>'
+      +'<p class="sf"><b>'+d.m+' min — '+d.n+'</b> · '+d.s+'. '+d.d+'</p>'
+      +'<p class="sf">Le choix ne vaut que pour aujourd\'hui ; demain tu retrouves ton format habituel.</p>'
+      +'</div>';
+  }
+  if(op==="zones"){
+    const sel=PANELSEL||[];
+    h+='<div class="spanel"><h5>Zones à ménager</h5>'
+      +'<p class="sd">Sélectionne ce qui te fait mal. Les exercices qui chargent cette articulation sont remplacés par un équivalent, ou retirés s\'il n\'en existe pas.</p>'
+      +'<div class="chips">'
+      +Object.keys(ZONES).map(k=>'<span class="chip tog'+(sel.indexOf(k)>=0?" ex":"")+'" data-pz="'+k+'">'+ZONES[k].n+'</span>').join("")
+      +'</div>'
+      +'<button class="btn sm" id="zok" style="margin-top:10px">Appliquer</button>'
+      +'<p class="sf">Une douleur qui persiste au-delà de quelques jours, qui réveille la nuit ou qui fait suite à un choc relève d\'un avis médical, pas d\'un réglage d\'application. Ce filtre écarte des exercices ; il ne dit pas que tu peux t\'entraîner.</p>'
+      +'</div>';
+  }
+
+  h+='<div class="estline">≈ '+plan.est+' min · '+plan.n+' exercice'+(plan.n>1?"s":"")+' · '+plan.sets+' séries'
+    +(plan.lvl===1?' <s>· repos d\'isolation resserrés</s>':(plan.lvl>1?' <s>· séries et repos resserrés</s>':''))+'</div>';
+  if(pain.length){
+    const nOut=plan.spared-plan.swaps;
+    h+='<div class="alert w"><b>Zones ménagées : '+esc(painLabel(pain))+'</b>'
+      +(plan.swaps?plan.swaps+' exercice'+(plan.swaps>1?"s":"")+' remplacé'+(plan.swaps>1?"s":"")
+        +' par un équivalent qui ne charge pas la zone. ':'')
+      +(nOut>0?nOut+' exercice'+(nOut>1?"s":"")+' sans équivalent disponible : retiré'+(nOut>1?"s":"")
+        +' de la séance, affiché'+(nOut>1?"s":"")+' barré'+(nOut>1?"s":"")+' plus bas. ':'')
+      +'Les charges de tes exercices habituels sont conservées et reviendront dès que tu retireras la zone.</div>';
+  }
   const nxt=(s.day+1)%7,prev=(s.day+6)%7;
   const an=p.cfg.acts[nxt],ap=p.cfg.acts[prev];
   if((an&&an!=="—"&&an!=="Repos")||(ap&&ap!=="—"&&ap!=="Repos")){
@@ -1201,35 +1606,55 @@ function renderSession(p,s,ti,pg){
   if(foc){
     const i=FOCUS["i"+ti]||0;
     h+='<div class="row" style="gap:8px;margin-bottom:10px"><button class="btn g" data-fn="-1" style="margin:0"'+(i===0?" disabled":"")+'>←</button>'
-      +'<span class="mut" style="font-size:.74rem;min-width:56px;text-align:center">'+(i+1)+' / '+s.exos.length+'</span>'
-      +'<button class="btn g" data-fn="1" style="margin:0"'+(i===s.exos.length-1?" disabled":"")+'>→</button></div>';
+      +'<span class="mut" style="font-size:.74rem;min-width:56px;text-align:center">'+(i+1)+' / '+plan.items.length+'</span>'
+      +'<button class="btn g" data-fn="1" style="margin:0"'+(i===plan.items.length-1?" disabled":"")+'>→</button></div>';
   }
-  s.exos.forEach((x,xi)=>{
+  /* L'ordre d'affichage suit l'usage : d'abord ce qui est au programme du
+     jour, puis le bonus, puis les exercices écartés — qu'on ne veut pas voir
+     occuper le haut de l'écran en pleine taille. */
+  const order=plan.items.map((x,xi)=>({x:x,xi:xi}));
+  const grp=o=>o.x.inPlan?0:(o.x.spared?2:1);
+  order.sort((a,b)=>grp(a)-grp(b)||a.xi-b.xi);
+  let sepBonus=false,sepSpared=false;
+  order.forEach((o,pos)=>{
+    const x=o.x,xi=o.xi;
     const e=byId(x.id);if(!e)return;
-    const hid=foc&&(FOCUS["i"+ti]||0)!==xi;
+    const hid=foc&&(FOCUS["i"+ti]||0)!==pos;
     const ov=p.ovr[x.id];
     const ch=ov!=null?parseFloat(ov):x.charge;
-    h+='<div class="exo'+(hid?" hid":"")+'">'
+    if(!x.inPlan&&!x.spared&&!sepBonus&&!foc){sepBonus=true;
+      h+='<div class="plansep">Au-delà de '+dm+' min</div>';}
+    if(x.spared&&!sepSpared&&!foc){sepSpared=true;
+      h+='<div class="plansep">Écartés — '+esc(painLabel(pain))+'</div>';}
+    h+='<div class="exo'+(hid?" hid":"")+(x.inPlan?"":(x.spared?" spared":" bonus"))+'">'
       +'<div class="eh"><span class="nm"><span class="ix">'+(xi+1)+'</span>'+esc(e.n)+'</span></div>'
       +'<div class="body">'
       +'<div class="chips"><span class="chip"><b>'+x.sets+'</b> × '+x.reps+'</span>'
+      +(x.swapFrom?'<span class="chip" style="border:1px solid var(--warn);color:var(--warn)">remplace '+esc(x.swapFrom)+'</span>':'')
+      +(x.inPlan?'':(x.spared
+        ?'<span class="chip" style="border:1px solid var(--warn);color:var(--warn)">sans équivalent</span>'
+        :'<span class="chip" style="border:1px solid var(--mut);color:var(--mut)">bonus</span>'))
       +'<span data-cc="'+xi+'" class="chip'+(ch!=null&&!isNaN(ch)&&ov==null&&x.src==="auto"?" auto":"")+'">'
         +(ch!=null&&!isNaN(ch)?kg(ch)+(ov!=null?" · manuel":(x.src==="auto"?" · auto":"")):"charge libre")+'</span>'
       +'<span class="chip">'+x.rpe+'</span><span class="chip">repos <b>'+mmss(x.rest)+'</b></span>'
       +(x.forced?'<span class="chip" style="border:1px solid var(--brand2);color:var(--brand2)">imposé</span>':'')
       +'</div>';
     /* en mode focus, on ne charge pas les animations des exercices masques */
-    const img=(!hid)&&e.img&&IMG(e.img);
+    const img=(!hid)&&!x.spared&&e.img&&IMG(e.img);
     h+='<div class="vis"><div class="an">'+(img?'<img alt="'+esc(e.n)+'" decoding="async" src="'+img+'">':'<div class="na">'+(hid?"":"Animation non fournie<br>schéma musculaire ci-contre")+'</div>')+'</div>'
       +'<div class="mp">'+muscleSVG(e.prim,e.sec||[],e.id)+'</div></div>'
       +'<div class="leg"><i style="color:var(--brand)">■</i> '+e.prim.map(m=>MUS[m]).join(", ")
       +(e.sec&&e.sec.length?' &nbsp;<i style="color:var(--brand2)">■</i> '+e.sec.map(m=>MUS[m]).join(", "):'')+'</div>';
     h+='<div class="sets">';
-    for(let i=0;i<x.sets;i++){
+    const allS=x.allSets||x.sets;
+    for(let i=0;i<allS;i++){
       const k="chk_"+sKey(p,s.sid,x.id,i);
-      h+='<div class="s"><input type="checkbox" data-ck="'+xi+"|"+i+'"'+(G(k,false)?" checked":"")+'><span>S'+(i+1)+'</span></div>';
+      const dim=x.inPlan&&i>=x.sets;
+      h+='<div class="s'+(dim?" dim":"")+'"><input type="checkbox" data-ck="'+xi+"|"+i+'"'+(G(k,false)?" checked":"")+'><span>S'+(i+1)+'</span></div>';
     }
     h+='</div>';
+    if(x.inPlan&&allS>x.sets)
+      h+='<div class="leg">Les séries en pointillé sont retirées par le format du jour — fais-les si tu te sens bien.</div>';
     if(e.eq!=="pdc"){
       h+='<div class="cbar"><label>Charge utilisée</label>'
         +'<input type="number" step="0.5" inputmode="decimal" data-ch="'+xi+'" value="'+(ch!=null&&!isNaN(ch)?ch:"")+'">'
@@ -1259,19 +1684,34 @@ function renderSession(p,s,ti,pg){
 
   document.getElementById("fmode").onclick=()=>{FOCUS[ti]=!FOCUS[ti];FOCUS["i"+ti]=0;renderMain(p)};
   document.getElementById("tmode").onclick=()=>{p.set.timer=!p.set.timer;saveP();if(!p.set.timer)stopT(true);renderMain(p)};
-  document.getElementById("regen").onclick=()=>{
-    p.cfg.rot=(p.cfg.rot||0)+1;p.prog=generate(p.cfg);pruneChecks(p);saveP();toast("Exercices renouvelés");renderMain(p)};
+  pg.querySelectorAll("[data-pan]").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.pan;
+    PANEL[ti]=(PANEL[ti]===k)?null:k;
+    if(PANEL[ti]==="zones")PANELSEL=(p.cfg.pain||[]).slice();
+    renderMain(p)});
+  pg.querySelectorAll("[data-pz]").forEach(c=>c.onclick=()=>{
+    const k=c.dataset.pz,i=PANELSEL.indexOf(k);
+    if(i>=0){PANELSEL.splice(i,1);c.classList.remove("ex")}
+    else{PANELSEL.push(k);c.classList.add("ex")}});
+  const zok=document.getElementById("zok");
+  if(zok)zok.onclick=()=>{
+    p.cfg.pain=(PANELSEL||[]).slice();saveP();
+    PANEL[ti]=null;
+    toast(p.cfg.pain.length?"Zones ménagées : "+painLabel(p.cfg.pain):"Plus aucune zone ménagée");
+    renderMain(p);window.scrollTo(0,0)};
   pg.querySelectorAll("[data-fn]").forEach(b=>b.onclick=()=>{
-    const d=+b.dataset.fn,i=Math.min(s.exos.length-1,Math.max(0,(FOCUS["i"+ti]||0)+d));
+    const d=+b.dataset.fn,i=Math.min(plan.items.length-1,Math.max(0,(FOCUS["i"+ti]||0)+d));
     FOCUS["i"+ti]=i;renderMain(p);window.scrollTo(0,0)});
   pg.querySelectorAll("[data-ck]").forEach(b=>b.onchange=()=>{
     const [xi,si]=b.dataset.ck.split("|");
-    const x=s.exos[+xi],k="chk_"+sKey(p,s.sid,x.id,si);
+    const x=plan.items[+xi],k="chk_"+sKey(p,s.sid,x.id,si);
     b.checked?S(k,true):DEL(k);
     if(b.checked){const e=byId(x.id);startT(x.rest,"Repos · "+e.n+" — série "+(+si+1)+"/"+x.sets)}
-    refreshProgress(p,s,pg)});
+    refreshProgress(p,s,pg,plan)});
+  pg.querySelectorAll("[data-dur]").forEach(b=>b.onclick=()=>{
+    setDayDur(p,s,+b.dataset.dur);PANEL[ti]=null;renderMain(p);window.scrollTo(0,0)});
   pg.querySelectorAll("[data-ch]").forEach(i=>i.onchange=()=>{
-    const xi=i.dataset.ch,x=s.exos[+xi],v=i.value.trim();
+    const xi=i.dataset.ch,x=plan.items[+xi],v=i.value.trim();
     if(v===""){delete p.ovr[x.id]}else{
       p.ovr[x.id]=v;
       const arr=p.used[x.id]||[];const d=today();const k=arr.findIndex(a=>a.date===d);
@@ -1291,22 +1731,22 @@ function renderSession(p,s,ti,pg){
       bar.appendChild(btn)}
     else if(ov==null&&old)old.remove();});
   pg.querySelectorAll("[data-ra]").forEach(b=>b.onclick=()=>{
-    delete p.ovr[s.exos[+b.dataset.ra].id];saveP();toast("Retour au calcul automatique");renderMain(p)});
+    delete p.ovr[plan.items[+b.dataset.ra].id];saveP();toast("Retour au calcul automatique");renderMain(p)});
   pg.querySelectorAll("[data-hi]").forEach(b=>b.onclick=()=>{
     const xi=b.dataset.hi;
     const box=pg.querySelector('[data-hb="'+xi+'"]');box.hidden=!box.hidden;
-    if(!box.hidden){const id=s.exos[+xi].id;
+    if(!box.hidden){const id=plan.items[+xi].id;
       const arr=(p.used[id]||[]).slice().sort((a,b2)=>a.date<b2.date?-1:1);
       line(box.querySelector("canvas"),arr.map(a=>({v:a.kg})),"#3DD6C4")}});
   pg.querySelectorAll("[data-ok]").forEach(b=>b.onclick=()=>{
-    const [t,xi,v]=b.dataset.ok.split("|");const k=logKey(s.sid,s.exos[+xi].id);
+    const [t,xi,v]=b.dataset.ok.split("|");const k=logKey(s.sid,plan.items[+xi].id);
     let l=p.logs.find(x=>x.k===k);if(!l){l={k:k};p.logs.push(l)}
     l.ok=l.ok===v?null:v;saveP();
     b.parentNode.querySelectorAll("[data-ok]").forEach(o=>{
       const ov=o.dataset.ok.split("|")[2];
       o.className=(l.ok===ov)?(ov==="oui"?"oui":"non"):""})});
   pg.querySelectorAll("[data-df]").forEach(b=>b.onclick=()=>{
-    const [t,xi,v]=b.dataset.df.split("|");const k=logKey(s.sid,s.exos[+xi].id);
+    const [t,xi,v]=b.dataset.df.split("|");const k=logKey(s.sid,plan.items[+xi].id);
     let l=p.logs.find(x=>x.k===k);if(!l){l={k:k};p.logs.push(l)}
     l.diff=l.diff===v?null:v;saveP();
     b.parentNode.querySelectorAll("[data-df]").forEach(o=>{
@@ -1315,20 +1755,31 @@ function renderSession(p,s,ti,pg){
   document.getElementById("reset").onclick=()=>{
     s.exos.forEach(x=>{for(let i=0;i<x.sets;i++)DEL("chk_"+sKey(p,s.sid,x.id,i))});
     p.logs=p.logs.filter(l=>l.k.indexOf(s.sid+"_")!==0);delete p.notes[s.sid];
+    if(p.dayDur)delete p.dayDur[s.sid];
     saveP();toast("Séance réinitialisée");renderMain(p)};
   document.getElementById("finish").onclick=()=>{
-    const tl=tally(p,s);
-    const rec={date:today(),k:s.k,day:s.day,done:tl.done,tot:tl.tot,note:p.notes[s.sid]||"",ex:[]};
-    s.exos.forEach(x=>{
+    const tl=tally(p,s,plan);
+    const rec={date:today(),k:s.k,day:s.day,done:tl.done+tl.bonus,tot:tl.tot,dur:dm,
+      note:p.notes[s.sid]||"",ex:[]};
+    plan.items.forEach(x=>{
       const e=byId(x.id),l=p.logs.find(z=>z.k===logKey(s.sid,x.id))||{};
       const ov=p.ovr[x.id],ch=ov!=null?parseFloat(ov):x.charge;
-      let d2=0;for(let i=0;i<x.sets;i++)if(G("chk_"+sKey(p,s.sid,x.id,i),false))d2++;
+      let d2=0;for(let i=0;i<(x.allSets||x.sets);i++)if(G("chk_"+sKey(p,s.sid,x.id,i),false))d2++;
       rec.ex.push({n:e.n,id:x.id,sets:x.sets,reps:x.reps,done:d2,kg:(ch!=null&&!isNaN(ch))?ch:null,ok:l.ok||null,diff:l.diff||null});
+      /* La charge réellement soulevée alimente les courbes et les records,
+         y compris quand elle vient du calcul automatique et n'a jamais été
+         saisie à la main : sinon suivre le programme sans rien taper ne
+         laissait aucune trace. */
+      if(d2>0&&ch!=null&&!isNaN(ch)){
+        const arr=p.used[x.id]||[],dd=today(),k=arr.findIndex(a=>a.date===dd);
+        if(k>=0){if(ch>arr[k].kg)arr[k].kg=ch}else arr.push({date:dd,kg:ch});
+        p.used[x.id]=arr;
+      }
     });
     p.hist.unshift(rec);
     /* progression proposée pour la prochaine fois */
     const prop=[];
-    s.exos.forEach(x=>{
+    plan.items.forEach(x=>{
       const e=byId(x.id),l=p.logs.find(z=>z.k===logKey(s.sid,x.id))||{};
       const ov=p.ovr[x.id],base=ov!=null?parseFloat(ov):x.charge;
       if(base==null||isNaN(base))return;
@@ -1339,8 +1790,20 @@ function renderSession(p,s,ti,pg){
     });
     s.exos.forEach(x=>{for(let i=0;i<x.sets;i++)DEL("chk_"+sKey(p,s.sid,x.id,i))});
     p.logs=p.logs.filter(l=>l.k.indexOf(s.sid+"_")!==0);delete p.notes[s.sid];
+    if(p.dayDur)delete p.dayDur[s.sid];
+    /* la dépense doit être calculée AVANT l'enregistrement, sinon elle
+       s'affiche mais n'est jamais persistée dans l'historique */
+    const ratio=tl.tot?(tl.done+tl.bonus)/tl.tot:0;
+    const kc=sessionKcal(p,plan,dm,ratio);
+    rec.kcal=kc;
     saveP();
-    toast(prop.length?prop.length+" charge(s) ajustée(s) pour la prochaine séance":"Séance archivée");
+    let hh='<p class="sum"><b>'+(tl.done+tl.bonus)+'</b> séries effectuées sur '+tl.tot+' prévues<br>';
+    if(kc!=null) hh+='Dépense estimée : <b>'+kc+' kcal</b><br>';
+    hh+='Format : <b>'+dm+' min</b></p>';
+    if(kc==null) hh+='<p class="mut">Renseigne ton poids dans l\'onglet Nutrition pour obtenir une estimation de la dépense.</p>';
+    else hh+='<p class="mut">Ordre de grandeur, pas une mesure : ce type d\'estimation a une marge de 20 à 30 % d\'une personne à l\'autre.</p>';
+    if(prop.length) hh+='<p class="mut" style="margin-top:8px"><b style="color:var(--brand)">Ajusté pour la prochaine fois</b><br>'+prop.map(esc).join('<br>')+'</p>';
+    mdOpen({title:"Séance terminée",msg:"",html:hh,ok:"Fermer",noCancel:true,cb:function(){}});
     renderMain(p)};
 }
 
@@ -1381,7 +1844,10 @@ function nutri(p){
   const nTrain=c.days.length;
   const nOther=Object.keys(c.acts).filter(d=>c.acts[d]&&c.acts[d]!=="—"&&c.acts[d]!=="Repos").length;
   const sess=nTrain+nOther;
-  const fBase=(ACT_LVL[b.act]||ACT_LVL.sed).f, fSport=Math.min(.25,sess*.05);
+  /* une séance de 90 min ne coûte pas ce que coûte une séance de 20 :
+     le volume horaire pèse plus que le nombre de séances */
+  const sessEq=nTrain*((c.dur||60)/60)+nOther;
+  const fBase=(ACT_LVL[b.act]||ACT_LVL.sed).f, fSport=Math.min(.25,sessEq*.05);
   const tdee=Math.round(bmr*(fBase+fSport));
   /* cible calorique */
   const g=NGOAL[c.goal];
@@ -1416,15 +1882,15 @@ function renderNutri(p,pg){
    +'<p class="scs">Des repères calculés à partir de ton objectif, du volume réel de ton programme et de tes données corporelles. À ajuster sur ce que tu observes, pas à suivre au gramme près.</p>';
 
   h+='<div class="card"><h4>Données corporelles</h4>'
-   +'<div class="row" style="gap:8px;flex-wrap:wrap">'
-   +'<div class="fld half"><label>Poids (kg)</label><input type="number" step="0.1" inputmode="decimal" data-b="wt" placeholder="ex. 78" value="'+esc(b.wt)+'"></div>'
-   +'<div class="fld half"><label>Taille (cm)</label><input type="number" inputmode="numeric" data-b="ht" placeholder="ex. 180" value="'+esc(b.ht)+'"></div>'
-   +'<div class="fld half"><label>Âge</label><input type="number" inputmode="numeric" data-b="age" placeholder="ex. 38" value="'+esc(b.age)+'"></div>'
-   +'<div class="fld half"><label>Sexe biologique</label><select data-b="sex">'
+   +'<div class="grid2">'
+   +'<div class="fld"><label>Poids (kg)</label><input type="number" step="0.1" inputmode="decimal" data-b="wt" placeholder="ex. 78" value="'+esc(b.wt)+'"></div>'
+   +'<div class="fld"><label>Taille (cm)</label><input type="number" inputmode="numeric" data-b="ht" placeholder="ex. 180" value="'+esc(b.ht)+'"></div>'
+   +'<div class="fld"><label>Âge</label><input type="number" inputmode="numeric" data-b="age" placeholder="ex. 38" value="'+esc(b.age)+'"></div>'
+   +'<div class="fld"><label>Sexe biologique</label><select data-b="sex">'
    +'<option value=""'+(b.sex?"":" selected")+'>—</option>'
    +Object.keys(SEXES).map(k=>'<option value="'+k+'"'+(b.sex===k?" selected":"")+'>'+SEXES[k]+'</option>').join("")
    +'</select></div></div>'
-   +'<div class="fld"><label>Activité en dehors de l\'entraînement</label><select data-b="act">'
+   +'<div class="fld" style="margin-top:10px"><label>Activité en dehors de l\'entraînement</label><select data-b="act">'
    +Object.keys(ACT_LVL).map(k=>'<option value="'+k+'"'+(b.act===k?" selected":"")+'>'+ACT_LVL[k].n+'</option>').join("")
    +'</select></div>'
    +'<p class="mut">Le sexe biologique n\'intervient que dans la formule du métabolisme de base. « Ne pas préciser » applique une valeur intermédiaire, un peu moins précise.</p>'
@@ -1486,7 +1952,7 @@ function renderNutri(p,pg){
    +'<p><span class="k">Métabolisme de base : '+n.bmr+' kcal</span></p>'
    +'<p class="mut">Formule de Mifflin-St Jeor, à partir du poids, de la taille, de l\'âge et du sexe. C\'est ce que le corps dépense au repos complet.</p>'
    +'<p><span class="k">Dépense totale : '+n.tdee+' kcal</span></p>'
-   +'<p class="mut">Métabolisme de base × '+(n.fBase+n.fSport).toFixed(2).replace(".",",")+' — soit '+n.fBase.toFixed(2).replace(".",",")+' pour ton activité de fond, plus '+n.fSport.toFixed(2).replace(".",",")+' pour les '+n.sess+' séances hebdomadaires déclarées dans ton programme.</p>'
+   +'<p class="mut">Métabolisme de base × '+(n.fBase+n.fSport).toFixed(2).replace(".",",")+' — soit '+n.fBase.toFixed(2).replace(".",",")+' pour ton activité de fond, plus '+n.fSport.toFixed(2).replace(".",",")+' pour tes '+n.sess+' séances hebdomadaires, pondérées par leur durée ('+(c.dur||60)+' min).</p>'
    +'<p><span class="k">Cible : '+n.kcal+' kcal</span></p>'
    +'<p class="mut">Dépense totale '+(n.goal.d>0?"+ "+Math.round(n.goal.d*100)+" %":(n.goal.d<0?"− "+Math.abs(Math.round(n.goal.d*100))+" %":"sans ajustement"))+' selon l\'objectif'+(n.floored?", puis relevée au seuil plancher":"")+'.</p>'
    +'<p><span class="e">Limites</span></p>'
@@ -1525,6 +1991,10 @@ function weekStart(d){
   const j=(t.getDay()+6)%7;t.setDate(t.getDate()-j);
   return t.toISOString().slice(0,10);
 }
+function fullDate(d){
+  const t=new Date(d+"T00:00:00");
+  return isNaN(t)?d:t.toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"});
+}
 function shortDate(d){
   const t=new Date(d+"T00:00:00");
   return isNaN(t)?d:t.toLocaleDateString("fr-FR",{day:"numeric",month:"short"});
@@ -1539,6 +2009,22 @@ function weeklyVolume(p){
   });
   return Object.keys(w).sort().map(k=>({d:shortDate(k),v:Math.round(w[k]/100)/10}));
 }
+/* Depense hebdomadaire, consolidee depuis les seances archivees. */
+function weeklyKcal(p){
+  const w={};
+  p.hist.forEach(r=>{if(r.kcal==null)return;const k=weekStart(r.date);
+    if(!w[k])w[k]={v:0,n:0};w[k].v+=r.kcal;w[k].n++;});
+  return Object.keys(w).sort().map(k=>({d:shortDate(k),v:w[k].v,n:w[k].n}));
+}
+function kcalStats(p){
+  const wk=weekStart(today());
+  let semaine=0,nSem=0,tot=0,n=0;
+  p.hist.forEach(r=>{if(r.kcal==null)return;
+    tot+=r.kcal;n++;
+    if(weekStart(r.date)===wk){semaine+=r.kcal;nSem++}});
+  return {semaine:semaine,nSem:nSem,total:tot,n:n,moy:n?Math.round(tot/n):0};
+}
+
 /* Meilleure charge enregistree par exercice. */
 function records(p){
   return Object.keys(p.used).map(id=>{
@@ -1558,10 +2044,10 @@ function renderHist(p,pg){
   /* ---------------- Suivi corporel ---------------- */
   const bl=p.blog.slice().sort((a,z)=>a.d<z.d?-1:1);
   h+='<div class="card"><h4>Suivi corporel</h4>'
-   +'<div class="row" style="gap:8px;flex-wrap:wrap;align-items:flex-end">'
-   +'<div class="fld half"><label>Poids du jour (kg)</label><input type="number" step="0.1" inputmode="decimal" id="bw" placeholder="'+(b.wt||"ex. 78")+'"></div>'
-   +'<div class="fld half"><label>Tour de taille (cm)</label><input type="number" step="0.5" inputmode="decimal" id="bt" placeholder="facultatif"></div>'
-   +'</div><button class="btn sm" id="bsave">Enregistrer le relevé du jour</button>';
+   +'<div class="grid2">'
+   +'<div class="fld"><label>Poids du jour (kg)</label><input type="number" step="0.1" inputmode="decimal" id="bw" placeholder="'+(b.wt||"ex. 78")+'"></div>'
+   +'<div class="fld"><label>Tour de taille (cm)</label><input type="number" step="0.5" inputmode="decimal" id="bt" placeholder="facultatif"></div>'
+   +'</div><button class="mini" id="bsave" style="margin-top:10px">Enregistrer le relevé du jour</button>';
   if(bl.length<2){
     h+='<p class="mut" style="margin-top:10px">'+(bl.length?'Un seul relevé enregistré. Il en faut deux pour tracer une courbe.':'Aucun relevé. Pèse-toi dans les mêmes conditions — au réveil, à jeun — une à trois fois par semaine.')+'</p>';
   }else{
@@ -1576,7 +2062,7 @@ function renderHist(p,pg){
     }
     if(tws.length>=2) h+='<p class="mut" style="margin:10px 0 2px">Tour de taille — '+tws.length+' relevés</p><canvas class="ch" id="tch"></canvas>';
   }
-  h+='<p class="mut" style="margin-top:8px">Une semaine isolée ne veut rien dire : eau, sel, transit font varier le poids de plus d\'un kilo. C\'est la pente sur trois à quatre semaines qui compte.</p>';
+  if(bl.length>=2) h+='<p class="mut" style="margin-top:8px">Une semaine isolée ne veut rien dire : eau, sel, transit font varier le poids de plus d\'un kilo. C\'est la pente sur trois à quatre semaines qui compte.</p>';
   if(bl.length) h+='<button class="mini" id="bdel" style="margin-top:8px;color:var(--dang);border-color:#7f1d1d">Supprimer le dernier relevé</button>';
   h+='</div>';
 
@@ -1587,6 +2073,21 @@ function renderHist(p,pg){
   else{
     h+='<canvas class="ch" id="vch"></canvas><p class="mut" style="text-align:right">en tonnes soulevées par semaine</p>'
       +'<p class="mut">Séries effectuées × répétitions × charge. C\'est le meilleur indicateur unique de la charge de travail : s\'il stagne plusieurs semaines alors que le poids monte, la progression vient surtout de l\'intensité.</p>';
+  }
+  h+='</div>';
+
+  const kw=weeklyKcal(p),ks=kcalStats(p);
+  h+='<div class="card"><h4>Dépense estimée</h4>';
+  if(!ks.n) h+='<div class="empty">Termine une séance avec ton poids renseigné pour voir la dépense s\'accumuler ici.</div>';
+  else{
+    h+='<div class="chips">'
+      +'<span class="chip">cette semaine <b>'+ks.semaine+' kcal</b></span>'
+      +'<span class="chip">'+ks.nSem+' séance'+(ks.nSem>1?"s":"")+'</span>'
+      +'<span class="chip">moyenne <b>'+ks.moy+' kcal</b> par séance</span></div>';
+    if(kw.length<2) h+='<p class="mut">Deux semaines de séances archivées pour tracer la courbe.</p>';
+    else h+='<canvas class="ch" id="kch"></canvas><p class="mut" style="text-align:right">kcal par semaine</p>';
+    h+='<p class="mut">Cumulé depuis le début : '+ks.total+' kcal sur '+ks.n+' séance'+(ks.n>1?"s":"")+'. '
+      +'Ces chiffres sont des estimations à 20-30 % près : utile pour suivre une tendance, pas pour équilibrer une balance calorique au jour le jour.</p>';
   }
   h+='</div>';
 
@@ -1613,7 +2114,7 @@ function renderHist(p,pg){
     const dd=new Date(r.date+"T00:00:00");
     const dt=isNaN(dd)?r.date:dd.toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short"});
     h+='<div class="card"><div class="row sb"><span style="font-weight:650;font-size:.85rem">'+esc(r.k)+' · '+dt+'</span>'
-      +'<span class="chip">'+r.done+'/'+r.tot+'</span></div>'
+      +'<span class="chip">'+r.done+'/'+r.tot+(r.kcal!=null?' · '+r.kcal+' kcal':'')+'</span></div>'
       +'<div class="mut" style="margin-top:6px">'+r.ex.filter(e=>e.kg!=null).map(e=>esc(e.n.split(" ")[0])+" "+e.kg).join(" · ")+'</div>'
       +(r.note?'<div class="mut" style="margin-top:4px">« '+esc(r.note)+' »</div>':'')
       +'<button class="mini" data-hdel="'+i+'" style="margin-top:8px;color:var(--dang);border-color:#7f1d1d">Supprimer</button>'
@@ -1652,6 +2153,8 @@ function renderHist(p,pg){
   if(tc)line(tc,bl.filter(x=>x.tw!=null).map(x=>({v:x.tw,d:shortDate(x.d)})),"#FBBF24");
   const vc=document.getElementById("vch");
   if(vc)line(vc,vol,"#7C5CFF");
+  const kc2=document.getElementById("kch");
+  if(kc2)line(kc2,kw,"#FBBF24");
 
   const sel=document.getElementById("hsel");
   if(sel){const draw=()=>{const arr=(p.used[sel.value]||[]).slice().sort((a,z)=>a.date<z.date?-1:1);
@@ -1668,15 +2171,25 @@ function renderProfil(p,pg){
     +'<select id="p-l">'+[1,2,3].map(l=>'<option value="'+l+'"'+(c.lvl===l?" selected":"")+'>'+LVL[l]+'</option>').join("")+'</select></div>'
     +'<div class="fld half"><label>Objectif</label><select id="p-g">'
     +Object.keys(GOALS).map(k=>'<option value="'+k+'"'+(c.goal===k?" selected":"")+'>'+GOALS[k].n+'</option>').join("")+'</select></div></div>'
+    +'<div class="fld"><label>Durée habituelle d\'une séance</label><select id="p-d">'
+    +DURS.map(d=>'<option value="'+d.m+'"'+((c.dur||60)===d.m?" selected":"")+'>'+d.m+' min — '+d.n+'</option>').join("")+'</select></div>'
     +'<p class="mut">Le niveau reste affiché en haut de l\'app et sur l\'écran de sélection des profils — il suit le profil s\'il est transmis à quelqu\'un.</p></div>';
-  h+='<div class="card"><h4>1RM de référence</h4><div class="row" style="gap:8px;flex-wrap:wrap">'
+  h+='<div class="card"><h4>1RM de référence</h4><div class="grid2">'
     +[["dc","Développé couché"],["squat","Squat"],["sdt","Soulevé de terre"],["row","Rowing"]].map(r=>
-      '<div class="fld half"><label>'+r[1]+' (kg)</label><input type="number" step="0.5" inputmode="decimal" data-prm="'+r[0]+'" value="'+esc(c.rm[r[0]])+'"></div>').join("")
-    +'</div><p class="mut">Modifier un 1RM recalcule les charges du programme. Retest conseillé tous les 2 mois sur 3 à 6 répétitions proches de l\'échec.</p></div>';
+      '<div class="fld"><label>'+r[1]+'</label><input type="number" step="0.5" inputmode="decimal" data-prm="'+r[0]+'" value="'+esc(c.rm[r[0]])+'"></div>').join("")
+    +'</div><p class="mut" style="margin-top:10px">Valeurs en kilogrammes. Modifier un 1RM recalcule les charges du programme. Retest conseillé tous les 2 mois sur 3 à 6 répétitions proches de l\'échec.</p></div>';
   h+='<div class="card"><h4>Programme</h4>'
-    +'<p class="mut">'+SPLITS[c.split].n+' · '+c.days.map(d=>DAYS_FR[d]).join(", ")+' · généré le '+esc(p.prog.gen)+'</p>'
+    +'<p class="mut">'+SPLITS[c.split].n+' · '+c.days.map(d=>DAYS_FR[d]).join(", ")+' · généré le '+esc(fullDate(p.prog.gen))+'</p>'
     +'<button class="btn g" id="p-wiz">Reprendre l\'assistant de configuration</button>'
-    +'<button class="btn g" id="p-regen">Régénérer avec de nouveaux exercices</button></div>';
+    +'<button class="btn g" id="p-regen">Renouveler les exercices</button>'
+    +'<p class="mut">Retire les exercices actuels et en tire de nouveaux sur les mêmes schémas moteurs, pour toutes les séances. Tes charges sont conservées ; les séries cochées en cours sont perdues.</p></div>';
+  h+='<div class="card"><h4>Zones à ménager</h4>'
+    +'<p class="mut">'+((c.pain&&c.pain.length)
+      ?'Actuellement : <b style="color:var(--warn)">'+esc(painLabel(c.pain))+'</b>. Les exercices qui chargent ces articulations sont écartés de tes séances.'
+      :'Aucune zone signalée. Si une articulation te fait mal, indique-la : les exercices qui la chargent sortiront des séances.')+'</p>'
+    +'<button class="btn g" id="p-pain">Modifier les zones</button>'
+    +((c.pain&&c.pain.length)?'<p class="mut">Pour que le programme reconstruise de vraies séances en contournant la zone — au lieu de simplement écarter des exercices — utilise « Renouveler les exercices » ci-dessus.</p>':'')
+    +'</div>';
   h+='<div class="card"><h4>Réglages de séance</h4><div class="row wr" style="gap:8px">'
     +'<button class="mini'+(p.set.timer?" on":"")+'" id="s-t">Minuteur</button>'
     +'<button class="mini'+(p.set.sound?" on":"")+'" id="s-s">Bip</button>'
@@ -1693,11 +2206,16 @@ function renderProfil(p,pg){
   pg.innerHTML=h;
   document.getElementById("p-n").onchange=e=>{p.name=e.target.value.trim()||p.name;saveP();renderMain(p)};
   document.getElementById("p-l").onchange=e=>{c.lvl=+e.target.value;saveP();renderMain(p)};
+  document.getElementById("p-d").onchange=e=>{c.dur=+e.target.value;saveP();toast("Format de séance mis à jour");renderMain(p)};
   document.getElementById("p-g").onchange=e=>{c.goal=e.target.value;p.prog=generate(c);pruneChecks(p);saveP();toast("Programme recalculé");renderMain(p)};
   pg.querySelectorAll("[data-prm]").forEach(i=>i.onchange=()=>{
     c.rm[i.dataset.prm]=i.value;p.prog=generate(c);pruneChecks(p);saveP();toast("Charges recalculées");renderMain(p)});
   document.getElementById("p-wiz").onclick=()=>{WIZ=0;VIEW="wiz";render()};
-  document.getElementById("p-regen").onclick=()=>{c.rot=(c.rot||0)+1;p.prog=generate(c);pruneChecks(p);saveP();toast("Nouveaux exercices");renderMain(p)};
+  document.getElementById("p-pain").onclick=()=>painDialog(p);
+  document.getElementById("p-regen").onclick=()=>askConfirm("Renouveler les exercices ?",
+    "Toutes les séances reçoivent de nouveaux exercices. Les charges saisies sont conservées, les séries cochées en cours sont perdues.","Renouveler",ok=>{
+      if(!ok)return;
+      c.rot=(c.rot||0)+1;p.prog=generate(c);pruneChecks(p);saveP();toast("Nouveaux exercices");renderMain(p)});
   const tg=(id,k)=>document.getElementById(id).onclick=()=>{p.set[k]=!p.set[k];saveP();renderMain(p)};
   tg("s-t","timer");tg("s-s","sound");if(HAS_VIB)tg("s-v","vib");
   document.getElementById("p-exp").onclick=()=>backupDialog(p);
