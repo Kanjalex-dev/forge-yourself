@@ -9,19 +9,63 @@
 <meta name="apple-mobile-web-app-title" content="Forge">
 <meta name="application-name" content="Forge Yourself">
 <meta name="description" content="Générateur et suivi de programme de musculation, hors ligne.">
-<meta name="theme-color" content="#0B1220">
+<meta name="theme-color" content="#0D1014">
 <meta name="format-detection" content="telephone=no">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%233DD6C4'/><stop offset='1' stop-color='%237C5CFF'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='%230B1220'/><g fill='url(%23g)' transform='rotate(-18 32 32)'><rect x='15' y='29.5' width='34' height='5' rx='2.5'/><rect x='18.5' y='22' width='7' height='20' rx='3'/><rect x='38.5' y='22' width='7' height='20' rx='3'/><rect x='10.5' y='26' width='5.5' height='12' rx='2.5'/><rect x='48' y='26' width='5.5' height='12' rx='2.5'/></g></svg>">
+<link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
 <link rel="manifest" href="manifest.json">
 <title>Forge Yourself</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0B1220;--sf:#151F31;--sf2:#1E2B41;--line:#2C3B54;--txt:#E8EEF7;--mut:#93A4BC;
---brand:#3DD6C4;--brand2:#7C5CFF;--ok:#4ADE80;--warn:#FBBF24;--dang:#F87171;}
+:root{
+/* Palette inspiree des disques de musculation IWF : une donnee reelle sert
+   de code couleur plutot qu'un bleu/violet generique — et un seul accent
+   chaud (le disque de 15 kg) porte la mise en avant, le reste reste sobre. */
+--bg:#0D1014;--sf:#161B22;--sf2:#1E242E;--sf3:#272F3B;--line:#2C3644;--txt:#E8ECF1;--mut:#8794A6;
+--brand:#F5C518;--brand2:#2D6FD0;--ok:#4ADE80;--warn:#F0A830;--dang:#F2706B;
+--pr:#FF5A50;--p25:#E4322B;--p20:#2D6FD0;--p15:#F5C518;--p10:#3FA34D;--p5:#F2F4F7;--p125:#B8BFC9;
+/* Chaque couleur n'a plus qu'un seul sens dans toute l'app : l'or est
+   reserve a la charge/l'action/la medaille obtenue, le bleu au temps et a
+   l'identite Suivi, le rouge exclusivement aux records. Les muscles ne
+   pigent plus dans ces teintes — ils utilisent une craie/gris dedies. */
+--musc-p:#EDE7D9;--musc-s:#7E8794;
+/* Fond teinte par section : la meme famille graphite, dont la valeur et la
+   teinte varient pour que Suivi/Nutrition/Boutique se reconnaissent d'un
+   coup d'oeil sans rompre l'identite sombre. */
+--sec-train-bg:#0D1014;--sec-train-card:#161B22;
+--sec-hist-bg:#0D1520;--sec-hist-card:#16202C;--sec-hist-ac:#2D6FD0;
+--sec-nut-bg:#0D1710;--sec-nut-card:#15211A;--sec-nut-ac:#4ADE80;
+--sec-shop-bg:#15120E;--sec-shop-card:#1E1811;--sec-shop-ac:#A6B0BD;
+--sans:"Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+--emph:cubic-bezier(.2,0,0,1);
+}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-font-size:15px;line-height:1.5;padding-bottom:calc(80px + env(safe-area-inset-bottom))}
-.num{font-variant-numeric:tabular-nums}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:var(--sans);
+font-size:15px;line-height:1.5;padding-bottom:calc(86px + env(safe-area-inset-bottom))}
+/* Barre de navigation basse : les 4 destinations principales. Le minuteur
+   de repos (#tmr) partage le meme bord bas et passe devant (z-index plus
+   haut) le temps du repos — un recouvrement ponctuel plutot qu'empiler
+   deux barres fixes en permanence. */
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:41;display:flex;gap:2px;
+background:#11151B;border-top:1px solid var(--line);
+padding:7px 6px calc(8px + env(safe-area-inset-bottom));max-width:680px;margin:0 auto}
+.bntab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+border:0;background:0;color:var(--mut);border-radius:10px;padding:5px 2px;cursor:pointer;font-family:inherit}
+.bntab b{font-size:14px;font-weight:700;font-style:normal;line-height:1.1}
+.bntab span{font-size:.6rem;font-weight:600}
+.bntab.on{color:var(--bg);background:var(--brand)}
+/* La destination active reprend l'accent de sa propre section plutot que
+   toujours l'or : la nav elle-meme annonce dans quelle section on est. */
+body[data-sect="hist"] .bntab.on{background:var(--sec-hist-ac);color:#F2F6FC}
+body[data-sect="nut"] .bntab.on{background:var(--sec-nut-ac);color:#0D1710}
+body[data-sect="shop"] .bntab.on{background:var(--sec-shop-ac);color:#15120E}
+.num{font-variant-numeric:tabular-nums;font-family:var(--mono)}
+/* Les nombres qui comptent — charges, minuteur, records — passent en
+   monospace tabulaire : lisible d'un coup d'oeil, aligne en colonnes. */
+#tmrv,.chip b,input[type=number]{font-family:var(--mono);font-variant-numeric:tabular-nums}
 header{padding:calc(10px + env(safe-area-inset-top)) 14px 6px;display:flex;align-items:center;gap:10px;max-width:680px;margin:0 auto}
 header .who{flex:1;min-width:0}
 header h1{margin:0;font-size:1rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -55,6 +99,18 @@ p.scs{color:var(--mut);font-size:.76rem;margin:0 0 14px}
 .card{background:var(--sf);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
 .card.sel{border-color:var(--brand);background:#0F2A2A}
 .card h4{margin:0 0 8px;font-size:.66rem;color:var(--brand);text-transform:uppercase;letter-spacing:.05em}
+/* Teinte de fond par section : meme famille graphite, valeur differente,
+   pour qu'on reconnaisse Suivi/Nutrition/Boutique d'un coup d'oeil sans
+   sortir de l'identite sombre de l'app. */
+body[data-sect="hist"]{background:var(--sec-hist-bg)}
+body[data-sect="hist"] .card{background:var(--sec-hist-card)}
+body[data-sect="hist"] .card h4{color:var(--sec-hist-ac)}
+body[data-sect="nut"]{background:var(--sec-nut-bg)}
+body[data-sect="nut"] .card{background:var(--sec-nut-card)}
+body[data-sect="nut"] .card h4{color:var(--sec-nut-ac)}
+body[data-sect="shop"]{background:var(--sec-shop-bg)}
+body[data-sect="shop"] .card{background:var(--sec-shop-card)}
+body[data-sect="shop"] .card h4{color:var(--sec-shop-ac)}
 .card p{margin:5px 0;font-size:.82rem}
 .card .mut{color:var(--mut);font-size:.74rem}
 .row{display:flex;align-items:center;gap:10px}.row.sb{justify-content:space-between}.row.wr{flex-wrap:wrap}
@@ -85,9 +141,21 @@ color:var(--txt);font-size:.86rem;font-family:inherit;width:100%;font-variant-nu
 .chip{background:var(--sf2);border-radius:7px;padding:4px 9px;font-size:.7rem;border:1px solid transparent}
 .chip b{color:var(--brand)}
 .chip.auto{border-color:var(--brand)}
+/* La barre chargee sort de la ligne de chips : au format chip elle etait
+   illisible (quelques pixels de large), alors qu'elle est le seul repere
+   qui dit d'un coup d'oeil "quels disques prendre" pendant l'effort. */
+.barbell{display:flex;align-items:center;gap:10px;background:var(--sf2);border-radius:9px;
+padding:8px 12px;margin:2px 0 8px;overflow-x:auto}
+.bbwrap{flex:0 0 auto;display:flex;align-items:center}
+.bbl{font-size:.72rem;color:var(--mut);white-space:nowrap}
 .chip.tog{cursor:pointer}
 .chip.tog.on{border-color:var(--brand);background:#0F2A2A;color:var(--brand)}
 .chip.tog.ex{border-color:var(--dang);background:#2A0F0F;color:var(--dang)}
+/* Selection neutre (facettes de recherche : equipement, niveau, muscle) —
+   distincte du rouge d'exclusion (.ex, zones a menager) et du reste de la
+   palette de marque, reservee ailleurs a la charge, au temps et aux
+   records. Une facette active n'est ni un danger ni une charge. */
+.chip.tog.sel{border-color:var(--musc-p);background:#20242b;color:var(--musc-p)}
 .alert{border-radius:12px;padding:10px 12px;font-size:.75rem;margin-bottom:10px;border:1px solid}
 .alert.w{border-color:var(--warn);background:#3B2A0722;color:#FCD34D}
 .alert.i{border-color:var(--brand);background:#0B2B2822;color:#7FE7DA}
@@ -101,23 +169,79 @@ color:var(--txt);font-size:.86rem;font-family:inherit;width:100%;font-variant-nu
 .exo.bonus{border-style:dashed}
 .exo.spared{border-style:dashed;border-color:#5A4A1E}
 .exo.spared .eh .nm{opacity:.55;text-decoration:line-through}
-/* La phrase du jour se lit en premier : un lavis de la couleur de marque
-   qui s'eteint vers la droite, un filet plus franc, et une apparition
-   discrete. L'animation est desactivee si le systeme demande moins de
-   mouvement — c'est la recommandation, pas une option. */
-.motiv{position:relative;font-size:.92rem;color:var(--txt);
-border-left:3px solid var(--brand);border-radius:0 12px 12px 0;
-background:linear-gradient(90deg,rgba(61,214,196,.13),rgba(124,92,255,.06) 55%,transparent);
-padding:13px 16px 13px 15px;margin:4px 0 15px;line-height:1.5;
-font-style:italic;font-weight:450;
-animation:motivIn .45s cubic-bezier(.22,.61,.36,1) both}
-.motiv::first-letter{color:var(--brand);font-weight:650}
+/* La phrase du jour est le vecteur de motivation de la seance : un bloc a
+   fond unifie, plein cadre, plutot qu'un simple filet colore — c'est la
+   premiere chose lue en ouvrant la seance. L'animation est desactivee si
+   le systeme demande moins de mouvement — c'est la recommandation, pas
+   une option. */
+.motiv{position:relative;font-size:.98rem;color:var(--bg);
+background:linear-gradient(120deg,var(--brand),#FFE28A 130%);
+border-radius:0;padding:16px 14px;margin:4px -14px 16px;line-height:1.5;
+font-style:italic;font-weight:650;
+animation:motivIn .45s var(--emph) both}
+.motiv::first-letter{font-weight:800}
 @keyframes motivIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.motiv{animation:none}}
 .chip.tog.ex{border-color:var(--dang);background:#2A0F0F;color:var(--dang)}
 .mini.ex{border-color:var(--warn);color:var(--warn)}
 .sum{font-size:.86rem;line-height:1.7}
 .sum b{color:var(--brand);font-variant-numeric:tabular-nums}
+/* Bandeau de record : --pr ne sert qu'a ca dans toute l'appli, pour que sa
+   couleur reste un signal rare et immediatement reconnu. Anime a
+   l'apparition, mais reste lisible d'emblee si les animations sont reduites. */
+.prbanner{background:linear-gradient(135deg,#3a1210,var(--sf2));border:1px solid var(--pr);
+color:var(--txt);border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:.84rem;line-height:1.6;
+animation:prpop .42s var(--emph,cubic-bezier(.2,0,0,1))}
+.prbanner b{color:var(--pr);font-variant-numeric:tabular-nums}
+.prbanner b:first-child{display:block;font-size:.95rem;margin-bottom:4px;color:var(--txt)}
+@keyframes prpop{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.prbanner{animation:none}}
+.encour{font-size:.92rem;line-height:1.5;font-weight:600;margin:0 0 14px}
+.recap2x2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.recap2x2 div{background:var(--sf2);border-radius:10px;padding:10px 12px;text-align:center}
+.recap2x2 b{display:block;font-size:1.3rem;font-variant-numeric:tabular-nums;color:var(--txt)}
+.recap2x2 span{font-size:.66rem;letter-spacing:.04em;text-transform:uppercase;color:var(--mut)}
+/* Bandeau medaille : l'or ne sert qu'a la charge/action/medaille obtenue —
+   ici c'est bien une medaille qui vient d'etre obtenue */
+.badgebanner{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#3a2e0c,var(--sf2));
+border:1px solid var(--brand);border-radius:12px;padding:12px 14px;margin-bottom:12px;
+animation:prpop .42s var(--emph,cubic-bezier(.2,0,0,1))}
+@media (prefers-reduced-motion:reduce){.badgebanner{animation:none}}
+.badgebanner .bico{font-size:1.6rem;flex:0 0 auto}
+.badgebanner b{display:block;color:var(--brand);font-size:.9rem}
+.badgebanner small{display:block;color:var(--mut);font-size:.72rem;margin-top:2px}
+.badgegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:8px;margin-top:8px}
+.bslot{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--sf2);
+border-radius:10px;padding:10px 4px;text-align:center;opacity:.45}
+.bslot.got{opacity:1;border:1px solid rgba(245,197,24,.4)}
+.bslico{font-size:1.3rem}
+.bslon{font-size:.6rem;line-height:1.2;color:var(--mut)}
+.bslot.got .bslon{color:var(--txt)}
+/* Boutique : fond brun-acier deja pose par les tokens --sec-shop-*, ici les
+   composants qui lui sont propres. */
+.shophero{border-radius:14px;overflow:hidden;background:var(--sec-shop-card);
+border:1px solid rgba(166,176,189,.22);margin:12px 0}
+.shopvis{position:relative;height:150px;display:flex;align-items:center;justify-content:center;
+background:radial-gradient(120% 90% at 50% 15%,#2B2115 0%,#12100C 75%)}
+.shopvis.sm{height:96px;border-radius:10px 10px 0 0}
+.shoptag{position:absolute;left:10px;top:10px;font-size:.58rem;letter-spacing:.04em;text-transform:uppercase;
+font-weight:700;color:#0B0E12;background:var(--sec-shop-ac);padding:3px 7px;border-radius:5px}
+.shopbody{padding:13px 14px 14px}
+.shopwhy{font-size:.62rem;letter-spacing:.04em;text-transform:uppercase;font-weight:700;color:var(--mut);margin-bottom:6px}
+.shopname{font-size:1.15rem;font-weight:800;color:var(--txt)}
+.shopname.sm{font-size:.82rem;font-weight:700;margin:8px 10px 2px}
+.shopbuy{display:flex;align-items:center;gap:10px}
+.shopprice{font-size:1.05rem;font-weight:650;color:var(--txt);font-variant-numeric:tabular-nums}
+.shopprice.sm{display:block;margin:0 10px 2px;font-size:.85rem}
+.shoptrust{display:flex;gap:9px;align-items:flex-start;background:rgba(45,111,208,.09);
+border:1px solid rgba(45,111,208,.3);border-radius:11px;padding:10px 11px;margin-bottom:12px;
+font-size:.72rem;line-height:1.45;color:var(--txt)}
+.shoptrust .ti{flex:0 0 auto;width:15px;height:15px;border-radius:50%;border:1.5px solid #5E9AE8;
+color:#5E9AE8;font-size:.62rem;font-style:italic;text-align:center;line-height:13px}
+.shoptrust a{color:#5E9AE8}
+.shopgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.shopcard{background:var(--sec-shop-card);border-radius:13px;overflow:hidden}
+.shopcardb{padding:0 0 11px}
 .exo.bonus .eh .nm{opacity:.75}
 .plansep{display:flex;align-items:center;gap:10px;margin:18px 0 10px;color:var(--mut);
 font-size:.62rem;letter-spacing:.06em;text-transform:uppercase}
@@ -160,12 +284,52 @@ font-weight:600;padding:8px 15px;border-radius:8px;cursor:pointer;font-variant-n
 .seg button:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .grid2 .fld{margin-bottom:0}
-.exo .eh{padding:12px 13px 6px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.exo .eh{padding:12px 13px 6px;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .exo .eh .nm{font-size:.92rem;font-weight:650}
+/* Accordeon : le contenu complet reste toujours dans le DOM (aucune
+   logique metier a dupliquer), seule une classe bascule l'affichage — la
+   ligne repliee garde un resume tabulaire pour rester utile sans s'ouvrir. */
+.exo.coll .body,.exo.coll .tech{display:none}
+.acctog{background:0;border:0;display:flex;align-items:center;gap:8px;flex:1 1 auto;
+min-width:0;padding:0;cursor:pointer;font-family:inherit;text-align:left;color:inherit}
+.acctog .chev{flex:0 0 auto;color:var(--mut);transition:transform .18s ease}
+.exo:not(.coll) .acctog .chev{transform:rotate(180deg)}
+.acctog .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chsum{display:none;font-size:.64rem;color:var(--mut);white-space:nowrap;
+font-variant-numeric:tabular-nums;flex:0 0 auto}
+.exo.coll .chsum{display:inline}
+.donecnt{font-size:.66rem;color:var(--mut);font-variant-numeric:tabular-nums;flex:0 0 auto}
+/* Illustration seule, en pleine largeur : elle identifie le mouvement avant
+   meme de regarder la charge, qui vit desormais dans son propre encadre. */
+.exillus{background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;
+min-height:110px;overflow:hidden;padding:6px;margin:8px 0 0}
+.exillus img{max-width:100%;max-height:170px;display:block}
+.exillus .na{color:#64748b;font-size:.62rem;text-align:center;padding:16px}
+/* Le plateau charge et les silhouettes musculaires partagent desormais un
+   seul encadre : c'est le meme "etat de charge" de l'exercice, pas deux
+   illustrations qu'il faut relier soi-meme. */
+.workcard{background:var(--sf2);border:1px solid rgba(245,197,24,.25);border-radius:10px;
+padding:9px 11px;margin:8px 0}
+.workcard .wlbl{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700;
+color:var(--brand);margin-bottom:6px}
+.workcard .wrow{display:flex;align-items:center;gap:10px}
+.workcard .mp{flex:0 0 auto;display:flex;gap:3px}
+.workcard .mp svg{width:34px;height:auto}
+.workcard .barbell{background:none;border:0;padding:0;margin:0;flex:1 1 auto;min-width:0}
+.prevrow{font-size:.74rem;color:var(--txt);margin:6px 0 8px;line-height:1.4}
+.prevlbl{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:var(--brand2);margin-right:4px}
+.startzone{margin:16px 0}
+.vrow2{display:block;width:100%;text-align:left;background:var(--sf2);border:1px solid var(--line);
+border-radius:10px;padding:12px 14px;margin-bottom:8px;color:var(--txt);font-family:inherit;
+font-size:.86rem;cursor:pointer}
+.vrow2:last-child{margin-bottom:0}
+.vrow2:hover,.vrow2:focus-visible{border-color:var(--brand)}
+.vrow2 b{display:block;font-size:.9rem;margin-bottom:3px}
+.vrow2 small{display:block;color:var(--mut);font-size:.72rem;font-weight:400}
 .vbtn{background:0;border:1px solid var(--line);color:var(--mut);border-radius:8px;
 padding:2px 8px;font-size:.8rem;cursor:pointer;margin-left:8px;line-height:1.3;
 font-family:inherit;vertical-align:middle}
-.vbtn:hover,.vbtn:focus-visible{border-color:var(--brand);color:var(--brand)}
+.vbtn:hover,.vbtn:focus-visible{border-color:var(--musc-p);color:var(--musc-p)}
 #mdl .vrow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--sf2);border:1px solid var(--line);
 border-radius:10px;padding:10px 12px;margin-bottom:7px;color:var(--txt);font-family:inherit;
 font-size:.82rem;cursor:pointer}
@@ -175,7 +339,15 @@ display:flex;align-items:center;justify-content:center;overflow:hidden}
 #mdl .vrow .vth img{width:100%;height:100%;object-fit:contain}
 #mdl .vrow .vth.none{background:var(--sf);color:var(--mut);font-size:.55rem;text-align:center;line-height:1.1}
 #mdl .vrow .vtx{flex:1 1 auto;min-width:0}
-#mdl .vrow:hover,#mdl .vrow:focus-visible{border-color:var(--brand)}
+#mdl .vrow:hover,#mdl .vrow:focus-visible{border-color:var(--musc-p)}
+.vfilters{margin-bottom:6px}
+.vsearch{width:100%;box-sizing:border-box;background:var(--sf2);border:1px solid var(--line);
+border-radius:9px;padding:9px 12px;color:var(--txt);font-family:inherit;font-size:.85rem;margin-bottom:10px}
+.vsearch:focus-visible{border-color:var(--brand);outline:none}
+.vfacet{margin-bottom:8px}
+.vflb{font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-bottom:5px}
+.vfacet .chips{flex-wrap:wrap}
+.vscroll{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}
 .exo .eh .ix{color:var(--brand);font-size:.72rem;font-weight:700;margin-right:6px}
 .exo .body{padding:0 13px 12px}
 .vis{display:flex;gap:8px;align-items:stretch;margin:8px 0}
@@ -210,6 +382,8 @@ color:var(--txt);font-size:.84rem;font-variant-numeric:tabular-nums}
 .mini{background:var(--sf2);border:1px solid var(--line);color:var(--mut);border-radius:8px;padding:7px 10px;
 font-size:.7rem;cursor:pointer;font-family:inherit}
 .mini.on{border-color:var(--brand);color:var(--brand)}
+/* "Varier tous les exercices" n'est pas une action de charge : neutre, pas or */
+.mini[data-pan="vary"].on{border-color:var(--musc-p);color:var(--musc-p)}
 .fb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;border-top:1px dashed var(--line);padding-top:9px;margin-top:6px}
 .fb .lb{font-size:.68rem;color:var(--mut);width:100%}
 .fb button{border:1px solid var(--line);background:var(--sf2);color:var(--mut);border-radius:8px;
@@ -241,7 +415,7 @@ table.t td{padding:8px 6px;border-top:1px solid var(--line);font-variant-numeric
 table.t td.r{text-align:right}
 .del{background:0;border:0;color:var(--dang);font-size:.9rem;cursor:pointer}
 .empty{color:var(--mut);font-size:.78rem;text-align:center;padding:14px 0}
-#tmr{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;background:#060B14F2;border-top:1px solid var(--brand);
+#tmr{position:fixed;left:0;right:0;bottom:0;z-index:44;display:none;background:#060B14F2;border-top:1px solid var(--brand);
 padding:10px 14px calc(10px + env(safe-area-inset-bottom));align-items:center;gap:10px;backdrop-filter:blur(8px)}
 #tmr.on{display:flex}
 #tmr .v{font-size:1.45rem;font-weight:700;color:var(--brand);font-variant-numeric:tabular-nums;min-width:70px}
@@ -317,7 +491,7 @@ padding:11px 15px;font-size:.78rem;cursor:pointer;font-family:inherit}
 display:none;align-items:center;justify-content:center;padding:18px}
 #mdl.on{display:flex}
 #mdl .mbox{background:var(--sf);border:1px solid var(--line);border-radius:14px;padding:16px;
-width:100%;max-width:400px;box-shadow:0 18px 50px #0009}
+width:100%;max-width:400px;box-shadow:0 18px 50px #0009;max-height:calc(100vh - 36px);overflow-y:auto}
 #mdl .mt{font-size:.95rem;font-weight:650;margin-bottom:4px}
 #mdl .mm{font-size:.76rem;color:var(--mut);margin-bottom:10px}
 #mdl .mm:empty{display:none}
@@ -426,22 +600,37 @@ const SVG_BACK=`<svg viewBox="0 0 100 215" xmlns="http://www.w3.org/2000/svg">
 
 /* Marque de l'application — même dessin que l'icône de l'écran d'accueil. */
 const APPMARK='<svg viewBox="0 0 64 64" aria-label="Forge Yourself">'
- +'<defs><linearGradient id="fgm" x1="0" y1="0" x2="1" y2="1">'
- +'<stop offset="0" stop-color="#3DD6C4"/><stop offset="1" stop-color="#7C5CFF"/></linearGradient></defs>'
- +'<rect width="64" height="64" rx="14" fill="#151F31"/>'
- +'<g fill="url(#fgm)" transform="rotate(-18 32 32)">'
- +'<rect x="15" y="29.5" width="34" height="5" rx="2.5"/>'
- +'<rect x="18.5" y="22" width="7" height="20" rx="3"/>'
- +'<rect x="38.5" y="22" width="7" height="20" rx="3"/>'
- +'<rect x="10.5" y="26" width="5.5" height="12" rx="2.5"/>'
- +'<rect x="48" y="26" width="5.5" height="12" rx="2.5"/></g></svg>';
+ +'<rect width="64" height="64" rx="14" fill="#161B22"/>'
+ +'<g transform="rotate(-18 32 32)">'
+ +'<rect x="15" y="29.5" width="34" height="5" rx="2.5" fill="#F5C518"/>'
+ +'<rect x="18.5" y="22" width="7" height="20" rx="3" fill="#2D6FD0"/>'
+ +'<rect x="38.5" y="22" width="7" height="20" rx="3" fill="#2D6FD0"/>'
+ +'<rect x="10.5" y="26" width="5.5" height="12" rx="2.5" fill="#E4322B"/>'
+ +'<rect x="48" y="26" width="5.5" height="12" rx="2.5" fill="#E4322B"/></g></svg>';
+
+/* Icone de l'onglet Entraînement dans la barre du bas : le meme dessin que
+   la marque, en une seule couleur (currentColor) pour suivre l'etat
+   actif/inactif du bouton comme les autres icones de la barre. */
+const BARICON='<b><svg width="16" height="16" viewBox="0 0 64 64" aria-hidden="true"><g transform="rotate(-18 32 32)">'
+ +'<rect x="15" y="29.5" width="34" height="5" rx="2.5" fill="currentColor"/>'
+ +'<rect x="18.5" y="22" width="7" height="20" rx="3" fill="currentColor"/>'
+ +'<rect x="38.5" y="22" width="7" height="20" rx="3" fill="currentColor"/>'
+ +'<rect x="10.5" y="26" width="5.5" height="12" rx="2.5" fill="currentColor"/>'
+ +'<rect x="48" y="26" width="5.5" height="12" rx="2.5" fill="currentColor"/></g></svg></b>';
+/* Icones des trois autres onglets de la barre du bas : traits simples en
+   currentColor plutot que des glyphes typographiques (◔◈◉), illisibles a
+   16px selon la police du systeme. */
+const ICON_HIST='<b><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M4 20V14M12 20V8M20 20V4"/></svg></b>';
+const ICON_NUT='<b><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20c0-9 6-15 15-15 0 9-6 15-15 15Z"/><path d="M4 20c3-3 6-6 10-10"/></svg></b>';
+const ICON_SHOP='<b><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 11.2H6.2z"/><path d="M9 8V6a3 3 0 016 0v2"/></svg></b>';
+const ICON_PROF='<b><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></b>';
 
 const _MSV={};
 function muscleSVG(prim,sec,id){
   if(id&&_MSV[id])return _MSV[id];
   const paint=svg=>svg.replace(/data-m="([a-z_]+)"/g,(m,g)=>{
-    if(prim.indexOf(g)>=0) return 'data-m="'+g+'" fill="#3DD6C4"';
-    if(sec.indexOf(g)>=0) return 'data-m="'+g+'" fill="#7C5CFF"';
+    if(prim.indexOf(g)>=0) return 'data-m="'+g+'" fill="#EDE7D9"';
+    if(sec.indexOf(g)>=0) return 'data-m="'+g+'" fill="#7E8794"';
     return m;});
   const r=paint(SVG_FRONT)+paint(SVG_BACK);
   if(id)_MSV[id]=r;
@@ -788,6 +977,63 @@ function newProfile(name){
   PROFILES.push(p);ACTIVE=p.id;saveP();return p;
 }
 
+/* ---------------- Gamification : médailles ----------------
+   Chaque médaille est dérivée des données déjà enregistrées (séances,
+   séries, records, séances "parfaites") — rien n'est stocké deux fois,
+   l'état "acquise / verrouillée" se recalcule à chaque affichage à partir
+   des compteurs du profil. Seuls deux compteurs cumulés ont besoin d'être
+   tenus à jour à l'archivage, car ils ne se déduisent pas de l'historique
+   brut sans le reparcourir en entier : p.prCount (records cumulés) et
+   p.perfectCount (séances où l'objectif a été atteint sur tout ce qui a
+   été fait, hors exercices écartés). */
+const BADGES=[
+  {id:"s1",cat:"seances",thr:1,n:"Premier pas",d:"Terminer 1 séance"},
+  {id:"s5",cat:"seances",thr:5,n:"Sur les rails",d:"Terminer 5 séances"},
+  {id:"s15",cat:"seances",thr:15,n:"Habitué",d:"Terminer 15 séances"},
+  {id:"s30",cat:"seances",thr:30,n:"Vétéran",d:"Terminer 30 séances"},
+  {id:"s60",cat:"seances",thr:60,n:"Centurion",d:"Terminer 60 séances"},
+  {id:"v100",cat:"series",thr:100,n:"Premiers efforts",d:"100 séries au total"},
+  {id:"v500",cat:"series",thr:500,n:"Bâtisseur",d:"500 séries au total"},
+  {id:"v1500",cat:"series",thr:1500,n:"Machine",d:"1 500 séries au total"},
+  {id:"v4000",cat:"series",thr:4000,n:"Forcené",d:"4 000 séries au total"},
+  {id:"v10000",cat:"series",thr:10000,n:"Légende",d:"10 000 séries au total"},
+  {id:"r1",cat:"prs",thr:1,n:"Premier record",d:"Battre une charge pour la 1ère fois"},
+  {id:"r3",cat:"prs",thr:3,n:"En progrès",d:"3 records personnels"},
+  {id:"r10",cat:"prs",thr:10,n:"Sur la lancée",d:"10 records personnels"},
+  {id:"r25",cat:"prs",thr:25,n:"Collectionneur",d:"25 records personnels"},
+  {id:"r50",cat:"prs",thr:50,n:"Increvable",d:"50 records personnels"},
+  {id:"p1",cat:"perfect",thr:1,n:"Sans accroc",d:"1 séance objectif atteint partout"},
+  {id:"p5",cat:"perfect",thr:5,n:"Précis",d:"5 séances sans accroc"},
+  {id:"p15",cat:"perfect",thr:15,n:"Chirurgical",d:"15 séances sans accroc"},
+  {id:"p30",cat:"perfect",thr:30,n:"Métronome",d:"30 séances sans accroc"},
+  {id:"p60",cat:"perfect",thr:60,n:"Sans faille",d:"60 séances sans accroc"}
+];
+function badgeStats(p){
+  return {seances:(p.hist||[]).length,
+    series:(p.hist||[]).reduce((s,r)=>s+(r.done||0),0),
+    prs:p.prCount||0, perfect:p.perfectCount||0};
+}
+/* Etat complet, trié par catégorie puis seuil croissant — chaque entrée
+   porte sa progression pour l'affichage même verrouillée. */
+function badgeList(p){
+  const st=badgeStats(p);
+  return BADGES.map(b=>{
+    const cur=st[b.cat]||0;
+    return {b:b,earned:cur>=b.thr,cur:cur,thr:b.thr};
+  });
+}
+/* Nouvelles médailles obtenues entre deux relevés de compteurs (avant et
+   après l'archivage d'une séance) — pour la mise en avant en fin de séance. */
+function badgesNew(prevSt,newSt){
+  return BADGES.filter(b=>(newSt[b.cat]||0)>=b.thr&&(prevSt[b.cat]||0)<b.thr);
+}
+function nextBadge(p){
+  const st=badgeStats(p);
+  const locked=BADGES.filter(b=>(st[b.cat]||0)<b.thr)
+    .sort((a,b2)=>(a.thr-(st[a.cat]||0))-(b2.thr-(st[b2.cat]||0)));
+  return locked[0]||null;
+}
+
 /* ---------------- Générateur ---------------- */
 /* priorité du matériel selon l'équipement déclaré : en salle on ne propose pas
    un élastique là où une barre est disponible */
@@ -1019,6 +1265,24 @@ function motivation(p,s,plan){
   return MOTIV[i];
 }
 
+/* Message de fin de séance : priorité au fait marquant du jour (médaille,
+   record), sinon une formule contextuelle au taux de complétion. */
+const END_FULL=["Séance bouclée, complète. Rien à ajouter.",
+  "Tout le programme, aucune série sautée. C'est exactement ça, la régularité.",
+  "Séance complète. La courbe ne ment pas sur ce genre de constance."];
+const END_PART=["Séance archivée. Ce qui compte, c'est que tu sois venu — la prochaine reprend là où celle-ci s'arrête.",
+  "Pas tout fait, mais du solide dans les jambes. Ça compte quand même.",
+  "Séance écourtée, mais faite. Mieux vaut ça que zéro."];
+function endMessage(tl,prs,newBadges,perfect){
+  if(newBadges.length===1) return "Nouvelle médaille : "+newBadges[0].n+" — "+newBadges[0].d.toLowerCase()+".";
+  if(newBadges.length>1) return newBadges.length+" nouvelles médailles débloquées d'un coup.";
+  if(prs.length) return "Nouveau record sur "+prs[0].n+". La charge suit le travail.";
+  if(perfect) return "Séance sans accroc : objectif atteint sur tout ce qui était prévu.";
+  const full=tl.tot>0&&(tl.done+tl.bonus)>=tl.tot;
+  const pool=full?END_FULL:END_PART;
+  return pool[hashStr(today()+"|"+tl.tot)%pool.length];
+}
+
 /* Depense estimee : equivalent metabolique x poids x duree. La densite de
    la seance — temps de travail rapporte au temps total — fait varier le MET
    entre 3,5 (repos longs, charges lourdes) et 6,0 (seance enchainee).
@@ -1128,7 +1392,28 @@ function conflicts(cfg){
   return out;
 }
 /* ---------------- Minuteur ---------------- */
-let tId=null,tLeft=0,aCtx=null;
+let tId=null,tLeft=0,aCtx=null,aSched=[],tEndAt=0,tLbl="";
+/* Le telephone qui s'eteint pendant le repos est la premiere cause de bip
+   manque : ecran verrouille = minuteur JS gele et, sur iOS, contexte audio
+   suspendu — le rattrapage au retour (plus bas) compense, mais ne vaut pas
+   un bip qui sonne pile a l'heure. Le Wake Lock garde l'ecran allume le
+   temps du repos quand l'appareil le permet ; il est libere des que le
+   minuteur s'arrete, et repris si l'OS l'a coupe de son cote pendant que
+   l'onglet etait cache (l'API l'exige : un verrou coupe en arriere-plan
+   n'est jamais rendu automatiquement au retour). */
+let wakeLock=null;
+function acquireWakeLock(){
+  try{
+    if(!("wakeLock" in navigator))return;
+    navigator.wakeLock.request("screen").then(function(w){
+      wakeLock=w;
+      wakeLock.addEventListener("release",function(){wakeLock=null});
+    }).catch(function(){wakeLock=null});
+  }catch(e){}
+}
+function releaseWakeLock(){
+  if(wakeLock){try{wakeLock.release()}catch(e){}wakeLock=null}
+}
 const HAS_VIB=typeof navigator!=="undefined"&&!!navigator.vibrate;
 const tEl=document.getElementById("tmr"),tV=document.getElementById("tmrv"),tL=document.getElementById("tmrl");
 function beep(){const p=prof();if(!p||!p.set.sound)return;
@@ -1138,18 +1423,73 @@ function beep(){const p=prof();if(!p||!p.set.sound)return;
       o.frequency.value=880;g.gain.value=.0001;const t0=aCtx.currentTime+dl/1000;
       g.gain.exponentialRampToValueAtTime(.25,t0+.01);g.gain.exponentialRampToValueAtTime(.0001,t0+.15);
       o.start(t0);o.stop(t0+.18)})}catch(e){}}
+/* Le bip manquait une fois sur deux : iOS suspend le contexte audio et ne
+   le reveille que dans un geste utilisateur. On le reveille donc au moment
+   ou l'utilisateur coche la serie, et on programme le son sur l'horloge
+   audio plutot que de l'appeler depuis setInterval — qui derive ou se fige
+   quand l'ecran s'eteint. */
+function cancelBeep(){aSched.forEach(o=>{try{o.stop()}catch(e){}});aSched=[]}
+function armBeep(sec){
+  const p=prof();if(!p||!p.set.sound)return false;
+  try{
+    aCtx=aCtx||new(window.AudioContext||window.webkitAudioContext)();
+    if(aCtx.state==="suspended")aCtx.resume();
+    cancelBeep();
+    const t0=aCtx.currentTime+Math.max(.05,sec);
+    [[0,880],[200,880],[400,1175]].forEach(function(pair){
+      const o=aCtx.createOscillator(),g=aCtx.createGain();
+      o.connect(g);g.connect(aCtx.destination);
+      o.type="triangle";o.frequency.value=pair[1];
+      const t=t0+pair[0]/1000;
+      g.gain.setValueAtTime(.0001,t);
+      g.gain.exponentialRampToValueAtTime(.42,t+.012);
+      g.gain.exponentialRampToValueAtTime(.0001,t+.24);
+      o.start(t);o.stop(t+.27);
+      aSched.push(o);
+    });
+    return true;
+  }catch(e){return false}
+}
+
+function finishT(missedAudio){const p=prof();
+  if(tId){clearInterval(tId);tId=null}
+  tLeft=0;tV.textContent=mmss(0);tEl.classList.add("fin");tL.textContent="Repos terminé";
+  /* le son est deja programme sur l'horloge audio ; si le contexte a ete
+     suspendu pendant l'attente (ecran verrouille, appli en arriere-plan),
+     ces evenements planifies ne se sont jamais joues — on rejoue alors un
+     bip immediat en secours plutot que de rester silencieux. */
+  if(missedAudio||!aSched.length){beep()}
+  aSched=[];
+  try{if(p&&p.set.vib&&navigator.vibrate)navigator.vibrate([180,90,180])}catch(e){}
+  releaseWakeLock();
+  setTimeout(()=>{tEl.classList.remove("on");document.body.classList.remove("tmr-on")},6000)}
 function startT(sec,lbl){const p=prof();if(!p||!p.set.timer)return;
-  stopT(false);tLeft=sec;tL.textContent=lbl||"Repos";tEl.classList.remove("fin");tEl.classList.add("on");
+  stopT(false);armBeep(sec);tLeft=sec;tLbl=lbl||"Repos";tL.textContent=tLbl;tEl.classList.remove("fin");tEl.classList.add("on");
   tV.textContent=mmss(tLeft);
+  tEndAt=Date.now()+sec*1000;
   document.body.classList.add("tmr-on");
-  tId=setInterval(()=>{tLeft--;tV.textContent=mmss(Math.max(0,tLeft));
-    if(tLeft<=0){clearInterval(tId);tId=null;tEl.classList.add("fin");tL.textContent="Repos terminé";beep();
-      try{if(p.set.vib&&navigator.vibrate)navigator.vibrate([180,90,180])}catch(e){}
-      setTimeout(()=>{tEl.classList.remove("on");document.body.classList.remove("tmr-on")},6000)}},1000)}
+  acquireWakeLock();
+  tId=setInterval(()=>{tLeft=Math.max(0,Math.round((tEndAt-Date.now())/1000));tV.textContent=mmss(tLeft);
+    if(tLeft<=0)finishT(false)},1000)}
 function stopT(h){if(tId){clearInterval(tId);tId=null}
-  if(h!==false){tEl.classList.remove("on");document.body.classList.remove("tmr-on")}}
+  if(h!==false){tEl.classList.remove("on");document.body.classList.remove("tmr-on");releaseWakeLock()}}
+/* Reveil au retour au premier plan : ecran verrouille ou onglet en
+   arriere-plan pendant le repos = setInterval gele ET contexte audio
+   suspendu, donc le bip programme ne s'est pas joue. Au retour, on
+   resynchronise sur l'horloge murale et on rattrape avec un bip si
+   l'echeance est deja passee. */
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState!=="visible")return;
+  try{if(aCtx&&aCtx.state==="suspended")aCtx.resume()}catch(e){}
+  if(!tId||!tEndAt)return;
+  if(!wakeLock)acquireWakeLock();
+  const rem=Math.round((tEndAt-Date.now())/1000);
+  if(rem<=0){finishT(true)}else{tLeft=rem;tV.textContent=mmss(tLeft)}
+});
 document.getElementById("tmrs").onclick=()=>stopT(true);
-document.getElementById("tmrp").onclick=()=>{tLeft+=30;tEl.classList.remove("fin");tV.textContent=mmss(tLeft)};
+document.getElementById("tmrp").onclick=()=>{tLeft+=30;tEndAt+=30000;tEl.classList.remove("fin");tV.textContent=mmss(tLeft);
+  if(!tId){armBeep(tLeft);acquireWakeLock();tId=setInterval(()=>{tLeft=Math.max(0,Math.round((tEndAt-Date.now())/1000));tV.textContent=mmss(tLeft);
+    if(tLeft<=0)finishT(false)},1000)}else{armBeep(tLeft)}};
 let tstT=null;
 function toast(m){const e=document.getElementById("tst");e.textContent=m;e.classList.add("on");
   clearTimeout(tstT);tstT=setTimeout(()=>e.classList.remove("on"),2200)}
@@ -1240,38 +1580,89 @@ function variantsOf(e,cfg,taken){
   [g1,g2,g3].forEach((g,i)=>g.forEach(x=>{if(!seen[x.id]){seen[x.id]=1;out.push({e:x,rang:i})}}));
   return out.slice(0,10);
 }
+/* Recherche insensible aux accents/casse, utilisée par le filtre libre du
+   dialogue de remplacement. */
+function normSearch(s){return (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")}
 function variantDialog(p,ti,xi){
   const sess=p.prog.sessions[ti],x=sess.exos[xi],e=byId(x.id);
   if(!e)return;
   const taken=sess.exos.map(y=>y.id);
-  const v=variantsOf(e,p.cfg,taken);
+  const allow=EQ_ALLOW[p.cfg.eq]||[];
+  const filt={q:"",eq:"def",lvl:null,musc:null};
   const lab=["même schéma moteur","même famille de mouvement","même muscle principal"];
-  let html;
-  if(!v.length){
-    html='<p class="mut">Aucune variante disponible avec ton équipement, ton niveau et tes exclusions. '
-      +'Élargis l\'équipement dans l\'assistant, ou lève une exclusion.</p>';
-  }else{
-    let cur=-1;html="";
-    v.forEach(o=>{
-      if(o.rang!==cur){cur=o.rang;
-        html+='<div style="font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:10px 0 6px">'+lab[cur]+'</div>';}
-      const th=o.e.img&&IMG(o.e.img);
-      html+='<button class="vrow" data-vs="'+o.e.id+'">'
-        +(th?'<span class="vth"><img alt="" decoding="async" src="'+th+'"></span>'
-            :'<span class="vth none">sans<br>visuel</span>')
-        +'<span class="vtx">'+esc(o.e.n)
-        +'<small>'+(EQL[o.e.eq]||o.e.eq)+' · '+LVL[o.e.lvl]+' · repos '+mmss(o.e.rest)+'</small></span></button>';
+  const muscOpts=Object.keys(MUS).filter(m=>EX.some(z=>z.prim.indexOf(m)>=0));
+  function baseOk(z){return z.id!==e.id&&(p.cfg.excl||[]).indexOf(z.id)<0&&taken.indexOf(z.id)<0&&!spared(z,p.cfg.pain)}
+  function computeList(){
+    const anyFilt=filt.q||filt.eq!=="def"||filt.lvl!=null||filt.musc;
+    if(!anyFilt) return variantsOf(e,p.cfg,taken);
+    let list=EX.filter(baseOk);
+    if(filt.eq==="def") list=list.filter(z=>allow.indexOf(z.eq)>=0);
+    else if(filt.eq!=="all") list=list.filter(z=>z.eq===filt.eq);
+    if(filt.lvl!=null) list=list.filter(z=>z.lvl===filt.lvl);
+    if(filt.musc) list=list.filter(z=>z.prim.indexOf(filt.musc)>=0||(z.sec||[]).indexOf(filt.musc)>=0);
+    if(filt.q){const nq=normSearch(filt.q);list=list.filter(z=>normSearch(z.n).indexOf(nq)>=0)}
+    return list.slice(0,40).map(z=>({e:z,rang:null}));
+  }
+  function bodyHtml(){
+    const v=computeList();
+    const eqChips=['<span class="chip tog'+(filt.eq==="def"?" sel":"")+'" data-veq="def">Mon équipement</span>',
+      '<span class="chip tog'+(filt.eq==="all"?" sel":"")+'" data-veq="all">Tout équipement</span>']
+      .concat(Object.keys(EQL).map(k=>'<span class="chip tog'+(filt.eq===k?" sel":"")+'" data-veq="'+k+'">'+EQL[k]+'</span>')).join("");
+    const lvlChips=['<span class="chip tog'+(filt.lvl==null?" sel":"")+'" data-vlvl="">Tous niveaux</span>']
+      .concat(Object.keys(LVL).map(k=>'<span class="chip tog'+(filt.lvl===+k?" sel":"")+'" data-vlvl="'+k+'">'+LVL[k]+'</span>')).join("");
+    const muscChips=['<span class="chip tog'+(!filt.musc?" sel":"")+'" data-vmu="">Tout muscle</span>']
+      .concat(muscOpts.map(m=>'<span class="chip tog'+(filt.musc===m?" sel":"")+'" data-vmu="'+m+'">'+MUS[m]+'</span>')).join("");
+    let html='<div class="vfilters">'
+      +'<input type="text" id="vsearch" class="vsearch" placeholder="Chercher un exercice…" value="'+esc(filt.q)+'">'
+      +'<div class="vfacet"><div class="vflb">Équipement</div><div class="chips">'+eqChips+'</div></div>'
+      +'<div class="vfacet"><div class="vflb">Niveau</div><div class="chips">'+lvlChips+'</div></div>'
+      +'<div class="vfacet"><div class="vflb">Muscle</div><div class="chips vscroll">'+muscChips+'</div></div>'
+      +'</div>';
+    if(!v.length){
+      html+='<p class="mut" style="margin-top:10px">Aucun exercice ne correspond à ces critères. Élargis l\'équipement, le niveau ou la recherche.</p>';
+    }else{
+      let cur=-2;
+      v.forEach(o=>{
+        if(o.rang!=null&&o.rang!==cur){cur=o.rang;
+          html+='<div style="font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:10px 0 6px">'+lab[cur]+'</div>';}
+        else if(o.rang==null&&cur!==-1){cur=-1;
+          html+='<div style="font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:10px 0 6px">'+v.length+' résultat'+(v.length>1?"s":"")+'</div>';}
+        const th=o.e.img&&IMG(o.e.img);
+        html+='<button class="vrow" data-vs="'+o.e.id+'">'
+          +(th?'<span class="vth"><img alt="" decoding="async" src="'+th+'"></span>'
+              :'<span class="vth none">sans<br>visuel</span>')
+          +'<span class="vtx">'+esc(o.e.n)
+          +'<small>'+(EQL[o.e.eq]||o.e.eq)+' · '+LVL[o.e.lvl]+' · repos '+mmss(o.e.rest)+'</small></span></button>';
+      });
+    }
+    return html;
+  }
+  function refresh(){
+    MDH.innerHTML=bodyHtml();
+    wire();
+  }
+  function wire(){
+    const sInp=document.getElementById("vsearch");
+    if(sInp){sInp.oninput=()=>{filt.q=sInp.value;refresh();
+      const el=document.getElementById("vsearch");if(el){el.focus();el.selectionStart=el.selectionEnd=el.value.length}}}
+    MDH.querySelectorAll("[data-veq]").forEach(c=>c.onclick=()=>{filt.eq=c.dataset.veq;refresh()});
+    MDH.querySelectorAll("[data-vlvl]").forEach(c=>c.onclick=()=>{filt.lvl=c.dataset.vlvl?+c.dataset.vlvl:null;refresh()});
+    MDH.querySelectorAll("[data-vmu]").forEach(c=>c.onclick=()=>{filt.musc=c.dataset.vmu||null;refresh()});
+    MDH.querySelectorAll("[data-vs]").forEach(btn=>btn.onclick=()=>{
+      const nid=btn.dataset.vs,ne=byId(nid);if(!ne)return;
+      sess.exos[xi]=Object.assign({id:nid},prescribe(ne,p.cfg),x.forced?{forced:true}:{});
+      pruneChecks(p);saveP();mdClose(null);
+      toast("Remplacé par « "+ne.n+" »");renderMain(p);
     });
   }
   mdOpen({title:"Remplacer « "+e.n+" »",
-    msg:v.length?"L'exercice choisi prend sa place dans toutes les séances de ce jour. Tes autres charges ne bougent pas.":"",
-    html:html,ok:"Annuler",noCancel:true,cb:function(){}});
-  MDH.querySelectorAll("[data-vs]").forEach(btn=>btn.onclick=()=>{
-    const nid=btn.dataset.vs,ne=byId(nid);if(!ne)return;
-    sess.exos[xi]=Object.assign({id:nid},prescribe(ne,p.cfg),x.forced?{forced:true}:{});
-    pruneChecks(p);saveP();mdClose(null);
-    toast("Remplacé par « "+ne.n+" »");renderMain(p);
-  });
+    msg:"L'exercice choisi prend sa place dans toutes les séances de ce jour. Tes autres charges ne bougent pas.",
+    html:bodyHtml(),ok:"Annuler",noCancel:true,cb:function(){}});
+  wire();
+  /* le focus par defaut du dialogue va sur le bouton "Annuler", en bas —
+     ce qui fait defiler la boite jusqu'a lui et masque les filtres. On
+     remonte explicitement une fois ce defilement fait. */
+  setTimeout(()=>{const box=MDH.closest(".mbox");if(box)box.scrollTop=0},40);
 }
 
 /* ---------------- Variation de toute la seance ----------------
@@ -1329,6 +1720,14 @@ function kcalSplit(p,plan,total){
   return out;
 }
 
+/* Nombre de seances reussies (objectif atteint, ressenti facile ou
+   correct) d'affilee necessaires avant d'augmenter une charge. Monter
+   apres une seule bonne seance surestimait la marge reelle ; deux
+   confirmations de suite sont un seuil courant en double progression,
+   sans pour autant faire trainer la progression sur les mouvements
+   faciles a stabiliser. Un echec ou un ressenti "dur" remet le compteur
+   a zero — la charge ne monte que sur une reussite nette. */
+const PROG_STREAK=2;
 /* ---------------- Mise a jour depuis l'historique ----------------
    Rejoue les seances archivees de la plus ancienne a la plus recente et
    applique, exercice par exercice, la meme regle de progression qu'en fin
@@ -1343,14 +1742,18 @@ function historyUpdate(p,apply){
     const e=byId(x.id);if(!e)return;
     /* un mouvement au poids de corps n'a pas de charge a prescrire */
     if(e.eq==="pdc")return;
-    if(!st[x.id])st[x.id]={kg:null,fail:0,n:0};
+    if(!st[x.id])st[x.id]={kg:null,fail:0,n:0,streak:0};
     const o=st[x.id];o.n++;
     const base=(x.kg!=null&&!isNaN(x.kg))?x.kg:o.kg;
     if(base==null)return;
     const step=e.typ==="c"?2.5:1;
-    if(x.ok==="oui"&&(x.diff==="facile"||x.diff==="correct")){o.kg=base+step;o.fail=0}
-    else if(x.ok==="non"||x.diff==="echec"){o.kg=r25(base*.95);o.fail++}
-    else{o.kg=base;o.fail=0}
+    if(x.ok==="oui"&&(x.diff==="facile"||x.diff==="correct")){
+      o.streak++;
+      if(o.streak>=PROG_STREAK){o.kg=base+step;o.streak=0}else o.kg=base;
+      o.fail=0;
+    }
+    else if(x.ok==="non"||x.diff==="echec"){o.kg=r25(base*.95);o.fail++;o.streak=0}
+    else{o.kg=base;o.fail=0;o.streak=0}
   })});
   Object.keys(st).forEach(id=>{
     const o=st[id],e=byId(id);
@@ -1361,6 +1764,10 @@ function historyUpdate(p,apply){
       if(apply)p.ovr[id]=String(o.kg);
     }
     if(o.fail>=2)out.alertes.push({n:e.n,fail:o.fail});
+    /* le compteur de seances reussies d'affilee est repris tel quel : les
+       prochaines seances en direct continuent le decompte au lieu de
+       redemarrer a zero. */
+    if(apply){if(!p.streak)p.streak={};p.streak[id]=o.streak}
   });
   if(apply)saveP();
   return out;
@@ -1418,7 +1825,8 @@ function profileFile(p){return "forge-"+p.name.toLowerCase().replace(/[^a-z0-9]+
 function importProfile(txt){
   try{const o=JSON.parse(txt);const p=o.profile||o;
     if(!p||!p.cfg)throw 0;
-    p.id=uid();PROFILES.push(p);ACTIVE=p.id;saveP();toast("Profil importe");VIEW="app";render();return true}
+    p.id=uid();PROFILES.push(p);ACTIVE=p.id;saveP();toast("Profil importe");VIEW="app";SECT="train";
+    TAB=(p.prog&&p.prog.sessions&&p.prog.sessions.length)?todayIdx(p.prog.sessions):0;render();return true}
   catch(x){toast("Sauvegarde illisible");return false}
 }
 
@@ -1428,17 +1836,49 @@ function line(cv,pts,col){if(!cv)return;
   cv.width=W*dpr;cv.height=H*dpr;const c=cv.getContext("2d");c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,W,H);
   if(pts.length<2){c.fillStyle="#64748b";c.font="11px -apple-system,sans-serif";c.textAlign="center";
     c.fillText("2 points minimum pour tracer la courbe",W/2,H/2);return}
-  const v=pts.map(p=>p.v),mn=Math.min.apply(null,v),mx=Math.max.apply(null,v),sp=(mx-mn)||1;
+  const v=pts.map(p=>p.v),mn=Math.min.apply(null,v),mx=Math.max.apply(null,v);
+  /* Valeurs identiques (charge ou poids inchangé d'une fois sur l'autre) :
+     avec un ecart nul, (x-mn)/sp valait toujours 0 et collait chaque point
+     tout en bas du graphique au lieu de les centrer — ça ressemblait a un
+     graphique vide. On centre la ligne plate et on n'affiche qu'un seul
+     repere, au lieu de trois reperes empiles à la meme hauteur. */
+  const flat=mx===mn,sp=flat?1:(mx-mn);
   const pl=32,pr=8,tp=10,bt=H-14;
   const lab=pts[0].d?[pts[0].d,pts[pts.length-1].d]:null;
-  const X=i=>pl+i*(W-pl-pr)/(v.length-1),Y=x=>bt-(x-mn)/sp*(bt-tp);
-  c.strokeStyle="#2C3B54";c.lineWidth=1;[mn,(mn+mx)/2,mx].forEach(x=>{c.beginPath();c.moveTo(pl,Y(x));c.lineTo(W-pr,Y(x));c.stroke()});
-  c.fillStyle="#64748b";c.font="10px -apple-system,sans-serif";c.textAlign="right";
-  c.fillText(mx.toFixed(1),pl-5,Y(mx)+3);c.fillText(mn.toFixed(1),pl-5,Y(mn)+3);
+  const X=i=>pl+i*(W-pl-pr)/(v.length-1),Y=x=>flat?(tp+bt)/2:bt-(x-mn)/sp*(bt-tp);
+  c.strokeStyle="#2C3B54";c.lineWidth=1;
+  (flat?[mn]:[mn,(mn+mx)/2,mx]).forEach(x=>{c.beginPath();c.moveTo(pl,Y(x));c.lineTo(W-pr,Y(x));c.stroke()});
+  /* Les valeurs de chaque point s'affichent deja au-dessus/en-dessous du
+     marqueur quand il y en a peu (v.length<=6, plus bas) : les repeter en
+     coin ici les faisait se chevaucher avec le premier point, qui est
+     justement ancre sur ce meme bord gauche. */
+  if(v.length>6||flat){
+    c.fillStyle="#64748b";c.font="10px -apple-system,sans-serif";c.textAlign="right";
+    if(flat) c.fillText(mn.toFixed(1),pl-5,Y(mn)+3);
+    else{c.fillText(mx.toFixed(1),pl-5,Y(mx)+3);c.fillText(mn.toFixed(1),pl-5,Y(mn)+3)}
+  }
   const g=c.createLinearGradient(0,tp,0,bt);g.addColorStop(0,col+"59");g.addColorStop(1,col+"00");
   c.beginPath();c.moveTo(X(0),bt);v.forEach((x,i)=>c.lineTo(X(i),Y(x)));c.lineTo(X(v.length-1),bt);c.closePath();c.fillStyle=g;c.fill();
   c.beginPath();v.forEach((x,i)=>i?c.lineTo(X(i),Y(x)):c.moveTo(X(i),Y(x)));c.strokeStyle=col;c.lineWidth=2;c.lineJoin="round";c.stroke();
-  c.beginPath();c.arc(X(v.length-1),Y(v[v.length-1]),3.5,0,7);c.fillStyle=col;c.fill();
+  /* Un point par releve : sans marqueurs, trois seances donnent un simple
+     trait et on ne voit pas ou sont les mesures. Le dernier est plus gros. */
+  if(v.length<=14){
+    v.forEach((x,i)=>{
+      c.beginPath();c.arc(X(i),Y(x),3,0,7);
+      c.fillStyle=col;c.fill();
+      c.strokeStyle="#0D1014";c.lineWidth=1.5;c.stroke();
+    });
+  }
+  /* Peu de points : on ecrit la valeur, c'est plus lisible qu'une echelle. */
+  if(v.length<=6){
+    c.font="9px -apple-system,sans-serif";c.textAlign="center";c.fillStyle="#93A4BC";
+    v.forEach((x,i)=>{
+      const yy=Y(x), up=(i===0||x>=v[i-1]);
+      c.fillText(String(Math.round(x*10)/10).replace(".",","),X(i),up?Math.max(9,yy-8):Math.min(bt-2,yy+15));
+    });
+  }
+  c.beginPath();c.arc(X(v.length-1),Y(v[v.length-1]),4.5,0,7);c.fillStyle=col;c.fill();
+  c.strokeStyle="#0D1014";c.lineWidth=2;c.stroke();
   if(lab){c.fillStyle="#64748b";c.font="9px -apple-system,sans-serif";
     c.textAlign="left";c.fillText(lab[0],pl,H-3);
     c.textAlign="right";c.fillText(lab[1],W-pr,H-3)}}
@@ -1447,7 +1887,15 @@ function line(cv,pts,col){if(!cv)return;
    RENDU
    ================================================================ */
 const APP=document.getElementById("app");
-let VIEW="home",TAB=0,FOCUS={},WIZ=0;
+let VIEW="home",TAB=0,SECT="train",FOCUS={},FOCOVR={},WIZ=0,ACC={},STARTPANEL={},SHOPCAT_SEL="all";
+/* Onglet du jour par defaut : on pointe sur la seance prevue aujourd'hui
+   plutot que sur le premier jour du programme — mercredi ouvre la seance
+   de mercredi, pas systematiquement celle de lundi. */
+function todayIdx(sess){
+  const dow=(new Date().getDay()+6)%7;
+  const i=sess.findIndex(s=>s.day===dow);
+  return i>=0?i:0;
+}
 /* Panneau de reglages de seance : un seul ouvert a la fois, par onglet.
    PANELSEL porte la selection en cours de saisie tant qu'elle n'est pas validee. */
 let PANEL={},PANELSEL=null;
@@ -1500,7 +1948,11 @@ function renderHome(){
   h+='<p class="scs" style="margin-top:14px">Le profil ouvert est rechargé automatiquement au prochain lancement. Tu peux en changer à tout moment via l\'initiale en haut à gauche.</p>';
   h+='</div>';
   APP.innerHTML=h;
-  APP.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{ACTIVE=b.dataset.open;saveP();VIEW="app";TAB=0;render()});
+  APP.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{
+    ACTIVE=b.dataset.open;saveP();VIEW="app";SECT="train";
+    const op=PROFILES.find(x=>x.id===ACTIVE);
+    TAB=(op&&op.prog&&op.prog.sessions&&op.prog.sessions.length)?todayIdx(op.prog.sessions):0;
+    render()});
   APP.querySelectorAll("[data-ren]").forEach(b=>b.onclick=()=>{
     const p=PROFILES.find(x=>x.id===b.dataset.ren);
     askText("Renommer le profil","",p.name,"Nom du profil",n=>{
@@ -1714,13 +2166,18 @@ function renderWiz(p){
   const pv=document.getElementById("wprev");if(pv)pv.onclick=()=>{WIZ=Math.max(0,WIZ-1);renderWiz(p)};
   const b2=document.getElementById("wback2");if(b2)b2.onclick=()=>{WIZ=0;renderWiz(p)};
   const gn=document.getElementById("wgen");if(gn)gn.onclick=()=>{
-    p.prog=generate(c);p.done=true;pruneChecks(p);saveP();VIEW="app";TAB=0;toast("Programme généré");render()};
-  const wq=document.getElementById("wq");if(wq)wq.onclick=()=>{VIEW="app";render()};
+    p.prog=generate(c);p.done=true;pruneChecks(p);saveP();VIEW="app";SECT="train";TAB=todayIdx(p.prog.sessions);toast("Programme généré");render()};
+  const wq=document.getElementById("wq");if(wq)wq.onclick=()=>{VIEW="app";SECT="train";
+    if(p.prog&&p.prog.sessions&&p.prog.sessions.length)TAB=todayIdx(p.prog.sessions);render()};
 }
 
 /* ---- Application principale ---- */
 function renderMain(p){
   const c=p.cfg,sess=p.prog.sessions;
+  /* Chaque section a son propre ton de fond (moins sombre que l'Entrainement,
+     jamais une autre identite) : on le porte sur le body pour que la nav
+     basse et le reste de la page suivent d'un seul attribut. */
+  document.body.dataset.sect=SECT;
   let h='<header><div class="av" id="switch">'+esc((p.name||"?").charAt(0).toUpperCase())+'</div>'
     +'<div class="who"><h1>'+esc(p.name)+'</h1>'
     +'<div class="sub">'+SPLITS[c.split].n+' · '+GOALS[c.goal].n+'</div></div>'
@@ -1735,20 +2192,34 @@ function renderMain(p){
         +'<div class="tsub">'+(c.eventName?esc(c.eventName)+' · ':'')+'semaine '+wk+' · '+dl+' jours restants ('+pc+' %)</div></div>';
     }
   }
-  h+='<div class="tabs">';
-  sess.forEach((s,i)=>{h+='<button class="tab'+(TAB===i?" on":"")+'" data-tab="'+i+'">'+DAYS_FR[s.day].slice(0,3)+'<s>'+esc(s.k)+'</s></button>'});
-  h+='<button class="tab'+(TAB===sess.length?" on":"")+'" data-tab="'+sess.length+'">Suivi<s>historique</s></button>';
-  h+='<button class="tab'+(TAB===sess.length+1?" on":"")+'" data-tab="'+(sess.length+1)+'">Nutrition<s>besoins</s></button>';
-  h+='<button class="tab'+(TAB===sess.length+2?" on":"")+'" data-tab="'+(sess.length+2)+'">Profil<s>réglages</s></button>';
-  h+='</div><div id="pg"></div>';
+  /* Sous-onglets des jours d'entraînement — uniquement visibles dans la
+     section Entraînement, pour laisser la place aux jours quel qu'en soit
+     le nombre (2 comme 6) sans tout entasser dans la barre du bas. */
+  if(SECT==="train"){
+    h+='<div class="tabs">';
+    sess.forEach((s,i)=>{h+='<button class="tab'+(TAB===i?" on":"")+'" data-tab="'+i+'">'+DAYS_FR[s.day].slice(0,3)+'<s>'+esc(s.k)+'</s></button>'});
+    h+='</div>';
+  }
+  h+='<div id="pg"></div>';
+  const curDay=sess[TAB]||sess[0];
+  h+='<nav class="bnav">'
+    +'<button class="bntab'+(SECT==="train"?" on":"")+'" data-sect="train">'+BARICON+'<span>'+(curDay?DAYS_FR[curDay.day].slice(0,3):"Séance")+'</span></button>'
+    +'<button class="bntab'+(SECT==="hist"?" on":"")+'" data-sect="hist">'+ICON_HIST+'<span>Suivi</span></button>'
+    +'<button class="bntab'+(SECT==="nut"?" on":"")+'" data-sect="nut">'+ICON_NUT+'<span>Nutrition</span></button>'
+    +'<button class="bntab'+(SECT==="shop"?" on":"")+'" data-sect="shop">'+ICON_SHOP+'<span>Boutique</span></button>'
+    +'<button class="bntab'+(SECT==="prof"?" on":"")+'" data-sect="prof">'+ICON_PROF+'<span>Profil</span></button>'
+    +'</nav>';
   APP.innerHTML=h;
   document.getElementById("switch").onclick=()=>{VIEW="home";render()};
   APP.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{TAB=+b.dataset.tab;PANEL={};renderMain(p);window.scrollTo(0,0)});
+  APP.querySelectorAll("[data-sect]").forEach(b=>b.onclick=()=>{
+    SECT=b.dataset.sect;PANEL={};renderMain(p);window.scrollTo(0,0)});
   const pg=document.getElementById("pg");
-  if(!(TAB<sess.length&&FOCUS[TAB]))closeFocus();
-  if(TAB<sess.length) renderSession(p,sess[TAB],TAB,pg);
-  else if(TAB===sess.length) renderHist(p,pg);
-  else if(TAB===sess.length+1) renderNutri(p,pg);
+  if(!(SECT==="train"&&FOCUS[TAB]))closeFocus();
+  if(SECT==="train") renderSession(p,sess[TAB]||sess[0],TAB,pg);
+  else if(SECT==="hist") renderHist(p,pg);
+  else if(SECT==="nut") renderNutri(p,pg);
+  else if(SECT==="shop") renderShop(p,pg);
   else renderProfil(p,pg);
 }
 
@@ -1786,6 +2257,34 @@ function refreshProgress(p,s,pg,plan){
   if(fp)fp.textContent=progressText(t);
 }
 function logKey(sid,exid){return sid+"_"+exid}
+/* Temps de repos adapte, pas seulement a l'exercice : le niveau declare
+   pese sur les gros mouvements (une charge absolue plus lourde demande
+   plus de recuperation entre series), et une charge proche du 1RM de
+   reference ou un ressenti deja note "dur"/"echec" sur cet exercice cette
+   seance prolongent le repos de cette serie precise. Plafonne a 5 min. */
+const LVLREST={1:.92,2:1,3:1.1};
+function smartRest(p,s,x,e,setIdx){
+  let r=x.rest;
+  if(e.typ==="c")r*=(LVLREST[p.cfg.lvl]||1);
+  const ov=p.ovr[x.id],ch=ov!=null?parseFloat(ov):x.charge;
+  if(e.ref&&e.pct&&ch!=null&&!isNaN(ch)){
+    const rm=parseFloat(p.cfg.rm[e.ref]);
+    if(rm>0&&ch/rm>=.85)r*=1.2;
+  }
+  const fb=p.logs.find(l=>l.k===logKey(s.sid,x.id))||{};
+  /* Le ressenti ajuste le repos dans les deux sens : un exercice qui
+     tourne dur ou en echec appelle plus de recuperation, un exercice
+     qui reste facile n'a pas besoin d'autant — sans quoi le repos ne
+     s'adaptait qu'a la hausse. */
+  if(fb.diff==="dur"||fb.diff==="echec"||fb.ok==="non")r*=1.15;
+  else if(fb.diff==="facile")r*=.9;
+  /* La fatigue s'accumule aussi au fil des series d'un meme exercice :
+     un peu plus de repos avant la derniere serie qu'avant la premiere,
+     sans changer le repos "type" affiche avant de commencer (setIdx
+     absent, ou premiere serie). */
+  if(setIdx>0&&x.sets>1)r*=1+Math.min(setIdx,x.sets-1)/(x.sets-1)*.12;
+  return Math.min(300,Math.round(r/5)*5);
+}
 /* Efface les series cochees qui ne correspondent plus a aucun exercice
    du programme courant (apres une regeneration, par exemple). */
 function pruneChecks(p){
@@ -1845,18 +2344,27 @@ function renderFocus(p,s,ti,plan,order){
   h+='<div class="fbar"><i style="width:'+t.pct+'%"></i></div>';
   h+='<div class="fbody">';
   h+='<div class="fname"><span class="ix">'+(xi+1)+'</span>'+esc(e.n)
-    +'<button class="vbtn" data-fvar="'+xi+'" title="Remplacer par un exercice similaire" aria-label="Remplacer cet exercice">⇄</button></div>';
+    +'<button class="vbtn" data-fvar="'+xi+'" title="Remplacer cet exercice par un autre" aria-label="Remplacer cet exercice">⇄ Changer</button></div>';
   h+='<div class="fchips"><span class="chip"><b>'+x.sets+'</b> × '+x.reps+'</span>'
     +'<span class="chip'+loadTxt(p,x,e,ov,ch).c+'">'+loadTxt(p,x,e,ov,ch).t+'</span>'
-    +'<span class="chip">'+x.rpe+'</span><span class="chip">repos <b>'+mmss(x.rest)+'</b></span>'
+    +'<span class="chip">'+x.rpe+'</span><span class="chip">repos <b>'+mmss(smartRest(p,s,x,e))+'</b></span>'
     +(x.swapFrom?'<span class="chip" style="border:1px solid var(--warn);color:var(--warn)">remplace '+esc(x.swapFrom)+'</span>':'')
     +(x.inPlan?'':(x.spared
       ?'<span class="chip" style="border:1px solid var(--warn);color:var(--warn)">sans équivalent</span>'
       :'<span class="chip" style="border:1px solid var(--mut);color:var(--mut)">bonus</span>'))
     +'</div>';
+  if(e.eq==="barre"&&ch!=null&&!isNaN(ch))h+=barbellSVG(ch);
   h+='<div class="fanim">'+(img?'<img alt="'+esc(e.n)+'" decoding="async" src="'+img+'">'
     :'<div class="na">Animation non fournie</div>')+'</div>';
 
+  const prevExF=lastExRecord(p,x.id);
+  if(prevExF){
+    const pef=prevExF.ex;
+    h+='<div class="prevrow"><span class="prevlbl">Précédent</span> '
+      +'<b>'+pef.done+'/'+pef.sets+'</b> séries'
+      +(pef.kg!=null?' · <b>'+esc(kg(pef.kg))+'</b>':(pef.bw!=null?' · <b>'+esc(kg(pef.bw))+'</b> (poids du corps)':''))
+      +(pef.diff?' · '+DIFFL[pef.diff]:'')+' <span class="mut">— '+esc(shortDate(prevExF.date))+'</span></div>';
+  }
   h+='<div class="fsec"><div class="lbl">Séries'
     +(x.inPlan&&allS>x.sets?' — les pointillées sont hors format du jour':'')+'</div><div class="fsets">';
   for(let k=0;k<allS;k++){
@@ -1906,11 +2414,11 @@ function renderFocus(p,s,ti,plan,order){
   const go=d=>{FOCUS["i"+ti]=Math.min(nb-1,Math.max(0,i+d));renderMain(p)};
   FOC.querySelectorAll("[data-fnav]").forEach(b=>b.onclick=()=>go(+b.dataset.fnav));
   FOC.querySelectorAll("[data-fvar]").forEach(b=>b.onclick=()=>variantDialog(p,ti,+b.dataset.fvar));
-  document.getElementById("fquit").onclick=()=>{FOCUS[ti]=false;closeFocus();renderMain(p);window.scrollTo(0,0)};
+  document.getElementById("fquit").onclick=()=>{FOCOVR[ti+"_"+today()]=false;closeFocus();renderMain(p);window.scrollTo(0,0)};
   FOC.querySelectorAll("[data-fck]").forEach(b=>b.onchange=()=>{
     const k=b.dataset.fck,key="chk_"+sKey(p,s.sid,x.id,k);
     b.checked?S(key,true):DEL(key);
-    if(b.checked)startT(x.rest,"Repos · "+e.n+" — série "+(+k+1)+"/"+x.sets);
+    if(b.checked)startT(smartRest(p,s,x,e,+k),"Repos · "+e.n+" — série "+(+k+1)+"/"+x.sets);
     refreshProgress(p,s,null,plan)});
   FOC.querySelectorAll("[data-inf]").forEach(b=>b.onclick=()=>{
     const box=FOC.querySelector('[data-infb="'+b.dataset.inf+'"]');
@@ -1949,10 +2457,17 @@ function renderFocus(p,s,ti,plan,order){
 }
 
 function renderSession(p,s,ti,pg){
-  const foc=!!FOCUS[ti];
   const pain=p.cfg.pain||[];
   const dm=dayDur(p,s),plan=planSession(s,dm,p.cfg),def=p.cfg.dur||60;
   const t0=tally(p,s,plan),tot=t0.tot,done=t0.done,pct=t0.pct;
+  /* La vue par defaut d'une seance est desormais l'accordeon (liste complete,
+     modifiable) : on n'y saute plus automatiquement en mode focus. Le passage
+     en focus est un choix explicite — via le bouton "Démarrer la séance" (qui
+     propose Focus ou Tout à l'écran) ou via le raccourci "Focus" du bandeau —
+     et ne vaut que pour la date du jour, comme avant. */
+  const fkey=ti+"_"+today();
+  const foc=FOCOVR[fkey]===true;
+  FOCUS[ti]=foc;
   let h='<div class="page on">';
   h+='<div class="motiv">'+esc(motivation(p,s,plan))+'</div>';
   h+='<div class="prog"><i style="width:'+pct+'%"></i></div><div class="ptxt" id="ptxt">'+progressText(t0)+'</div>';
@@ -1963,7 +2478,7 @@ function renderSession(p,s,ti,pg){
     +(pain.length?' · '+pain.length:'')+'</button>'
     +'<button class="mini'+(foc?" on":"")+'" id="fmode">Focus</button>'
     +'<button class="mini'+(p.set.timer?" on":"")+'" id="tmode">Minuteur</button>'
-    +'<button class="mini dd'+(op==="vary"?" open":"")+(varyRank(p,s)?" on":"")+'" data-pan="vary" aria-label="Varier tous les exercices de la séance" title="Varier tous les exercices de la séance">⇄ all'
+    +'<button class="mini dd'+(op==="vary"?" open":"")+(varyRank(p,s)?" on":"")+'" data-pan="vary" aria-label="Varier tous les exercices de la séance" title="Varier tous les exercices de la séance">🔀 Tout'
     +(varyRank(p,s)?' '+varyRank(p,s):'')+'</button>'
     +'</div>';
 
@@ -2034,19 +2549,34 @@ function renderSession(p,s,ti,pg){
   order.sort((a,b)=>grp(a)-grp(b)||a.xi-b.xi);
   if(foc){pg.innerHTML="";renderFocus(p,s,ti,plan,order);return}
   let sepBonus=false,sepSpared=false;
+  /* accordéon : un seul exercice ouvert par défaut — le premier non terminé */
+  const allSetsOf=xx=>xx.allSets||xx.sets;
+  const doneCountOf=xx=>{let n=0;const a=allSetsOf(xx);for(let i=0;i<a;i++)if(G("chk_"+sKey(p,s.sid,xx.id,i),false))n++;return n};
+  if(ACC[ti]==null){
+    let defPos=0;
+    for(let i=0;i<order.length;i++){
+      if(doneCountOf(order[i].x)<allSetsOf(order[i].x)){defPos=i;break}
+    }
+    ACC[ti]=defPos;
+  }
   order.forEach((o,pos)=>{
     const x=o.x,xi=o.xi;
     const e=byId(x.id);if(!e)return;
-    const hid=foc&&(FOCUS["i"+ti]||0)!==pos;
+    const coll=ACC[ti]!==pos;
     const ov=p.ovr[x.id];
     const ch=ov!=null?parseFloat(ov):x.charge;
+    const allS0=allSetsOf(x),doneN=doneCountOf(x);
     if(!x.inPlan&&!x.spared&&!sepBonus&&!foc){sepBonus=true;
       h+='<div class="plansep">Au-delà de '+dm+' min</div>';}
     if(x.spared&&!sepSpared&&!foc){sepSpared=true;
       h+='<div class="plansep">Écartés — '+esc(painLabel(pain))+'</div>';}
-    h+='<div class="exo'+(hid?" hid":"")+(x.inPlan?"":(x.spared?" spared":" bonus"))+'">'
-      +'<div class="eh"><span class="nm"><span class="ix">'+(xi+1)+'</span>'+esc(e.n)
-      +'<button class="vbtn" data-var="'+xi+'" title="Remplacer par un exercice similaire" aria-label="Remplacer cet exercice">⇄</button></span></div>'
+    h+='<div class="exo'+(coll?" coll":"")+(x.inPlan?"":(x.spared?" spared":" bonus"))+'">'
+      +'<div class="eh">'
+      +'<button class="acctog" data-acc="'+pos+'" aria-label="'+(coll?"Déplier":"Replier")+' cet exercice"><span class="chev">▾</span><span class="nm"><span class="ix">'+(xi+1)+'</span>'+esc(e.n)+'</span></button>'
+      +'<span class="chsum">'+x.sets+'×'+x.reps+(ch!=null&&!isNaN(ch)?' · '+esc(kg(ch)):'')+'</span>'
+      +'<span class="donecnt">'+doneN+'/'+allS0+'</span>'
+      +'<button class="vbtn" data-var="'+xi+'" title="Remplacer cet exercice par un autre" aria-label="Remplacer cet exercice">⇄ Changer</button>'
+      +'</div>'
       +'<div class="body">'
       +'<div class="chips"><span class="chip"><b>'+x.sets+'</b> × '+x.reps+'</span>'
       +(x.swapFrom?'<span class="chip" style="border:1px solid var(--warn);color:var(--warn)">remplace '+esc(x.swapFrom)+'</span>':'')
@@ -2054,15 +2584,28 @@ function renderSession(p,s,ti,pg){
         ?'<span class="chip" style="border:1px solid var(--warn);color:var(--warn)">sans équivalent</span>'
         :'<span class="chip" style="border:1px solid var(--mut);color:var(--mut)">bonus</span>'))
       +'<span data-cc="'+xi+'" class="chip'+loadTxt(p,x,e,ov,ch).c+'">'+loadTxt(p,x,e,ov,ch).t+'</span>'
-      +'<span class="chip">'+x.rpe+'</span><span class="chip">repos <b>'+mmss(x.rest)+'</b></span>'
+      +'<span class="chip">'+x.rpe+'</span><span class="chip">repos <b>'+mmss(smartRest(p,s,x,e))+'</b></span>'
       +(x.forced?'<span class="chip" style="border:1px solid var(--brand2);color:var(--brand2)">imposé</span>':'')
       +'</div>';
-    /* en mode focus, on ne charge pas les animations des exercices masques */
-    const img=(!hid)&&!x.spared&&e.img&&IMG(e.img);
-    h+='<div class="vis"><div class="an">'+(img?'<img alt="'+esc(e.n)+'" decoding="async" src="'+img+'">':'<div class="na">'+(hid?"":"Animation non fournie<br>schéma musculaire ci-contre")+'</div>')+'</div>'
-      +'<div class="mp">'+muscleSVG(e.prim,e.sec||[],e.id)+'</div></div>'
-      +'<div class="leg"><i style="color:var(--brand)">■</i> '+e.prim.map(m=>MUS[m]).join(", ")
-      +(e.sec&&e.sec.length?' &nbsp;<i style="color:var(--brand2)">■</i> '+e.sec.map(m=>MUS[m]).join(", "):'')+'</div>';
+    const img=!x.spared&&e.img&&IMG(e.img);
+    h+='<div class="exillus">'+(img?'<img alt="'+esc(e.n)+'" decoding="async" src="'+img+'">':'<div class="na">Animation non fournie</div>')+'</div>';
+    h+='<div class="workcard"><div class="wlbl">Charge de travail</div>'
+      +'<div class="wrow"><div class="mp">'+muscleSVG(e.prim,e.sec||[],e.id)+'</div>'
+      +(e.eq==="barre"&&ch!=null&&!isNaN(ch)?barbellSVG(ch):'<span class="mut" style="font-size:.72rem">'+(e.eq==="pdc"?"Poids du corps":"Charge libre")+'</span>')
+      +'</div>'
+      +'<div class="leg"><i style="color:var(--musc-p)">■</i> '+e.prim.map(m=>MUS[m]).join(", ")
+      +(e.sec&&e.sec.length?' &nbsp;<i style="color:var(--musc-s)">■</i> '+e.sec.map(m=>MUS[m]).join(", "):'')+'</div></div>';
+    /* Rappel de la derniere fois, juste au-dessus des cases a cocher :
+       la charge du jour se decide en regardant ce qui a ete fait, pas en
+       cherchant plus bas dans un tableau de charges. */
+    const prevEx=lastExRecord(p,x.id);
+    if(prevEx){
+      const pe=prevEx.ex;
+      h+='<div class="prevrow"><span class="prevlbl">Précédent</span> '
+        +'<b>'+pe.done+'/'+pe.sets+'</b> séries'
+        +(pe.kg!=null?' · <b>'+esc(kg(pe.kg))+'</b>':(pe.bw!=null?' · <b>'+esc(kg(pe.bw))+'</b> (poids du corps)':''))
+        +(pe.diff?' · '+DIFFL[pe.diff]:'')+' <span class="mut">— '+esc(shortDate(prevEx.date))+'</span></div>';
+    }
     h+='<div class="sets">';
     const allS=x.allSets||x.sets;
     for(let i=0;i<allS;i++){
@@ -2089,9 +2632,13 @@ function renderSession(p,s,ti,pg){
     }
     if(e.eq!=="pdc"){
       const vide=(ch==null||isNaN(ch));
+      const lu=lastUsedKg(p,x.id,today());
+      const showPrec=lu!=null&&(vide||parseFloat(ch)!==lu);
       h+='<div class="cbar"><label>Charge utilisée</label>'
         +(vide?'<button class="ibtn" data-inf="c'+xi+'" aria-label="Pourquoi ce champ est vide" title="Pourquoi ce champ est vide">i</button>':'')
-        +'<input type="number" step="0.5" inputmode="decimal" data-ch="'+xi+'" value="'+(vide?"":ch)+'">'
+        +'<input type="number" step="0.5" inputmode="decimal" data-ch="'+xi+'" value="'+(vide?"":ch)+'"'
+        +(vide&&lu!=null?' placeholder="'+lu+'"':'')+'>'
+        +(showPrec?'<span class="mut" style="font-size:.68rem">Préc. '+esc(kg(lu))+'</span>':'')
         +'<button class="mini" data-hi="'+xi+'">Courbe</button>'
         +(ov!=null?'<button class="mini on" data-ra="'+xi+'">Auto</button>':'')+'</div>'
         +(vide?'<div class="leg" data-infb="c'+xi+'" hidden style="margin:-2px 0 8px">'+esc(freeLoadWhy(e))+'</div>':'')
@@ -2104,22 +2651,45 @@ function renderSession(p,s,ti,pg){
       +'<span class="lb">Ressenti</span>'
       +DIFFS.map(d=>'<button data-df="'+ti+"|"+xi+"|"+d+'" class="'+(fb.diff===d?"dsel":"")+'">'+DIFFL[d]+'</button>').join("")
       +'</div></div>';
-    h+='<details class="tech"><summary>Technique &amp; alternatives</summary><div class="tb">'
+    h+='<details class="tech"><summary>Technique &amp; erreurs fréquentes</summary><div class="tb">'
       +'<p><span class="k">Départ :</span> '+esc(e.d.a)+'</p>'
       +'<p><span class="k">Exécution :</span> '+esc(e.d.b)+'</p>'
       +'<p><span class="e">Erreur fréquente :</span> '+esc(e.d.c)+'</p>'
-      +'<p class="mut">Alternatives même schéma moteur : '
-      +(EX.filter(o=>o.pat===e.pat&&o.id!==e.id).slice(0,3).map(o=>esc(o.n)).join(" · ")||"aucune dans la banque")+'</p>'
+      +'<button class="mini" data-var2="'+xi+'" style="margin-top:6px">Voir les alternatives</button>'
       +'</div></details></div>';
   });
+  if(done===0){
+    const spOpen=!!STARTPANEL[ti];
+    h+='<div class="startzone">';
+    if(spOpen){
+      h+='<div class="spanel"><h5>Comment veux-tu la dérouler ?</h5>'
+        +'<button type="button" class="vrow2" id="gofocus"><b>Mode focus</b><small>Un exercice à la fois, plein écran, minuteur intégré.</small></button>'
+        +'<button type="button" class="vrow2" id="gofull"><b>Tout à l\'écran</b><small>La liste complète, comme ci-dessus — modifiable à tout moment.</small></button>'
+        +'</div>';
+    }else{
+      h+='<button class="btn" id="startbtn">Démarrer la séance</button>';
+    }
+    h+='</div>';
+  }
   h+='<div class="fld"><label>Note de séance</label><textarea id="snote" rows="3" placeholder="Charges, ressenti, douleurs, affluence…">'+esc(p.notes[s.sid]||"")+'</textarea></div>';
   h+='<button class="btn" id="finish">Terminer la séance et l\'archiver</button>';
   h+='<button class="btn g" id="reset">Réinitialiser cette séance</button><div style="height:26px"></div></div>';
   pg.innerHTML=h;
 
-  document.getElementById("fmode").onclick=()=>{FOCUS[ti]=!FOCUS[ti];FOCUS["i"+ti]=0;renderMain(p)};
+  document.getElementById("fmode").onclick=()=>{FOCOVR[ti+"_"+today()]=!foc;FOCUS["i"+ti]=0;renderMain(p)};
+  pg.querySelectorAll("[data-acc]").forEach(b=>b.onclick=()=>{
+    const pos=+b.dataset.acc;
+    ACC[ti]=(ACC[ti]===pos)?-1:pos;
+    renderMain(p)});
+  const startbtn=document.getElementById("startbtn");
+  if(startbtn)startbtn.onclick=()=>{STARTPANEL[ti]=true;renderMain(p)};
+  const gofocus=document.getElementById("gofocus");
+  if(gofocus)gofocus.onclick=()=>{STARTPANEL[ti]=false;FOCOVR[fkey]=true;FOCUS["i"+ti]=0;renderMain(p)};
+  const gofull=document.getElementById("gofull");
+  if(gofull)gofull.onclick=()=>{STARTPANEL[ti]=false;FOCOVR[fkey]=false;renderMain(p)};
   document.getElementById("tmode").onclick=()=>{p.set.timer=!p.set.timer;saveP();if(!p.set.timer)stopT(true);renderMain(p)};
   pg.querySelectorAll("[data-var]").forEach(b=>b.onclick=()=>variantDialog(p,ti,+b.dataset.var));
+  pg.querySelectorAll("[data-var2]").forEach(b=>b.onclick=()=>variantDialog(p,ti,+b.dataset.var2));
   pg.querySelectorAll("[data-pan]").forEach(b=>b.onclick=()=>{
     const k=b.dataset.pan;
     PANEL[ti]=(PANEL[ti]===k)?null:k;
@@ -2154,7 +2724,7 @@ function renderSession(p,s,ti,pg){
     const [xi,si]=b.dataset.ck.split("|");
     const x=plan.items[+xi],k="chk_"+sKey(p,s.sid,x.id,si);
     b.checked?S(k,true):DEL(k);
-    if(b.checked){const e=byId(x.id);startT(x.rest,"Repos · "+e.n+" — série "+(+si+1)+"/"+x.sets)}
+    if(b.checked){const e=byId(x.id);startT(smartRest(p,s,x,e,+si),"Repos · "+e.n+" — série "+(+si+1)+"/"+x.sets)}
     refreshProgress(p,s,pg,plan)});
   pg.querySelectorAll("[data-dur]").forEach(b=>b.onclick=()=>{
     setDayDur(p,s,+b.dataset.dur);PANEL[ti]=null;renderMain(p);window.scrollTo(0,0)});
@@ -2198,7 +2768,7 @@ function renderSession(p,s,ti,pg){
     const box=pg.querySelector('[data-hb="'+xi+'"]');box.hidden=!box.hidden;
     if(!box.hidden){const id=plan.items[+xi].id;
       const arr=(p.used[id]||[]).slice().sort((a,b2)=>a.date<b2.date?-1:1);
-      line(box.querySelector("canvas"),arr.map(a=>({v:a.kg})),"#3DD6C4")}});
+      line(box.querySelector("canvas"),arr.map(a=>({v:a.kg})),"#F5C518")}});
   pg.querySelectorAll("[data-ok]").forEach(b=>b.onclick=()=>{
     const [t,xi,v]=b.dataset.ok.split("|");const k=logKey(s.sid,plan.items[+xi].id);
     let l=p.logs.find(x=>x.k===k);if(!l){l={k:k};p.logs.push(l)}
@@ -2219,14 +2789,24 @@ function renderSession(p,s,ti,pg){
     if(p.dayDur)delete p.dayDur[s.sid];
     saveP();toast("Séance réinitialisée");renderMain(p)};
   document.getElementById("finish").onclick=()=>{
+    const prevBadgeSt=badgeStats(p);
     const tl=tally(p,s,plan);
     const rec={date:today(),k:s.k,day:s.day,done:tl.done+tl.bonus,tot:tl.tot,dur:dm,
       note:p.notes[s.sid]||"",ex:[]};
+    /* Detection de record : on compare a la meilleure charge deja archivee
+       AVANT d'ecrire celle du jour, et seulement si une reference existait
+       deja — sinon la toute premiere seance sur un exercice se ferait
+       passer pour un record. */
+    const prs=[];
     plan.items.forEach(x=>{
       const e=byId(x.id),l=p.logs.find(z=>z.k===logKey(s.sid,x.id))||{};
       const ov=p.ovr[x.id],ch=ov!=null?parseFloat(ov):x.charge;
       let d2=0;for(let i=0;i<(x.allSets||x.sets);i++)if(G("chk_"+sKey(p,s.sid,x.id,i),false))d2++;
       const bl=(ch==null||isNaN(ch))?bwLoad(p,e,today()):null;
+      /* exclut la date du jour : une charge deja saisie a la main plus tot
+         dans cette meme seance a pu s'ecrire dans p.used avant l'archivage
+         et fausserait la comparaison avec elle-meme. */
+      const prevBest=(p.used[x.id]||[]).filter(a=>a.date!==today()).reduce((m,a)=>a.kg>m?a.kg:m,0);
       rec.ex.push({n:e.n,id:x.id,sets:x.sets,reps:x.reps,done:d2,
         kg:(ch!=null&&!isNaN(ch))?ch:null,bw:bl,ok:l.ok||null,diff:l.diff||null});
       /* La charge réellement soulevée alimente les courbes et les records,
@@ -2237,6 +2817,7 @@ function renderSession(p,s,ti,pg){
         const arr=p.used[x.id]||[],dd=today(),k=arr.findIndex(a=>a.date===dd);
         if(k>=0){if(ch>arr[k].kg)arr[k].kg=ch}else arr.push({date:dd,kg:ch});
         p.used[x.id]=arr;
+        if(prevBest>0&&ch>prevBest)prs.push({n:e.n,prev:prevBest,kg:ch});
       }
       /* les mouvements au poids de corps alimentent aussi les courbes et
          les records, avec leur charge effective — mais jamais p.ovr, qui
@@ -2245,18 +2826,34 @@ function renderSession(p,s,ti,pg){
         const arr=p.used[x.id]||[],dd=today(),k=arr.findIndex(a=>a.date===dd);
         if(k>=0){if(bl>arr[k].kg)arr[k].kg=bl}else arr.push({date:dd,kg:bl});
         p.used[x.id]=arr;
+        if(prevBest>0&&bl>prevBest)prs.push({n:e.n,prev:prevBest,kg:bl});
       }
     });
     p.hist.unshift(rec);
-    /* progression proposée pour la prochaine fois */
+    /* séance "parfaite" : chaque exercice réellement fait (hors écartés)
+       a son objectif atteint, et aucun n'est marqué en échec */
+    const touched=rec.ex.filter(x=>x.done>0);
+    const perfect=touched.length>0&&touched.every(x=>x.ok==="oui");
+    if(perfect)p.perfectCount=(p.perfectCount||0)+1;
+    if(prs.length)p.prCount=(p.prCount||0)+prs.length;
+    /* progression proposée pour la prochaine fois — apres PROG_STREAK
+       seances reussies d'affilee, pas des la premiere (voir PROG_STREAK). */
+    if(!p.streak)p.streak={};
     const prop=[];
     plan.items.forEach(x=>{
       const e=byId(x.id),l=p.logs.find(z=>z.k===logKey(s.sid,x.id))||{};
       const ov=p.ovr[x.id],base=ov!=null?parseFloat(ov):x.charge;
       if(base==null||isNaN(base))return;
       const step=e.typ==="c"?2.5:1;let nv=base;
-      if(l.ok==="oui"&&(l.diff==="facile"||l.diff==="correct"))nv=base+step;
-      else if(l.ok==="non"||l.diff==="echec")nv=r25(base*.95);
+      const good=l.ok==="oui"&&(l.diff==="facile"||l.diff==="correct");
+      const bad=l.ok==="non"||l.diff==="echec";
+      if(good){
+        const ns=(p.streak[x.id]||0)+1;
+        if(ns>=PROG_STREAK){nv=base+step;p.streak[x.id]=0}
+        else{p.streak[x.id]=ns;const rest=PROG_STREAK-ns;
+          prop.push(e.n+" : encore "+rest+" séance"+(rest>1?"s":"")+" réussie"+(rest>1?"s":"")+" pour passer à "+kg(base+step))}
+      }else if(bad){nv=r25(base*.95);p.streak[x.id]=0}
+      else p.streak[x.id]=0;
       if(nv!==base){p.ovr[x.id]=String(nv);prop.push(e.n+" → "+kg(nv))}
     });
     /* Sur traction et dips, une seance reussie et facile ne se traduisait
@@ -2287,11 +2884,23 @@ function renderSession(p,s,ti,pg){
       if(vr.changed)prop.push("Séance variée pour la prochaine fois : "+vr.changed+" exercice"+(vr.changed>1?"s":"")+" remplacé"+(vr.changed>1?"s":""));
     }
     saveP();
-    let hh='<p class="sum"><b>'+(tl.done+tl.bonus)+'</b> séries effectuées sur '+tl.tot+' prévues<br>';
-    if(kc!=null) hh+='Dépense estimée : <b>'+kc+' kcal</b><br>';
-    hh+='Format : <b>'+dm+' min</b></p>';
+    const newBadges=badgesNew(prevBadgeSt,badgeStats(p));
+    const bst=badgeStats(p),earnedTot=BADGES.filter(b=>(bst[b.cat]||0)>=b.thr).length;
+    let hh='<p class="encour">'+esc(endMessage(tl,prs,newBadges,perfect))+'</p>';
+    hh+='<div class="recap2x2">'
+      +'<div><b>'+(tl.done+tl.bonus)+'</b><span>séries</span></div>'
+      +'<div><b>'+(kc!=null?kc:"—")+'</b><span>kcal est.</span></div>'
+      +'<div><b>'+dm+'</b><span>min</span></div>'
+      +'<div><b>'+plan.n+'</b><span>exercices</span></div>'
+      +'</div>';
     if(kc==null) hh+='<p class="mut">Renseigne ton poids dans l\'onglet Nutrition pour obtenir une estimation de la dépense.</p>';
-    else hh+='<p class="mut">Ordre de grandeur, pas une mesure : ce type d\'estimation a une marge de 20 à 30 % d\'une personne à l\'autre.</p>';
+    if(newBadges.length){
+      hh+=newBadges.map(b=>'<div class="badgebanner"><span class="bico">🏅</span><div><b>Médaille débloquée : '+esc(b.n)+'</b>'
+        +'<small>'+esc(b.d)+' · '+earnedTot+'/'+BADGES.length+' médailles</small></div></div>').join("");
+    }
+    if(prs.length) hh+='<div class="prbanner"><b>Nouveau'+(prs.length>1?"x records ! ":" record ! ")+'</b>'
+      +prs.map(r=>esc(r.n)+' '+esc(kg(r.prev))+' → <b>'+esc(kg(r.kg))+'</b>').join(' · ')
+      +'</div>';
     const detail=rec.ex.filter(x=>x.kcal!=null);
     if(detail.length){
       hh+='<p class="mut" style="margin-top:10px"><b style="color:var(--brand)">Dépense par exercice</b></p>'
@@ -2300,8 +2909,9 @@ function renderSession(p,s,ti,pg){
         +'</table>'
         +'<p class="mut">Le total de la séance est réparti au prorata du temps sous tension et du repos ; ces parts s\'additionnent pour donner la dépense totale.</p>';
     }
+    else if(kc!=null) hh+='<p class="mut">Ordre de grandeur, pas une mesure : ce type d\'estimation a une marge de 20 à 30 % d\'une personne à l\'autre.</p>';
     if(prop.length) hh+='<p class="mut" style="margin-top:8px"><b style="color:var(--brand)">Ajusté pour la prochaine fois</b><br>'+prop.map(esc).join('<br>')+'</p>';
-    mdOpen({title:"Séance terminée",msg:"",html:hh,ok:"Fermer",noCancel:true,cb:function(){}});
+    mdOpen({title:"Séance terminée",msg:"",html:hh,ok:"Voir dans Suivi",cancel:"Fermer",cb:function(v){if(v){SECT="hist";renderMain(p)}}});
     renderMain(p)};
 }
 
@@ -2543,6 +3153,53 @@ function bwLoad(p,e,date){
   const w=bwAt(p,date);if(w==null)return null;
   return Math.round((c*w+lestOf(p,e))*2)/2;
 }
+/* Derniere charge archivee pour un exercice (hors seance du jour), pour
+   afficher un repere "Preс." distinct de la charge prescrite/en cours —
+   utile quand l'utilisateur modifie la valeur a la main. */
+function lastUsedKg(p,id,excl){
+  const arr=(p.used[id]||[]).filter(a=>a.date!==excl&&a.kg!=null);
+  if(!arr.length)return null;
+  return arr.slice().sort((a,b)=>a.date<b.date?-1:1).pop().kg;
+}
+/* Dernier passage archive sur cet exercice, quel que soit le jour de
+   programme — p.hist est deja trie du plus recent au plus ancien. */
+function lastExRecord(p,exId){
+  for(let i=0;i<p.hist.length;i++){
+    const e=(p.hist[i].ex||[]).find(z=>z.id===exId);
+    if(e)return {date:p.hist[i].date,ex:e};
+  }
+  return null;
+}
+/* Visu "barre chargee" : decompose la charge en disques standard (barre
+   olympique 20 kg) et les dessine, colores selon le code IWF — la donnee
+   reelle (quels disques mettre) devient l'image, plutot qu'un decor
+   generique. Seulement pertinent sur un exercice a barre libre. */
+const PLATES=[[25,"var(--p25)"],[20,"var(--p20)"],[15,"var(--p15)"],[10,"var(--p10)"],
+  [5,"var(--p5)"],[2.5,"var(--p125)"],[1.25,"var(--p125)"]];
+function barbellSVG(totalKg){
+  const bar=20;
+  let per=Math.round(((totalKg-bar)/2)*100)/100;
+  if(!(per>0))return "";
+  const plates=[];
+  PLATES.forEach(pl=>{while(per>=pl[0]-.01){plates.push(pl);per=Math.round((per-pl[0])*100)/100}});
+  if(!plates.length)return "";
+  /* Rendu assez grand pour se lire comme "la barre a charger", pas comme
+     une puce de plus noyee dans la ligne de chips : c'est cet effet-la
+     qui justifie le calcul plutot qu'un simple chiffre en kg. */
+  const H=40,PW=11,gap=3,barLen=26;
+  let x=barLen+8;
+  const rects=plates.map(pl=>{
+    const ph=Math.max(18,Math.min(36,15+pl[0]/25*21));
+    const r='<rect x="'+x+'" y="'+((H-ph)/2).toFixed(1)+'" width="'+PW+'" height="'+ph.toFixed(1)+'" rx="2" fill="'+pl[1]+'" stroke="#0006" stroke-width=".75"/>'
+      +'<text x="'+(x+PW/2)+'" y="'+(H/2+3.5)+'" text-anchor="middle" font-size="7.5" font-weight="700" fill="#0009" font-family="var(--mono)">'+(pl[0]%1?pl[0].toFixed(1).replace(".",","):pl[0])+'</text>';
+    x+=PW+gap;return r;
+  }).join("");
+  const svg='<svg width="'+(x+2)+'" height="'+H+'" viewBox="0 0 '+(x+2)+' '+H+'" aria-hidden="true" style="display:block">'
+    +'<rect x="0" y="'+(H/2-2)+'" width="'+barLen+'" height="4" rx="2" fill="var(--p125)"/>'
+    +rects+'</svg>';
+  const perSide=plates.reduce((s,pl)=>s+pl[0],0);
+  return '<div class="barbell"><div class="bbwrap">'+svg+'</div><span class="bbl">'+kg(perSide)+' par côté · barre '+bar+' kg</span></div>';
+}
 /* Libelle de la pastille de charge, commun a la liste et au mode focus. */
 function loadTxt(p,x,e,ov,ch){
   if(ch!=null&&!isNaN(ch))
@@ -2574,6 +3231,27 @@ function weeklyVolume(p){
   });
   return Object.keys(w).sort().map(k=>({d:shortDate(k),v:Math.round(w[k]/100)/10}));
 }
+/* Quand toutes les seances tiennent dans la meme semaine, l'agregation
+   hebdomadaire ne produit qu'un point et aucune courbe ne se trace. On
+   retombe alors sur un point par seance, ce qui est ce que l'utilisateur
+   attend quand il en a archive trois. */
+function sessionVolume(p){
+  const out=[];
+  p.hist.slice().sort((a,b)=>a.date<b.date?-1:1).forEach(r=>{
+    let v=0;
+    (r.ex||[]).forEach(e=>{const L=(e.kg!=null)?e.kg:(e.bw!=null?e.bw:null);
+      if(L!=null)v+=e.done*repsMid(e.reps)*L});
+    if(v>0)out.push({d:shortDate(r.date),v:Math.round(v/100)/10});
+  });
+  return out;
+}
+/* Meme logique de repli pour la depense calorique : des seances recentes
+   tombant dans la meme semaine ne doivent pas s'ecraser en un seul point. */
+function sessionKcal(p){
+  return p.hist.slice().sort((a,b)=>a.date<b.date?-1:1)
+    .filter(r=>r.kcal!=null).map(r=>({d:shortDate(r.date),v:r.kcal}));
+}
+
 /* Depense hebdomadaire, consolidee depuis les seances archivees. */
 function weeklyKcal(p){
   const w={};
@@ -2588,6 +3266,24 @@ function kcalStats(p){
     tot+=r.kcal;n++;
     if(weekStart(r.date)===wk){semaine+=r.kcal;nSem++}});
   return {semaine:semaine,nSem:nSem,total:tot,n:n,moy:n?Math.round(tot/n):0};
+}
+
+/* Carte "Médailles" de l'onglet Suivi : grille des médailles acquises et
+   verrouillées, plus la barre de progression vers la prochaine. */
+function renderBadgeCard(p){
+  const list=badgeList(p),earned=list.filter(x=>x.earned).length,nb=nextBadge(p);
+  let h='<div class="card"><h4>Médailles · '+earned+'/'+BADGES.length+'</h4>'
+    +'<div class="badgegrid">'
+    +list.map(x=>'<div class="bslot'+(x.earned?" got":"")+'" title="'+esc(x.b.n)+' — '+esc(x.b.d)+'">'
+      +'<span class="bslico">'+(x.earned?"🏅":"🔒")+'</span><span class="bslon">'+esc(x.b.n)+'</span></div>').join("")
+    +'</div>';
+  if(nb){
+    const cur=badgeStats(p)[nb.cat]||0,pct=Math.min(100,Math.round(cur/nb.thr*100));
+    h+='<p class="mut" style="margin-top:10px">Prochaine : <b style="color:var(--txt)">'+esc(nb.n)+'</b> — '+cur+' / '+nb.thr+'</p>'
+      +'<div class="prog" style="margin-top:4px"><i style="width:'+pct+'%"></i></div>';
+  }else h+='<p class="mut" style="margin-top:10px">Toutes les médailles sont débloquées.</p>';
+  h+='</div>';
+  return h;
 }
 
 /* Meilleure charge enregistree par exercice. */
@@ -2606,6 +3302,8 @@ function renderHist(p,pg){
   const hard=p.hist.slice(0,3).reduce((n,r)=>n+r.ex.filter(e=>e.diff==="dur"||e.diff==="echec").length,0);
   const rated=p.hist.slice(0,3).reduce((n,r)=>n+r.ex.filter(e=>e.diff).length,0);
   if(rated>=8&&hard>=rated*.6) h+='<div class="alert w"><b>Fatigue cumulée</b>Le ressenti est « dur » ou « échec » sur la majorité des exercices des 3 dernières séances. Une semaine allégée (-20 % de charge, une série en moins) sera plus productive que de forcer la progression.</div>';
+  /* ---------------- Médailles ---------------- */
+  h+=renderBadgeCard(p);
   /* ---------------- Suivi corporel ---------------- */
   const bl=p.blog.slice().sort((a,z)=>a.d<z.d?-1:1);
   h+='<div class="card"><h4>Suivi corporel</h4>'
@@ -2632,16 +3330,23 @@ function renderHist(p,pg){
   h+='</div>';
 
   /* ---------------- Suivi musculaire ---------------- */
-  const vol=weeklyVolume(p),recs=records(p);
-  h+='<div class="card"><h4>Volume hebdomadaire</h4>';
-  if(vol.length<2) h+='<div class="empty">Deux semaines de séances archivées avec des charges pour tracer la courbe.</div>';
+  /* Sous 3 semaines distinctes, l'agregation hebdomadaire n'a pas assez de
+     recul (seances rapprochees = 1 ou 2 points = "toujours une ligne
+     droite") ; on retombe alors sur un point par seance. */
+  const volW=weeklyVolume(p),volS=sessionVolume(p);
+  const volBySession=volW.length<3&&volS.length>=volW.length;
+  const vol=volBySession?volS:volW,recs=records(p);
+  h+='<div class="card"><h4>Volume '+(volBySession?"par séance":"hebdomadaire")+'</h4>';
+  if(vol.length<2) h+='<div class="empty">Deux séances archivées avec des charges pour tracer la courbe.</div>';
   else{
-    h+='<canvas class="ch" id="vch"></canvas><p class="mut" style="text-align:right">en tonnes soulevées par semaine</p>'
+    h+='<canvas class="ch" id="vch"></canvas><p class="mut" style="text-align:right">en tonnes soulevées '+(volBySession?"par séance":"par semaine")+'</p>'
       +'<p class="mut">Séries effectuées × répétitions × charge. C\'est le meilleur indicateur unique de la charge de travail : s\'il stagne plusieurs semaines alors que le poids monte, la progression vient surtout de l\'intensité.</p>';
   }
   h+='</div>';
 
-  const kw=weeklyKcal(p),ks=kcalStats(p);
+  const kwW=weeklyKcal(p),kwS=sessionKcal(p);
+  const kcalBySession=kwW.length<3&&kwS.length>=kwW.length;
+  const kw=kcalBySession?kwS:kwW,ks=kcalStats(p);
   h+='<div class="card"><h4>Dépense estimée</h4>';
   if(!ks.n) h+='<div class="empty">Termine une séance avec ton poids renseigné pour voir la dépense s\'accumuler ici.</div>';
   else{
@@ -2649,8 +3354,8 @@ function renderHist(p,pg){
       +'<span class="chip">cette semaine <b>'+ks.semaine+' kcal</b></span>'
       +'<span class="chip">'+ks.nSem+' séance'+(ks.nSem>1?"s":"")+'</span>'
       +'<span class="chip">moyenne <b>'+ks.moy+' kcal</b> par séance</span></div>';
-    if(kw.length<2) h+='<p class="mut">Deux semaines de séances archivées pour tracer la courbe.</p>';
-    else h+='<canvas class="ch" id="kch"></canvas><p class="mut" style="text-align:right">kcal par semaine</p>';
+    if(kw.length<2) h+='<p class="mut">Deux séances archivées pour tracer la courbe.</p>';
+    else h+='<canvas class="ch" id="kch"></canvas><p class="mut" style="text-align:right">kcal par '+(kcalBySession?"séance":"semaine")+'</p>';
     h+='<p class="mut">Cumulé depuis le début : '+ks.total+' kcal sur '+ks.n+' séance'+(ks.n>1?"s":"")+'. '
       +'Ces chiffres sont des estimations à 20-30 % près : utile pour suivre une tendance, pas pour équilibrer une balance calorique au jour le jour.</p>';
   }
@@ -2691,9 +3396,9 @@ function renderHist(p,pg){
   h+='</div>';
 
   if(recs.length){
-    h+='<div class="card"><h4>Meilleures charges</h4><table class="t">'
+    h+='<div class="card"><h4 style="color:var(--pr)">Records personnels</h4><table class="t">'
       +'<tr><th>Exercice</th><th class="r">Charge</th><th class="r">Le</th></tr>'
-      +recs.slice(0,10).map(r=>'<tr><td>'+esc(r.n)+'</td><td class="r">'+kg(r.kg)+'</td><td class="r">'+shortDate(r.date)+'</td></tr>').join("")
+      +recs.slice(0,10).map(r=>'<tr><td>'+esc(r.n)+'</td><td class="r" style="color:var(--pr);font-weight:700">'+kg(r.kg)+'</td><td class="r">'+shortDate(r.date)+'</td></tr>').join("")
       +'</table></div>';
   }
 
@@ -2747,14 +3452,68 @@ function renderHist(p,pg){
   const tc=document.getElementById("tch");
   if(tc)line(tc,bl.filter(x=>x.tw!=null).map(x=>({v:x.tw,d:shortDate(x.d)})),"#FBBF24");
   const vc=document.getElementById("vch");
-  if(vc)line(vc,vol,"#7C5CFF");
+  if(vc)line(vc,vol,"#2D6FD0");
   const kc2=document.getElementById("kch");
   if(kc2)line(kc2,kw,"#FBBF24");
 
   const sel=document.getElementById("hsel");
   if(sel){const draw=()=>{const arr=(p.used[sel.value]||[]).slice().sort((a,z)=>a.date<z.date?-1:1);
-      line(document.getElementById("hch"),arr.map(a=>({v:a.kg,d:shortDate(a.date)})),"#3DD6C4")};
+      line(document.getElementById("hch"),arr.map(a=>({v:a.kg,d:shortDate(a.date)})),"#F5C518")};
     sel.onchange=draw;draw()}
+}
+
+/* ---------------- Boutique (affiliation) ----------------
+   Catalogue statique : les partenariats reels ne sont pas encore
+   negocies, donc prix et enseigne restent des espaces reserves plutot
+   que des chiffres inventes. La boutique ne recommande que du materiel
+   generique lie a l'entrainement, jamais un produit qui influerait sur
+   le programme ou les stats — elle reste a l'ecart du reste de l'app. */
+const SHOP_CAT={eq:"Équipement",nut:"Nutrition",tex:"Textile"};
+const SHOP=[
+  {id:"belt",cat:"eq",n:"Ceinture de force cuir 10 mm",d:"Le cuir se forme à ta taille en quelques séances — utile dès que les charges au squat ou au soulevé de terre deviennent sérieuses."},
+  {id:"straps",cat:"eq",n:"Sangles de tirage",d:"Pour ne plus lâcher la barre avant que le dos ait fini de travailler, sur le rowing et le tirage."},
+  {id:"knee",cat:"eq",n:"Genouillères 7 mm",d:"Un peu de soutien et de chaleur sur les séries lourdes de squat — pas un traitement, un confort."},
+  {id:"whey",cat:"nut",n:"Whey protéine, neutre ou aromatisée",d:"Utile pour atteindre l'apport en protéines calculé dans l'onglet Nutrition sans multiplier les repas."},
+  {id:"crea",cat:"nut",n:"Créatine monohydrate",d:"Le complément le mieux documenté pour la force et le volume d'entraînement, à dose stable au quotidien."},
+  {id:"shoes",cat:"tex",n:"Chaussures d'entraînement à semelle plate",d:"Une base stable sous les pieds pour le squat et le soulevé de terre, sans amorti qui absorbe la poussée."}
+];
+function renderShop(p,pg){
+  const rec=records(p)[0];
+  const hero=SHOP[0];
+  let h='<div class="page on"><h2 class="sc">Boutique</h2><p class="scs">Sélection partenaires — liens affiliés.</p>';
+  h+='<div class="shophero">'
+    +'<div class="shopvis"><span class="mut">[ Visuel produit ]</span><span class="shoptag">Lien affilié</span></div>'
+    +'<div class="shopbody">'
+    +'<div class="shopwhy">'+(rec?esc("Parce que tu progresses sur "+rec.n+" — actuellement "+kg(rec.kg)):"Pensé pour accompagner ta progression")+'</div>'
+    +'<div class="shopname">'+esc(hero.n)+'</div>'
+    +'<p class="mut" style="margin:4px 0 10px">'+esc(hero.d)+'</p>'
+    +'<div class="shopbuy"><span class="shopprice">[PRIX] €</span><span class="mut" style="flex:1 1 auto;font-size:.68rem">[PARTENAIRE]</span>'
+    +'<button class="btn sm" data-shopgo="'+hero.id+'">Voir</button></div>'
+    +'</div></div>';
+  h+='<div class="shoptrust"><span class="ti">i</span><span>Je touche une commission sur chaque lien, sans surcoût pour toi. Rien ici n\'entre dans ton programme ni dans tes stats. '
+    +'<a href="#" id="shopcrit">Mes critères →</a></span></div>';
+  const cat=SHOPCAT_SEL||"all";
+  h+='<div class="chips">'
+    +'<span class="chip tog'+(cat==="all"?" ex":"")+'" data-shopcat="all">Tout</span>'
+    +Object.keys(SHOP_CAT).map(k=>'<span class="chip tog'+(cat===k?" ex":"")+'" data-shopcat="'+k+'">'+SHOP_CAT[k]+'</span>').join("")
+    +'</div>';
+  const list=SHOP.slice(1).filter(x=>cat==="all"||x.cat===cat);
+  h+='<div class="shopgrid">'+list.map(x=>'<div class="shopcard">'
+    +'<div class="shopvis sm"><span class="mut">[ Visuel ]</span></div>'
+    +'<div class="shopcardb"><div class="shopname sm">'+esc(x.n)+'</div>'
+    +'<span class="shopprice sm">[PRIX] €</span><span class="mut" style="font-size:.62rem;display:block">[PARTENAIRE] · affilié</span></div>'
+    +'</div>').join("")+'</div>';
+  h+='<p class="mut" style="margin:14px 0 4px">La Boutique ne s\'ouvre jamais pendant une séance.</p>';
+  h+='</div>';
+  pg.innerHTML=h;
+  pg.querySelectorAll("[data-shopcat]").forEach(c=>c.onclick=()=>{SHOPCAT_SEL=c.dataset.shopcat;renderMain(p)});
+  pg.querySelectorAll("[data-shopgo]").forEach(b=>b.onclick=()=>toast("Partenariat à intégrer lors de la commercialisation"));
+  const crit=document.getElementById("shopcrit");
+  if(crit)crit.onclick=ev=>{ev.preventDefault();mdOpen({title:"Mes critères de sélection",
+    html:'<p class="mut">Je ne recommande que du matériel que j\'utiliserais moi-même : robuste, simple, sans effet de mode. '
+      +'Aucun produit n\'est mis en avant parce qu\'il paie plus qu\'un autre — la commission ne change jamais le prix que tu payes. '
+      +'La boutique n\'a aucun accès à ton programme, tes charges ou tes séances : elle ne t\'y renvoie jamais pendant l\'entraînement.</p>',
+    ok:"Fermer",noCancel:true,cb:function(){}})};
 }
 
 function renderProfil(p,pg){
