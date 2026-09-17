@@ -198,8 +198,8 @@ border-radius:4px;background:linear-gradient(180deg,#9AA3AF 0 38%,#6B7480 38%)}
 .barbell .bbpl{position:relative}
 /* Dans le bloc de charge, la barre n'a pas de cadre a elle : elle vit dans
    le meme espace que les mannequins, exactement comme sur la planche. */
-.workcard .barbell{background:0;padding:0;margin:0;flex:1 1 auto;min-width:0}
-.workcard .barbell .bbwrap{height:62px}
+.workcard .barbell{background:0;padding:0;margin:0;gap:0}
+.workcard .barbell .bbwrap{height:70px}
 .bbwrap{flex:0 0 auto;display:flex;align-items:center}
 /* le detail des disques passe sous le dessin quand la ligne est trop
    etroite, au lieu d'etre tranche par le bord de la carte. */
@@ -417,7 +417,18 @@ font-weight:600;padding:8px 15px;border-radius:8px;cursor:pointer;font-variant-n
 .exo.coll .body,.exo.coll .tech{display:none}
 .acctog{background:0;border:0;display:flex;align-items:center;gap:8px;flex:1 1 auto;
 min-width:0;padding:0;cursor:pointer;font-family:inherit;text-align:left;color:inherit}
+.acctog{gap:9px}
 .acctog .chev{flex:0 0 auto;color:var(--mut);transition:transform .18s ease;display:flex;line-height:0}
+/* Vignette de la ligne repliee : on reconnait le mouvement d'un coup d'oeil */
+.acth{flex:0 0 auto;width:34px;height:34px;border-radius:8px;background:#fff;overflow:hidden;
+display:flex;align-items:center;justify-content:center}
+.acth img{width:100%;height:100%;object-fit:contain}
+.acth i{font-style:normal;font-size:.5rem;letter-spacing:.06em;text-transform:uppercase;color:#9AA3AF}
+.exo.coll .acth{background:#fff}
+.acctog .nm small{display:block;font-family:var(--mono);font-size:.64rem;font-weight:400;
+color:var(--mut);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exo.coll .eh{padding:9px 12px}
+.exo.coll .acctog .nm{font-size:.82rem;font-weight:600}
 .exo:not(.coll) .acctog .chev{transform:rotate(180deg)}
 .acctog .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .chsum{display:none;font-size:.64rem;color:var(--mut);white-space:nowrap;
@@ -440,12 +451,34 @@ min-height:110px;overflow:hidden;padding:6px;margin:8px 0 0}
 padding:11px 13px 12px;margin:10px 0}
 .workcard .wlbl{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700;
 color:var(--brand);margin-bottom:9px}
-.workcard .wrow{display:flex;align-items:center;gap:16px;margin-bottom:4px}
+/* Une seule rangee, comme la planche : mannequins a gauche, zone de barre
+   a droite ou le fut passe DERRIERE le selecteur de charge. */
+.workcard .wlbl2{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:8px}
+.workcard .wlbl2 span:first-child{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;
+font-weight:700;color:var(--brand)}
+.workcard .wlbl2 span:last-child{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;
+font-weight:700;color:var(--mut)}
+.workcard .wrow{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.workcard .bbzone{position:relative;flex:1 1 auto;min-width:0;height:78px;display:flex;align-items:center}
+.workcard .bbzone .barbell{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);
+/* le fut file vers la droite puis s'efface sous le selecteur : la planche
+   le fait passer derriere, mais a 390 px il traversait le chiffre et le
+   rendait illisible. Estompe, on garde la lecture "la barre continue". */
+-webkit-mask-image:linear-gradient(90deg,#000 0 26%,transparent 52%);
+mask-image:linear-gradient(90deg,#000 0 26%,transparent 52%)}
+.workcard .bbzone .cbar.stepper{position:relative;margin:0 0 0 auto;z-index:1;gap:3px;flex-wrap:nowrap}
+.workcard .bbzone .stepbtn{width:34px;height:34px;font-size:1rem}
+.workcard .bbzone input.chbig{width:66px;font-size:1.15rem}
+.workcard .bbzone .chunit{margin-right:0}
+/* pied de bloc : les disques a prendre, puis la cle de lecture des muscles */
+.workcard .wfoot{padding-top:8px;border-top:1px solid rgba(255,255,255,.07);
+font-family:var(--mono);font-size:.68rem;color:var(--musc-p);line-height:1.4}
+.workcard .wfoot .wkey{display:none}
+.workcard .wfoot.mus{border-top:0;padding-top:4px;font-family:var(--sans);font-size:.68rem;color:var(--mut)}
 .workcard .mp{flex:0 0 auto;display:flex;gap:5px}
 .workcard .mp svg{width:34px;height:auto}
 .workcard .barbell{background:none;border:0;padding:0;margin:0;flex:1 1 auto;min-width:0}
-.workcard .leg{margin-top:9px}
-.workcard .cbar.stepper{margin-top:11px}
+.workcard .cbar.substep{margin-top:6px}
 .prevrow{font-size:.74rem;color:var(--txt);margin:6px 0 8px;line-height:1.4}
 .prevlbl{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:var(--brand2);margin-right:4px}
 .startzone{margin:16px 0}
@@ -552,8 +585,13 @@ text-transform:uppercase;font-size:.72rem;cursor:pointer;border:1px solid var(--
    s'alignent d'un exercice a l'autre au lieu de danser. */
 .exo .eh .ix{color:var(--brand);font-size:.7rem;font-weight:600;margin-right:7px;
 font-family:var(--mono);font-variant-numeric:tabular-nums}
+/* Exercice ouvert : le nom peut passer sur deux lignes plutot que d'etre
+   coupe par le bouton Changer — un nom d'exercice tronque ne sert a rien. */
 .exo:not(.coll) .eh .nm{font-family:var(--disp);font-variation-settings:"wdth" 108;
-font-weight:700;letter-spacing:-.01em;font-size:.9rem}
+font-weight:700;letter-spacing:-.01em;font-size:.9rem;white-space:normal;line-height:1.2}
+.exo:not(.coll) .acctog{align-items:flex-start}
+.exo:not(.coll) .acctog .ix{margin-top:2px}
+.exo:not(.coll) .acctog .chev{margin-top:2px}
 .donecnt{font-family:var(--mono);font-variant-numeric:tabular-nums}
 /* Exercice deplie : le compteur de series fait doublon avec les lignes de
    series juste en dessous, et il volait la place au nom, qui se retrouvait
@@ -591,7 +629,7 @@ align-items:center;justify-content:center;color:#052e16;font-weight:800;font-siz
 border:1px solid var(--line);border-radius:7px;padding:5px 9px;flex:0 0 auto}
 .setrow .sfld span,.fsrow .sfld span{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;
 font-weight:700;color:var(--mut)}
-.setrow .sfld input,.fsrow .sfld input{width:32px;background:0;border:0;outline:0;color:var(--txt);
+.setrow .sfld input,.fsrow .sfld input{width:46px;background:0;border:0;outline:0;color:var(--txt);
 font-size:.8rem;font-family:var(--mono);text-align:right;padding:0;font-variant-numeric:tabular-nums}
 .setrow .sfld input.rep,.fsrow .sfld input.rep{width:22px}
 .fsrow .sfld{padding:7px 10px}
@@ -2908,35 +2946,7 @@ function renderFocus(p,s,ti,plan,order){
   h+='<div class="fanim">'+(img?'<img alt="'+esc(e.n)+'" decoding="async" src="'+img+'">'
     :'<div class="na">Animation non fournie</div>')+'</div>';
 
-  /* --- le meme bloc de charge que la liste : mannequins, barre, selecteur,
-     et les trois reperes. Un seul endroit ou lire la charge, dans les deux
-     modes, avec exactement la meme presentation. --- */
-  h+='<div class="workcard"><div class="wlbl">Charge de travail</div>'
-    +'<div class="wrow"><div class="mp">'+muscleSVG(e.prim,e.sec||[],e.id)+'</div>'
-    +(e.eq==="barre"&&ch!=null&&!isNaN(ch)?barbellSVG(ch):'<span class="mut" style="font-size:.72rem">'+(e.eq==="pdc"?"Poids du corps":"Charge libre")+'</span>')
-    +'</div>'
-    +'<div class="leg"><i style="color:var(--musc-p)">■</i> '+e.prim.map(m=>MUS[m]).join(", ")
-    +(e.sec&&e.sec.length?' &nbsp;<i style="color:var(--musc-s)">■</i> '+e.sec.map(m=>MUS[m]).join(", "):'')+'</div>';
-  if(e.eq!=="pdc"){
-    const vide=(ch==null||isNaN(ch));
-    const lu=lastUsedKg(p,x.id,today());
-    h+='<div class="cbar stepper">'
-      +'<button type="button" class="stepbtn" id="fchm" aria-label="Retirer 2,5 kg">−</button>'
-      +'<input type="number" step="0.5" inputmode="decimal" class="chbig" id="fch" value="'+(vide?"":ch)+'"'
-      +(vide&&lu!=null?' placeholder="'+lu+'"':'')+'><span class="chunit">kg</span>'
-      +'<button type="button" class="stepbtn" id="fchp" aria-label="Ajouter 2,5 kg">+</button>'
-      +(vide?'<button class="ibtn" data-inf="fc" aria-label="Pourquoi ce champ est vide" title="Pourquoi ce champ est vide">i</button>':'')
-      +'</div>'
-      +(vide?'<div class="leg" data-infb="fc" hidden style="margin:-2px 0 6px">'+esc(freeLoadWhy(e))+'</div>':'')
-      +(ov!=null?'<div class="cbar substep"><button class="mini on" id="fra">Auto</button></div>':'');
-  }else if(bwCoef(e)!=null){
-    const bl=bwLoad(p,e,null),lv=lestOf(p,e);
-    h+='<div class="cbar substep">'
-      +'<span class="mut" style="font-size:.72rem">'+(bl!=null?'≈ '+esc(kg(bl))+' déplacés':'Poids du corps')+'</span>'
-      +(LEST_OK[e.id]?'<input type="number" step="0.5" inputmode="decimal" id="flest" value="'+(lv||"")+'" aria-label="Lest ajouté en kg"><span class="mut" style="font-size:.68rem">kg de lest</span>':'')
-      +'</div>';
-  }
-  h+='</div>';
+  h+=workCard(p,s,x,e,ch,ov,xi,true);
 
   /* --- les series, une par ligne : faites, en cours, a venir --- */
   h+='<div class="fslabel"><span class="fy-lbl2">Séries</span>'
@@ -3206,14 +3216,24 @@ function renderSession(p,s,ti,pg){
       h+='<div class="plansep">Au-delà de '+dm+' min</div>';}
     if(x.spared&&!sepSpared&&!foc){sepSpared=true;
       h+='<div class="plansep">Écartés — '+esc(painLabel(pain))+'</div>';}
+    const thumb=!x.spared&&e.img&&IMG(e.img);
     h+='<div class="exo'+(coll?" coll":"")+(x.inPlan?"":(x.spared?" spared":" bonus"))+'">'
       +'<div class="eh">'
+      /* Ligne repliee : vignette + resume chiffre, comme la planche — on
+         reconnait l'exercice et on sait ce qu'il demande sans le deplier.
+         Ligne ouverte : le nom prend la place, le detail est juste dessous,
+         et "Changer" n'a de sens que la, sur l'exercice qu'on regarde. */
       +'<button class="acctog" data-acc="'+pos+'" aria-label="'+(coll?"Déplier":"Replier")+' cet exercice">'
-      +'<span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 10l6 6 6-6"/></svg></span>'
-      +'<span class="nm"><span class="ix">'+(xi+1<10?"0":"")+(xi+1)+'</span>'+esc(e.n)+'</span></button>'
-      +'<span class="chsum">'+x.sets+'×'+x.reps+(ch!=null&&!isNaN(ch)?' · '+esc(kg(ch)):'')+'</span>'
+      +'<span class="ix">'+(xi+1<10?"0":"")+(xi+1)+'</span>'
+      +(coll?'<span class="acth">'+(thumb?'<img alt="" decoding="async" src="'+thumb+'">':'<i>ill.</i>')+'</span>':'')
+      +'<span class="nm">'+esc(e.n)
+      +(coll?'<small>'+x.sets+' × '+esc(x.reps)+(ch!=null&&!isNaN(ch)?' · '+esc(kg(ch)):'')
+        +' · repos '+mmss(smartRest(p,s,x,e))+'</small>':'')
+      +'</span>'
       +'<span class="donecnt">'+doneN+'/'+allS0+'</span>'
-      +'<button class="vbtn" data-var="'+xi+'" title="Remplacer cet exercice par un autre" aria-label="Remplacer cet exercice">'+VARICO+'Changer</button>'
+      +'<span class="chev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 10l6 6 6-6"/></svg></span>'
+      +'</button>'
+      +(coll?'':'<button class="vbtn" data-var="'+xi+'" title="Remplacer cet exercice par un autre" aria-label="Remplacer cet exercice">'+VARICO+'Changer</button>')
       +'</div>'
       +'<div class="body">'
       +'<div class="chips"><span class="chip"><b>'+x.sets+'</b> × '+x.reps+'</span>'
@@ -3225,42 +3245,9 @@ function renderSession(p,s,ti,pg){
       +'<span class="chip">'+x.rpe+'</span><span class="chip">repos <b>'+mmss(smartRest(p,s,x,e))+'</b></span>'
       +(x.forced?'<span class="chip" style="border:1px solid var(--brand2);color:var(--brand2)">imposé</span>':'')
       +'</div>';
-    const img=!x.spared&&e.img&&IMG(e.img);
+    const img=thumb;
     h+='<div class="exillus">'+(img?'<img alt="'+esc(e.n)+'" decoding="async" src="'+img+'">':'<div class="na">Animation non fournie</div>')+'</div>';
-    h+='<div class="workcard"><div class="wlbl">Charge de travail</div>'
-      +'<div class="wrow"><div class="mp">'+muscleSVG(e.prim,e.sec||[],e.id)+'</div>'
-      +(e.eq==="barre"&&ch!=null&&!isNaN(ch)?barbellSVG(ch):'<span class="mut" style="font-size:.72rem">'+(e.eq==="pdc"?"Poids du corps":"Charge libre")+'</span>')
-      +'</div>'
-      +'<div class="leg"><i style="color:var(--musc-p)">■</i> '+e.prim.map(m=>MUS[m]).join(", ")
-      +(e.sec&&e.sec.length?' &nbsp;<i style="color:var(--musc-s)">■</i> '+e.sec.map(m=>MUS[m]).join(", "):'')+'</div>'
-      +(e.eq!=="pdc"?(function(){
-        /* Un seul stepper +/- pour la charge de travail, juste sous le
-           schema musculaire — comme la maquette. Il remplace l'ancien
-           encart "Charge utilisee" qui faisait doublon plus bas avec les
-           champs kg par serie : les series partent de cette valeur mais
-           restent individuellement modifiables. */
-        const vide=(ch==null||isNaN(ch));
-        const lu=lastUsedKg(p,x.id,today());
-        const showPrec=lu!=null&&(vide||parseFloat(ch)!==lu);
-        return '<div class="cbar stepper">'
-          +'<button type="button" class="stepbtn" data-chstep="-|'+xi+'" aria-label="Retirer 2,5 kg">−</button>'
-          +'<input type="number" step="0.5" inputmode="decimal" class="chbig" data-ch="'+xi+'" value="'+(vide?"":ch)+'"'
-          +(vide&&lu!=null?' placeholder="'+lu+'"':'')+'><span class="chunit">kg</span>'
-          +'<button type="button" class="stepbtn" data-chstep="+|'+xi+'" aria-label="Ajouter 2,5 kg">+</button>'
-          +(vide?'<button class="ibtn" data-inf="c'+xi+'" aria-label="Pourquoi ce champ est vide" title="Pourquoi ce champ est vide">i</button>':'')
-          +'</div>'
-          +'<div class="cbar substep">'
-          +(showPrec?'<span class="mut" style="font-size:.68rem">Préc. '+esc(kg(lu))+'</span>':'')
-          +'<button class="mini" data-hi="'+xi+'">Courbe</button>'
-          +(ov!=null?'<button class="mini on" data-ra="'+xi+'">Auto</button>':'')+'</div>'
-          +(vide?'<div class="leg" data-infb="c'+xi+'" hidden style="margin:-2px 0 8px">'+esc(freeLoadWhy(e))+'</div>':'')
-          +'<div data-hb="'+xi+'" hidden style="margin-bottom:8px"><canvas class="ch"></canvas></div>';
-      })():'')
-      /* Trois reperes en pied de bloc : ce que l'exercice coute au
-         planning, au corps, et ce qu'il pese dans le volume de la semaine.
-         Ils repondent a trois questions qu'on se pose vraiment devant une
-         barre, sans encombrer la ligne de reglages. */
-      +'</div>';
+    h+=workCard(p,s,x,e,ch,ov,xi,false);
     /* Rappel de la derniere fois, juste au-dessus des cases a cocher :
        la charge du jour se decide en regardant ce qui a ete fait, pas en
        cherchant plus bas dans un tableau de charges. */
@@ -3913,6 +3900,67 @@ function lastExRecord(p,exId){
    generique. Seulement pertinent sur un exercice a barre libre. */
 const PLATES=[[25,"var(--p25)"],[20,"var(--p20)"],[15,"var(--p15)"],[10,"var(--p10)"],
   [5,"var(--p5)"],[2.5,"var(--p125)"],[1.25,"var(--p125)"]];
+/* Bloc de charge, composant unique utilise par la liste ET le mode focus :
+   une seule rangee comme la planche — mannequins a gauche, barre au centre
+   dont le fut passe derriere le selecteur de charge pose a droite, puis le
+   pied de bloc qui detaille les disques et la lecture des muscles. */
+function workCard(p,s,x,e,ch,ov,xi,foc){
+  const idc=foc?'id="fch"':'data-ch="'+xi+'"';
+  const idm=foc?'id="fchm"':'data-chstep="-|'+xi+'"';
+  const idp=foc?'id="fchp"':'data-chstep="+|'+xi+'"';
+  const vide=(ch==null||isNaN(ch));
+  const lu=lastUsedKg(p,x.id,today());
+  const showPrec=!foc&&lu!=null&&(vide||parseFloat(ch)!==lu);
+  const bbs=(e.eq==="barre"&&!vide)?barbellSVG(ch):"";
+  let h='<div class="workcard">'
+    +'<div class="wlbl2"><span>Charge de travail</span><span>Muscles sollicités</span></div>'
+    +'<div class="wrow"><div class="mp">'+muscleSVG(e.prim,e.sec||[],e.id)+'</div>'
+    +'<div class="bbzone">'
+    +(bbs||'<span class="mut" style="font-size:.72rem">'+(e.eq==="pdc"?"Poids du corps":"Charge libre")+'</span>');
+  if(e.eq!=="pdc"){
+    h+='<div class="cbar stepper">'
+      +'<button type="button" class="stepbtn" '+idm+' aria-label="Retirer 2,5 kg">−</button>'
+      +'<input type="number" step="0.5" inputmode="decimal" class="chbig" '+idc+' value="'+(vide?"":ch)+'"'
+      +(vide&&lu!=null?' placeholder="'+lu+'"':'')+' aria-label="Charge de travail en kg"><span class="chunit">kg</span>'
+      +'<button type="button" class="stepbtn" '+idp+' aria-label="Ajouter 2,5 kg">+</button>'
+      +'</div>';
+  }
+  h+='</div></div>';
+  /* pied de bloc : le detail des disques et la cle de lecture des muscles,
+     sur une ligne, comme la planche */
+  h+='<div class="wfoot"><span>'+(bbs?esc(barbellDetail(ch)):esc(e.prim.map(m=>MUS[m]).join(", ")))+'</span>'
+    +'<span class="wkey"><i style="color:var(--musc-p)">■</i> primaire <i style="color:var(--musc-s)">■</i> secondaire</span></div>';
+  if(bbs)h+='<div class="wfoot mus"><span><i style="color:var(--musc-p)">■</i> '+esc(e.prim.map(m=>MUS[m]).join(", "))
+    +(e.sec&&e.sec.length?' &nbsp;<i style="color:var(--musc-s)">■</i> '+esc(e.sec.map(m=>MUS[m]).join(", ")):'')+'</span></div>';
+  if(!foc){
+    h+='<div class="cbar substep">'
+      +(vide?'<button class="ibtn" data-inf="c'+xi+'" aria-label="Pourquoi ce champ est vide" title="Pourquoi ce champ est vide">i</button>':'')
+      +(showPrec?'<span class="mut" style="font-size:.68rem">Préc. '+esc(kg(lu))+'</span>':'')
+      +'<button class="mini" data-hi="'+xi+'">Courbe</button>'
+      +(ov!=null?'<button class="mini on" data-ra="'+xi+'">Auto</button>':'')+'</div>'
+      +(vide?'<div class="leg" data-infb="c'+xi+'" hidden style="margin:-2px 0 8px">'+esc(freeLoadWhy(e))+'</div>':'')
+      +'<div data-hb="'+xi+'" hidden style="margin-bottom:8px"><canvas class="ch"></canvas></div>';
+  }else if(ov!=null){
+    h+='<div class="cbar substep"><button class="mini on" id="fra">Auto</button></div>';
+  }
+  if(e.eq==="pdc"&&bwCoef(e)!=null){
+    const bl=bwLoad(p,e,null),lv=lestOf(p,e);
+    h+='<div class="cbar substep"><span class="mut" style="font-size:.7rem">'
+      +(bl!=null?'≈ '+esc(kg(bl))+' déplacés':'Poids du corps')+'</span>'
+      +(LEST_OK[e.id]?'<input type="number" step="0.5" inputmode="decimal" '+(foc?'id="flest"':'data-lest="'+xi+'"')
+        +'" value="'+(lv||"")+'" aria-label="Lest ajouté en kg"><span class="mut" style="font-size:.66rem">kg de lest</span>':'')
+      +'</div>';
+  }
+  return h+'</div>';
+}
+/* Detail des disques a charger, en toutes lettres : "20 + 1,25 kg / côté". */
+function barbellDetail(totalKg){
+  const bar=20;let per=Math.round(((totalKg-bar)/2)*100)/100;
+  if(!(per>0))return "";
+  const out=[];
+  PLATES.forEach(pl=>{while(per>=pl[0]-.01){out.push(pl[0]%1?String(pl[0]).replace(".",","):pl[0]);per=Math.round((per-pl[0])*100)/100}});
+  return out.join(" + ")+" kg / côté · barre "+bar+" kg";
+}
 function barbellSVG(totalKg){
   const bar=20;
   let per=Math.round(((totalKg-bar)/2)*100)/100;
@@ -3945,8 +3993,7 @@ function barbellSVG(totalKg){
     +'<rect x="'+STEM+'" y="'+(H/2-11)+'" width="5" height="22" rx="2" fill="var(--p125)"/>'
     +rects+'</svg>';
   const perSide=plates.reduce((s,pl)=>s+pl[0],0);
-  return '<div class="barbell"><div class="bbwrap"><span class="bbrod"></span>'+svg+'</div>'
-    +'<span class="bbl">'+kg(perSide)+' par côté · barre '+bar+' kg</span></div>';
+  return '<div class="barbell"><div class="bbwrap"><span class="bbrod"></span>'+svg+'</div></div>';
 }
 /* Libelle de la pastille de charge, commun a la liste et au mode focus. */
 function loadTxt(p,x,e,ov,ch){
