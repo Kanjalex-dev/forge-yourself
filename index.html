@@ -119,7 +119,8 @@ display:flex;align-items:center;justify-content:center;height:12px}
 .shd{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:12px 0 10px}
 .shd h2{margin:0;font-family:var(--disp);font-size:1.38rem;font-weight:800;letter-spacing:-.02em;
 line-height:1.02;color:var(--musc-p);min-width:0}
-.shd .sdur{flex:0 0 auto;font-family:var(--mono);font-size:.68rem;color:var(--mut)}
+.shd .sdur{flex:0 0 auto;font-family:var(--mono);font-size:.68rem;color:var(--mut);text-align:right}
+.shd .sdur b{color:var(--musc-p);font-weight:600}
 .page{display:none;max-width:680px;margin:0 auto;padding:12px 14px 0}
 .page.on{display:block}
 /* Titres en Archivo elargi (axe wdth), comme la direction artistique : le
@@ -376,6 +377,37 @@ font-family:inherit;font-size:.76rem;font-weight:600;cursor:pointer}
 .stag{flex:0 0 auto;font-family:var(--mono);font-size:.64rem;color:var(--mut);
 background:var(--sf2);border-radius:7px;padding:6px 9px;white-space:nowrap}
 .stag.w{color:var(--warn)}
+/* Filet d'identite de section et ligne de titre de Suivi (planche A3) */
+.histrule{height:3px;border-radius:2px;background:var(--sec-hist-ac);margin:0 0 14px}
+.shd2{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.fy-lbl2.b2{color:var(--sec-hist-ac);font-size:.55rem}
+/* Vitrine de medailles : quatre en vue, le reste sur demande */
+.bhd{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:2px}
+.bhd h4{margin:0}
+.bmore{background:0;border:0;color:var(--mut);font-family:inherit;font-size:.58rem;
+letter-spacing:.07em;text-transform:uppercase;font-weight:700;cursor:pointer;padding:0}
+.bmore:hover{color:var(--txt)}
+/* Contexte des jours voisins, sur une ligne */
+.ctxline{display:flex;align-items:flex-start;gap:8px;color:var(--mut);font-size:.72rem;
+line-height:1.45;margin:0 0 12px}
+.ctxline svg{flex:0 0 auto;margin-top:2px;color:var(--brand2)}
+.ctxline span{min-width:0}
+/* Bilan de l'exercice en mode focus : replie tant que l'exercice tourne */
+.fbilan{margin-top:16px;background:var(--sf2);border-radius:11px;padding:0 12px}
+.fbilan summary{display:flex;align-items:center;justify-content:space-between;gap:10px;
+padding:12px 0;cursor:pointer;list-style:none;font-size:.78rem;font-weight:600;color:var(--txt)}
+.fbilan summary::-webkit-details-marker{display:none}
+.fbilan .fbst{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:var(--mut)}
+.fbilan[open] summary{border-bottom:1px solid var(--line)}
+.fbrow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:11px 0}
+.fbrow .lbl{font-size:.63rem;letter-spacing:.07em;text-transform:uppercase;color:var(--mut)}
+.fbrow .btns{display:flex;gap:6px;flex-wrap:wrap}
+.fbrow .btns button{border:1px solid var(--line);background:var(--sf);color:var(--mut);
+border-radius:9px;padding:8px 11px;font-size:.74rem;cursor:pointer;font-family:inherit}
+.fbrow .btns button.oui{background:#052e16;border-color:var(--ok);color:var(--ok)}
+.fbrow .btns button.non{background:#2A0F0F;border-color:var(--dang);color:var(--dang)}
+.fbrow .btns button.dsel{background:#0F2A2A;border-color:var(--brand);color:var(--brand)}
+.fbilan .mini{margin-bottom:12px}
 .srow2{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .srl{font-size:.74rem;color:var(--txt);font-weight:600}
 .seg.sm button{padding:7px 11px;font-size:.72rem}
@@ -607,10 +639,9 @@ font-weight:700;letter-spacing:-.01em;font-size:.9rem;white-space:normal;line-he
 .exo:not(.coll) .acctog .ix{margin-top:2px}
 .exo:not(.coll) .acctog .chev{margin-top:2px}
 .donecnt{font-family:var(--mono);font-variant-numeric:tabular-nums}
-/* Exercice deplie : le compteur de series fait doublon avec les lignes de
-   series juste en dessous, et il volait la place au nom, qui se retrouvait
-   coupe. On le garde uniquement sur les lignes repliees. */
-.exo:not(.coll) .eh .donecnt{display:none}
+/* Le compteur de series reste visible ouvert comme replie, comme sur la
+   planche : c'est le "0 / 4" de la ligne d'exercice. */
+.exo:not(.coll) .eh .donecnt{align-self:flex-start;margin-top:3px}
 .exo .body{padding:0 13px 12px}
 .vis{display:flex;gap:8px;align-items:stretch;margin:8px 0}
 .vis .an{flex:1;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;
@@ -2433,7 +2464,7 @@ function bars(cv,pts,lastCol){
    RENDU
    ================================================================ */
 const APP=document.getElementById("app");
-let VIEW="home",TAB=0,SECT="train",FOCUS={},FOCOVR={},WIZ=0,ACC={},STARTPANEL={},SHOPCAT_SEL="all",HISTAB="vol";
+let VIEW="home",TAB=0,SECT="train",FOCUS={},FOCOVR={},WIZ=0,ACC={},STARTPANEL={},SHOPCAT_SEL="all",HISTAB="vol",BADGEALL=false;
 /* Onglet du jour par defaut : on pointe sur la seance prevue aujourd'hui
    plutot que sur le premier jour du programme — mercredi ouvre la seance
    de mercredi, pas systematiquement celle de lundi. */
@@ -2991,16 +3022,21 @@ function renderFocus(p,s,ti,plan,order){
   }
   h+='</div>';
 
-  /* --- ressenti et technique restent dans la zone qui defile --- */
-  h+='<div class="fsec"><div class="lbl">Objectif atteint ?</div><div class="btns">'
+  /* Bilan de l'exercice : trois sections empilees devenaient un formulaire
+     au milieu d'un ecran d'effort. Un seul bloc compact, replie tant que
+     l'exercice n'est pas termine — on le remplit quand il l'est. */
+  h+='<details class="fbilan"'+(allDone?" open":"")+'><summary>'
+    +'<span>Bilan de l\'exercice</span>'
+    +'<span class="fbst">'+(fb.ok?(fb.ok==="oui"?"Objectif atteint":"Objectif manqué"):"À renseigner")
+    +(fb.diff?" · "+DIFFL[fb.diff]:"")+'</span></summary>'
+    +'<div class="fbrow"><span class="lbl">Objectif atteint ?</span><span class="btns">'
     +'<button data-fok="oui" class="'+(fb.ok==="oui"?"oui":"")+'">Oui</button>'
-    +'<button data-fok="non" class="'+(fb.ok==="non"?"non":"")+'">Non</button>'
-    +'</div></div>';
-  h+='<div class="fsec"><div class="lbl">Ressenti</div><div class="btns">'
+    +'<button data-fok="non" class="'+(fb.ok==="non"?"non":"")+'">Non</button></span></div>'
+    +'<div class="fbrow"><span class="lbl">Ressenti</span><span class="btns">'
     +DIFFS.map(d=>'<button data-fdf="'+d+'" class="'+(fb.diff===d?"dsel":"")+'">'+DIFFL[d]+'</button>').join("")
-    +'</div></div>';
-  h+='<div class="fsec"><div class="lbl">Exécution</div><div class="btns">'
-    +'<button id="ftech">Technique &amp; erreurs fréquentes</button></div></div>';
+    +'</span></div>'
+    +'<button class="mini" id="ftech" style="margin-top:4px">Technique &amp; erreurs fréquentes</button>'
+    +'</details>';
   h+='</div>';
 
   /* --- pied fixe : le repos puis la validation. Ancres au bas de l'ecran
@@ -3124,8 +3160,12 @@ function renderSession(p,s,ti,pg){
   let h='<div class="page on">';
   /* Titre de la seance en tete, comme la maquette : on sait d'abord ce
      qu'on fait aujourd'hui, la barre de progression vient ensuite. */
-  h+='<div class="shd"><h2>'+esc(s.k)+'</h2><span class="sdur">≈ '+plan.est+' min</span></div>';
-  h+='<div class="prog"><i style="width:'+pct+'%"></i></div><div class="ptxt" id="ptxt">'+progressText(t0)+'</div>';
+  /* Titre, avancement et duree sur la meme ligne, puis le filet de
+     progression juste dessous : l'ancienne barre isolee avec son texte a
+     droite empilait deux elements de plus sans rien dire de neuf. */
+  h+='<div class="shd"><h2>'+esc(s.k)+'</h2>'
+    +'<span class="sdur"><b id="ptxt">'+progressText(t0)+'</b> · ≈ '+plan.est+' min</span></div>';
+  h+='<div class="prog"><i style="width:'+pct+'%"></i></div>';
   const op=PANEL[ti]||null;
   /* Un seul point d'entree pour les reglages de la seance, plutot qu'une
      rangee de cinq raccourcis heritee de l'ancienne interface : la nouvelle
@@ -3210,7 +3250,10 @@ function renderSession(p,s,ti,pg){
 
   /* la duree estimee est deja dans le titre de la seance : on ne la repete
      pas ici, on garde ce qui la compose. */
-  h+='<div class="estline">'+plan.n+' exercice'+(plan.n>1?"s":"")+' · '+plan.sets+' séries'
+  /* Le titre porte deja l'avancement et la duree : cette ligne ne garde que
+     ce qu'il n'y a pas dit — le nombre d'exercices et les resserrements que
+     le format du jour impose. */
+  h+='<div class="estline">'+plan.n+' exercice'+(plan.n>1?"s":"")
     +(plan.lvl===1?' <s>· repos d\'isolation resserrés</s>':(plan.lvl>1?' <s>· séries et repos resserrés</s>':''))+'</div>';
   if(pain.length){
     const nOut=plan.spared-plan.swaps;
@@ -3224,10 +3267,14 @@ function renderSession(p,s,ti,pg){
   const nxt=(s.day+1)%7,prev=(s.day+6)%7;
   const an=p.cfg.acts[nxt],ap=p.cfg.acts[prev];
   if((an&&an!=="—"&&an!=="Repos")||(ap&&ap!=="—"&&ap!=="Repos")){
-    h+='<div class="alert i">';
-    if(ap&&ap!=="—"&&ap!=="Repos") h+='<b>Veille : '+esc(ap)+'</b>';
-    if(an&&an!=="—"&&an!=="Repos") h+='Lendemain : '+esc(an)+' — garde cette séance à l\'intensité prescrite, sans aller à l\'échec sur les gros mouvements.';
-    h+='</div>';
+    /* Contexte des jours voisins : une ligne discrete, pas un bloc d'alerte
+       qui occupe le quart de l'ecran avant meme d'avoir vu un exercice. */
+    const ctx=[];
+    if(ap&&ap!=="—"&&ap!=="Repos")ctx.push("Veille : "+ap);
+    if(an&&an!=="—"&&an!=="Repos")ctx.push("Lendemain : "+an);
+    h+='<div class="ctxline"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>'
+      +'<span>'+esc(ctx.join(" · "))
+      +(an&&an!=="—"&&an!=="Repos"?' — garde l\'intensité prescrite, sans aller à l\'échec.':'')+'</span></div>';
   }
 
   /* L'ordre d'affichage suit l'usage : d'abord ce qui est au programme du
@@ -3959,8 +4006,20 @@ function workCard(p,s,x,e,ch,ov,xi,foc){
   const lu=lastUsedKg(p,x.id,today());
   const showPrec=!foc&&lu!=null&&(vide||parseFloat(ch)!==lu);
   const bbs=(e.eq==="barre"&&!vide)?barbellSVG(ch):"";
+  /* Intitules de la planche : "Charge de travail / Muscles sollicites" dans
+     la liste, "Sur la barre" + intensite reelle en mode focus. L'intensite
+     n'est affichee que sur les mouvements dont on connait vraiment le 1RM
+     (ceux du questionnaire) — ailleurs elle serait deduite de la charge
+     prescrite elle-meme, donc sans information. */
+  let rmTxt="Muscles sollicités";
+  if(foc){
+    const rm=(e.ref&&p.cfg.rm)?parseFloat(p.cfg.rm[e.ref]):NaN;
+    rmTxt=(rm>0&&ch!=null&&!isNaN(ch))
+      ?"1RM est. "+kg(rm)+" · "+Math.round(ch/rm*100)+" %"
+      :"Muscles sollicités";
+  }
   let h='<div class="workcard">'
-    +'<div class="wlbl2"><span>Charge de travail</span><span>Muscles sollicités</span></div>'
+    +'<div class="wlbl2"><span>'+(foc?"Sur la barre":"Charge de travail")+'</span><span>'+esc(rmTxt)+'</span></div>'
     +'<div class="wrow"><div class="mp">'+muscleSVG(e.prim,e.sec||[],e.id)+'</div>'
     +'<div class="bbzone">'
     +(bbs||'<span class="mut" style="font-size:.72rem">'+(e.eq==="pdc"?"Poids du corps":"Charge libre")+'</span>');
@@ -3976,7 +4035,7 @@ function workCard(p,s,x,e,ch,ov,xi,foc){
   /* pied de bloc : le detail des disques et la cle de lecture des muscles,
      sur une ligne, comme la planche */
   h+='<div class="wfoot"><span>'+(bbs?esc(barbellDetail(ch)):esc(e.prim.map(m=>MUS[m]).join(", ")))+'</span>'
-    +'<span class="wkey"><i style="color:var(--musc-p)">■</i> primaire <i style="color:var(--musc-s)">■</i> secondaire</span></div>';
+    +'</div>';
   if(bbs)h+='<div class="wfoot mus"><span><i style="color:var(--musc-p)">■</i> '+esc(e.prim.map(m=>MUS[m]).join(", "))
     +(e.sec&&e.sec.length?' &nbsp;<i style="color:var(--musc-s)">■</i> '+esc(e.sec.map(m=>MUS[m]).join(", ")):'')+'</span></div>';
   if(!foc){
@@ -4155,9 +4214,12 @@ function renderBadgeCard(p){
   const got=list.filter(x=>x.earned),left=list.filter(x=>!x.earned);
   const ordered=got.concat(left);
   const lastId=p.lastBadge||null;
-  let h='<div class="card"><h4>Médailles · '+earned+'/'+BADGES.length+'</h4>'
+  const shown=BADGEALL?ordered:ordered.slice(0,4);
+  let h='<div class="card"><div class="bhd"><h4>Médailles · '+earned+'/'+BADGES.length+'</h4>'
+    +(ordered.length>4?'<button type="button" class="bmore" id="bmore">'+(BADGEALL?"Réduire":"Tout voir")+'</button>':'')
+    +'</div>'
     +'<div class="badgegrid">'
-    +ordered.map(x=>'<div class="bslot'+(x.earned?" got":"")+(x.b.id===lastId?" fresh":"")
+    +shown.map(x=>'<div class="bslot'+(x.earned?" got":"")+(x.b.id===lastId?" fresh":"")
       +'" title="'+esc(x.b.n)+' — '+esc(x.b.d)+'">'
       +(x.b.id===lastId?'<span class="bnew">Nouvelle</span>':'')
       +'<span class="bslico">'+medIco(x.earned)+'</span><span class="bslon">'+esc(x.b.n)+'</span></div>').join("")
@@ -4188,7 +4250,10 @@ function renderHist(p,pg){
      cablage plus bas (courbes bch/tch/vch/kch) doit pouvoir y acceder
      meme si un seul onglet a la fois est effectivement rendu. */
   let bl=[],vol=[],kw=[];
-  let h='<div class="page on"><h2 class="sc">Suivi</h2><p class="scs">Deux progressions à lire ensemble : ce que fait le corps, et ce que font les charges.</p>';
+  /* Filet d'identite de la section, comme la planche A3. */
+  let h='<div class="page on"><div class="histrule"></div>'
+    +'<div class="shd2"><h2 class="sc">Suivi</h2><span class="fy-lbl2 b2">Historique &amp; progression</span></div>'
+    +'<p class="scs">Deux progressions à lire ensemble : ce que fait le corps, et ce que font les charges.</p>';
   const hard=p.hist.slice(0,3).reduce((n,r)=>n+r.ex.filter(e=>e.diff==="dur"||e.diff==="echec").length,0);
   const rated=p.hist.slice(0,3).reduce((n,r)=>n+r.ex.filter(e=>e.diff).length,0);
   if(rated>=8&&hard>=rated*.6) h+='<div class="alert w"><b>Fatigue cumulée</b>Le ressenti est « dur » ou « échec » sur la majorité des exercices des 3 dernières séances. Une semaine allégée (-20 % de charge, une série en moins) sera plus productive que de forcer la progression.</div>';
@@ -4332,6 +4397,8 @@ function renderHist(p,pg){
   pg.innerHTML=h;
 
   pg.querySelectorAll("[data-histab]").forEach(b=>b.onclick=()=>{HISTAB=b.dataset.histab;renderMain(p)});
+  const bm=document.getElementById("bmore");
+  if(bm)bm.onclick=()=>{BADGEALL=!BADGEALL;renderMain(p)};
   pg.querySelectorAll("[data-hdel]").forEach(x=>x.onclick=()=>{p.hist.splice(+x.dataset.hdel,1);saveP();renderMain(p)});
 
   const hup=document.getElementById("hupd");
