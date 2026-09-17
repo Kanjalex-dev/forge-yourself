@@ -340,24 +340,59 @@ padding:2px 9px;font-size:.8rem;cursor:pointer;margin-left:8px;line-height:1.3;
 font-family:inherit;vertical-align:middle;display:inline-flex;align-items:center;gap:5px}
 .vbtn:hover,.vbtn:focus-visible{border-color:var(--musc-p);color:var(--musc-p)}
 .vbtn svg{flex:0 0 auto}
-#mdl .vrow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--sf2);border:1px solid var(--line);
-border-radius:10px;padding:10px 12px;margin-bottom:7px;color:var(--txt);font-family:inherit;
-font-size:.82rem;cursor:pointer}
-#mdl .vrow small{display:block;color:var(--mut);font-size:.7rem;margin-top:2px}
-#mdl .vrow .vth{flex:0 0 auto;width:46px;height:46px;border-radius:9px;background:#fff;
-display:flex;align-items:center;justify-content:center;overflow:hidden}
-#mdl .vrow .vth img{width:100%;height:100%;object-fit:contain}
-#mdl .vrow .vth.none{background:var(--sf);color:var(--mut);font-size:.55rem;text-align:center;line-height:1.1}
-#mdl .vrow .vtx{flex:1 1 auto;min-width:0}
-#mdl .vrow:hover,#mdl .vrow:focus-visible{border-color:var(--musc-p)}
-.vfilters{margin-bottom:6px}
 .vsearch{width:100%;box-sizing:border-box;background:var(--sf2);border:1px solid var(--line);
-border-radius:9px;padding:9px 12px;color:var(--txt);font-family:inherit;font-size:.85rem;margin-bottom:10px}
+border-radius:9px;padding:9px 12px;color:var(--txt);font-family:inherit;font-size:.85rem}
 .vsearch:focus-visible{border-color:var(--brand);outline:none}
-.vfacet{margin-bottom:8px}
-.vflb{font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-bottom:5px}
-.vfacet .chips{flex-wrap:wrap}
-.vscroll{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}
+/* ---------------- Bibliotheque de remplacement (A4) : ecran plein
+   cadre + feuille du bas pour les facettes, comme la maquette. ---------------- */
+.vscr{position:fixed;inset:0;z-index:61;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+.vscr-head{flex:0 0 auto;padding:calc(14px + env(safe-area-inset-top,0px)) 8px 6px 8px;display:flex;align-items:center;gap:2px}
+.vscr-back{flex:0 0 auto;width:40px;height:40px;border-radius:50%;border:0;background:none;color:var(--mut);
+display:flex;align-items:center;justify-content:center;cursor:pointer}
+.vscr-tt{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:1px;padding:0 4px}
+.vscr-tt b{font-size:1.05rem;font-weight:800;letter-spacing:-.01em}
+.vscr-tt span{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--mut)}
+.vscr-search{flex:0 0 auto;padding:2px 14px 8px}
+.vscr-facets{flex:0 0 auto;padding:0 14px 8px;display:flex;gap:6px;overflow-x:auto}
+.vscr-fbtn{flex:0 0 auto;height:34px;padding:0 11px;border-radius:8px;border:1px solid var(--line);
+background:var(--sf2);color:var(--mut);font-family:inherit;font-size:.68rem;letter-spacing:.05em;
+text-transform:uppercase;font-weight:700;white-space:nowrap;cursor:pointer}
+.vscr-fbtn.on{background:var(--brand);border-color:var(--brand);color:#1a1400}
+.vscr-fbtn.clear{background:none;border:0;color:var(--mut)}
+.vscr-count{flex:0 0 auto;padding:0 16px 8px;font-size:.68rem;color:var(--mut);font-variant-numeric:tabular-nums}
+.vscr-list{flex:1 1 auto;overflow-y:auto;padding:0 14px calc(14px + env(safe-area-inset-bottom,0px));
+display:flex;flex-direction:column;gap:7px}
+.vscr-card{display:flex;align-items:center;gap:11px;background:var(--sf2);border-radius:11px;padding:10px 12px}
+.vscr-th{flex:0 0 auto;width:46px;height:46px;border-radius:9px;background:#fff;
+display:flex;align-items:center;justify-content:center;overflow:hidden}
+.vscr-th img{width:100%;height:100%;object-fit:contain}
+.vscr-th.none{background:var(--sf);color:var(--mut);font-size:.55rem;text-align:center;line-height:1.1}
+.vscr-tx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:5px}
+.vscr-tx b{font-size:.86rem;font-weight:700}
+.vscr-tags{display:flex;gap:4px;flex-wrap:wrap}
+.vscr-tag{font-size:.58rem;letter-spacing:.04em;text-transform:uppercase;font-weight:700;color:var(--mut);
+background:var(--sf);padding:3px 6px;border-radius:4px}
+.vscr-pick{flex:0 0 auto;width:40px;height:40px;border-radius:9px;border:1px solid var(--brand);
+background:none;color:var(--brand);font-size:1.15rem;line-height:1;display:flex;align-items:center;
+justify-content:center;cursor:pointer}
+.vscr-sheetwrap{position:absolute;inset:0;z-index:2}
+.vscr-veil{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+.vscr-sheet{position:absolute;left:0;right:0;bottom:0;background:var(--sf2);border-top:1px solid var(--line);
+border-radius:18px 18px 0 0;padding:10px 16px calc(16px + env(safe-area-inset-bottom,0px));max-height:78vh;
+display:flex;flex-direction:column}
+.vscr-grab{width:36px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 12px;flex:0 0 auto}
+.vscr-sheethd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;flex:0 0 auto}
+.vscr-sheethd b{font-size:1.05rem;font-weight:800}
+.vscr-sheethd span{font-size:.7rem;color:var(--mut)}
+.vscr-opt{display:flex;align-items:center;gap:11px;background:var(--sf);border:1px solid transparent;
+border-radius:11px;padding:11px 12px;margin-bottom:7px;cursor:pointer;font-size:.86rem;font-weight:600}
+.vscr-opt.on{border-color:var(--brand)}
+.vscr-opt input{width:18px;height:18px;accent-color:var(--brand);flex:0 0 auto}
+.vscr-sheetbtns{display:flex;gap:8px;margin-top:6px;flex:0 0 auto}
+.vscr-sheetbtns button{height:48px;border-radius:12px;font-family:inherit;font-weight:800;letter-spacing:.04em;
+text-transform:uppercase;font-size:.72rem;cursor:pointer;border:1px solid var(--line);background:none;color:var(--mut)}
+.vscr-sheetbtns button#vsrst{width:116px;flex:0 0 auto}
+.vscr-sheetbtns button.pr{flex:1 1 auto;border:0;background:var(--brand);color:#1a1400}
 .exo .eh .ix{color:var(--brand);font-size:.72rem;font-weight:700;margin-right:6px}
 .exo .body{padding:0 13px 12px}
 .vis{display:flex;gap:8px;align-items:stretch;margin:8px 0}
@@ -1611,86 +1646,156 @@ function variantsOf(e,cfg,taken){
 /* Recherche insensible aux accents/casse, utilisée par le filtre libre du
    dialogue de remplacement. */
 function normSearch(s){return (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")}
+/* ---------------- Bibliotheque de remplacement (A4) ----------------
+   Ecran plein cadre avec ses propres facettes (equipement multi-choix,
+   niveau, muscle) ouvertes en feuille du bas — fidele a la maquette
+   direction A — plutot qu'une boite de dialogue generique avec des
+   chips en ligne. */
 function variantDialog(p,ti,xi){
   const sess=p.prog.sessions[ti],x=sess.exos[xi],e=byId(x.id);
   if(!e)return;
   const taken=sess.exos.map(y=>y.id);
   const allow=EQ_ALLOW[p.cfg.eq]||[];
-  const filt={q:"",eq:"def",lvl:null,musc:null};
-  const lab=["même schéma moteur","même famille de mouvement","même muscle principal"];
+  const eqKeys=Object.keys(EQL);
+  const filt={q:"",eqSet:new Set(allow.length?allow:eqKeys),lvl:null,musc:null};
   const muscOpts=Object.keys(MUS).filter(m=>EX.some(z=>z.prim.indexOf(m)>=0));
+  let sheet=null; // "eq" | "lvl" | "musc" | null
   function baseOk(z){return z.id!==e.id&&(p.cfg.excl||[]).indexOf(z.id)<0&&taken.indexOf(z.id)<0&&!spared(z,p.cfg.pain)}
   function computeList(){
-    const anyFilt=filt.q||filt.eq!=="def"||filt.lvl!=null||filt.musc;
-    if(!anyFilt) return variantsOf(e,p.cfg,taken);
     let list=EX.filter(baseOk);
-    if(filt.eq==="def") list=list.filter(z=>allow.indexOf(z.eq)>=0);
-    else if(filt.eq!=="all") list=list.filter(z=>z.eq===filt.eq);
+    if(filt.eqSet.size&&filt.eqSet.size<eqKeys.length) list=list.filter(z=>filt.eqSet.has(z.eq));
     if(filt.lvl!=null) list=list.filter(z=>z.lvl===filt.lvl);
     if(filt.musc) list=list.filter(z=>z.prim.indexOf(filt.musc)>=0||(z.sec||[]).indexOf(filt.musc)>=0);
     if(filt.q){const nq=normSearch(filt.q);list=list.filter(z=>normSearch(z.n).indexOf(nq)>=0)}
-    return list.slice(0,40).map(z=>({e:z,rang:null}));
+    return list;
   }
-  function bodyHtml(){
-    const v=computeList();
-    const eqChips=['<span class="chip tog'+(filt.eq==="def"?" sel":"")+'" data-veq="def">Mon équipement</span>',
-      '<span class="chip tog'+(filt.eq==="all"?" sel":"")+'" data-veq="all">Tout équipement</span>']
-      .concat(Object.keys(EQL).map(k=>'<span class="chip tog'+(filt.eq===k?" sel":"")+'" data-veq="'+k+'">'+EQL[k]+'</span>')).join("");
-    const lvlChips=['<span class="chip tog'+(filt.lvl==null?" sel":"")+'" data-vlvl="">Tous niveaux</span>']
-      .concat(Object.keys(LVL).map(k=>'<span class="chip tog'+(filt.lvl===+k?" sel":"")+'" data-vlvl="'+k+'">'+LVL[k]+'</span>')).join("");
-    const muscChips=['<span class="chip tog'+(!filt.musc?" sel":"")+'" data-vmu="">Tout muscle</span>']
-      .concat(muscOpts.map(m=>'<span class="chip tog'+(filt.musc===m?" sel":"")+'" data-vmu="'+m+'">'+MUS[m]+'</span>')).join("");
-    let html='<div class="vfilters">'
-      +'<input type="text" id="vsearch" class="vsearch" placeholder="Chercher un exercice…" value="'+esc(filt.q)+'">'
-      +'<div class="vfacet"><div class="vflb">Équipement</div><div class="chips">'+eqChips+'</div></div>'
-      +'<div class="vfacet"><div class="vflb">Niveau</div><div class="chips">'+lvlChips+'</div></div>'
-      +'<div class="vfacet"><div class="vflb">Muscle</div><div class="chips vscroll">'+muscChips+'</div></div>'
+  function eqSummary(){
+    const n=filt.eqSet.size;
+    if(!n||n>=eqKeys.length) return "Tout équipement";
+    return Array.from(filt.eqSet).map(k=>EQL[k]).join(", ");
+  }
+  function card(z){
+    const th=z.img&&IMG(z.img);
+    const prim=z.prim&&z.prim[0]&&MUS[z.prim[0]];
+    return '<div class="vscr-card">'
+      +(th?'<span class="vscr-th"><img alt="" decoding="async" src="'+th+'"></span>'
+          :'<span class="vscr-th none">sans<br>visuel</span>')
+      +'<div class="vscr-tx"><b>'+esc(z.n)+'</b><div class="vscr-tags">'
+        +'<span class="vscr-tag">'+esc(EQL[z.eq]||z.eq)+'</span>'
+        +'<span class="vscr-tag">'+esc(LVL[z.lvl])+'</span>'
+        +(prim?'<span class="vscr-tag">'+esc(prim)+'</span>':'')
+      +'</div></div>'
+      +'<button type="button" class="vscr-pick" data-vs="'+z.id+'" aria-label="Choisir '+esc(z.n)+'">+</button>'
       +'</div>';
+  }
+  function listHtml(){
+    const v=computeList();
+    let html='';
     if(!v.length){
-      html+='<p class="mut" style="margin-top:10px">Aucun exercice ne correspond à ces critères. Élargis l\'équipement, le niveau ou la recherche.</p>';
+      html='<p class="mut" style="margin-top:6px">Aucun exercice ne correspond à ces critères. Élargis l\'équipement, le niveau ou la recherche.</p>';
     }else{
-      let cur=-2;
-      v.forEach(o=>{
-        if(o.rang!=null&&o.rang!==cur){cur=o.rang;
-          html+='<div style="font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:10px 0 6px">'+lab[cur]+'</div>';}
-        else if(o.rang==null&&cur!==-1){cur=-1;
-          html+='<div style="font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:10px 0 6px">'+v.length+' résultat'+(v.length>1?"s":"")+'</div>';}
-        const th=o.e.img&&IMG(o.e.img);
-        html+='<button class="vrow" data-vs="'+o.e.id+'">'
-          +(th?'<span class="vth"><img alt="" decoding="async" src="'+th+'"></span>'
-              :'<span class="vth none">sans<br>visuel</span>')
-          +'<span class="vtx">'+esc(o.e.n)
-          +'<small>'+(EQL[o.e.eq]||o.e.eq)+' · '+LVL[o.e.lvl]+' · repos '+mmss(o.e.rest)+'</small></span></button>';
-      });
+      html=v.map(card).join("");
     }
     return html;
   }
-  function refresh(){
-    MDH.innerHTML=bodyHtml();
-    wire();
+  function sheetHtml(){
+    if(sheet==="eq"){
+      const rows=eqKeys.map(k=>{
+        const n=EX.filter(z=>z.eq===k).length,on=filt.eqSet.has(k);
+        return '<label class="vscr-opt'+(on?" on":"")+'">'
+          +'<input type="checkbox" data-veqopt="'+k+'"'+(on?" checked":"")+'><span style="flex:1">'+esc(EQL[k])+'</span>'
+          +'<span class="fy-num" style="color:var(--mut);font-size:.7rem">'+n+'</span></label>';
+      }).join("");
+      return '<div class="vscr-sheethd"><b>Équipement</b><span>'+filt.eqSet.size+' sélectionné'+(filt.eqSet.size>1?"s":"")+'</span></div>'
+        +rows
+        +'<div class="vscr-sheetbtns"><button type="button" id="vsrst">Réinitialiser</button>'
+        +'<button type="button" id="vsapply" class="pr">Voir les '+computeList().length+' exercices</button></div>';
+    }
+    if(sheet==="lvl"){
+      const rows=['<label class="vscr-opt'+(filt.lvl==null?" on":"")+'"><input type="radio" name="vlvl" data-vlvlopt=""'+(filt.lvl==null?" checked":"")+'><span style="flex:1">Tous niveaux</span></label>']
+        .concat(Object.keys(LVL).map(k=>'<label class="vscr-opt'+(filt.lvl===+k?" on":"")+'"><input type="radio" name="vlvl" data-vlvlopt="'+k+'"'+(filt.lvl===+k?" checked":"")+'><span style="flex:1">'+LVL[k]+'</span></label>')).join("");
+      return '<div class="vscr-sheethd"><b>Niveau</b></div>'+rows
+        +'<div class="vscr-sheetbtns"><button type="button" id="vsrst">Réinitialiser</button>'
+        +'<button type="button" id="vsapply" class="pr">Voir les '+computeList().length+' exercices</button></div>';
+    }
+    if(sheet==="musc"){
+      const rows=['<label class="vscr-opt'+(!filt.musc?" on":"")+'"><input type="radio" name="vmu" data-vmuopt=""'+(!filt.musc?" checked":"")+'><span style="flex:1">Tout muscle</span></label>']
+        .concat(muscOpts.map(m=>'<label class="vscr-opt'+(filt.musc===m?" on":"")+'"><input type="radio" name="vmu" data-vmuopt="'+m+'"'+(filt.musc===m?" checked":"")+'><span style="flex:1">'+esc(MUS[m])+'</span></label>')).join("");
+      return '<div class="vscr-sheethd"><b>Muscle</b></div><div style="max-height:46vh;overflow-y:auto">'+rows+'</div>'
+        +'<div class="vscr-sheetbtns"><button type="button" id="vsrst">Réinitialiser</button>'
+        +'<button type="button" id="vsapply" class="pr">Voir les '+computeList().length+' exercices</button></div>';
+    }
+    return '';
   }
+  function screenHtml(){
+    const n=computeList().length;
+    const eqOn=filt.eqSet.size&&filt.eqSet.size<eqKeys.length;
+    return '<div class="vscr-head">'
+      +'<button type="button" class="vscr-back" id="vsback" aria-label="Fermer">'
+        +'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>'
+      +'<div class="vscr-tt"><b>Bibliothèque</b><span>Remplacer · '+esc(e.n)+'</span></div>'
+      +'</div>'
+      +'<div class="vscr-search"><input type="search" id="vsearch" class="vsearch" placeholder="Chercher un exercice…" value="'+esc(filt.q)+'"></div>'
+      +'<div class="vscr-facets">'
+        +'<button type="button" class="vscr-fbtn'+(eqOn?" on":"")+'" id="vfeq">'+(eqOn?"Équipement · "+filt.eqSet.size:"Équipement")+'</button>'
+        +'<button type="button" class="vscr-fbtn'+(filt.lvl!=null?" on":"")+'" id="vflvl">'+(filt.lvl!=null?LVL[filt.lvl]:"Niveau")+'</button>'
+        +'<button type="button" class="vscr-fbtn'+(filt.musc?" on":"")+'" id="vfmusc">'+(filt.musc?esc(MUS[filt.musc]):"Muscle")+'</button>'
+        +'<button type="button" class="vscr-fbtn clear" id="vfclear">Effacer</button>'
+      +'</div>'
+      +'<div class="vscr-count">'+n+' exercice'+(n>1?"s":"")+' · '+esc(eqSummary())+'</div>'
+      +'<div class="vscr-list" id="vlist">'+listHtml()+'</div>'
+      +(sheet?'<div class="vscr-sheetwrap"><div class="vscr-veil" id="vsveil"></div>'
+        +'<div class="vscr-sheet"><div class="vscr-grab"></div>'+sheetHtml()+'</div></div>':'');
+  }
+  const ov=document.createElement("div");
+  ov.className="vscr";
+  document.body.appendChild(ov);
+  function close(){ov.remove()}
+  function render2(){ov.innerHTML=screenHtml();wire()}
   function wire(){
-    const sInp=document.getElementById("vsearch");
-    if(sInp){sInp.oninput=()=>{filt.q=sInp.value;refresh();
-      const el=document.getElementById("vsearch");if(el){el.focus();el.selectionStart=el.selectionEnd=el.value.length}}}
-    MDH.querySelectorAll("[data-veq]").forEach(c=>c.onclick=()=>{filt.eq=c.dataset.veq;refresh()});
-    MDH.querySelectorAll("[data-vlvl]").forEach(c=>c.onclick=()=>{filt.lvl=c.dataset.vlvl?+c.dataset.vlvl:null;refresh()});
-    MDH.querySelectorAll("[data-vmu]").forEach(c=>c.onclick=()=>{filt.musc=c.dataset.vmu||null;refresh()});
-    MDH.querySelectorAll("[data-vs]").forEach(btn=>btn.onclick=()=>{
+    ov.querySelector("#vsback").onclick=close;
+    const sInp=ov.querySelector("#vsearch");
+    sInp.oninput=()=>{filt.q=sInp.value;
+      ov.querySelector("#vlist").innerHTML=listHtml();
+      ov.querySelector(".vscr-count").textContent=(function(){const n=computeList().length;return n+' exercice'+(n>1?"s":"")+' · '+eqSummary()})();
+      wireList()};
+    ov.querySelector("#vfeq").onclick=()=>{sheet="eq";render2()};
+    ov.querySelector("#vflvl").onclick=()=>{sheet="lvl";render2()};
+    ov.querySelector("#vfmusc").onclick=()=>{sheet="musc";render2()};
+    ov.querySelector("#vfclear").onclick=()=>{filt.eqSet=new Set(allow.length?allow:eqKeys);filt.lvl=null;filt.musc=null;sheet=null;render2()};
+    const veil=ov.querySelector("#vsveil");if(veil)veil.onclick=()=>{sheet=null;render2()};
+    wireList();
+    wireSheet();
+  }
+  function wireList(){
+    ov.querySelectorAll("[data-vs]").forEach(btn=>btn.onclick=()=>{
       const nid=btn.dataset.vs,ne=byId(nid);if(!ne)return;
       sess.exos[xi]=Object.assign({id:nid},prescribe(ne,p.cfg),x.forced?{forced:true}:{});
-      pruneChecks(p);saveP();mdClose(null);
+      pruneChecks(p);saveP();close();
       toast("Remplacé par « "+ne.n+" »");renderMain(p);
     });
   }
-  mdOpen({title:"Remplacer « "+e.n+" »",
-    msg:"L'exercice choisi prend sa place dans toutes les séances de ce jour. Tes autres charges ne bougent pas.",
-    html:bodyHtml(),ok:"Annuler",noCancel:true,cb:function(){}});
-  wire();
-  /* le focus par defaut du dialogue va sur le bouton "Annuler", en bas —
-     ce qui fait defiler la boite jusqu'a lui et masque les filtres. On
-     remonte explicitement une fois ce defilement fait. */
-  setTimeout(()=>{const box=MDH.closest(".mbox");if(box)box.scrollTop=0},40);
+  function wireSheet(){
+    /* les data-attrs sont sur l'input (pas le label) : cliquer le label
+       declenche 2 evenements click (le clic direct + celui transmis par
+       le navigateur au controle associe) qui s'annulaient l'un l'autre
+       quand le handler etait pose sur le label. */
+    ov.querySelectorAll("[data-veqopt]").forEach(i=>i.onchange=()=>{
+      const k=i.dataset.veqopt;
+      if(filt.eqSet.has(k))filt.eqSet.delete(k);else filt.eqSet.add(k);
+      render2()});
+    ov.querySelectorAll("[data-vlvlopt]").forEach(i=>i.onchange=()=>{filt.lvl=i.dataset.vlvlopt?+i.dataset.vlvlopt:null;render2()});
+    ov.querySelectorAll("[data-vmuopt]").forEach(i=>i.onchange=()=>{filt.musc=i.dataset.vmuopt||null;render2()});
+    const rst=ov.querySelector("#vsrst");
+    if(rst)rst.onclick=()=>{
+      if(sheet==="eq")filt.eqSet=new Set(allow.length?allow:eqKeys);
+      else if(sheet==="lvl")filt.lvl=null;
+      else if(sheet==="musc")filt.musc=null;
+      render2()};
+    const ap=ov.querySelector("#vsapply");
+    if(ap)ap.onclick=()=>{sheet=null;render2()};
+  }
+  render2();
 }
 
 /* ---------------- Variation de toute la seance ----------------
