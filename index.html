@@ -366,6 +366,20 @@ font-size:.62rem;letter-spacing:.06em;text-transform:uppercase}
 .plansep::before,.plansep::after{content:"";flex:1;height:1px;background:var(--line)}
 /* Une seule ligne de reglages ; ce qui demande une saisie s'ouvre juste
    en dessous et se referme des que le choix est fait. */
+/* Point d'entree unique des reglages de seance + pastilles d'etat : on voit
+   d'un coup d'oeil ce qui s'ecarte de l'habitude, sans rangee de raccourcis. */
+.sbtn{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 13px;
+border-radius:10px;border:1px solid var(--line);background:var(--sf2);color:var(--txt);
+font-family:inherit;font-size:.76rem;font-weight:600;cursor:pointer}
+.sbtn.on{border-color:var(--brand);color:var(--brand)}
+.sbtn svg{flex:0 0 auto}
+.stag{flex:0 0 auto;font-family:var(--mono);font-size:.64rem;color:var(--mut);
+background:var(--sf2);border-radius:7px;padding:6px 9px;white-space:nowrap}
+.stag.w{color:var(--warn)}
+.srow2{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.srl{font-size:.74rem;color:var(--txt);font-weight:600}
+.seg.sm button{padding:7px 11px;font-size:.72rem}
+.spanel .vrow2 .vi svg{width:19px;height:19px}
 .srow{display:flex;gap:7px;flex-wrap:nowrap;align-items:center;margin-bottom:8px;
 overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;
 padding-bottom:2px;
@@ -3113,37 +3127,64 @@ function renderSession(p,s,ti,pg){
   h+='<div class="shd"><h2>'+esc(s.k)+'</h2><span class="sdur">≈ '+plan.est+' min</span></div>';
   h+='<div class="prog"><i style="width:'+pct+'%"></i></div><div class="ptxt" id="ptxt">'+progressText(t0)+'</div>';
   const op=PANEL[ti]||null;
+  /* Un seul point d'entree pour les reglages de la seance, plutot qu'une
+     rangee de cinq raccourcis heritee de l'ancienne interface : la nouvelle
+     mise en page donne la vedette a la seance et au demarrage, le reste se
+     range dans un menu qu'on ouvre quand on en a besoin. Le detail (duree,
+     zones) reste visible en pastille tant qu'il s'ecarte de l'habitude. */
+  const setOpen=(op==="menu");
   h+='<div class="srow">'
-    +'<button class="mini dd'+(op==="dur"?" open on":(dm!==def?" on":""))+'" data-pan="dur">'+dm+' min</button>'
-    +'<button class="mini dd'+(op==="zones"?" open":"")+(pain.length?" ex":"")+'" data-pan="zones">Zones'
-    +(pain.length?' · '+pain.length:'')+'</button>'
-    +'<button class="mini'+(foc?" on":"")+'" id="fmode">Focus</button>'
-    +'<button class="mini'+(p.set.timer?" on":"")+'" id="tmode">Minuteur</button>'
-    +'<button class="mini dd'+(op==="vary"?" open":"")+(varyRank(p,s)?" on":"")+'" data-pan="vary" aria-label="Varier tous les exercices de la séance" title="Varier tous les exercices de la séance">'
-    /* picto dessine plutot que l'emoji 🔀, dont le rendu changeait selon le
-       telephone et jurait avec les autres icones de la barre. */
-    +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>Tout'
-    +(varyRank(p,s)?' '+varyRank(p,s):'')+'</button>'
+    +'<button class="sbtn'+(setOpen?" on":"")+'" data-pan="menu" aria-expanded="'+(setOpen?"true":"false")+'">'
+    +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>'
+    +'Réglages de la séance</button>'
+    +(dm!==def?'<span class="stag">'+dm+' min</span>':'')
+    +(pain.length?'<span class="stag w">'+pain.length+' zone'+(pain.length>1?"s":"")+' ménagée'+(pain.length>1?"s":"")+'</span>':'')
+    +(varyRank(p,s)?'<span class="stag">variante '+varyRank(p,s)+'</span>':'')
+    +(!p.set.timer?'<span class="stag">minuteur coupé</span>':'')
     +'</div>';
 
-  if(op==="dur"){
-    const d=durOf(dm);
-    h+='<div class="spanel"><h5>Durée de la séance</h5>'
-      +'<p class="sd">Choisis un format : il s\'applique immédiatement et ce panneau se referme.'
-      +(dm!==def?' Ton format habituel est <b>'+def+' min</b>.':'')+'</p>'
-      +'<div class="seg">'+DURS.map(o=>'<button'+(o.m===dm?' class="on"':'')+' data-dur="'+o.m+'">'+o.m+'</button>').join("")+'</div>'
-      +'<p class="sf"><b>'+d.m+' min — '+d.n+'</b> · '+d.s+'. '+d.d+'</p>'
-      +'<p class="sf">Le choix ne vaut que pour aujourd\'hui ; demain tu retrouves ton format habituel.</p>'
-      +'</div>';
+  if(setOpen){
+    h+='<div class="spanel spwake"><div class="sphd"><h5>Réglages de la séance</h5>'
+      +'<button type="button" class="spclose" data-pan="" aria-label="Fermer les réglages">'
+      +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>';
+    /* Duree du jour, reglee sur place : c'est le reglage le plus frequent. */
+    h+='<div class="srow2"><span class="srl">Durée d\'aujourd\'hui</span>'
+      +'<div class="seg sm">'+DURS.map(o=>'<button'+(o.m===dm?' class="on"':'')+' data-dur="'+o.m+'">'+o.m+'</button>').join("")+'</div></div>'
+      +'<p class="sf">'+esc(durOf(dm).n)+' — '+esc(durOf(dm).s)+'. Le choix ne vaut que pour aujourd\'hui.</p>';
+    /* Minuteur : un interrupteur, pas un bouton a deviner. */
+    h+='<label class="swl" style="margin-top:14px"><input type="checkbox" id="tmode"'+(p.set.timer?" checked":"")+'>'
+      +'<span>Minuteur de repos automatique</span></label>';
+    /* Le mode focus est deja propose au demarrage : ce raccourci n'existe
+       que pour y revenir apres l'avoir quitte en cours de seance. */
+    if(done>0&&!foc)
+      h+='<button class="vrow2" id="fmode" style="margin-top:14px">'
+        +'<span class="vi"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="16" rx="2"></rect><path d="M9 12h6"></path></svg></span>'
+        +'<span class="vtx"><b>Reprendre en mode focus</b><small>Une série à la fois, minuteur intégré.</small></span>'
+        +'<span class="va"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></span></button>';
+    h+='<button class="vrow2" data-pan="zones" style="margin-top:8px">'
+      +'<span class="vi"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.6-7-10a4 4 0 017-2.6A4 4 0 0119 11c0 5.4-7 10-7 10z"></path></svg></span>'
+      +'<span class="vtx"><b>Zones à ménager</b><small>'+(pain.length?esc(painLabel(pain)):"Aucune zone écartée")+'</small></span>'
+      +'<span class="va"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></span></button>';
+    /* Meme picto d'echange que "Changer" sur une ligne d'exercice, mais un
+       libelle qui dit bien que le remplacement porte sur toute la seance. */
+    h+='<button class="vrow2" data-pan="vary" style="margin-top:8px">'
+      +'<span class="vi">'+VARICO+'</span>'
+      +'<span class="vtx"><b>Changer tous les exercices</b><small>'
+      +(varyRank(p,s)?'Variante n° '+varyRank(p,s)+' en cours':'Mêmes schémas moteurs, autres mouvements')+'</small></span>'
+      +'<span class="va"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></span></button>';
+    h+='</div>';
   }
+
   if(op==="vary"){
     const r=varyRank(p,s);
-    h+='<div class="spanel"><h5>Varier toute la séance</h5>'
+    h+='<div class="spanel spwake"><div class="sphd"><h5>Changer tous les exercices</h5>'
+      +'<button type="button" class="spclose" data-pan="menu" aria-label="Revenir aux réglages">'
+      +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"></path></svg></button></div>'
       +'<p class="sd">Remplace d\'un coup chaque exercice par une variante qui travaille le même schéma moteur. '
       +'Le nombre de séries, les répétitions et le format de la séance ne bougent pas — seuls les mouvements changent.</p>'
       +(r?'<p class="sd">Variante <b>n° '+r+'</b> en cours.</p>':'')
       +'<div class="vbtns">'
-      +'<button class="btn sm" id="vgo">'+(r?"Variante suivante":"Varier la séance")+'</button>'
+      +'<button class="btn sm" id="vgo">'+(r?"Variante suivante":"Changer tous les exercices")+'</button>'
       +(r?'<button class="btn g sm" id="vrst">Revenir aux exercices d\'origine</button>':'')
       +'</div>'
       +'<label class="swl"><input type="checkbox" id="vauto"'+(p.set.autovary?" checked":"")+'>'
@@ -3155,7 +3196,9 @@ function renderSession(p,s,ti,pg){
   }
   if(op==="zones"){
     const sel=PANELSEL||[];
-    h+='<div class="spanel"><h5>Zones à ménager</h5>'
+    h+='<div class="spanel spwake"><div class="sphd"><h5>Zones à ménager</h5>'
+      +'<button type="button" class="spclose" data-pan="menu" aria-label="Revenir aux réglages">'
+      +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"></path></svg></button></div>'
       +'<p class="sd">Sélectionne ce qui te fait mal. Les exercices qui chargent cette articulation sont remplacés par un équivalent, ou retirés s\'il n\'en existe pas.</p>'
       +'<div class="chips">'
       +Object.keys(ZONES).map(k=>'<span class="chip tog'+(sel.indexOf(k)>=0?" ex":"")+'" data-pz="'+k+'">'+ZONES[k].n+'</span>').join("")
@@ -3342,7 +3385,10 @@ function renderSession(p,s,ti,pg){
   h+='<button class="btn g" id="reset">Réinitialiser cette séance</button><div style="height:26px"></div></div>';
   pg.innerHTML=h;
 
-  document.getElementById("fmode").onclick=()=>{FOCOVR[ti+"_"+today()]=!foc;FOCUS["i"+ti]=0;renderMain(p)};
+  /* ces deux commandes vivent desormais dans le menu de reglages : elles
+     ne sont presentes que lorsqu'il est ouvert. */
+  const fmode=document.getElementById("fmode");
+  if(fmode)fmode.onclick=()=>{PANEL[ti]=null;FOCOVR[ti+"_"+today()]=!foc;FOCUS["i"+ti]=0;renderMain(p)};
   pg.querySelectorAll("[data-acc]").forEach(b=>b.onclick=()=>{
     const pos=+b.dataset.acc;
     ACC[ti]=(ACC[ti]===pos)?-1:pos;
@@ -3359,7 +3405,8 @@ function renderSession(p,s,ti,pg){
   if(gofocus)gofocus.onclick=()=>{STARTPANEL[ti]=false;FOCOVR[fkey]=true;FOCUS["i"+ti]=0;renderMain(p)};
   const gofull=document.getElementById("gofull");
   if(gofull)gofull.onclick=()=>{STARTPANEL[ti]=false;FOCOVR[fkey]=false;renderMain(p)};
-  document.getElementById("tmode").onclick=()=>{p.set.timer=!p.set.timer;saveP();if(!p.set.timer)stopT(true);renderMain(p)};
+  const tmode=document.getElementById("tmode");
+  if(tmode)tmode.onchange=()=>{p.set.timer=!p.set.timer;saveP();if(!p.set.timer)stopT(true);renderMain(p)};
   pg.querySelectorAll("[data-var]").forEach(b=>b.onclick=()=>variantDialog(p,ti,+b.dataset.var));
   pg.querySelectorAll("[data-var2]").forEach(b=>b.onclick=()=>variantDialog(p,ti,+b.dataset.var2));
   pg.querySelectorAll("[data-pan]").forEach(b=>b.onclick=()=>{
@@ -3407,7 +3454,7 @@ function renderSession(p,s,ti,pg){
     const v=i.value.trim();
     v===""?DEL("skg_"+sKey(p,s.sid,x.id,si)):S("skg_"+sKey(p,s.sid,x.id,si),parseFloat(v))});
   pg.querySelectorAll("[data-dur]").forEach(b=>b.onclick=()=>{
-    setDayDur(p,s,+b.dataset.dur);PANEL[ti]=null;renderMain(p);window.scrollTo(0,0)});
+    setDayDur(p,s,+b.dataset.dur);renderMain(p)});
   pg.querySelectorAll("[data-ch]").forEach(i=>i.onchange=()=>{
     const xi=i.dataset.ch,x=plan.items[+xi],v=i.value.trim();
     if(v===""){delete p.ovr[x.id]}else{
