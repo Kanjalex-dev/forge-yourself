@@ -105,6 +105,13 @@ p.scs{color:var(--mut);font-size:.76rem;margin:0 0 14px}
 body[data-sect="hist"]{background:var(--sec-hist-bg)}
 body[data-sect="hist"] .card{background:var(--sec-hist-card)}
 body[data-sect="hist"] .card h4{color:var(--sec-hist-ac)}
+/* Sous-menu par onglet de Suivi (Volume / Poids / Calories) — un vrai
+   commutateur, comme la maquette, pas une simple suite de cartes. */
+.histabs{display:flex;gap:4px;margin:0 0 12px}
+.histab{flex:1 1 auto;height:34px;border:0;border-radius:8px;background:var(--sec-hist-card);
+color:var(--mut);font-family:inherit;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;
+font-weight:700;cursor:pointer}
+.histab.on{background:var(--sec-hist-ac);color:#F2F6FC}
 body[data-sect="nut"]{background:var(--sec-nut-bg)}
 body[data-sect="nut"] .card{background:var(--sec-nut-card)}
 body[data-sect="nut"] .card h4{color:var(--sec-nut-ac)}
@@ -436,6 +443,16 @@ cursor:pointer;padding:0;flex:0 0 auto;line-height:1;margin-left:2px}
 .ibtn.on{border-color:var(--brand);color:var(--brand);background:#0F2A2A}
 .cbar input{width:86px;background:var(--sf2);border:1px solid var(--line);border-radius:8px;padding:8px;
 color:var(--txt);font-size:.84rem;font-variant-numeric:tabular-nums}
+/* Stepper de charge de travail : un seul controle +/- bien visible, plutot
+   qu'un simple champ texte "Charge utilisee" — comme la maquette. */
+.cbar.stepper{gap:6px;flex-wrap:nowrap}
+.stepbtn{flex:0 0 auto;width:38px;height:38px;border-radius:9px;background:var(--sf);
+border:1px solid var(--line);color:var(--txt);font-size:1.1rem;line-height:1;cursor:pointer}
+.stepbtn:hover,.stepbtn:focus-visible{border-color:var(--brand)}
+.cbar input.chbig{width:72px;background:none;border:0;padding:0;text-align:center;
+font-size:1.3rem;font-weight:700;color:var(--brand);flex:0 0 auto}
+.chunit{font-size:.65rem;color:var(--mut);margin-right:2px;flex:0 0 auto}
+.cbar.substep{margin-top:0}
 .mini{background:var(--sf2);border:1px solid var(--line);color:var(--mut);border-radius:8px;padding:7px 10px;
 font-size:.7rem;cursor:pointer;font-family:inherit}
 .mini.on{border-color:var(--brand);color:var(--brand)}
@@ -665,15 +682,13 @@ const APPMARK='<svg viewBox="0 0 64 64" aria-label="Forge Yourself">'
  +'<rect x="10.5" y="26" width="5.5" height="12" rx="2.5" fill="#E4322B"/>'
  +'<rect x="48" y="26" width="5.5" height="12" rx="2.5" fill="#E4322B"/></g></svg>';
 
-/* Icone de l'onglet Entraînement dans la barre du bas : le meme dessin que
-   la marque, en une seule couleur (currentColor) pour suivre l'etat
-   actif/inactif du bouton comme les autres icones de la barre. */
-const BARICON='<b><svg width="16" height="16" viewBox="0 0 64 64" aria-hidden="true"><g transform="rotate(-18 32 32)">'
- +'<rect x="15" y="29.5" width="34" height="5" rx="2.5" fill="currentColor"/>'
- +'<rect x="18.5" y="22" width="7" height="20" rx="3" fill="currentColor"/>'
- +'<rect x="38.5" y="22" width="7" height="20" rx="3" fill="currentColor"/>'
- +'<rect x="10.5" y="26" width="5.5" height="12" rx="2.5" fill="currentColor"/>'
- +'<rect x="48" y="26" width="5.5" height="12" rx="2.5" fill="currentColor"/></g></svg></b>';
+/* Icone de l'onglet Entraînement dans la barre du bas : meme trait, meme
+   viewBox et meme gabarit (16x16 dans le reste de la barre) que les autres
+   icones ICON_HIST/NUT/SHOP/PROF — et le meme dessin de barre que la
+   maquette (auparavant une icone remplie, tournee, dans un viewBox 64x64
+   totalement different du reste de la barre : le "ratio" ne correspondait
+   pas). */
+const BARICON='<b><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9v6M8 7v10M16 7v10M20 9v6M8 12h8"/></svg></b>';
 /* Icone du bouton "Changer" (remplacer un exercice) : un vrai pictogramme
    d'echange dessine, coherent avec le reste de l'appli, plutot que le
    glyphe Unicode ⇄ dont le rendu variait selon la police du telephone. */
@@ -2020,7 +2035,7 @@ function line(cv,pts,col){if(!cv)return;
    RENDU
    ================================================================ */
 const APP=document.getElementById("app");
-let VIEW="home",TAB=0,SECT="train",FOCUS={},FOCOVR={},WIZ=0,ACC={},STARTPANEL={},SHOPCAT_SEL="all";
+let VIEW="home",TAB=0,SECT="train",FOCUS={},FOCOVR={},WIZ=0,ACC={},STARTPANEL={},SHOPCAT_SEL="all",HISTAB="vol";
 /* Onglet du jour par defaut : on pointe sur la seance prevue aujourd'hui
    plutot que sur le premier jour du programme — mercredi ouvre la seance
    de mercredi, pas systematiquement celle de lundi. */
@@ -2726,7 +2741,31 @@ function renderSession(p,s,ti,pg){
       +(e.eq==="barre"&&ch!=null&&!isNaN(ch)?barbellSVG(ch):'<span class="mut" style="font-size:.72rem">'+(e.eq==="pdc"?"Poids du corps":"Charge libre")+'</span>')
       +'</div>'
       +'<div class="leg"><i style="color:var(--musc-p)">■</i> '+e.prim.map(m=>MUS[m]).join(", ")
-      +(e.sec&&e.sec.length?' &nbsp;<i style="color:var(--musc-s)">■</i> '+e.sec.map(m=>MUS[m]).join(", "):'')+'</div></div>';
+      +(e.sec&&e.sec.length?' &nbsp;<i style="color:var(--musc-s)">■</i> '+e.sec.map(m=>MUS[m]).join(", "):'')+'</div>'
+      +(e.eq!=="pdc"?(function(){
+        /* Un seul stepper +/- pour la charge de travail, juste sous le
+           schema musculaire — comme la maquette. Il remplace l'ancien
+           encart "Charge utilisee" qui faisait doublon plus bas avec les
+           champs kg par serie : les series partent de cette valeur mais
+           restent individuellement modifiables. */
+        const vide=(ch==null||isNaN(ch));
+        const lu=lastUsedKg(p,x.id,today());
+        const showPrec=lu!=null&&(vide||parseFloat(ch)!==lu);
+        return '<div class="cbar stepper">'
+          +'<button type="button" class="stepbtn" data-chstep="-|'+xi+'" aria-label="Retirer 2,5 kg">−</button>'
+          +'<input type="number" step="0.5" inputmode="decimal" class="chbig" data-ch="'+xi+'" value="'+(vide?"":ch)+'"'
+          +(vide&&lu!=null?' placeholder="'+lu+'"':'')+'><span class="chunit">kg</span>'
+          +'<button type="button" class="stepbtn" data-chstep="+|'+xi+'" aria-label="Ajouter 2,5 kg">+</button>'
+          +(vide?'<button class="ibtn" data-inf="c'+xi+'" aria-label="Pourquoi ce champ est vide" title="Pourquoi ce champ est vide">i</button>':'')
+          +'</div>'
+          +'<div class="cbar substep">'
+          +(showPrec?'<span class="mut" style="font-size:.68rem">Préc. '+esc(kg(lu))+'</span>':'')
+          +'<button class="mini" data-hi="'+xi+'">Courbe</button>'
+          +(ov!=null?'<button class="mini on" data-ra="'+xi+'">Auto</button>':'')+'</div>'
+          +(vide?'<div class="leg" data-infb="c'+xi+'" hidden style="margin:-2px 0 8px">'+esc(freeLoadWhy(e))+'</div>':'')
+          +'<div data-hb="'+xi+'" hidden style="margin-bottom:8px"><canvas class="ch"></canvas></div>';
+      })():'')
+      +'</div>';
     /* Rappel de la derniere fois, juste au-dessus des cases a cocher :
        la charge du jour se decide en regardant ce qui a ete fait, pas en
        cherchant plus bas dans un tableau de charges. */
@@ -2772,20 +2811,6 @@ function renderSession(p,s,ti,pg){
             +(lv?' + '+esc(kg(lv))+' de lest':'')+'. Ordre de grandeur : la part réellement déplacée dépend de tes appuis.'
           :'Renseigne ton poids dans Nutrition ou un relevé dans Suivi pour que ces séries comptent dans ton volume.')
         +'</div>'
-        +'<div data-hb="'+xi+'" hidden style="margin-bottom:8px"><canvas class="ch"></canvas></div>';
-    }
-    if(e.eq!=="pdc"){
-      const vide=(ch==null||isNaN(ch));
-      const lu=lastUsedKg(p,x.id,today());
-      const showPrec=lu!=null&&(vide||parseFloat(ch)!==lu);
-      h+='<div class="cbar"><label>Charge utilisée</label>'
-        +(vide?'<button class="ibtn" data-inf="c'+xi+'" aria-label="Pourquoi ce champ est vide" title="Pourquoi ce champ est vide">i</button>':'')
-        +'<input type="number" step="0.5" inputmode="decimal" data-ch="'+xi+'" value="'+(vide?"":ch)+'"'
-        +(vide&&lu!=null?' placeholder="'+lu+'"':'')+'>'
-        +(showPrec?'<span class="mut" style="font-size:.68rem">Préc. '+esc(kg(lu))+'</span>':'')
-        +'<button class="mini" data-hi="'+xi+'">Courbe</button>'
-        +(ov!=null?'<button class="mini on" data-ra="'+xi+'">Auto</button>':'')+'</div>'
-        +(vide?'<div class="leg" data-infb="c'+xi+'" hidden style="margin:-2px 0 8px">'+esc(freeLoadWhy(e))+'</div>':'')
         +'<div data-hb="'+xi+'" hidden style="margin-bottom:8px"><canvas class="ch"></canvas></div>';
     }
     const fb=p.logs.find(l=>l.k===logKey(s.sid,x.id))||{};
@@ -2910,12 +2935,26 @@ function renderSession(p,s,ti,pg){
     const chip=pg.querySelector('[data-cc="'+xi+'"]');
     if(chip){chip.textContent=(ch!=null&&!isNaN(ch))?kg(ch)+(ov!=null?" · manuel":(x.src==="auto"?" · auto":"")):"charge libre";
       chip.className="chip"+((ch!=null&&!isNaN(ch)&&ov==null&&x.src==="auto")?" auto":"")}
-    const bar=i.parentNode,old=bar.querySelector("[data-ra]");
+    /* Le bouton "Auto" vit sur la ligne secondaire (.substep), pas sur la
+       ligne du stepper +/- lui-meme, pour ne pas la faire deborder. */
+    const bar=(i.closest(".workcard")||{}).querySelector?i.closest(".workcard").querySelector(".substep")||i.parentNode:i.parentNode;
+    const old=bar.querySelector("[data-ra]");
     if(ov!=null&&!old){const btn=document.createElement("button");
       btn.className="mini on";btn.setAttribute("data-ra",xi);btn.textContent="Auto";
       btn.onclick=()=>{delete p.ovr[x.id];saveP();toast("Retour au calcul automatique");renderMain(p)};
       bar.appendChild(btn)}
     else if(ov==null&&old)old.remove();});
+  /* +/- du stepper de charge : ajuste la valeur du meme champ [data-ch]
+     puis declenche son "change" existant, pour ne pas dupliquer la
+     logique d'enregistrement (p.ovr, p.used, pastille, bouton Auto). */
+  pg.querySelectorAll("[data-chstep]").forEach(b=>b.onclick=()=>{
+    const [sign,xi]=b.dataset.chstep.split("|");
+    const inp=pg.querySelector('[data-ch="'+xi+'"]');if(!inp)return;
+    const x=plan.items[+xi];
+    const lu=lastUsedKg(p,x.id,today());
+    const cur=inp.value.trim()===""?(lu!=null?lu:0):parseFloat(inp.value);
+    const nv=Math.max(0,r25(cur+(sign==="-"?-2.5:2.5)));
+    inp.value=nv;inp.dispatchEvent(new Event("change"))});
   /* Le bouton i ne fait qu'afficher ou masquer son explication : aucun
      rendu de page, rien de persiste. L'etat par defaut reste masque. */
   pg.querySelectorAll("[data-inf]").forEach(b=>b.onclick=()=>{
@@ -3077,7 +3116,9 @@ function renderSession(p,s,ti,pg){
       +'</div>';
     if(kc==null) hh+='<p class="mut">Renseigne ton poids dans l\'onglet Nutrition pour obtenir une estimation de la dépense.</p>';
     if(newBadges.length){
-      hh+=newBadges.map(b=>'<div class="badgebanner"><span class="bico">🏅</span><div><b>Médaille débloquée : '+esc(b.n)+'</b>'
+      /* Meme picto SVG circulaire que dans Suivi (medIco) — la maquette
+         A6 remonte cette medaille en cercle plein, pas en emoji. */
+      hh+=newBadges.map(b=>'<div class="badgebanner"><span class="bico">'+medIco(true)+'</span><div><b>Médaille débloquée : '+esc(b.n)+'</b>'
         +'<small>'+esc(b.d)+' · '+earnedTot+'/'+BADGES.length+' médailles</small></div></div>').join("");
     }
     if(prs.length) hh+='<div class="prbanner"><b>Nouveau'+(prs.length>1?"x records ! ":" record ! ")+'</b>'
@@ -3496,75 +3537,92 @@ function records(p){
 function renderHist(p,pg){
   if(!p.blog)p.blog=[];
   const b=body(p);
+  /* Declarees ici (plutot que dans les blocs par onglet) : la partie
+     cablage plus bas (courbes bch/tch/vch/kch) doit pouvoir y acceder
+     meme si un seul onglet a la fois est effectivement rendu. */
+  let bl=[],vol=[],kw=[];
   let h='<div class="page on"><h2 class="sc">Suivi</h2><p class="scs">Deux progressions à lire ensemble : ce que fait le corps, et ce que font les charges.</p>';
   const hard=p.hist.slice(0,3).reduce((n,r)=>n+r.ex.filter(e=>e.diff==="dur"||e.diff==="echec").length,0);
   const rated=p.hist.slice(0,3).reduce((n,r)=>n+r.ex.filter(e=>e.diff).length,0);
   if(rated>=8&&hard>=rated*.6) h+='<div class="alert w"><b>Fatigue cumulée</b>Le ressenti est « dur » ou « échec » sur la majorité des exercices des 3 dernières séances. Une semaine allégée (-20 % de charge, une série en moins) sera plus productive que de forcer la progression.</div>';
-  /* ---------------- Suivi musculaire : en tete, comme la maquette
-     Direction A le priorise (le volume et les records avant les
-     medailles), avec un delta vs la periode precedente en plus. ---------------- */
-  const volW=weeklyVolume(p),volS=sessionVolume(p);
-  const volBySession=volW.length<3&&volS.length>=volW.length;
-  const vol=volBySession?volS:volW,recs=records(p);
-  h+='<div class="card"><h4>Volume '+(volBySession?"par séance":"hebdomadaire")+'</h4>';
-  if(vol.length<2) h+='<div class="empty">Deux séances archivées avec des charges pour tracer la courbe.</div>';
-  else{
-    const dLast=vol[vol.length-1].v,dPrev=vol[vol.length-2].v;
-    const dPct=dPrev>0?Math.round((dLast-dPrev)/dPrev*100):null;
-    h+='<canvas class="ch" id="vch"></canvas><p class="mut" style="text-align:right">en tonnes soulevées '+(volBySession?"par séance":"par semaine")
-      +(dPct!=null?' · <b style="color:var(--txt)">'+(dPct>=0?"▲ +":"▼ ")+Math.abs(dPct)+' %</b> vs '+(volBySession?"précédente":"semaine précédente"):'')+'</p>'
-      +'<p class="mut">Séries effectuées × répétitions × charge. C\'est le meilleur indicateur unique de la charge de travail : s\'il stagne plusieurs semaines alors que le poids monte, la progression vient surtout de l\'intensité.</p>';
-  }
-  h+='</div>';
-  if(recs.length){
-    h+='<div class="card"><h4 style="color:var(--pr)">Records personnels</h4><table class="t">'
-      +'<tr><th>Exercice</th><th class="r">Charge</th><th class="r">Le</th></tr>'
-      +recs.slice(0,10).map(r=>'<tr><td>'+esc(r.n)+'</td><td class="r" style="color:var(--pr);font-weight:700">'+kg(r.kg)+'</td><td class="r">'+shortDate(r.date)+'</td></tr>').join("")
-      +'</table></div>';
-  }
-  /* ---------------- Médailles ---------------- */
-  h+=renderBadgeCard(p);
-  /* ---------------- Suivi corporel ---------------- */
-  const bl=p.blog.slice().sort((a,z)=>a.d<z.d?-1:1);
-  h+='<div class="card"><h4>Suivi corporel</h4>'
-   +'<div class="grid2">'
-   +'<div class="fld"><label>Poids du jour (kg)</label><input type="number" step="0.1" inputmode="decimal" id="bw" placeholder="'+(b.wt||"ex. 78")+'"></div>'
-   +'<div class="fld"><label>Tour de taille (cm)</label><input type="number" step="0.5" inputmode="decimal" id="bt" placeholder="facultatif"></div>'
-   +'</div><button class="mini" id="bsave" style="margin-top:10px">Enregistrer le relevé du jour</button>';
-  if(bl.length<2){
-    h+='<p class="mut" style="margin-top:10px">'+(bl.length?'Un seul relevé enregistré. Il en faut deux pour tracer une courbe.':'Aucun relevé. Pèse-toi dans les mêmes conditions — au réveil, à jeun — une à trois fois par semaine.')+'</p>';
-  }else{
-    const kgs=bl.filter(x=>x.kg!=null);
-    const tws=bl.filter(x=>x.tw!=null);
-    h+='<p class="mut" style="margin:10px 0 2px">Poids — '+kgs.length+' relevés</p><canvas class="ch" id="bch"></canvas>';
-    if(kgs.length>=2){
-      const d=kgs[kgs.length-1].kg-kgs[0].kg;
-      const wk=Math.max(1,Math.round((new Date(kgs[kgs.length-1].d)-new Date(kgs[0].d))/6048e5));
-      h+='<p class="mut" style="text-align:right">'+(d>=0?"+":"")+d.toFixed(1).replace(".",",")+' kg sur '+wk+' semaine'+(wk>1?"s":"")
-        +' · '+(d/wk>=0?"+":"")+(d/wk).toFixed(2).replace(".",",")+' kg/semaine</p>';
+  /* ---------------- Sous-menu par onglet (Volume / Poids / Calories),
+     comme la maquette Direction A : ce n'est pas qu'un reordonnancement de
+     cartes en scroll continu, c'est un vrai commutateur qui montre une
+     seule section a la fois. ---------------- */
+  h+='<div class="histabs">'
+    +'<button type="button" class="histab'+(HISTAB==="vol"?" on":"")+'" data-histab="vol">Volume</button>'
+    +'<button type="button" class="histab'+(HISTAB==="poids"?" on":"")+'" data-histab="poids">Poids</button>'
+    +'<button type="button" class="histab'+(HISTAB==="cal"?" on":"")+'" data-histab="cal">Calories</button>'
+    +'</div>';
+  if(HISTAB==="vol"){
+    /* ---------------- Volume, records, medailles ---------------- */
+    const volW=weeklyVolume(p),volS=sessionVolume(p);
+    const volBySession=volW.length<3&&volS.length>=volW.length;
+    vol=volBySession?volS:volW;
+    const recs=records(p);
+    h+='<div class="card"><h4>Volume '+(volBySession?"par séance":"hebdomadaire")+'</h4>';
+    if(vol.length<2) h+='<div class="empty">Deux séances archivées avec des charges pour tracer la courbe.</div>';
+    else{
+      const dLast=vol[vol.length-1].v,dPrev=vol[vol.length-2].v;
+      const dPct=dPrev>0?Math.round((dLast-dPrev)/dPrev*100):null;
+      h+='<canvas class="ch" id="vch"></canvas><p class="mut" style="text-align:right">en tonnes soulevées '+(volBySession?"par séance":"par semaine")
+        +(dPct!=null?' · <b style="color:var(--txt)">'+(dPct>=0?"▲ +":"▼ ")+Math.abs(dPct)+' %</b> vs '+(volBySession?"précédente":"semaine précédente"):'')+'</p>'
+        +'<p class="mut">Séries effectuées × répétitions × charge. C\'est le meilleur indicateur unique de la charge de travail : s\'il stagne plusieurs semaines alors que le poids monte, la progression vient surtout de l\'intensité.</p>';
     }
-    if(tws.length>=2) h+='<p class="mut" style="margin:10px 0 2px">Tour de taille — '+tws.length+' relevés</p><canvas class="ch" id="tch"></canvas>';
+    h+='</div>';
+    if(recs.length){
+      h+='<div class="card"><h4 style="color:var(--pr)">Records personnels</h4><table class="t">'
+        +'<tr><th>Exercice</th><th class="r">Charge</th><th class="r">Le</th></tr>'
+        +recs.slice(0,10).map(r=>'<tr><td>'+esc(r.n)+'</td><td class="r" style="color:var(--pr);font-weight:700">'+kg(r.kg)+'</td><td class="r">'+shortDate(r.date)+'</td></tr>').join("")
+        +'</table></div>';
+    }
+    h+=renderBadgeCard(p);
   }
-  if(bl.length>=2) h+='<p class="mut" style="margin-top:8px">Une semaine isolée ne veut rien dire : eau, sel, transit font varier le poids de plus d\'un kilo. C\'est la pente sur trois à quatre semaines qui compte.</p>';
-  if(bl.length) h+='<button class="mini" id="bdel" style="margin-top:8px;color:var(--dang);border-color:#7f1d1d">Supprimer le dernier relevé</button>';
-  h+='</div>';
-
-  const kwW=weeklyKcal(p),kwS=sessionKcal(p);
-  const kcalBySession=kwW.length<3&&kwS.length>=kwW.length;
-  const kw=kcalBySession?kwS:kwW,ks=kcalStats(p);
-  h+='<div class="card"><h4>Dépense estimée</h4>';
-  if(!ks.n) h+='<div class="empty">Termine une séance avec ton poids renseigné pour voir la dépense s\'accumuler ici.</div>';
-  else{
-    h+='<div class="chips">'
-      +'<span class="chip">cette semaine <b>'+ks.semaine+' kcal</b></span>'
-      +'<span class="chip">'+ks.nSem+' séance'+(ks.nSem>1?"s":"")+'</span>'
-      +'<span class="chip">moyenne <b>'+ks.moy+' kcal</b> par séance</span></div>';
-    if(kw.length<2) h+='<p class="mut">Deux séances archivées pour tracer la courbe.</p>';
-    else h+='<canvas class="ch" id="kch"></canvas><p class="mut" style="text-align:right">kcal par '+(kcalBySession?"séance":"semaine")+'</p>';
-    h+='<p class="mut">Cumulé depuis le début : '+ks.total+' kcal sur '+ks.n+' séance'+(ks.n>1?"s":"")+'. '
-      +'Ces chiffres sont des estimations à 20-30 % près : utile pour suivre une tendance, pas pour équilibrer une balance calorique au jour le jour.</p>';
+  if(HISTAB==="poids"){
+    /* ---------------- Suivi corporel ---------------- */
+    bl=p.blog.slice().sort((a,z)=>a.d<z.d?-1:1);
+    h+='<div class="card"><h4>Suivi corporel</h4>'
+     +'<div class="grid2">'
+     +'<div class="fld"><label>Poids du jour (kg)</label><input type="number" step="0.1" inputmode="decimal" id="bw" placeholder="'+(b.wt||"ex. 78")+'"></div>'
+     +'<div class="fld"><label>Tour de taille (cm)</label><input type="number" step="0.5" inputmode="decimal" id="bt" placeholder="facultatif"></div>'
+     +'</div><button class="mini" id="bsave" style="margin-top:10px">Enregistrer le relevé du jour</button>';
+    if(bl.length<2){
+      h+='<p class="mut" style="margin-top:10px">'+(bl.length?'Un seul relevé enregistré. Il en faut deux pour tracer une courbe.':'Aucun relevé. Pèse-toi dans les mêmes conditions — au réveil, à jeun — une à trois fois par semaine.')+'</p>';
+    }else{
+      const kgs=bl.filter(x=>x.kg!=null);
+      const tws=bl.filter(x=>x.tw!=null);
+      h+='<p class="mut" style="margin:10px 0 2px">Poids — '+kgs.length+' relevés</p><canvas class="ch" id="bch"></canvas>';
+      if(kgs.length>=2){
+        const d=kgs[kgs.length-1].kg-kgs[0].kg;
+        const wk=Math.max(1,Math.round((new Date(kgs[kgs.length-1].d)-new Date(kgs[0].d))/6048e5));
+        h+='<p class="mut" style="text-align:right">'+(d>=0?"+":"")+d.toFixed(1).replace(".",",")+' kg sur '+wk+' semaine'+(wk>1?"s":"")
+          +' · '+(d/wk>=0?"+":"")+(d/wk).toFixed(2).replace(".",",")+' kg/semaine</p>';
+      }
+      if(tws.length>=2) h+='<p class="mut" style="margin:10px 0 2px">Tour de taille — '+tws.length+' relevés</p><canvas class="ch" id="tch"></canvas>';
+    }
+    if(bl.length>=2) h+='<p class="mut" style="margin-top:8px">Une semaine isolée ne veut rien dire : eau, sel, transit font varier le poids de plus d\'un kilo. C\'est la pente sur trois à quatre semaines qui compte.</p>';
+    if(bl.length) h+='<button class="mini" id="bdel" style="margin-top:8px;color:var(--dang);border-color:#7f1d1d">Supprimer le dernier relevé</button>';
+    h+='</div>';
   }
-  h+='</div>';
+  if(HISTAB==="cal"){
+    const kwW=weeklyKcal(p),kwS=sessionKcal(p);
+    const kcalBySession=kwW.length<3&&kwS.length>=kwW.length;
+    kw=kcalBySession?kwS:kwW;
+    const ks=kcalStats(p);
+    h+='<div class="card"><h4>Dépense estimée</h4>';
+    if(!ks.n) h+='<div class="empty">Termine une séance avec ton poids renseigné pour voir la dépense s\'accumuler ici.</div>';
+    else{
+      h+='<div class="chips">'
+        +'<span class="chip">cette semaine <b>'+ks.semaine+' kcal</b></span>'
+        +'<span class="chip">'+ks.nSem+' séance'+(ks.nSem>1?"s":"")+'</span>'
+        +'<span class="chip">moyenne <b>'+ks.moy+' kcal</b> par séance</span></div>';
+      if(kw.length<2) h+='<p class="mut">Deux séances archivées pour tracer la courbe.</p>';
+      else h+='<canvas class="ch" id="kch"></canvas><p class="mut" style="text-align:right">kcal par '+(kcalBySession?"séance":"semaine")+'</p>';
+      h+='<p class="mut">Cumulé depuis le début : '+ks.total+' kcal sur '+ks.n+' séance'+(ks.n>1?"s":"")+'. '
+        +'Ces chiffres sont des estimations à 20-30 % près : utile pour suivre une tendance, pas pour équilibrer une balance calorique au jour le jour.</p>';
+    }
+    h+='</div>';
+  }
 
   const hu=historyUpdate(p,false);
   h+='<div class="card"><h4>Mise à jour du programme</h4>';
@@ -3615,6 +3673,7 @@ function renderHist(p,pg){
   h+='<div style="height:26px"></div></div>';
   pg.innerHTML=h;
 
+  pg.querySelectorAll("[data-histab]").forEach(b=>b.onclick=()=>{HISTAB=b.dataset.histab;renderMain(p)});
   pg.querySelectorAll("[data-hdel]").forEach(x=>x.onclick=()=>{p.hist.splice(+x.dataset.hdel,1);saveP();renderMain(p)});
 
   const hup=document.getElementById("hupd");
