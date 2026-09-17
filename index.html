@@ -212,7 +212,9 @@ animation:prpop .42s var(--emph,cubic-bezier(.2,0,0,1))}
 .bslot{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--sf2);
 border-radius:10px;padding:10px 4px;text-align:center;opacity:.45}
 .bslot.got{opacity:1;border:1px solid rgba(245,197,24,.4)}
-.bslico{font-size:1.3rem}
+.bslico{display:flex;line-height:0}
+.bslico svg{display:block}
+.bslot:not(.got) .bslico svg circle,.bslot:not(.got) .bslico svg rect,.bslot:not(.got) .bslico svg path{opacity:.6}
 .bslon{font-size:.6rem;line-height:1.2;color:var(--mut)}
 .bslot.got .bslon{color:var(--txt)}
 /* Boutique : fond brun-acier deja pose par les tokens --sec-shop-*, ici les
@@ -367,15 +369,27 @@ min-height:96px;overflow:hidden;padding:4px}
 .vis .mp svg{width:50%;height:auto}
 .leg{font-size:.6rem;color:var(--mut);margin-top:-2px}
 .leg i{font-style:normal}
-.sets{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}
-.sets input{appearance:none;width:40px;height:40px;border-radius:10px;border:2px solid var(--line);
-background:var(--sf2);cursor:pointer;position:relative;margin:0}
-.sets input:checked{background:var(--ok);border-color:var(--ok)}
-.sets input:checked::after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;
-justify-content:center;color:#052e16;font-weight:800;font-size:1.1rem}
-.sets .s{display:flex;flex-direction:column;align-items:center;gap:3px}
-.sets .s span{font-size:.6rem;color:var(--mut)}
-.sets .s.dim input{border-style:dashed;opacity:.5}
+/* Une ligne par serie, cochee independamment, avec ses propres reps et
+   charge modifiables — la valeur de depart vient de la charge prescrite,
+   mais chaque serie peut s'en ecarter (pyramidal, degressif...). */
+.setrows{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.setrow{display:flex;align-items:center;gap:8px;background:var(--sf2);border-radius:9px;
+padding:0 10px;height:44px}
+.setrow.dim{opacity:.55}
+.setrow input[type=checkbox]{appearance:none;width:19px;height:19px;border-radius:5px;
+border:2px solid var(--line);background:var(--sf);cursor:pointer;position:relative;margin:0;flex:0 0 auto}
+.setrow input[type=checkbox]:checked{background:var(--ok);border-color:var(--ok)}
+.setrow input[type=checkbox]:checked::after{content:"✓";position:absolute;inset:0;display:flex;
+align-items:center;justify-content:center;color:#052e16;font-weight:800;font-size:.68rem}
+.setrow.dim input[type=checkbox]{border-style:dashed}
+.setrow .sno{font-size:.72rem;color:var(--mut);font-variant-numeric:tabular-nums;flex:0 0 auto}
+.setrow .sflex{flex:1 1 auto}
+.setrow .sfld{display:flex;align-items:center;gap:5px;background:var(--sf);border:1px solid var(--line);
+border-radius:7px;padding:5px 9px;flex:0 0 auto}
+.setrow .sfld span{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:var(--mut)}
+.setrow .sfld input{width:32px;background:0;border:0;outline:0;color:var(--txt);font-size:.8rem;
+font-family:var(--mono);text-align:right;padding:0;font-variant-numeric:tabular-nums}
+.setrow .sfld input.rep{width:22px}
 .cbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
 .cbar label{font-size:.68rem;color:var(--mut)}
 /* Petit « i » : l'explication n'occupe l'ecran que si on la demande. */
@@ -2217,7 +2231,7 @@ function renderMain(p){
   h+='<div id="pg"></div>';
   const curDay=sess[TAB]||sess[0];
   h+='<nav class="bnav">'
-    +'<button class="bntab'+(SECT==="train"?" on":"")+'" data-sect="train">'+BARICON+'<span>'+(curDay?DAYS_FR[curDay.day].slice(0,3):"Séance")+'</span></button>'
+    +'<button class="bntab'+(SECT==="train"?" on":"")+'" data-sect="train">'+BARICON+'<span>Entraînement</span></button>'
     +'<button class="bntab'+(SECT==="hist"?" on":"")+'" data-sect="hist">'+ICON_HIST+'<span>Suivi</span></button>'
     +'<button class="bntab'+(SECT==="nut"?" on":"")+'" data-sect="nut">'+ICON_NUT+'<span>Nutrition</span></button>'
     +'<button class="bntab'+(SECT==="shop"?" on":"")+'" data-sect="shop">'+ICON_SHOP+'<span>Boutique</span></button>'
@@ -2619,12 +2633,24 @@ function renderSession(p,s,ti,pg){
         +(pe.kg!=null?' · <b>'+esc(kg(pe.kg))+'</b>':(pe.bw!=null?' · <b>'+esc(kg(pe.bw))+'</b> (poids du corps)':''))
         +(pe.diff?' · '+DIFFL[pe.diff]:'')+' <span class="mut">— '+esc(shortDate(prevEx.date))+'</span></div>';
     }
-    h+='<div class="sets">';
+    /* Case a cocher, reps et charge par serie, empilees et modifiables
+       individuellement — chaque serie garde sa propre valeur (utile en
+       pyramidal ou en degressif), avec la charge de l'exercice comme
+       valeur de depart plutot qu'a resaisir a chaque fois. */
+    h+='<div class="setrows">';
     const allS=x.allSets||x.sets;
+    const repDef=Math.round(repsMid(x.reps));
     for(let i=0;i<allS;i++){
       const k="chk_"+sKey(p,s.sid,x.id,i);
       const dim=x.inPlan&&i>=x.sets;
-      h+='<div class="s'+(dim?" dim":"")+'"><input type="checkbox" data-ck="'+xi+"|"+i+'"'+(G(k,false)?" checked":"")+'><span>S'+(i+1)+'</span></div>';
+      const rv=G("srep_"+sKey(p,s.sid,x.id,i),repDef);
+      const kv=G("skg_"+sKey(p,s.sid,x.id,i),(ch!=null&&!isNaN(ch))?ch:"");
+      h+='<div class="setrow'+(dim?" dim":"")+'">'
+        +'<input type="checkbox" data-ck="'+xi+"|"+i+'"'+(G(k,false)?" checked":"")+' aria-label="Série '+(i+1)+' effectuée">'
+        +'<span class="sno">S'+(i+1)+'</span><span class="sflex"></span>'
+        +'<label class="sfld"><span>Reps</span><input type="number" inputmode="numeric" class="rep" data-srep="'+xi+"|"+i+'" value="'+esc(rv)+'"></label>'
+        +'<label class="sfld"><span>kg</span><input type="number" step="0.5" inputmode="decimal" data-skg="'+xi+"|"+i+'" value="'+esc(kv)+'"></label>'
+        +'</div>';
     }
     h+='</div>';
     if(x.inPlan&&allS>x.sets)
@@ -2755,6 +2781,14 @@ function renderSession(p,s,ti,pg){
     b.checked?S(k,true):DEL(k);
     if(b.checked){const e=byId(x.id);startT(smartRest(p,s,x,e,+si),"Repos · "+e.n+" — série "+(+si+1)+"/"+x.sets)}
     refreshProgress(p,s,pg,plan)});
+  pg.querySelectorAll("[data-srep]").forEach(i=>i.onchange=()=>{
+    const [xi,si]=i.dataset.srep.split("|"),x=plan.items[+xi];
+    const v=i.value.trim();
+    v===""?DEL("srep_"+sKey(p,s.sid,x.id,si)):S("srep_"+sKey(p,s.sid,x.id,si),+v)});
+  pg.querySelectorAll("[data-skg]").forEach(i=>i.onchange=()=>{
+    const [xi,si]=i.dataset.skg.split("|"),x=plan.items[+xi];
+    const v=i.value.trim();
+    v===""?DEL("skg_"+sKey(p,s.sid,x.id,si)):S("skg_"+sKey(p,s.sid,x.id,si),parseFloat(v))});
   pg.querySelectorAll("[data-dur]").forEach(b=>b.onclick=()=>{
     setDayDur(p,s,+b.dataset.dur);PANEL[ti]=null;renderMain(p);window.scrollTo(0,0)});
   pg.querySelectorAll("[data-ch]").forEach(i=>i.onchange=()=>{
@@ -2813,7 +2847,7 @@ function renderSession(p,s,ti,pg){
       o.className=(l.diff===o.dataset.df.split("|")[2])?"dsel":""})});
   document.getElementById("snote").onchange=e=>{p.notes[s.sid]=e.target.value;saveP()};
   document.getElementById("reset").onclick=()=>{
-    s.exos.forEach(x=>{for(let i=0;i<x.sets;i++)DEL("chk_"+sKey(p,s.sid,x.id,i))});
+    s.exos.forEach(x=>{for(let i=0;i<x.sets;i++){DEL("chk_"+sKey(p,s.sid,x.id,i));DEL("srep_"+sKey(p,s.sid,x.id,i));DEL("skg_"+sKey(p,s.sid,x.id,i))}});
     p.logs=p.logs.filter(l=>l.k.indexOf(s.sid+"_")!==0);delete p.notes[s.sid];
     if(p.dayDur)delete p.dayDur[s.sid];
     saveP();toast("Séance réinitialisée");renderMain(p)};
@@ -2830,23 +2864,35 @@ function renderSession(p,s,ti,pg){
     plan.items.forEach(x=>{
       const e=byId(x.id),l=p.logs.find(z=>z.k===logKey(s.sid,x.id))||{};
       const ov=p.ovr[x.id],ch=ov!=null?parseFloat(ov):x.charge;
-      let d2=0;for(let i=0;i<(x.allSets||x.sets);i++)if(G("chk_"+sKey(p,s.sid,x.id,i),false))d2++;
-      const bl=(ch==null||isNaN(ch))?bwLoad(p,e,today()):null;
+      /* Chaque serie cochee peut avoir sa propre charge (saisie dans la
+         ligne de serie) qui prime sur la charge prescrite partagee : c'est
+         la plus lourde des series validees qui compte pour l'historique,
+         les records et les courbes — pas seulement la charge de depart. */
+      let d2=0;const setKgs=[];
+      for(let i=0;i<(x.allSets||x.sets);i++){
+        if(G("chk_"+sKey(p,s.sid,x.id,i),false)){
+          d2++;
+          const skg=G("skg_"+sKey(p,s.sid,x.id,i),null);
+          if(skg!=null&&skg!==""&&!isNaN(skg))setKgs.push(parseFloat(skg));
+        }
+      }
+      const chEff=setKgs.length?Math.max.apply(null,setKgs):ch;
+      const bl=(chEff==null||isNaN(chEff))?bwLoad(p,e,today()):null;
       /* exclut la date du jour : une charge deja saisie a la main plus tot
          dans cette meme seance a pu s'ecrire dans p.used avant l'archivage
          et fausserait la comparaison avec elle-meme. */
       const prevBest=(p.used[x.id]||[]).filter(a=>a.date!==today()).reduce((m,a)=>a.kg>m?a.kg:m,0);
       rec.ex.push({n:e.n,id:x.id,sets:x.sets,reps:x.reps,done:d2,
-        kg:(ch!=null&&!isNaN(ch))?ch:null,bw:bl,ok:l.ok||null,diff:l.diff||null});
+        kg:(chEff!=null&&!isNaN(chEff))?chEff:null,bw:bl,ok:l.ok||null,diff:l.diff||null});
       /* La charge réellement soulevée alimente les courbes et les records,
          y compris quand elle vient du calcul automatique et n'a jamais été
          saisie à la main : sinon suivre le programme sans rien taper ne
          laissait aucune trace. */
-      if(d2>0&&ch!=null&&!isNaN(ch)){
+      if(d2>0&&chEff!=null&&!isNaN(chEff)){
         const arr=p.used[x.id]||[],dd=today(),k=arr.findIndex(a=>a.date===dd);
-        if(k>=0){if(ch>arr[k].kg)arr[k].kg=ch}else arr.push({date:dd,kg:ch});
+        if(k>=0){if(chEff>arr[k].kg)arr[k].kg=chEff}else arr.push({date:dd,kg:chEff});
         p.used[x.id]=arr;
-        if(prevBest>0&&ch>prevBest)prs.push({n:e.n,prev:prevBest,kg:ch});
+        if(prevBest>0&&chEff>prevBest)prs.push({n:e.n,prev:prevBest,kg:chEff});
       }
       /* les mouvements au poids de corps alimentent aussi les courbes et
          les records, avec leur charge effective — mais jamais p.ovr, qui
@@ -2896,7 +2942,7 @@ function renderSession(p,s,ti,pg){
       p.lest[e.id]=String(nv);
       prop.push(e.n+" → lest "+kg(nv));
     });
-    s.exos.forEach(x=>{for(let i=0;i<x.sets;i++)DEL("chk_"+sKey(p,s.sid,x.id,i))});
+    s.exos.forEach(x=>{for(let i=0;i<x.sets;i++){DEL("chk_"+sKey(p,s.sid,x.id,i));DEL("srep_"+sKey(p,s.sid,x.id,i));DEL("skg_"+sKey(p,s.sid,x.id,i))}});
     p.logs=p.logs.filter(l=>l.k.indexOf(s.sid+"_")!==0);delete p.notes[s.sid];
     if(p.dayDur)delete p.dayDur[s.sid];
     /* la dépense doit être calculée AVANT l'enregistrement, sinon elle
@@ -3301,12 +3347,28 @@ function kcalStats(p){
 
 /* Carte "Médailles" de l'onglet Suivi : grille des médailles acquises et
    verrouillées, plus la barre de progression vers la prochaine. */
+/* Medaille circulaire dessinee (SVG), a la place de l'emoji 🏅/🔒 — coherent
+   avec le reste des pictogrammes de l'appli et fidele au "graphique en
+   cercle" de la maquette Suivi (direction A). */
+function medIco(earned){
+  return earned
+    ?'<svg width="30" height="30" viewBox="0 0 36 36" aria-hidden="true">'
+      +'<circle cx="18" cy="18" r="16" fill="none" stroke="var(--brand)" stroke-width="2.6"/>'
+      +'<circle cx="18" cy="18" r="10.5" fill="var(--brand)"/>'
+      +'<path d="M13 17.5l3.4 3.4L23 14" fill="none" stroke="#1a1400" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'
+      +'</svg>'
+    :'<svg width="30" height="30" viewBox="0 0 36 36" aria-hidden="true">'
+      +'<circle cx="18" cy="18" r="16" fill="none" stroke="var(--line)" stroke-width="2.6" stroke-dasharray="2.5 3.2"/>'
+      +'<rect x="13.5" y="17.5" width="9" height="7.5" rx="1.6" fill="var(--line)"/>'
+      +'<path d="M15.3 17.5v-2.7a2.7 2.7 0 015.4 0v2.7" fill="none" stroke="var(--line)" stroke-width="2"/>'
+      +'</svg>';
+}
 function renderBadgeCard(p){
   const list=badgeList(p),earned=list.filter(x=>x.earned).length,nb=nextBadge(p);
   let h='<div class="card"><h4>Médailles · '+earned+'/'+BADGES.length+'</h4>'
     +'<div class="badgegrid">'
     +list.map(x=>'<div class="bslot'+(x.earned?" got":"")+'" title="'+esc(x.b.n)+' — '+esc(x.b.d)+'">'
-      +'<span class="bslico">'+(x.earned?"🏅":"🔒")+'</span><span class="bslon">'+esc(x.b.n)+'</span></div>').join("")
+      +'<span class="bslico">'+medIco(x.earned)+'</span><span class="bslon">'+esc(x.b.n)+'</span></div>').join("")
     +'</div>';
   if(nb){
     const cur=badgeStats(p)[nb.cat]||0,pct=Math.min(100,Math.round(cur/nb.thr*100));
