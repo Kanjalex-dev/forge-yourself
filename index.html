@@ -189,10 +189,21 @@ color:var(--txt);font-size:.86rem;font-family:inherit;width:100%;font-variant-nu
 /* La barre chargee sort de la ligne de chips : au format chip elle etait
    illisible (quelques pixels de large), alors qu'elle est le seul repere
    qui dit d'un coup d'oeil "quels disques prendre" pendant l'effort. */
-.barbell{display:flex;align-items:center;gap:10px;background:var(--sf2);border-radius:9px;
-padding:8px 12px;margin:2px 0 8px;overflow-x:auto}
+.barbell{display:flex;flex-direction:column;gap:5px;background:var(--sf2);
+border-radius:9px;padding:8px 12px;margin:2px 0 8px}
+.barbell .bbwrap{position:relative;width:100%;height:56px;display:flex;align-items:center}
+/* le fut traverse tout le bloc et passe derriere les disques */
+.barbell .bbrod{position:absolute;left:0;right:0;top:50%;height:7px;margin-top:-3.5px;
+border-radius:4px;background:linear-gradient(180deg,#9AA3AF 0 38%,#6B7480 38%)}
+.barbell .bbpl{position:relative}
+/* Dans le bloc de charge, la barre n'a pas de cadre a elle : elle vit dans
+   le meme espace que les mannequins, exactement comme sur la planche. */
+.workcard .barbell{background:0;padding:0;margin:0;flex:1 1 auto;min-width:0}
+.workcard .barbell .bbwrap{height:62px}
 .bbwrap{flex:0 0 auto;display:flex;align-items:center}
-.bbl{font-size:.72rem;color:var(--mut);white-space:nowrap}
+/* le detail des disques passe sous le dessin quand la ligne est trop
+   etroite, au lieu d'etre tranche par le bord de la carte. */
+.bbl{font-size:.7rem;color:var(--mut);line-height:1.35}
 .chip.tog{cursor:pointer}
 .chip.tog.on{border-color:var(--brand);background:#0F2A2A;color:var(--brand)}
 .chip.tog.ex{border-color:var(--dang);background:#2A0F0F;color:var(--dang)}
@@ -422,14 +433,19 @@ min-height:110px;overflow:hidden;padding:6px;margin:8px 0 0}
 /* Le plateau charge et les silhouettes musculaires partagent desormais un
    seul encadre : c'est le meme "etat de charge" de l'exercice, pas deux
    illustrations qu'il faut relier soi-meme. */
+/* Bloc de charge : mannequins, barre et selecteur sont trois objets
+   distincts — ils respirent au lieu de se toucher, sinon l'oeil les lit
+   comme un seul amas et plus rien ne se detache. */
 .workcard{background:var(--sf2);border:1px solid rgba(245,197,24,.25);border-radius:10px;
-padding:9px 11px;margin:8px 0}
+padding:11px 13px 12px;margin:10px 0}
 .workcard .wlbl{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700;
-color:var(--brand);margin-bottom:6px}
-.workcard .wrow{display:flex;align-items:center;gap:10px}
-.workcard .mp{flex:0 0 auto;display:flex;gap:3px}
+color:var(--brand);margin-bottom:9px}
+.workcard .wrow{display:flex;align-items:center;gap:16px;margin-bottom:4px}
+.workcard .mp{flex:0 0 auto;display:flex;gap:5px}
 .workcard .mp svg{width:34px;height:auto}
 .workcard .barbell{background:none;border:0;padding:0;margin:0;flex:1 1 auto;min-width:0}
+.workcard .leg{margin-top:9px}
+.workcard .cbar.stepper{margin-top:11px}
 .prevrow{font-size:.74rem;color:var(--txt);margin:6px 0 8px;line-height:1.4}
 .prevlbl{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:var(--brand2);margin-right:4px}
 .startzone{margin:16px 0}
@@ -568,12 +584,25 @@ align-items:center;justify-content:center;color:#052e16;font-weight:800;font-siz
 .setrow.dim input[type=checkbox]{border-style:dashed}
 .setrow .sno{font-size:.72rem;color:var(--mut);font-variant-numeric:tabular-nums;flex:0 0 auto}
 .setrow .sflex{flex:1 1 auto}
-.setrow .sfld{display:flex;align-items:center;gap:5px;background:var(--sf);border:1px solid var(--line);
-border-radius:7px;padding:5px 9px;flex:0 0 auto}
-.setrow .sfld span{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:var(--mut)}
-.setrow .sfld input{width:32px;background:0;border:0;outline:0;color:var(--txt);font-size:.8rem;
-font-family:var(--mono);text-align:right;padding:0;font-variant-numeric:tabular-nums}
-.setrow .sfld input.rep{width:22px}
+/* Champ de serie (reps / kg) : le meme composant dans la liste et dans le
+   mode focus — sans ce partage, les champs du focus retombaient sur le
+   rendu brut du navigateur (gros rectangles blancs). */
+.setrow .sfld,.fsrow .sfld{display:flex;align-items:center;gap:5px;background:var(--sf);
+border:1px solid var(--line);border-radius:7px;padding:5px 9px;flex:0 0 auto}
+.setrow .sfld span,.fsrow .sfld span{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;
+font-weight:700;color:var(--mut)}
+.setrow .sfld input,.fsrow .sfld input{width:32px;background:0;border:0;outline:0;color:var(--txt);
+font-size:.8rem;font-family:var(--mono);text-align:right;padding:0;font-variant-numeric:tabular-nums}
+.setrow .sfld input.rep,.fsrow .sfld input.rep{width:22px}
+.fsrow .sfld{padding:7px 10px}
+/* assez large pour une charge a la demie ("62,5"), qui etait tronquee */
+.fsrow .sfld input{font-size:.88rem;width:52px}
+.fsrow .sfld input.rep{width:26px}
+.fsrow .fswait{flex:0 0 auto;font-size:.56rem;letter-spacing:.07em;text-transform:uppercase;
+font-weight:700;color:#4B5563}
+/* pied fixe du mode focus */
+.ffoot{flex:0 0 auto;padding-top:4px}
+.ffoot .frest{margin-top:0;margin-bottom:2px}
 .cbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
 .cbar label{font-size:.68rem;color:var(--mut)}
 /* Petit « i » : l'explication n'occupe l'ecran que si on la demande. */
@@ -631,7 +660,10 @@ canvas.ch.bar{height:100px;background:0;border:0;border-radius:0}
 table.t{width:100%;border-collapse:collapse;font-size:.78rem}
 table.t th{text-align:left;color:var(--mut);font-size:.62rem;text-transform:uppercase;letter-spacing:.04em;padding:0 6px 6px}
 table.t td{padding:8px 6px;border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
-table.t td.r{text-align:right}
+/* Colonnes chiffrees en mono tabulaire, comme partout ailleurs dans la DA :
+   les nombres s'alignent en colonne au lieu de danser. */
+table.t td.r{text-align:right;font-family:var(--mono);font-size:.74rem;color:var(--musc-p)}
+table.t th.r{text-align:right}
 .del{background:0;border:0;color:var(--dang);font-size:.9rem;cursor:pointer}
 .empty{color:var(--mut);font-size:.78rem;text-align:center;padding:14px 0}
 #tmr{position:fixed;left:0;right:0;bottom:0;z-index:44;display:none;background:#060B14F2;border-top:1px solid var(--brand);
@@ -654,11 +686,26 @@ flex-direction:column;padding:calc(8px + env(safe-area-inset-top)) 14px calc(10p
 #focus.on{display:flex}
 body.focus-on{overflow:hidden}
 body.tmr-on #focus{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+/* En mode focus, le repos s'affiche dans l'ecran lui-meme : la barre fixe
+   du bas ferait doublon et mangerait le bouton de validation. */
+body.focus-on #tmr{display:none}
+/* l'ecran focus est immersif : la barre de navigation passait devant lui
+   (z-index plus eleve) et recouvrait la validation de serie. */
+body.focus-on .bnav{display:none}
+body.focus-on.tmr-on #focus{padding-bottom:calc(10px + env(safe-area-inset-bottom))}
 .fhead{display:flex;align-items:center;gap:9px;flex:0 0 auto}
-.fnav{width:46px;height:44px;border-radius:12px;background:var(--sf2);border:1px solid var(--line);
-color:var(--txt);font-size:1.05rem;cursor:pointer;font-family:inherit}
+.fnav{width:44px;height:44px;border-radius:50%;background:0;border:0;
+color:var(--mut);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
 .fnav:disabled{opacity:.3}
-.fpos{flex:1;text-align:center;font-size:.74rem;color:var(--mut);font-variant-numeric:tabular-nums}
+/* Jauge d'avancement : un segment par exercice, celui en cours en or, les
+   exercices boucles en bleu. On peut y sauter directement. */
+.fsteps{flex:1 1 auto;display:flex;gap:4px;align-items:center;min-width:0}
+.fstep{flex:1 1 0;height:3px;min-width:0;border:0;border-radius:2px;background:#232A33;
+padding:0;cursor:pointer}
+.fstep.dn{background:var(--brand2)}
+.fstep.cu{background:var(--brand);height:4px}
+.fpos{flex:0 0 auto;text-align:right;font-family:var(--mono);font-size:.72rem;color:var(--mut);
+font-variant-numeric:tabular-nums;min-width:38px}
 .fx{background:0;border:1px solid var(--line);color:var(--mut);border-radius:11px;padding:10px 13px;
 font-size:.72rem;cursor:pointer;font-family:inherit}
 .fbar{height:4px;background:var(--sf);border-radius:2px;margin-top:11px;flex:0 0 auto;overflow:hidden}
@@ -673,12 +720,56 @@ margin-bottom:8px;font-weight:600;display:flex;align-items:center;gap:7px}
 .fsec .btns{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
 .fname{font-size:1.05rem;font-weight:650;margin:11px 0 8px;flex:0 0 auto;line-height:1.2}
 .fname .ix{color:var(--brand);font-size:.78rem;margin-right:6px}
+/* Nom de l'exercice en display elargi : en mode focus c'est la premiere
+   chose qu'on lit, il occupe la place que la maquette lui donne. */
+.fnm{font-family:var(--disp);font-variation-settings:"wdth" 113;font-size:1.65rem;
+font-weight:800;letter-spacing:-.025em;line-height:1.02;color:var(--musc-p);margin:10px 0 9px}
+.ftags{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:11px}
+.ftag{font-size:.56rem;letter-spacing:.07em;text-transform:uppercase;font-weight:700;
+color:var(--mut);background:var(--sf2);padding:5px 7px;border-radius:5px}
+.ftag.on{color:var(--brand);background:rgba(245,197,24,.12)}
+.ftags .fspacer{flex:1 1 auto}
+.ftags .vbtn{margin-left:0}
+/* Les series du focus : une ligne par serie, celle en cours ouverte a la
+   saisie, les autres en lecture. */
+.fslabel{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:14px 0 7px}
+.fsets2{display:flex;flex-direction:column;gap:6px}
+.fsrow{display:flex;align-items:center;gap:9px;background:var(--sf2);border:1px solid transparent;
+border-radius:10px;padding:0 11px;height:46px}
+.fsrow.dn{opacity:.55}
+.fsrow.bonus{border-style:dashed;border-color:var(--line)}
+.fsrow.cu{border-color:var(--brand);background:var(--sf);height:52px}
+.fsrow .fsno{flex:0 0 auto;width:20px;font-family:var(--mono);font-size:.72rem;color:var(--mut)}
+.fsrow.cu .fsno{color:var(--brand)}
+.fsrow .fsval{flex:1 1 auto;font-family:var(--mono);font-size:.82rem;color:var(--txt)}
+.fsrow .fsok{flex:0 0 auto;color:var(--brand2);display:flex}
+.fsrow .fsedit{flex:0 0 auto;background:0;border:0;color:var(--mut);font-family:inherit;
+font-size:.62rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700;cursor:pointer;padding:6px}
+.fsrow .sfld{flex:0 0 auto}
+.fsrow .fstate{flex:0 0 auto;font-size:.56rem;letter-spacing:.07em;text-transform:uppercase;
+font-weight:700;color:var(--brand)}
+.fsrow.cu .sfld{background:var(--sf2)}
+/* Barre de repos integree : au-dessus du bouton, jamais par-dessus. */
+.frest{flex:0 0 auto;background:var(--sf2);border:1px solid rgba(45,111,208,.4);
+border-radius:12px;padding:9px 10px 10px;margin-top:14px}
+.frest .frtop{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.frest .frv{font-family:var(--mono);font-size:1.3rem;font-weight:600;color:var(--brand2);line-height:1}
+.frest .frl{flex:1 1 auto;font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;
+font-weight:700;color:var(--mut)}
+.frest .frl b{font-family:var(--mono);color:var(--musc-p)}
+.frest .frb{flex:0 0 auto;height:40px;padding:0 11px;border-radius:9px;border:1px solid var(--line);
+background:0;color:var(--txt);font-family:var(--mono);font-size:.72rem;cursor:pointer}
+.frest .frbar{height:4px;border-radius:2px;background:#232A33;overflow:hidden}
+.frest .frbar i{display:block;height:100%;width:0;background:var(--brand2);border-radius:2px;
+transition:width .9s linear}
+.btn.fvalid{margin-top:14px;height:52px;font-size:.88rem;letter-spacing:.04em;text-transform:uppercase;
+font-weight:800}
 .fchips{display:flex;flex-wrap:wrap;gap:6px;flex:0 0 auto;margin-bottom:10px}
 /* les animations sont des sources de 190 px : on les laisse grandir un peu
    pour remplir le cadre, sans le laisser devenir un grand aplat blanc */
 .fanim{flex:0 0 auto;background:#fff;border-radius:14px;
 display:flex;align-items:center;justify-content:center;overflow:hidden;padding:10px;
-width:100%;max-width:440px;height:28vh;max-height:250px;min-height:150px;
+width:100%;max-width:440px;height:21vh;max-height:180px;min-height:120px;
 margin:2px auto 0;box-shadow:0 1px 0 rgba(255,255,255,.06)}
 /* sans hauteur ni largeur imposees, l'image se rend a sa taille naturelle ;
    les max-* ne peuvent que la reduire, jamais l'agrandir */
@@ -701,7 +792,7 @@ padding:11px 15px;font-size:.78rem;cursor:pointer;font-family:inherit}
 .fsec .btns button.non{background:#2A0F0F;border-color:var(--dang);color:var(--dang)}
 .fsec .btns button.dsel{background:#0F2A2A;border-color:var(--brand);color:var(--brand)}
 @media (max-height:680px){
-  .fanim{height:26vh;min-height:130px}
+  .fanim{height:18vh;min-height:104px}
   .fsets input{width:46px;height:46px}
   .fname{font-size:.96rem;margin:8px 0 6px}
   .fsec{margin-top:13px}
@@ -1685,17 +1776,43 @@ function finishT(missedAudio){const p=prof();
   aSched=[];
   try{if(p&&p.set.vib&&navigator.vibrate)navigator.vibrate([180,90,180])}catch(e){}
   releaseWakeLock();
+  paintT();
   setTimeout(()=>{tEl.classList.remove("on");document.body.classList.remove("tmr-on")},6000)}
-function startT(sec,lbl){const p=prof();if(!p||!p.set.timer)return;
-  stopT(false);armBeep(sec);tLeft=sec;tLbl=lbl||"Repos";tL.textContent=tLbl;tEl.classList.remove("fin");tEl.classList.add("on");
+/* Le repos s'affiche a deux endroits selon le mode : la barre fixe du bas
+   dans la liste, la barre integree a l'ecran en mode focus (maquette A2).
+   Une seule horloge, deux peintures — paintT() les met toutes deux a jour
+   pour qu'elles ne puissent pas diverger. */
+let tTotal=0;
+function paintT(){
   tV.textContent=mmss(tLeft);
+  const box=document.getElementById("frest");
+  if(!box)return;
+  const live=!!tId&&tLeft>0;
+  box.hidden=!live;
+  if(!live)return;
+  const v=document.getElementById("frv");if(v)v.textContent=mmss(tLeft);
+  const tt=document.getElementById("frtot");if(tt)tt.textContent=mmss(tTotal);
+  const bi=document.getElementById("frbi");
+  if(bi)bi.style.width=(tTotal>0?Math.max(0,Math.min(100,100*(tTotal-tLeft)/tTotal)):0)+"%";
+}
+function startT(sec,lbl){const p=prof();if(!p||!p.set.timer)return;
+  stopT(false);armBeep(sec);tLeft=sec;tTotal=sec;tLbl=lbl||"Repos";tL.textContent=tLbl;tEl.classList.remove("fin");tEl.classList.add("on");
   tEndAt=Date.now()+sec*1000;
   document.body.classList.add("tmr-on");
-  acquireWakeLock();
-  tId=setInterval(()=>{tLeft=Math.max(0,Math.round((tEndAt-Date.now())/1000));tV.textContent=mmss(tLeft);
+  acquireWakeLock();paintT();
+  tId=setInterval(()=>{tLeft=Math.max(0,Math.round((tEndAt-Date.now())/1000));paintT();
     if(tLeft<=0)finishT(false)},1000)}
 function stopT(h){if(tId){clearInterval(tId);tId=null}
-  if(h!==false){tEl.classList.remove("on");document.body.classList.remove("tmr-on");releaseWakeLock()}}
+  if(h!==false){tEl.classList.remove("on");document.body.classList.remove("tmr-on");releaseWakeLock()}
+  paintT()}
+/* +30 s, appele aussi bien par la barre du bas que par celle du focus. */
+function addT(sec){
+  if(!tEndAt)return;
+  tLeft+=sec;tEndAt+=sec*1000;tTotal+=sec;tEl.classList.remove("fin");paintT();
+  if(!tId){armBeep(tLeft);acquireWakeLock();
+    tId=setInterval(()=>{tLeft=Math.max(0,Math.round((tEndAt-Date.now())/1000));paintT();
+      if(tLeft<=0)finishT(false)},1000)}
+  else armBeep(tLeft)}
 /* Reveil au retour au premier plan : ecran verrouille ou onglet en
    arriere-plan pendant le repos = setInterval gele ET contexte audio
    suspendu, donc le bip programme ne s'est pas joue. Au retour, on
@@ -1707,12 +1824,10 @@ document.addEventListener("visibilitychange",()=>{
   if(!tId||!tEndAt)return;
   if(!wakeLock)acquireWakeLock();
   const rem=Math.round((tEndAt-Date.now())/1000);
-  if(rem<=0){finishT(true)}else{tLeft=rem;tV.textContent=mmss(tLeft)}
+  if(rem<=0){finishT(true)}else{tLeft=rem;paintT()}
 });
 document.getElementById("tmrs").onclick=()=>stopT(true);
-document.getElementById("tmrp").onclick=()=>{tLeft+=30;tEndAt+=30000;tEl.classList.remove("fin");tV.textContent=mmss(tLeft);
-  if(!tId){armBeep(tLeft);acquireWakeLock();tId=setInterval(()=>{tLeft=Math.max(0,Math.round((tEndAt-Date.now())/1000));tV.textContent=mmss(tLeft);
-    if(tLeft<=0)finishT(false)},1000)}else{armBeep(tLeft)}};
+document.getElementById("tmrp").onclick=()=>addT(30);
 let tstT=null;
 function toast(m){const e=document.getElementById("tst");e.textContent=m;e.classList.add("on");
   clearTimeout(tstT);tstT=setTimeout(()=>e.classList.remove("on"),2200)}
@@ -2741,117 +2856,204 @@ function migrateKeys(p){
    réglages, notes, boutons de fin — et reste accessible en quittant. */
 const FOC=document.getElementById("focus");
 function closeFocus(){FOC.className="";FOC.innerHTML="";document.body.classList.remove("focus-on")}
+/* ---------------- Mode focus (maquette A2) ----------------
+   Une serie a la fois, pas un exercice a la fois : l'ecran montre ou on en
+   est dans la seance, ce qu'il y a sur la barre, la serie en cours et son
+   repos. « Valider la serie » coche, lance le repos et avance tout seul —
+   on ne touche plus une case a cocher pendant l'effort. */
 function renderFocus(p,s,ti,plan,order){
   const nb=order.length;
   let i=Math.min(nb-1,Math.max(0,FOCUS["i"+ti]||0));
   FOCUS["i"+ti]=i;
   const o=order[i],x=o.x,xi=o.xi,e=byId(x.id);
   if(!e){closeFocus();return}
-  const t=tally(p,s,plan);
   const ov=p.ovr[x.id],ch=ov!=null?parseFloat(ov):x.charge;
   const allS=x.allSets||x.sets;
   const img=e.img&&!x.spared&&IMG(e.img);
   const fb=p.logs.find(l=>l.k===logKey(s.sid,x.id))||{};
+  const dm=dayDur(p,s);
 
+  /* Etat des series de l'exercice courant : la serie en cours est la
+     premiere qui n'est pas cochee. */
+  const dn=[];for(let k=0;k<allS;k++)dn.push(!!G("chk_"+sKey(p,s.sid,x.id,k),false));
+  let cur=-1;for(let k=0;k<allS;k++)if(!dn[k]){cur=k;break}
+  const allDone=(cur<0);
+  const repDef=Math.round(repsMid(x.reps));
+  const setDone=oo=>{
+    const a=oo.x.allSets||oo.x.sets;let n=0;
+    for(let k=0;k<a;k++)if(G("chk_"+sKey(p,s.sid,oo.x.id,k),false))n++;
+    return n>=(oo.x.sets||a);
+  };
+
+  /* --- en-tete : retour, jauge d'avancement par exercice, position --- */
   let h='<div class="fhead">'
-    +'<button class="fnav" data-fnav="-1"'+(i===0?" disabled":"")+' aria-label="Précédent">←</button>'
-    +'<div class="fpos">'+(i+1)+' / '+nb+' · <span class="fpct">'+progressText(t)+'</span></div>'
-    +'<button class="fnav" data-fnav="1"'+(i===nb-1?" disabled":"")+' aria-label="Suivant">→</button>'
-    +'<button class="fx" id="fquit">Quitter</button></div>';
-  h+='<div class="fbar"><i style="width:'+t.pct+'%"></i></div>';
-  h+='<div class="fbody">';
-  h+='<div class="fname"><span class="ix">'+(xi+1)+'</span>'+esc(e.n)
-    +'<button class="vbtn" data-fvar="'+xi+'" title="Remplacer cet exercice par un autre" aria-label="Remplacer cet exercice">'+VARICO+'Changer</button></div>';
-  h+='<div class="fchips"><span class="chip"><b>'+x.sets+'</b> × '+x.reps+'</span>'
-    +'<span class="chip'+loadTxt(p,x,e,ov,ch).c+'">'+loadTxt(p,x,e,ov,ch).t+'</span>'
-    +'<span class="chip">'+x.rpe+'</span><span class="chip">repos <b>'+mmss(smartRest(p,s,x,e))+'</b></span>'
-    +(x.swapFrom?'<span class="chip" style="border:1px solid var(--warn);color:var(--warn)">remplace '+esc(x.swapFrom)+'</span>':'')
-    +(x.inPlan?'':(x.spared
-      ?'<span class="chip" style="border:1px solid var(--warn);color:var(--warn)">sans équivalent</span>'
-      :'<span class="chip" style="border:1px solid var(--mut);color:var(--mut)">bonus</span>'))
+    +'<button class="fnav" id="fback" aria-label="Revenir à la liste">'
+    +'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>'
+    +'<div class="fsteps">'
+    +order.map((oo,k)=>'<button type="button" class="fstep'+(k===i?" cu":(setDone(oo)?" dn":""))
+      +'" data-fgo="'+k+'" aria-label="Exercice '+(k+1)+' : '+esc((byId(oo.x.id)||{n:""}).n)+'"></button>').join("")
+    +'</div>'
+    +'<span class="fpos">'+(i+1)+' / '+nb+'</span>'
     +'</div>';
-  if(e.eq==="barre"&&ch!=null&&!isNaN(ch))h+=barbellSVG(ch);
+
+  h+='<div class="fbody">';
+  h+='<h2 class="fnm">'+esc(e.n)+'</h2>';
+  h+='<div class="ftags">'
+    +'<span class="ftag">'+esc(EQL[e.eq]||e.eq)+'</span>'
+    +(e.prim&&e.prim[0]?'<span class="ftag">'+esc(MUS[e.prim[0]])+'</span>':'')
+    +'<span class="ftag on">'+(allDone?'Terminé · '+allS+'/'+allS:'Série '+(cur+1)+' / '+allS)+'</span>'
+    +'<span class="fspacer"></span>'
+    +'<button class="vbtn" data-fvar="'+xi+'" title="Remplacer cet exercice par un autre" aria-label="Remplacer cet exercice">'+VARICO+'Changer</button>'
+    +'</div>';
   h+='<div class="fanim">'+(img?'<img alt="'+esc(e.n)+'" decoding="async" src="'+img+'">'
     :'<div class="na">Animation non fournie</div>')+'</div>';
 
-  const prevExF=lastExRecord(p,x.id);
-  if(prevExF){
-    const pef=prevExF.ex;
-    h+='<div class="prevrow"><span class="prevlbl">Précédent</span> '
-      +'<b>'+pef.done+'/'+pef.sets+'</b> séries'
-      +(pef.kg!=null?' · <b>'+esc(kg(pef.kg))+'</b>':(pef.bw!=null?' · <b>'+esc(kg(pef.bw))+'</b> (poids du corps)':''))
-      +(pef.diff?' · '+DIFFL[pef.diff]:'')+' <span class="mut">— '+esc(shortDate(prevExF.date))+'</span></div>';
-  }
-  h+='<div class="fsec"><div class="lbl">Séries'
-    +(x.inPlan&&allS>x.sets?' — les pointillées sont hors format du jour':'')+'</div><div class="fsets">';
-  for(let k=0;k<allS;k++){
-    const key="chk_"+sKey(p,s.sid,x.id,k);
-    const dim=x.inPlan&&k>=x.sets;
-    h+='<div class="s'+(dim?" dim":"")+'"><input type="checkbox" data-fck="'+k+'"'+(G(key,false)?" checked":"")+'><span>S'+(k+1)+'</span></div>';
-  }
-  h+='</div></div>';
-
-  if(e.eq==="pdc"&&bwCoef(e)!=null){
+  /* --- le meme bloc de charge que la liste : mannequins, barre, selecteur,
+     et les trois reperes. Un seul endroit ou lire la charge, dans les deux
+     modes, avec exactement la meme presentation. --- */
+  h+='<div class="workcard"><div class="wlbl">Charge de travail</div>'
+    +'<div class="wrow"><div class="mp">'+muscleSVG(e.prim,e.sec||[],e.id)+'</div>'
+    +(e.eq==="barre"&&ch!=null&&!isNaN(ch)?barbellSVG(ch):'<span class="mut" style="font-size:.72rem">'+(e.eq==="pdc"?"Poids du corps":"Charge libre")+'</span>')
+    +'</div>'
+    +'<div class="leg"><i style="color:var(--musc-p)">■</i> '+e.prim.map(m=>MUS[m]).join(", ")
+    +(e.sec&&e.sec.length?' &nbsp;<i style="color:var(--musc-s)">■</i> '+e.sec.map(m=>MUS[m]).join(", "):'')+'</div>';
+  if(e.eq!=="pdc"){
+    const vide=(ch==null||isNaN(ch));
+    const lu=lastUsedKg(p,x.id,today());
+    h+='<div class="cbar stepper">'
+      +'<button type="button" class="stepbtn" id="fchm" aria-label="Retirer 2,5 kg">−</button>'
+      +'<input type="number" step="0.5" inputmode="decimal" class="chbig" id="fch" value="'+(vide?"":ch)+'"'
+      +(vide&&lu!=null?' placeholder="'+lu+'"':'')+'><span class="chunit">kg</span>'
+      +'<button type="button" class="stepbtn" id="fchp" aria-label="Ajouter 2,5 kg">+</button>'
+      +(vide?'<button class="ibtn" data-inf="fc" aria-label="Pourquoi ce champ est vide" title="Pourquoi ce champ est vide">i</button>':'')
+      +'</div>'
+      +(vide?'<div class="leg" data-infb="fc" hidden style="margin:-2px 0 6px">'+esc(freeLoadWhy(e))+'</div>':'')
+      +(ov!=null?'<div class="cbar substep"><button class="mini on" id="fra">Auto</button></div>':'');
+  }else if(bwCoef(e)!=null){
     const bl=bwLoad(p,e,null),lv=lestOf(p,e);
-    h+='<div class="fsec"><div class="lbl">'+(LEST_OK[e.id]?"Lest ajouté":"Charge effective")
-      +'<button class="ibtn" data-inf="fb" aria-label="D\'où vient cette charge" title="D\'où vient cette charge">i</button>'
-      +'</div><div class="btns">'
-      +(LEST_OK[e.id]?'<input type="number" step="0.5" inputmode="decimal" id="flest" value="'+(lv||"")+'">'
-        +'<span class="mut" style="font-size:.72rem">kg</span>':'')
-      +'</div><div class="leg" data-infb="fb" hidden style="margin-top:7px">'
-      +(bl!=null?'≈ '+esc(kg(bl))+' déplacés, soit '+Math.round(bwCoef(e)*100)+' % de ton poids de corps'
-        +(lv?' + '+esc(kg(lv))+' de lest':'')+'.'
-        :'Renseigne ton poids pour que ces séries comptent dans ton volume.')
-      +'</div></div>';
-  }
-  if(e.eq!=="pdc")
-    h+='<div class="fsec"><div class="lbl">Charge utilisée'
-      +((ch==null||isNaN(ch))?'<button class="ibtn" data-inf="fc" aria-label="Pourquoi ce champ est vide" title="Pourquoi ce champ est vide">i</button>':'')
-      +'</div><div class="btns">'
-      +'<input type="number" step="0.5" inputmode="decimal" id="fch" value="'+(ch!=null&&!isNaN(ch)?ch:"")+'">'
-      +'<span class="mut" style="font-size:.72rem">kg</span></div>'
-      +((ch==null||isNaN(ch))?'<div class="leg" data-infb="fc" hidden style="margin-top:7px">'+esc(freeLoadWhy(e))+'</div>':'')
+    h+='<div class="cbar substep">'
+      +'<span class="mut" style="font-size:.72rem">'+(bl!=null?'≈ '+esc(kg(bl))+' déplacés':'Poids du corps')+'</span>'
+      +(LEST_OK[e.id]?'<input type="number" step="0.5" inputmode="decimal" id="flest" value="'+(lv||"")+'" aria-label="Lest ajouté en kg"><span class="mut" style="font-size:.68rem">kg de lest</span>':'')
       +'</div>';
+  }
+  h+='</div>';
 
+  /* --- les series, une par ligne : faites, en cours, a venir --- */
+  h+='<div class="fslabel"><span class="fy-lbl2">Séries</span>'
+    +(x.inPlan&&allS>x.sets?'<span class="mut" style="font-size:.66rem">les dernières sont hors format du jour</span>':'')
+    +'</div>';
+  h+='<div class="fsets2">';
+  for(let k=0;k<allS;k++){
+    const rv=G("srep_"+sKey(p,s.sid,x.id,k),repDef);
+    const kv=G("skg_"+sKey(p,s.sid,x.id,k),(ch!=null&&!isNaN(ch))?ch:"");
+    const bonus=x.inPlan&&k>=x.sets;
+    if(k===cur){
+      h+='<div class="fsrow cu'+(bonus?" bonus":"")+'">'
+        +'<span class="fsno">S'+(k+1)+'</span>'
+        +'<label class="sfld"><span>Reps</span><input type="number" inputmode="numeric" class="rep" id="fsrep" value="'+esc(rv)+'"></label>'
+        +'<label class="sfld"><span>kg</span><input type="number" step="0.5" inputmode="decimal" id="fskg" value="'+esc(kv)+'"></label>'
+        +'<span class="fstate">En cours</span></div>';
+    }else{
+      h+='<div class="fsrow'+(dn[k]?" dn":"")+(bonus?" bonus":"")+'">'
+        +'<span class="fsno">S'+(k+1)+'</span>'
+        +'<span class="fsval">'+(kv!==""&&kv!=null?esc(kg(kv)):"—")+' × '+esc(rv)+'</span>'
+        /* "reprendre" n'a de sens que sur une serie deja validee : on ne
+           reprend pas une serie qu'on n'a pas encore faite. */
+        +(dn[k]?'<button type="button" class="fsedit" data-fjump="'+k+'" aria-label="Reprendre à la série '+(k+1)+'">reprendre</button>'
+            +'<span class="fsok"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg></span>'
+          :'<span class="fswait">à venir</span>')
+        +'</div>';
+    }
+  }
+  h+='</div>';
+
+  /* --- ressenti et technique restent dans la zone qui defile --- */
   h+='<div class="fsec"><div class="lbl">Objectif atteint ?</div><div class="btns">'
     +'<button data-fok="oui" class="'+(fb.ok==="oui"?"oui":"")+'">Oui</button>'
     +'<button data-fok="non" class="'+(fb.ok==="non"?"non":"")+'">Non</button>'
     +'</div></div>';
-
   h+='<div class="fsec"><div class="lbl">Ressenti</div><div class="btns">'
     +DIFFS.map(d=>'<button data-fdf="'+d+'" class="'+(fb.diff===d?"dsel":"")+'">'+DIFFL[d]+'</button>').join("")
     +'</div></div>';
-
   h+='<div class="fsec"><div class="lbl">Exécution</div><div class="btns">'
     +'<button id="ftech">Technique &amp; erreurs fréquentes</button></div></div>';
-
   h+='</div>';
-  FOC.innerHTML=h;FOC.className="on";document.body.classList.add("focus-on");
 
-  const go=d=>{FOCUS["i"+ti]=Math.min(nb-1,Math.max(0,i+d));renderMain(p)};
-  FOC.querySelectorAll("[data-fnav]").forEach(b=>b.onclick=()=>go(+b.dataset.fnav));
+  /* --- pied fixe : le repos puis la validation. Ancres au bas de l'ecran
+     pour qu'on n'ait jamais a faire defiler la page entre deux series. --- */
+  h+='<div class="ffoot">';
+  h+='<div class="frest" id="frest" hidden>'
+    +'<div class="frtop"><span class="frv" id="frv">0:00</span>'
+    +'<span class="frl">Repos calculé · <b id="frtot">'+mmss(smartRest(p,s,x,e,Math.max(0,cur)))+'</b></span>'
+    +'<button type="button" class="frb" id="frplus">+30 s</button>'
+    +'<button type="button" class="frb" id="frskip">Passer</button></div>'
+    +'<div class="frbar"><i id="frbi"></i></div></div>';
+
+  const lastEx=(i>=nb-1);
+  h+='<button class="btn fvalid" id="fvalid">'
+    +(allDone?(lastEx?"Terminer la séance":"Exercice suivant")
+      :"Valider la série "+(cur+1)+" / "+allS)+'</button>';
+  h+='</div>';
+
+  FOC.innerHTML=h;FOC.className="on";document.body.classList.add("focus-on");
+  paintT();
+
+  /* ---------------- cablage ---------------- */
+  const go=k=>{FOCUS["i"+ti]=Math.min(nb-1,Math.max(0,k));renderMain(p);FOC.scrollTop=0};
+  FOC.querySelectorAll("[data-fgo]").forEach(b=>b.onclick=()=>go(+b.dataset.fgo));
   FOC.querySelectorAll("[data-fvar]").forEach(b=>b.onclick=()=>variantDialog(p,ti,+b.dataset.fvar));
-  document.getElementById("fquit").onclick=()=>{FOCOVR[ti+"_"+today()]=false;closeFocus();renderMain(p);window.scrollTo(0,0)};
-  FOC.querySelectorAll("[data-fck]").forEach(b=>b.onchange=()=>{
-    const k=b.dataset.fck,key="chk_"+sKey(p,s.sid,x.id,k);
-    b.checked?S(key,true):DEL(key);
-    if(b.checked)startT(smartRest(p,s,x,e,+k),"Repos · "+e.n+" — série "+(+k+1)+"/"+x.sets);
-    refreshProgress(p,s,null,plan)});
+  document.getElementById("fback").onclick=()=>{FOCOVR[ti+"_"+today()]=false;closeFocus();renderMain(p);window.scrollTo(0,0)};
+
+  /* reprendre une serie deja passee : on la decoche, elle redevient la
+     serie en cours — plutot que de bloquer sur une erreur de frappe. */
+  FOC.querySelectorAll("[data-fjump]").forEach(b=>b.onclick=()=>{
+    const k=+b.dataset.fjump;
+    for(let z=k;z<allS;z++)DEL("chk_"+sKey(p,s.sid,x.id,z));
+    renderMain(p)});
+
+  const fsrep=document.getElementById("fsrep"),fskg=document.getElementById("fskg");
+  const saveSet=()=>{
+    if(cur<0)return;
+    if(fsrep){const v=fsrep.value.trim();
+      v===""?DEL("srep_"+sKey(p,s.sid,x.id,cur)):S("srep_"+sKey(p,s.sid,x.id,cur),+v)}
+    if(fskg){const v=fskg.value.trim();
+      v===""?DEL("skg_"+sKey(p,s.sid,x.id,cur)):S("skg_"+sKey(p,s.sid,x.id,cur),parseFloat(v))}
+  };
+  if(fsrep)fsrep.onchange=saveSet;
+  if(fskg)fskg.onchange=saveSet;
+
+  document.getElementById("fvalid").onclick=()=>{
+    if(allDone){
+      if(lastEx){FOCOVR[ti+"_"+today()]=false;closeFocus();renderMain(p);
+        const fin=document.getElementById("finish");if(fin)fin.click();return}
+      go(i+1);return;
+    }
+    saveSet();
+    S("chk_"+sKey(p,s.sid,x.id,cur),true);
+    /* le repos demarre tout seul : c'est la raison d'etre du mode focus */
+    startT(smartRest(p,s,x,e,cur),"Repos · "+e.n+" — série "+(cur+1)+"/"+allS);
+    renderMain(p);
+  };
+
+  const frs=document.getElementById("frskip");if(frs)frs.onclick=()=>{stopT(true);paintT()};
+  const frp=document.getElementById("frplus");if(frp)frp.onclick=()=>addT(30);
+
   FOC.querySelectorAll("[data-inf]").forEach(b=>b.onclick=()=>{
     const box=FOC.querySelector('[data-infb="'+b.dataset.inf+'"]');
     if(!box)return;
     box.hidden=!box.hidden;
     b.classList.toggle("on",!box.hidden);
     b.setAttribute("aria-expanded",box.hidden?"false":"true")});
+
   const fl=document.getElementById("flest");
   if(fl)fl.onchange=()=>{
     const v=fl.value.trim();
     if(!p.lest)p.lest={};
     if(v===""||parseFloat(v)===0)delete p.lest[x.id];else p.lest[x.id]=v;
     saveP();toast("Lest enregistré");renderMain(p)};
+
   const fc=document.getElementById("fch");
-  if(fc)fc.onchange=()=>{
-    const v=fc.value.trim();
+  const applyCh=v=>{
     if(v===""){delete p.ovr[x.id]}else{
       p.ovr[x.id]=v;
       const arr=p.used[x.id]||[],d=today(),k=arr.findIndex(a=>a.date===d);
@@ -2859,6 +3061,16 @@ function renderFocus(p,s,ti,plan,order){
       p.used[x.id]=arr;
     }
     saveP();toast("Charge enregistrée");renderMain(p)};
+  if(fc)fc.onchange=()=>applyCh(fc.value.trim());
+  const step=d=>{
+    const lu=lastUsedKg(p,x.id,today());
+    const base=(fc&&fc.value.trim()!=="")?parseFloat(fc.value):(lu!=null?lu:0);
+    applyCh(String(Math.max(0,r25(base+d))))};
+  const fm=document.getElementById("fchm");if(fm)fm.onclick=()=>step(-2.5);
+  const fp=document.getElementById("fchp");if(fp)fp.onclick=()=>step(2.5);
+  const fra=document.getElementById("fra");
+  if(fra)fra.onclick=()=>{delete p.ovr[x.id];saveP();toast("Retour au calcul automatique");renderMain(p)};
+
   document.getElementById("ftech").onclick=()=>mdOpen({title:e.n,msg:"",ok:"Fermer",noCancel:true,cb:function(){},
     html:'<p><span style="color:var(--brand);font-weight:600">Départ :</span> '+esc(e.d.a)+'</p>'
       +'<p><span style="color:var(--brand);font-weight:600">Exécution :</span> '+esc(e.d.b)+'</p>'
@@ -3044,6 +3256,10 @@ function renderSession(p,s,ti,pg){
           +(vide?'<div class="leg" data-infb="c'+xi+'" hidden style="margin:-2px 0 8px">'+esc(freeLoadWhy(e))+'</div>':'')
           +'<div data-hb="'+xi+'" hidden style="margin-bottom:8px"><canvas class="ch"></canvas></div>';
       })():'')
+      /* Trois reperes en pied de bloc : ce que l'exercice coute au
+         planning, au corps, et ce qu'il pese dans le volume de la semaine.
+         Ils repondent a trois questions qu'on se pose vraiment devant une
+         barre, sans encombrer la ligne de reglages. */
       +'</div>';
     /* Rappel de la derniere fois, juste au-dessus des cases a cocher :
        la charge du jour se decide en regardant ce qui a ete fait, pas en
@@ -3704,22 +3920,33 @@ function barbellSVG(totalKg){
   const plates=[];
   PLATES.forEach(pl=>{while(per>=pl[0]-.01){plates.push(pl);per=Math.round((per-pl[0])*100)/100}});
   if(!plates.length)return "";
-  /* Rendu assez grand pour se lire comme "la barre a charger", pas comme
-     une puce de plus noyee dans la ligne de chips : c'est cet effet-la
-     qui justifie le calcul plutot qu'un simple chiffre en kg. */
-  const H=40,PW=11,gap=3,barLen=26;
-  let x=barLen+8;
+  /* Proportions de la maquette : la barre occupe la largeur disponible, les
+     disques montent jusqu'aux trois quarts de la hauteur du bloc et gardent
+     leurs rapports de taille reels (un 20 kg fait plus du triple d'un
+     1,25 kg). A ce format on reconnait les disques a prendre sans lire le
+     chiffre, ce qui est tout l'interet du dessin. */
+  const H=78,ROD=7,STEM=22,GAP=3;
+  const pw=w=>w>=20?15:(w>=15?14:(w>=10?12:(w>=5?10:(w>=2.5?8:7))));
+  const ph=w=>Math.round(Math.max(22,Math.min(72,20+w/25*52)));
+  let x=STEM+7;
   const rects=plates.map(pl=>{
-    const ph=Math.max(18,Math.min(36,15+pl[0]/25*21));
-    const r='<rect x="'+x+'" y="'+((H-ph)/2).toFixed(1)+'" width="'+PW+'" height="'+ph.toFixed(1)+'" rx="2" fill="'+pl[1]+'" stroke="#0006" stroke-width=".75"/>'
-      +'<text x="'+(x+PW/2)+'" y="'+(H/2+3.5)+'" text-anchor="middle" font-size="7.5" font-weight="700" fill="#0009" font-family="var(--mono)">'+(pl[0]%1?pl[0].toFixed(1).replace(".",","):pl[0])+'</text>';
-    x+=PW+gap;return r;
+    const W=pw(pl[0]),Hh=ph(pl[0]),y=(H-Hh)/2;
+    const r='<rect x="'+x+'" y="'+y.toFixed(1)+'" width="'+W+'" height="'+Hh+'" rx="3" fill="'+pl[1]+'" stroke="#0007" stroke-width="1"/>'
+      +(Hh>=34?'<text x="'+(x+W/2)+'" y="'+(H/2+3.5)+'" text-anchor="middle" font-size="9" font-weight="700" fill="#0009" font-family="IBM Plex Mono, ui-monospace, monospace">'
+        +(pl[0]%1?pl[0].toFixed(1).replace(".",","):pl[0])+'</text>':'');
+    x+=W+GAP;return r;
   }).join("");
-  const svg='<svg width="'+(x+2)+'" height="'+H+'" viewBox="0 0 '+(x+2)+' '+H+'" aria-hidden="true" style="display:block">'
-    +'<rect x="0" y="'+(H/2-2)+'" width="'+barLen+'" height="4" rx="2" fill="var(--p125)"/>'
+  const w=x+4;
+  /* Le fut de barre est un element a part, etire par la mise en page sur
+     toute la largeur disponible : en SVG il aurait ete mis a l'echelle avec
+     les disques et se serait arrete au tiers du bloc. Les disques, eux,
+     gardent leurs proportions exactes. */
+  const svg='<svg viewBox="0 0 '+w+' '+H+'" preserveAspectRatio="xMinYMid meet" aria-hidden="true" class="bbpl" style="height:100%;width:'+w+'px;max-width:100%">'
+    +'<rect x="'+STEM+'" y="'+(H/2-11)+'" width="5" height="22" rx="2" fill="var(--p125)"/>'
     +rects+'</svg>';
   const perSide=plates.reduce((s,pl)=>s+pl[0],0);
-  return '<div class="barbell"><div class="bbwrap">'+svg+'</div><span class="bbl">'+kg(perSide)+' par côté · barre '+bar+' kg</span></div>';
+  return '<div class="barbell"><div class="bbwrap"><span class="bbrod"></span>'+svg+'</div>'
+    +'<span class="bbl">'+kg(perSide)+' par côté · barre '+bar+' kg</span></div>';
 }
 /* Libelle de la pastille de charge, commun a la liste et au mode focus. */
 function loadTxt(p,x,e,ov,ch){
