@@ -169,19 +169,12 @@ padding:8px 12px;margin:2px 0 8px;overflow-x:auto}
 .exo.bonus{border-style:dashed}
 .exo.spared{border-style:dashed;border-color:#5A4A1E}
 .exo.spared .eh .nm{opacity:.55;text-decoration:line-through}
-/* La phrase du jour est le vecteur de motivation de la seance : un bloc a
-   fond unifie, plein cadre, plutot qu'un simple filet colore — c'est la
-   premiere chose lue en ouvrant la seance. L'animation est desactivee si
-   le systeme demande moins de mouvement — c'est la recommandation, pas
-   une option. */
-.motiv{position:relative;font-size:.98rem;color:var(--bg);
-background:linear-gradient(120deg,var(--brand),#FFE28A 130%);
-border-radius:0;padding:16px 14px;margin:4px -14px 16px;line-height:1.5;
-font-style:italic;font-weight:650;
-animation:motivIn .45s var(--emph) both}
-.motiv::first-letter{font-weight:800}
-@keyframes motivIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.motiv{animation:none}}
+/* La phrase du jour reste discrete — un filet colore, pas un bloc plein
+   cadre — et ne vit plus qu'au moment du demarrage, a cote du choix du
+   mode : ce n'est pas la premiere chose imposee a chaque ouverture de la
+   seance, seulement un mot d'encouragement au moment de s'y mettre. */
+.motiv{font-size:.8rem;color:var(--txt);border-left:2px solid var(--brand);
+padding:2px 0 2px 11px;margin:2px 0 14px;line-height:1.45}
 .chip.tog.ex{border-color:var(--dang);background:#2A0F0F;color:var(--dang)}
 .mini.ex{border-color:var(--warn);color:var(--warn)}
 .sum{font-size:.86rem;line-height:1.7}
@@ -197,6 +190,11 @@ animation:prpop .42s var(--emph,cubic-bezier(.2,0,0,1))}
 @keyframes prpop{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
 @media (prefers-reduced-motion:reduce){.prbanner{animation:none}}
 .encour{font-size:.92rem;line-height:1.5;font-weight:600;margin:0 0 14px}
+.fy-lbl2{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--brand)}
+.finhero{margin:0 0 12px}
+.finhero h3{margin:6px 0 0;font-size:1.4rem;font-weight:800;letter-spacing:-.01em;line-height:1.05;color:var(--musc-p)}
+.msgday{background:var(--sf2);border-radius:10px;padding:11px 13px;margin:0 0 14px}
+.msgday p{margin:5px 0 0;font-size:.86rem;line-height:1.5;color:var(--txt)}
 .recap2x2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 .recap2x2 div{background:var(--sf2);border-radius:10px;padding:10px 12px;text-align:center}
 .recap2x2 b{display:block;font-size:1.3rem;font-variant-numeric:tabular-nums;color:var(--txt)}
@@ -2478,7 +2476,6 @@ function renderSession(p,s,ti,pg){
   const foc=FOCOVR[fkey]===true;
   FOCUS[ti]=foc;
   let h='<div class="page on">';
-  h+='<div class="motiv">'+esc(motivation(p,s,plan))+'</div>';
   h+='<div class="prog"><i style="width:'+pct+'%"></i></div><div class="ptxt" id="ptxt">'+progressText(t0)+'</div>';
   const op=PANEL[ti]||null;
   h+='<div class="srow">'
@@ -2674,6 +2671,7 @@ function renderSession(p,s,ti,pg){
        disponible en dessous pour partir directement en mode Tout a l'ecran. */
     const spOpen=STARTPANEL[ti]!==false;
     h+='<div class="startzone">';
+    h+='<div class="motiv">'+esc(motivation(p,s,plan))+'</div>';
     if(spOpen){
       h+='<div class="spanel"><div class="sphd"><h5>Comment veux-tu la dérouler ?</h5>'
         +'<button type="button" class="spclose" id="spclose" aria-label="Fermer le choix">'
@@ -2910,7 +2908,9 @@ function renderSession(p,s,ti,pg){
     saveP();
     const newBadges=badgesNew(prevBadgeSt,badgeStats(p));
     const bst=badgeStats(p),earnedTot=BADGES.filter(b=>(bst[b.cat]||0)>=b.thr).length;
-    let hh='<p class="encour">'+esc(endMessage(tl,prs,newBadges,perfect))+'</p>';
+    let hh='<div class="finhero"><span class="fy-lbl2">Séance terminée · '+esc(DAYS_FR[s.day])+'</span>'
+      +'<h3>'+esc(s.k)+' bouclée.</h3></div>';
+    hh+='<div class="msgday"><span class="fy-lbl2">Message du jour</span><p>'+esc(endMessage(tl,prs,newBadges,perfect))+'</p></div>';
     hh+='<div class="recap2x2">'
       +'<div><b>'+(tl.done+tl.bonus)+'</b><span>séries</span></div>'
       +'<div><b>'+(kc!=null?kc:"—")+'</b><span>kcal est.</span></div>'
@@ -3326,6 +3326,28 @@ function renderHist(p,pg){
   const hard=p.hist.slice(0,3).reduce((n,r)=>n+r.ex.filter(e=>e.diff==="dur"||e.diff==="echec").length,0);
   const rated=p.hist.slice(0,3).reduce((n,r)=>n+r.ex.filter(e=>e.diff).length,0);
   if(rated>=8&&hard>=rated*.6) h+='<div class="alert w"><b>Fatigue cumulée</b>Le ressenti est « dur » ou « échec » sur la majorité des exercices des 3 dernières séances. Une semaine allégée (-20 % de charge, une série en moins) sera plus productive que de forcer la progression.</div>';
+  /* ---------------- Suivi musculaire : en tete, comme la maquette
+     Direction A le priorise (le volume et les records avant les
+     medailles), avec un delta vs la periode precedente en plus. ---------------- */
+  const volW=weeklyVolume(p),volS=sessionVolume(p);
+  const volBySession=volW.length<3&&volS.length>=volW.length;
+  const vol=volBySession?volS:volW,recs=records(p);
+  h+='<div class="card"><h4>Volume '+(volBySession?"par séance":"hebdomadaire")+'</h4>';
+  if(vol.length<2) h+='<div class="empty">Deux séances archivées avec des charges pour tracer la courbe.</div>';
+  else{
+    const dLast=vol[vol.length-1].v,dPrev=vol[vol.length-2].v;
+    const dPct=dPrev>0?Math.round((dLast-dPrev)/dPrev*100):null;
+    h+='<canvas class="ch" id="vch"></canvas><p class="mut" style="text-align:right">en tonnes soulevées '+(volBySession?"par séance":"par semaine")
+      +(dPct!=null?' · <b style="color:var(--txt)">'+(dPct>=0?"▲ +":"▼ ")+Math.abs(dPct)+' %</b> vs '+(volBySession?"précédente":"semaine précédente"):'')+'</p>'
+      +'<p class="mut">Séries effectuées × répétitions × charge. C\'est le meilleur indicateur unique de la charge de travail : s\'il stagne plusieurs semaines alors que le poids monte, la progression vient surtout de l\'intensité.</p>';
+  }
+  h+='</div>';
+  if(recs.length){
+    h+='<div class="card"><h4 style="color:var(--pr)">Records personnels</h4><table class="t">'
+      +'<tr><th>Exercice</th><th class="r">Charge</th><th class="r">Le</th></tr>'
+      +recs.slice(0,10).map(r=>'<tr><td>'+esc(r.n)+'</td><td class="r" style="color:var(--pr);font-weight:700">'+kg(r.kg)+'</td><td class="r">'+shortDate(r.date)+'</td></tr>').join("")
+      +'</table></div>';
+  }
   /* ---------------- Médailles ---------------- */
   h+=renderBadgeCard(p);
   /* ---------------- Suivi corporel ---------------- */
@@ -3351,21 +3373,6 @@ function renderHist(p,pg){
   }
   if(bl.length>=2) h+='<p class="mut" style="margin-top:8px">Une semaine isolée ne veut rien dire : eau, sel, transit font varier le poids de plus d\'un kilo. C\'est la pente sur trois à quatre semaines qui compte.</p>';
   if(bl.length) h+='<button class="mini" id="bdel" style="margin-top:8px;color:var(--dang);border-color:#7f1d1d">Supprimer le dernier relevé</button>';
-  h+='</div>';
-
-  /* ---------------- Suivi musculaire ---------------- */
-  /* Sous 3 semaines distinctes, l'agregation hebdomadaire n'a pas assez de
-     recul (seances rapprochees = 1 ou 2 points = "toujours une ligne
-     droite") ; on retombe alors sur un point par seance. */
-  const volW=weeklyVolume(p),volS=sessionVolume(p);
-  const volBySession=volW.length<3&&volS.length>=volW.length;
-  const vol=volBySession?volS:volW,recs=records(p);
-  h+='<div class="card"><h4>Volume '+(volBySession?"par séance":"hebdomadaire")+'</h4>';
-  if(vol.length<2) h+='<div class="empty">Deux séances archivées avec des charges pour tracer la courbe.</div>';
-  else{
-    h+='<canvas class="ch" id="vch"></canvas><p class="mut" style="text-align:right">en tonnes soulevées '+(volBySession?"par séance":"par semaine")+'</p>'
-      +'<p class="mut">Séries effectuées × répétitions × charge. C\'est le meilleur indicateur unique de la charge de travail : s\'il stagne plusieurs semaines alors que le poids monte, la progression vient surtout de l\'intensité.</p>';
-  }
   h+='</div>';
 
   const kwW=weeklyKcal(p),kwS=sessionKcal(p);
@@ -3418,13 +3425,6 @@ function renderHist(p,pg){
       +'<canvas class="ch" id="hch"></canvas>';
   }
   h+='</div>';
-
-  if(recs.length){
-    h+='<div class="card"><h4 style="color:var(--pr)">Records personnels</h4><table class="t">'
-      +'<tr><th>Exercice</th><th class="r">Charge</th><th class="r">Le</th></tr>'
-      +recs.slice(0,10).map(r=>'<tr><td>'+esc(r.n)+'</td><td class="r" style="color:var(--pr);font-weight:700">'+kg(r.kg)+'</td><td class="r">'+shortDate(r.date)+'</td></tr>').join("")
-      +'</table></div>';
-  }
 
   h+='<h2 class="sc" style="margin-top:18px">Séances archivées</h2>';
   if(!p.hist.length) h+='<div class="empty">Aucune séance archivée. Termine une séance pour la retrouver ici.</div>';
@@ -3518,8 +3518,8 @@ function renderShop(p,pg){
     +'<a href="#" id="shopcrit">Mes critères →</a></span></div>';
   const cat=SHOPCAT_SEL||"all";
   h+='<div class="chips">'
-    +'<span class="chip tog'+(cat==="all"?" ex":"")+'" data-shopcat="all">Tout</span>'
-    +Object.keys(SHOP_CAT).map(k=>'<span class="chip tog'+(cat===k?" ex":"")+'" data-shopcat="'+k+'">'+SHOP_CAT[k]+'</span>').join("")
+    +'<span class="chip tog'+(cat==="all"?" sel":"")+'" data-shopcat="all">Tout</span>'
+    +Object.keys(SHOP_CAT).map(k=>'<span class="chip tog'+(cat===k?" sel":"")+'" data-shopcat="'+k+'">'+SHOP_CAT[k]+'</span>').join("")
     +'</div>';
   const list=SHOP.slice(1).filter(x=>cat==="all"||x.cat===cat);
   h+='<div class="shopgrid">'+list.map(x=>'<div class="shopcard">'
