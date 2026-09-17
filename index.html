@@ -334,9 +334,10 @@ color:var(--txt);font-family:inherit;font-size:.86rem;cursor:pointer}
 .spclose{width:24px;height:24px;background:0;border:0;color:var(--mut);cursor:pointer;
 display:flex;align-items:center;justify-content:center;padding:0;flex:0 0 auto}
 .vbtn{background:0;border:1px solid var(--line);color:var(--mut);border-radius:8px;
-padding:2px 8px;font-size:.8rem;cursor:pointer;margin-left:8px;line-height:1.3;
-font-family:inherit;vertical-align:middle}
+padding:2px 9px;font-size:.8rem;cursor:pointer;margin-left:8px;line-height:1.3;
+font-family:inherit;vertical-align:middle;display:inline-flex;align-items:center;gap:5px}
 .vbtn:hover,.vbtn:focus-visible{border-color:var(--musc-p);color:var(--musc-p)}
+.vbtn svg{flex:0 0 auto}
 #mdl .vrow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--sf2);border:1px solid var(--line);
 border-radius:10px;padding:10px 12px;margin-bottom:7px;color:var(--txt);font-family:inherit;
 font-size:.82rem;cursor:pointer}
@@ -624,6 +625,12 @@ const BARICON='<b><svg width="16" height="16" viewBox="0 0 64 64" aria-hidden="t
  +'<rect x="38.5" y="22" width="7" height="20" rx="3" fill="currentColor"/>'
  +'<rect x="10.5" y="26" width="5.5" height="12" rx="2.5" fill="currentColor"/>'
  +'<rect x="48" y="26" width="5.5" height="12" rx="2.5" fill="currentColor"/></g></svg></b>';
+/* Icone du bouton "Changer" (remplacer un exercice) : un vrai pictogramme
+   d'echange dessine, coherent avec le reste de l'appli, plutot que le
+   glyphe Unicode ⇄ dont le rendu variait selon la police du telephone. */
+const VARICO='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" '
+ +'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/>'
+ +'<path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>';
 /* Icones des trois autres onglets de la barre du bas : traits simples en
    currentColor plutot que des glyphes typographiques (◔◈◉), illisibles a
    16px selon la police du systeme. */
@@ -2351,7 +2358,7 @@ function renderFocus(p,s,ti,plan,order){
   h+='<div class="fbar"><i style="width:'+t.pct+'%"></i></div>';
   h+='<div class="fbody">';
   h+='<div class="fname"><span class="ix">'+(xi+1)+'</span>'+esc(e.n)
-    +'<button class="vbtn" data-fvar="'+xi+'" title="Remplacer cet exercice par un autre" aria-label="Remplacer cet exercice">⇄ Changer</button></div>';
+    +'<button class="vbtn" data-fvar="'+xi+'" title="Remplacer cet exercice par un autre" aria-label="Remplacer cet exercice">'+VARICO+'Changer</button></div>';
   h+='<div class="fchips"><span class="chip"><b>'+x.sets+'</b> × '+x.reps+'</span>'
     +'<span class="chip'+loadTxt(p,x,e,ov,ch).c+'">'+loadTxt(p,x,e,ov,ch).t+'</span>'
     +'<span class="chip">'+x.rpe+'</span><span class="chip">repos <b>'+mmss(smartRest(p,s,x,e))+'</b></span>'
@@ -2581,7 +2588,7 @@ function renderSession(p,s,ti,pg){
       +'<button class="acctog" data-acc="'+pos+'" aria-label="'+(coll?"Déplier":"Replier")+' cet exercice"><span class="chev">▾</span><span class="nm"><span class="ix">'+(xi+1)+'</span>'+esc(e.n)+'</span></button>'
       +'<span class="chsum">'+x.sets+'×'+x.reps+(ch!=null&&!isNaN(ch)?' · '+esc(kg(ch)):'')+'</span>'
       +'<span class="donecnt">'+doneN+'/'+allS0+'</span>'
-      +'<button class="vbtn" data-var="'+xi+'" title="Remplacer cet exercice par un autre" aria-label="Remplacer cet exercice">⇄ Changer</button>'
+      +'<button class="vbtn" data-var="'+xi+'" title="Remplacer cet exercice par un autre" aria-label="Remplacer cet exercice">'+VARICO+'Changer</button>'
       +'</div>'
       +'<div class="body">'
       +'<div class="chips"><span class="chip"><b>'+x.sets+'</b> × '+x.reps+'</span>'
@@ -3409,7 +3416,7 @@ function renderHist(p,pg){
     if(hu.alertes.length){
       h+='<div class="alert w"><b>À surveiller</b>'
         +hu.alertes.map(a=>esc(a.n)+' — '+a.fail+' échecs consécutifs').join('<br>')
-        +'<br>Deux échecs de suite sur le même mouvement, ce n\'est pas une charge à baisser encore : c\'est souvent un exercice qui ne te convient pas. Utilise ⇄ sur la ligne de l\'exercice pour le remplacer.</div>';
+        +'<br>Deux échecs de suite sur le même mouvement, ce n\'est pas une charge à baisser encore : c\'est souvent un exercice qui ne te convient pas. Utilise « Changer » sur la ligne de l\'exercice pour le remplacer.</div>';
     }
     h+='<button class="btn sm" id="hupd">Mettre à jour mes séances</button>'
       +'<p class="mut">Applique ces charges à toutes tes séances. Les séances sont déjà ajustées automatiquement à chaque archivage : ce bouton sert à rattraper un historique importé, une longue coupure, ou une charge que tu as corrigée à la main.</p>';
