@@ -99,7 +99,12 @@ border:1px solid var(--line);border-radius:20px;padding:4px 10px 4px 7px;cursor:
 .medchip:hover,.medchip:focus-visible{border-color:var(--brand)}
 /* Bandeau des sept jours de la semaine (maquette A1) : une colonne par
    jour, l'etat sous l'initiale — seance faite, jour en cours, repos. */
-.daystrip{display:flex;gap:5px;max-width:680px;margin:6px auto 0;padding:0 14px}
+/* Le bandeau des jours et le filet de progression restent en haut quand on
+   fait defiler la seance : on garde sous les yeux ou on en est et sur quel
+   jour on travaille, meme au dixieme exercice. */
+.daystrip{display:flex;gap:5px;max-width:680px;margin:0 auto;padding:6px 14px;
+position:sticky;top:0;z-index:22;background:var(--bg)}
+body[data-sect="hist"] .daystrip{background:var(--sec-hist-bg)}
 .dcell{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;
 padding:6px 0 7px;border:0;border-radius:8px;background:var(--sf2);color:var(--txt);
 cursor:pointer;font-family:inherit}
@@ -223,6 +228,10 @@ border-radius:4px;background:linear-gradient(180deg,#9AA3AF 0 38%,#6B7480 38%)}
 .alert.d{border-color:var(--dang);background:#2A0F0F55;color:#FCA5A5}
 .alert b{display:block;margin-bottom:2px}
 .prog{height:6px;background:var(--sf2);border-radius:3px;overflow:hidden;margin:2px 0}
+.page > .prog{position:sticky;top:52px;z-index:21;margin:2px -14px 10px;padding:0 14px;
+background:var(--bg);height:auto;border-radius:0;overflow:visible}
+.page > .prog::after{content:"";display:block;height:6px;background:var(--sf2);border-radius:3px}
+.page > .prog i{position:relative;z-index:1;height:6px;border-radius:3px;margin-bottom:-6px}
 .prog i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
 .ptxt{font-size:.7rem;color:var(--mut);text-align:right;margin-bottom:8px}
 .exo{background:var(--sf);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden}
@@ -374,8 +383,10 @@ border-radius:10px;border:1px solid var(--line);background:var(--sf2);color:var(
 font-family:inherit;font-size:.76rem;font-weight:600;cursor:pointer}
 .sbtn.on{border-color:var(--brand);color:var(--brand)}
 .sbtn svg{flex:0 0 auto}
-.stag{flex:0 0 auto;font-family:var(--mono);font-size:.64rem;color:var(--mut);
-background:var(--sf2);border-radius:7px;padding:6px 9px;white-space:nowrap}
+.stag{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);
+font-size:.64rem;color:var(--musc-p);background:var(--sf2);border-radius:7px;padding:7px 9px;
+white-space:nowrap}
+.stag svg{flex:0 0 auto;color:var(--mut)}
 .stag.w{color:var(--warn)}
 /* Filet d'identite de section et ligne de titre de Suivi (planche A3) */
 .histrule{height:3px;border-radius:2px;background:var(--sec-hist-ac);margin:0 0 14px}
@@ -464,6 +475,10 @@ font-weight:600;padding:8px 15px;border-radius:8px;cursor:pointer;font-variant-n
 .acctog{background:0;border:0;display:flex;align-items:center;gap:8px;flex:1 1 auto;
 min-width:0;padding:0;cursor:pointer;font-family:inherit;text-align:left;color:inherit}
 .acctog{gap:9px}
+/* Le nom pousse le compteur et le chevron en bout de ligne : sans cela ils
+   restaient colles au titre et laissaient un vide a droite du bloc. */
+.acctog .nm{flex:1 1 auto;min-width:0}
+.acctog .donecnt{flex:0 0 auto;margin-left:auto;text-align:right}
 .acctog .chev{flex:0 0 auto;color:var(--mut);transition:transform .18s ease;display:flex;line-height:0}
 /* Vignette de la ligne repliee : on reconnait le mouvement d'un coup d'oeil */
 .acth{flex:0 0 auto;width:34px;height:34px;border-radius:8px;background:#fff;overflow:hidden;
@@ -499,28 +514,32 @@ padding:11px 13px 12px;margin:10px 0}
 color:var(--brand);margin-bottom:9px}
 /* Une seule rangee, comme la planche : mannequins a gauche, zone de barre
    a droite ou le fut passe DERRIERE le selecteur de charge. */
-.workcard .wlbl2{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:8px}
-.workcard .wlbl2 span:first-child{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;
-font-weight:700;color:var(--brand)}
-.workcard .wlbl2 span:last-child{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;
-font-weight:700;color:var(--mut)}
-.workcard .wrow{display:flex;align-items:center;gap:14px;margin-bottom:6px}
-.workcard .bbzone{position:relative;flex:1 1 auto;min-width:0;height:78px;display:flex;align-items:center}
-.workcard .bbzone .barbell{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);
-/* le fut file vers la droite puis s'efface sous le selecteur : la planche
-   le fait passer derriere, mais a 390 px il traversait le chiffre et le
-   rendait illisible. Estompe, on garde la lecture "la barre continue". */
--webkit-mask-image:linear-gradient(90deg,#000 0 26%,transparent 52%);
-mask-image:linear-gradient(90deg,#000 0 26%,transparent 52%)}
-.workcard .bbzone .cbar.stepper{position:relative;margin:0 0 0 auto;z-index:1;gap:3px;flex-wrap:nowrap}
-.workcard .bbzone .stepbtn{width:34px;height:34px;font-size:1rem}
-.workcard .bbzone input.chbig{width:66px;font-size:1.15rem}
-.workcard .bbzone .chunit{margin-right:0}
-/* pied de bloc : les disques a prendre, puis la cle de lecture des muscles */
-.workcard .wfoot{padding-top:8px;border-top:1px solid rgba(255,255,255,.07);
+/* Chaque intitule au-dessus de sa colonne : muscles a gauche, charge a
+   droite — et l'intensite en bout de ligne en mode focus. */
+.workcard .wlbl2{display:flex;align-items:baseline;gap:10px;margin-bottom:8px;
+font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700}
+.workcard .wlbl2 .r{flex:0 0 auto;width:78px;color:var(--mut)}
+.workcard .wlbl2 .l{flex:1 1 auto;color:var(--brand)}
+.workcard .wlbl2 .rm{flex:0 0 auto;color:var(--mut);font-family:var(--mono);
+text-transform:none;letter-spacing:0;font-size:.64rem}
+.workcard .wrow{display:flex;align-items:flex-start;gap:14px;margin-bottom:8px}
+.workcard .mp{flex:0 0 auto;width:78px;display:flex;gap:5px;justify-content:center}
+/* Colonne de droite : la barre, puis le selecteur cale dessous. */
+.workcard .wcol{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:6px}
+.workcard .wcol .cbar.stepper{margin:0;gap:5px;flex-wrap:nowrap}
+.workcard .wcol .stepbtn{width:38px;height:38px}
+.workcard .wcol input.chbig{width:76px;font-size:1.32rem}
+/* Pied de bloc : disques a gauche, commandes secondaires a droite — elles
+   avaient une rangee a elles, qui rallongeait la carte pour rien. */
+.workcard .wfoot{display:flex;align-items:center;justify-content:space-between;gap:10px;
+padding-top:8px;border-top:1px solid rgba(255,255,255,.07);
 font-family:var(--mono);font-size:.68rem;color:var(--musc-p);line-height:1.4}
-.workcard .wfoot .wkey{display:none}
-.workcard .wfoot.mus{border-top:0;padding-top:4px;font-family:var(--sans);font-size:.68rem;color:var(--mut)}
+.workcard .wfoot .wfd{min-width:0}
+.workcard .wfoot .wfa{flex:0 0 auto;display:flex;align-items:center;gap:6px}
+.mini.xs{padding:5px 9px;font-size:.64rem}
+.workcard .wfoot.mus{border-top:0;padding-top:6px;font-family:var(--sans);font-size:.68rem;color:var(--mut)}
+.workcard .wfoot .wfd{flex:1 1 auto;min-width:0}
+.workcard .wfoot.mus .wfd{line-height:1.35}
 .workcard .mp{flex:0 0 auto;display:flex;gap:5px}
 .workcard .mp svg{width:34px;height:auto}
 .workcard .barbell{background:none;border:0;padding:0;margin:0;flex:1 1 auto;min-width:0}
@@ -695,6 +714,7 @@ font-size:.68rem;font-weight:700;font-style:italic;font-family:Georgia,serif;
 cursor:pointer;padding:0;flex:0 0 auto;line-height:1;margin-left:2px}
 .ibtn:hover,.ibtn:focus-visible{border-color:var(--brand);color:var(--brand)}
 .ibtn.on{border-color:var(--brand);color:var(--brand);background:#0F2A2A}
+.chips .ibtn.end{margin-left:auto}
 .cbar input{width:86px;background:var(--sf2);border:1px solid var(--line);border-radius:8px;padding:8px;
 color:var(--txt);font-size:.84rem;font-variant-numeric:tabular-nums}
 /* Stepper de charge de travail : un seul controle +/- bien visible, plutot
@@ -3164,7 +3184,7 @@ function renderSession(p,s,ti,pg){
      progression juste dessous : l'ancienne barre isolee avec son texte a
      droite empilait deux elements de plus sans rien dire de neuf. */
   h+='<div class="shd"><h2>'+esc(s.k)+'</h2>'
-    +'<span class="sdur"><b id="ptxt">'+progressText(t0)+'</b> · ≈ '+plan.est+' min</span></div>';
+    +'<span class="sdur"><b id="ptxt">'+progressText(t0)+'</b></span></div>';
   h+='<div class="prog"><i style="width:'+pct+'%"></i></div>';
   const op=PANEL[ti]||null;
   /* Un seul point d'entree pour les reglages de la seance, plutot qu'une
@@ -3173,14 +3193,24 @@ function renderSession(p,s,ti,pg){
      range dans un menu qu'on ouvre quand on en a besoin. Le detail (duree,
      zones) reste visible en pastille tant qu'il s'ecarte de l'habitude. */
   const setOpen=(op==="menu");
+  /* Une seule rangee de tete : le point d'entree des reglages, puis ce que
+     la seance represente — nombre d'exercices, duree et depense estimees.
+     Alignees ensemble, ces trois informations se lisent d'un coup. */
+  const kcSess=sessionKcal(p,plan,dm,1);
   h+='<div class="srow">'
     +'<button class="sbtn'+(setOpen?" on":"")+'" data-pan="menu" aria-expanded="'+(setOpen?"true":"false")+'">'
     +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>'
-    +'Réglages de la séance</button>'
-    +(dm!==def?'<span class="stag">'+dm+' min</span>':'')
-    +(pain.length?'<span class="stag w">'+pain.length+' zone'+(pain.length>1?"s":"")+' ménagée'+(pain.length>1?"s":"")+'</span>':'')
+    +'Réglages</button>'
+    +'<span class="stag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6M8 7v10M16 7v10M20 9v6M8 12h8"/></svg>'
+    +plan.n+' exos</span>'
+    +'<span class="stag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></svg>'
+    +plan.est+' min</span>'
+    +(kcSess!=null?'<span class="stag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s5 4.5 5 9a5 5 0 01-10 0c0-1.8.8-3.4 1.7-4.6.5 1.4 1.4 2.1 2.3 2.1 1 0 1.5-1 1-2.7-.4-1.4-.7-2.6-.5-3.8z"/></svg>'
+      +kcSess+' kcal</span>':'')
+    +(dm!==def?'<span class="stag w">format '+dm+' min</span>':'')
+    +(pain.length?'<span class="stag w">'+pain.length+' zone'+(pain.length>1?"s":"")+'</span>':'')
     +(varyRank(p,s)?'<span class="stag">variante '+varyRank(p,s)+'</span>':'')
-    +(!p.set.timer?'<span class="stag">minuteur coupé</span>':'')
+    +(!p.set.timer?'<span class="stag w">minuteur coupé</span>':'')
     +'</div>';
 
   if(setOpen){
@@ -3253,8 +3283,8 @@ function renderSession(p,s,ti,pg){
   /* Le titre porte deja l'avancement et la duree : cette ligne ne garde que
      ce qu'il n'y a pas dit — le nombre d'exercices et les resserrements que
      le format du jour impose. */
-  h+='<div class="estline">'+plan.n+' exercice'+(plan.n>1?"s":"")
-    +(plan.lvl===1?' <s>· repos d\'isolation resserrés</s>':(plan.lvl>1?' <s>· séries et repos resserrés</s>':''))+'</div>';
+  if(plan.lvl)h+='<div class="estline">'
+    +(plan.lvl===1?'repos d\'isolation resserrés par le format du jour':'séries et repos resserrés par le format du jour')+'</div>';
   if(pain.length){
     const nOut=plan.spared-plan.swaps;
     h+='<div class="alert w"><b>Zones ménagées : '+esc(painLabel(pain))+'</b>'
@@ -3334,6 +3364,9 @@ function renderSession(p,s,ti,pg){
       +'<span data-cc="'+xi+'" class="chip'+loadTxt(p,x,e,ov,ch).c+'">'+loadTxt(p,x,e,ov,ch).t+'</span>'
       +'<span class="chip">'+x.rpe+'</span><span class="chip">repos <b>'+mmss(smartRest(p,s,x,e))+'</b></span>'
       +(x.forced?'<span class="chip" style="border:1px solid var(--brand2);color:var(--brand2)">imposé</span>':'')
+      /* Le "i" se range au bout de la ligne des tags, cale a droite : c'est
+         cette ligne qu'il explique, et il n'encombre plus le selecteur. */
+      +((ch==null||isNaN(ch))?'<button class="ibtn end" data-inf="c'+xi+'" aria-label="D\'où vient cette charge" title="D\'où vient cette charge">i</button>':'')
       +'</div>';
     const img=thumb;
     h+='<div class="exillus">'+(img?'<img alt="'+esc(e.n)+'" decoding="async" src="'+img+'">':'<div class="na">Animation non fournie</div>')+'</div>';
@@ -4011,17 +4044,21 @@ function workCard(p,s,x,e,ch,ov,xi,foc){
      n'est affichee que sur les mouvements dont on connait vraiment le 1RM
      (ceux du questionnaire) — ailleurs elle serait deduite de la charge
      prescrite elle-meme, donc sans information. */
-  let rmTxt="Muscles sollicités";
+  let rmTxt="";
   if(foc){
     const rm=(e.ref&&p.cfg.rm)?parseFloat(p.cfg.rm[e.ref]):NaN;
-    rmTxt=(rm>0&&ch!=null&&!isNaN(ch))
-      ?"1RM est. "+kg(rm)+" · "+Math.round(ch/rm*100)+" %"
-      :"Muscles sollicités";
+    if(rm>0&&ch!=null&&!isNaN(ch))rmTxt="1RM est. "+kg(rm)+" · "+Math.round(ch/rm*100)+" %";
   }
   let h='<div class="workcard">'
-    +'<div class="wlbl2"><span>'+(foc?"Sur la barre":"Charge de travail")+'</span><span>'+esc(rmTxt)+'</span></div>'
+    /* Chaque intitule au-dessus de ce qu'il designe : les mannequins sont a
+       gauche, la barre a droite — les deux titres etaient invertis. */
+    +'<div class="wlbl2"><span class="r">Muscles sollicités</span><span class="l">'+(foc?"Sur la barre":"Charge de travail")+'</span>'
+    +(foc&&rmTxt?'<span class="rm">'+esc(rmTxt)+'</span>':'')+'</div>'
     +'<div class="wrow"><div class="mp">'+muscleSVG(e.prim,e.sec||[],e.id)+'</div>'
-    +'<div class="bbzone">'
+    /* La barre occupe toute la colonne de droite et le selecteur se range
+       juste en dessous, cale sur elle : superposes, ni l'un ni l'autre ne
+       se lisait. */
+    +'<div class="wcol">'
     +(bbs||'<span class="mut" style="font-size:.72rem">'+(e.eq==="pdc"?"Poids du corps":"Charge libre")+'</span>');
   if(e.eq!=="pdc"){
     h+='<div class="cbar stepper">'
@@ -4032,29 +4069,35 @@ function workCard(p,s,x,e,ch,ov,xi,foc){
       +'</div>';
   }
   h+='</div></div>';
-  /* pied de bloc : le detail des disques et la cle de lecture des muscles,
-     sur une ligne, comme la planche */
-  h+='<div class="wfoot"><span>'+(bbs?esc(barbellDetail(ch)):esc(e.prim.map(m=>MUS[m]).join(", ")))+'</span>'
-    +'</div>';
-  if(bbs)h+='<div class="wfoot mus"><span><i style="color:var(--musc-p)">■</i> '+esc(e.prim.map(m=>MUS[m]).join(", "))
-    +(e.sec&&e.sec.length?' &nbsp;<i style="color:var(--musc-s)">■</i> '+esc(e.sec.map(m=>MUS[m]).join(", ")):'')+'</span></div>';
-  if(!foc){
-    h+='<div class="cbar substep">'
-      +(vide?'<button class="ibtn" data-inf="c'+xi+'" aria-label="Pourquoi ce champ est vide" title="Pourquoi ce champ est vide">i</button>':'')
-      +(showPrec?'<span class="mut" style="font-size:.68rem">Préc. '+esc(kg(lu))+'</span>':'')
-      +'<button class="mini" data-hi="'+xi+'">Courbe</button>'
-      +(ov!=null?'<button class="mini on" data-ra="'+xi+'">Auto</button>':'')+'</div>'
-      +(vide?'<div class="leg" data-infb="c'+xi+'" hidden style="margin:-2px 0 8px">'+esc(freeLoadWhy(e))+'</div>':'')
-      +'<div data-hb="'+xi+'" hidden style="margin-bottom:8px"><canvas class="ch"></canvas></div>';
-  }else if(ov!=null){
-    h+='<div class="cbar substep"><button class="mini on" id="fra">Auto</button></div>';
+  /* Pied de bloc : les disques a prendre a gauche, et a droite les commandes
+     secondaires (precedent, courbe, retour au calcul auto) — elles etaient
+     sur une rangee a elles, qui allongeait la carte pour rien. */
+  const acts='<span class="wfa">'
+    +(!foc&&showPrec?'<span class="mut" style="font-size:.66rem">Préc. '+esc(kg(lu))+'</span>':'')
+    +(!foc?'<button class="mini xs" data-hi="'+xi+'">Courbe</button>':'')
+    +(ov!=null?'<button class="mini xs on" '+(foc?'id="fra"':'data-ra="'+xi+'"')+'>Auto</button>':'')
+    +'</span>';
+  if(bbs){
+    /* Les disques a prendre occupent leur ligne entiere — c'est ce qu'on lit
+       en chargeant la barre. Les commandes secondaires descendent sur la
+       ligne des muscles, plus courte, plutot que de couper la premiere. */
+    h+='<div class="wfoot"><span class="wfd">'+esc(barbellDetail(ch))+'</span></div>'
+      +'<div class="wfoot mus"><span class="wfd"><i style="color:var(--musc-p)">■</i> '+esc(e.prim.map(m=>MUS[m]).join(", "))
+      +(e.sec&&e.sec.length?' &nbsp;<i style="color:var(--musc-s)">■</i> '+esc(e.sec.map(m=>MUS[m]).join(", ")):'')
+      +'</span>'+acts+'</div>';
+  }else{
+    h+='<div class="wfoot mus"><span class="wfd"><i style="color:var(--musc-p)">■</i> '+esc(e.prim.map(m=>MUS[m]).join(", "))
+      +(e.sec&&e.sec.length?' &nbsp;<i style="color:var(--musc-s)">■</i> '+esc(e.sec.map(m=>MUS[m]).join(", ")):'')
+      +'</span>'+acts+'</div>';
   }
+  if(!foc)h+=(vide?'<div class="leg" data-infb="c'+xi+'" hidden style="margin:6px 0 0">'+esc(freeLoadWhy(e))+'</div>':'')
+    +'<div data-hb="'+xi+'" hidden style="margin-top:8px"><canvas class="ch"></canvas></div>';
   if(e.eq==="pdc"&&bwCoef(e)!=null){
     const bl=bwLoad(p,e,null),lv=lestOf(p,e);
     h+='<div class="cbar substep"><span class="mut" style="font-size:.7rem">'
       +(bl!=null?'≈ '+esc(kg(bl))+' déplacés':'Poids du corps')+'</span>'
       +(LEST_OK[e.id]?'<input type="number" step="0.5" inputmode="decimal" '+(foc?'id="flest"':'data-lest="'+xi+'"')
-        +'" value="'+(lv||"")+'" aria-label="Lest ajouté en kg"><span class="mut" style="font-size:.66rem">kg de lest</span>':'')
+        +' value="'+(lv||"")+'" aria-label="Lest ajouté en kg"><span class="mut" style="font-size:.66rem">kg de lest</span>':'')
       +'</div>';
   }
   return h+'</div>';
