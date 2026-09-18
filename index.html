@@ -1407,8 +1407,17 @@ text-transform:uppercase;font-size:.72rem;cursor:pointer;border:1px solid var(--
 .exo .eh .ix{color:var(--brand);font-size:.78rem;font-weight:700;letter-spacing:.02em;
 flex:0 0 auto;min-width:22px;padding-right:10px;margin-right:11px;
 border-right:1px solid var(--line);align-self:stretch;
-display:flex;align-items:flex-start;line-height:1;
+display:flex;align-items:flex-start;line-height:1;padding-top:6px;
 font-family:var(--mono);font-variant-numeric:tabular-nums}
+/* Replie, le bloc du nom porte le titre ET la ligne de detail : centre sur ce
+   bloc, le chiffre tombait entre les deux lignes et ne s'alignait sur rien.
+   Il se pose sur la ligne de titre. Pour que l'ouverture ne le fasse pas
+   sauter, c'est le titre deplie qui vient occuper la meme hauteur que le
+   titre replie — le chiffre, lui, ne bouge plus. Le compteur et le chevron
+   restent centres sur la hauteur, dans les deux etats. */
+.exo:not(.coll) .acctog{align-items:flex-start}
+.exo:not(.coll) .acctog .nm{padding-top:4px}
+.exo:not(.coll) .acctog .donecnt,.exo:not(.coll) .acctog .chev{align-self:center}
 /* Un exercice boucle prend le vert, comme sa carte. */
 .exo.done .eh .ix{color:var(--ok)}
 /* Exercice ouvert : le nom peut passer sur deux lignes plutot que d'etre
