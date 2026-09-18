@@ -690,6 +690,42 @@ border:1px solid rgba(201,151,63,.32)}
 .secrule.nut{background:var(--sec-nut-ac)}
 .secrule.shop{background:var(--sec-shop-ac)}
 .secrule.prof{background:var(--brand)}
+
+/* --- Barre d'action de seance ---------------------------------------------
+   Elle vit au-dessus de la barre de navigation et partage son fond : les
+   deux se lisent comme un seul socle, pas comme deux objets qui flottent.
+   Elle ne recouvre rien — la page lui reserve sa hauteur. */
+.actbar{position:fixed;left:0;right:0;bottom:var(--navh,69px);
+z-index:42;max-width:680px;margin:0 auto;background:var(--sf);border-top:1px solid var(--line)}
+.actbar .abprog{height:3px;background:var(--sf2)}
+.actbar .abprog i{display:block;height:3px;background:var(--brand);
+transition:width .25s var(--emph)}
+.actbar.done .abprog i{background:var(--ok)}
+.abin{display:flex;align-items:center;gap:12px;padding:10px 14px 11px}
+.abtx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ablb{font-family:var(--disp);font-size:.56rem;letter-spacing:.09em;text-transform:uppercase;
+font-weight:700;color:var(--mut)}
+.actbar.run .ablb{color:var(--brand)}
+.actbar.done .ablb{color:var(--ok)}
+.abmt{font-family:var(--mono);font-size:.72rem;color:var(--txt);
+white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.abbtn{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 18px;
+border:0;border-radius:12px;background:var(--brand);color:var(--ink);cursor:pointer;
+font-family:inherit;font-size:.86rem;font-weight:800;letter-spacing:.01em}
+.abbtn.ok{background:var(--ok);color:#0E2A16}
+.abbtn.gh{background:var(--sf2);border:1px solid var(--brand);color:var(--brand);font-weight:700;
+font-size:.8rem}
+.abbtn svg{flex:0 0 auto}
+/* La place de la barre est reservee en bas de page. */
+body.ab-on{padding-bottom:calc(86px + env(safe-area-inset-bottom) + var(--abh, 70px))}
+/* Trois etages qui ne se recouvrent pas : navigation, barre d'action,
+   minuteur de repos. Le repos se pose au-dessus de la barre, pas dessus. */
+body.ab-on #tmr{bottom:calc(var(--navh, 69px) + var(--abh, 70px))}
+/* Ni la barre ni sa reserve n'ont de sens hors de l'entrainement, ni en
+   plein ecran focus. */
+body:not([data-sect="train"]) .actbar{display:none}
+body:not([data-sect="train"]).ab-on{padding-bottom:calc(86px + env(safe-area-inset-bottom))}
+body.focus-on .actbar{display:none}
 /* Filet d'identite de section et ligne de titre de Suivi (planche A3) */
 .histrule{height:3px;border-radius:2px;background:var(--sec-hist-ac);margin:0 0 14px}
 .shd2{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
@@ -3295,6 +3331,17 @@ function renderMain(p){
    deplace plus les charges ni les series cochees d'un exercice a l'autre. */
 function sKey(p,sid,exid,si){return p.id+"_"+sid+"_"+exid+"_"+si}
 /* Avancement d'une seance, recalcule a la demande. */
+/* Heure de depart de la seance du jour, posee au lancement : c'est ce qui
+   permet a la barre d'action d'annoncer un temps ecoule reel plutot qu'une
+   duree theorique. */
+function startKey(p,s){return "sstart_"+p.id+"_"+s.sid+"_"+today()}
+function markStart(p,s){if(!G(startKey(p,s),null))S(startKey(p,s),Date.now())}
+function sessionElapsed(p,s){
+  const t=G(startKey(p,s),null);
+  if(!t)return null;
+  const m=Math.round((Date.now()-t)/60000);
+  return (m>=0&&m<600)?m:null;
+}
 function tally(p,s,plan){
   const items=(plan&&plan.items)||s.exos;
   let tot=0,done=0,bonus=0;
@@ -3916,8 +3963,7 @@ function renderSession(p,s,ti,pg){
     /* Le bouton reste dans le flux, en bas de la liste ; le choix du mode,
        lui, monte en feuille basse. Deplier le choix dans la page faisait
        sauter le contenu et posait la decision loin du pouce. */
-    h+='<div class="startzone">'
-      +'<button class="btn" id="startbtn" aria-expanded="'+(spOpen?"true":"false")+'">Démarrer la séance</button>';
+    h+='<div class="startzone">';
     if(spOpen){
       const gear=sessionGear(p,plan);
       h+='<div class="sheet" id="startsheet">'
@@ -3947,7 +3993,57 @@ function renderSession(p,s,ti,pg){
   h+='<div class="fld"><label>Note de séance</label><textarea id="snote" rows="3" placeholder="Charges, ressenti, douleurs, affluence…">'+esc(p.notes[s.sid]||"")+'</textarea></div>';
   h+='<button class="btn" id="finish">Terminer la séance et l\'archiver</button>';
   h+='<button class="btn g" id="reset">Réinitialiser cette séance</button><div style="height:26px"></div></div>';
+  /* --- Barre d'action de seance -----------------------------------------
+     Une seule barre, posee au-dessus de la navigation dont elle reprend le
+     fond et le filet : elle ne recouvre rien, elle prend sa place. Son
+     contenu suit l'etat de la seance — ce qu'on va lancer, ou l'avancement,
+     ou l'archivage, qui n'est plus enterre en bas de page. */
+  {
+    const tlb=tally(p,s,plan);
+    const abDone=tlb.done+tlb.bonus,abTot=tlb.tot;
+    const abAll=abTot>0&&abDone>=abTot;
+    const abRun=!abAll&&(done>0||STARTED[fkey]);
+    const abCur=plan.items.find(x=>{
+      const all=x.allSets||x.sets;
+      for(let i=0;i<all;i++)if(!G("chk_"+sKey(p,s.sid,x.id,i),false))return true;
+      return false;
+    });
+    const abMin=sessionElapsed(p,s);
+    let ab='<div class="actbar'+(abAll?" done":(abRun?" run":""))+'">';
+    if(abRun||abAll)ab+='<div class="abprog"><i style="width:'+(abTot?Math.round(100*abDone/abTot):0)+'%"></i></div>';
+    ab+='<div class="abin"><div class="abtx">';
+    if(abAll)
+      ab+='<span class="ablb">Séance terminée'+(abMin!=null?' · '+abMin+' min':'')+'</span>'
+        +'<span class="abmt">'+abDone+' / '+abTot+' séries</span>';
+    else if(abRun)
+      ab+='<span class="ablb">En cours'+(abMin!=null?' · '+abMin+' min':'')+'</span>'
+        +'<span class="abmt">'+abDone+' / '+abTot+' séries'+(abCur?' · '+esc((byId(abCur.id)||{n:""}).n):'')+'</span>';
+    else
+      ab+='<span class="ablb">Prête à lancer</span>'
+        +'<span class="abmt">'+plan.sets+' séries · '+plan.est+' min</span>';
+    ab+='</div>';
+    if(abAll)
+      ab+='<button type="button" class="abbtn ok" id="abfinish">Archiver'
+        +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 7"/></svg></button>';
+    else if(abRun)
+      ab+='<button type="button" class="abbtn gh" id="abfocus">'
+        +'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M9 12h6"/></svg>Focus</button>';
+    else
+      ab+='<button type="button" class="abbtn" id="startbtn" aria-expanded="'+(STARTPANEL[ti]===true?"true":"false")+'">Démarrer'
+        +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>';
+    ab+='</div></div>';
+    h+=ab;
+  }
   pg.innerHTML=h;
+  document.body.classList.add("ab-on");
+  /* Les deux hauteurs sont mesurees plutot que supposees : la navigation
+     change de hauteur avec l'encoche du telephone, et la barre d'action
+     avec son filet de progression. */
+  requestAnimationFrame(()=>{
+    const nv=document.querySelector(".bnav"),abx=document.querySelector(".actbar");
+    if(nv)document.documentElement.style.setProperty("--navh",Math.round(nv.getBoundingClientRect().height)+"px");
+    if(abx)document.documentElement.style.setProperty("--abh",Math.round(abx.getBoundingClientRect().height)+"px");
+  });
   /* le drapeau d'animation ne vaut que pour ce rendu-ci */
   CHGFX=null;
 
@@ -3975,9 +4071,9 @@ function renderSession(p,s,ti,pg){
      sur une feuille modale. */
   pg.querySelectorAll("[data-shclose]").forEach(v=>v.onclick=()=>{STARTPANEL[ti]=false;renderMain(p)});
   const gofocus=document.getElementById("gofocus");
-  if(gofocus)gofocus.onclick=()=>{STARTPANEL[ti]=false;FOCOVR[fkey]=true;FOCUS["i"+ti]=0;STARTED[fkey]=true;renderMain(p)};
+  if(gofocus)gofocus.onclick=()=>{STARTPANEL[ti]=false;FOCOVR[fkey]=true;FOCUS["i"+ti]=0;STARTED[fkey]=true;markStart(p,s);renderMain(p)};
   const gofull=document.getElementById("gofull");
-  if(gofull)gofull.onclick=()=>{STARTPANEL[ti]=false;FOCOVR[fkey]=false;STARTED[fkey]=true;renderMain(p)};
+  if(gofull)gofull.onclick=()=>{STARTPANEL[ti]=false;FOCOVR[fkey]=false;STARTED[fkey]=true;markStart(p,s);renderMain(p)};
   const tmode=document.getElementById("tmode");
   if(tmode)tmode.onchange=()=>{p.set.timer=!p.set.timer;saveP();if(!p.set.timer)stopT(true);renderMain(p)};
   pg.querySelectorAll("[data-var]").forEach(b=>b.onclick=()=>variantDialog(p,ti,+b.dataset.var));
@@ -4068,6 +4164,10 @@ function renderSession(p,s,ti,pg){
   });
   pg.querySelectorAll("[data-dur]").forEach(b=>b.onclick=()=>{
     setDayDur(p,s,+b.dataset.dur);renderMain(p)});
+  const abfocus=document.getElementById("abfocus");
+  if(abfocus)abfocus.onclick=()=>{FOCOVR[fkey]=true;FOCUS["i"+ti]=0;renderMain(p)};
+  const abfinish=document.getElementById("abfinish");
+  if(abfinish)abfinish.onclick=()=>{const f=document.getElementById("finish");if(f)f.click()};
   const bknow=document.getElementById("bknow");
   if(bknow)bknow.onclick=()=>backupDialog(p);
   const bklater=document.getElementById("bklater");
