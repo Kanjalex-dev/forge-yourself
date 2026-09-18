@@ -71,7 +71,13 @@ padding:7px 6px calc(8px + env(safe-area-inset-bottom));max-width:680px;margin:0
 .bntab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
 border:0;background:0;color:var(--mut);border-radius:10px;padding:5px 2px;cursor:pointer;font-family:inherit}
 .bntab b{font-size:14px;font-weight:700;font-style:normal;line-height:1.1}
-.bntab span{font-size:.6rem;font-weight:600}
+/* Le libelle etait a 9,28 px, sous le plancher de lisibilite de l'app —
+   sur une barre qu'on regarde en sueur, telephone pose a soixante
+   centimetres. Il remonte a 9,92 px, l'icone gagne trois pixels et son
+   trait s'affine : grossir une icone a trait constant en fait une tache,
+   c'est le rapport trait/boite qui fait la finesse. */
+.bntab span{font-size:.62rem;font-weight:600}
+.bntab{min-height:48px;gap:4px}
 .bntab.on{color:var(--bg);background:var(--brand)}
 /* La destination active reprend l'accent de sa propre section plutot que
    toujours l'or : la nav elle-meme annonce dans quelle section on est. */
@@ -265,6 +271,78 @@ color:var(--sec-hist-ac);white-space:nowrap}
 .trbig i{font-style:normal;font-size:.68rem;color:var(--mut);font-weight:400}
 .trendb p{margin:6px 0 0;font-size:.72rem;line-height:1.45;color:var(--mut)}
 @media (prefers-reduced-motion:reduce){.mstrack .msbar{transition:none}}
+/* ================================================================
+   ECHELLE DES ICONES
+   Les planches de la direction C dessinent toutes les icones sur la meme
+   grille de 24 avec un trait de 2 ; seules les tailles changent, et elles
+   changent par role, pas par ecran. Le code avait derive : la navigation
+   tirait ses icones a 16 la ou la planche les pose a 19, et l'epaisseur de
+   trait variait de 1,6 a 3,2 d'un onglet a l'autre. On remet l'echelle ici,
+   en CSS, plutot qu'a la main dans deux cents attributs — la propriete CSS
+   l'emporte sur l'attribut de presentation.
+
+   Quatre tailles, une seule epaisseur :
+     19  navigation, rangees cliquables, bandeaux
+     15  icone dans un bouton ou une ligne de texte, chevrons
+     12  etiquettes de mesure de la ligne de seance
+     11  coche de la bande des jours (trait epais, c'est un symbole plein)
+   Les figures — mannequins, barre chargee, disques, anneaux, courbes — ne
+   sont pas des icones et gardent leur propre dessin.
+   ================================================================ */
+.bntab svg,.vi svg,.chi svg,.shc2ic svg,.cbico svg,.bkico svg,.exdi svg{
+width:19px;height:19px;stroke-width:2}
+.bntab svg{width:22px;height:22px;stroke-width:1.75}
+.chev svg,.va svg,.wuchev svg{width:15px;height:15px;stroke-width:2.2}
+.btn svg,.vbtn svg,.bkbtn svg,.sbtn svg,.ibico svg,.recico svg,.prico svg,.ix svg,
+.mini svg,.abbtn svg,.frb svg{width:15px;height:15px;stroke-width:2}
+.sbtn .sbch{width:14px;height:14px;stroke-width:2.2}
+.stag svg{width:12px;height:12px;stroke-width:2}
+.dcell .dv svg{width:11px;height:11px;stroke-width:3.2}
+/* Les icones d'aliment et de repas de Nutrition forment une famille a part :
+   dessin plus fin, plus grand, pense pour etre lu comme une vignette. */
+.nrow svg,.ntip svg,.mealic svg,.pcell svg{stroke-width:1.7}
+
+/* ================================================================
+   JOUR SANS SEANCE
+   Le jour est nomme aussi fort qu'une seance l'aurait ete : sinon l'ecran
+   ressemble a une seance manquante au lieu d'un jour a part entiere. Ce qui
+   suit descend par ordre d'utilite — la raison du jour, la prochaine seance
+   (seul element laiton et seule cible tactile), le compte de la semaine en
+   dernier, muet.
+   ================================================================ */
+.resthero{padding:6px 0 4px}
+.restdate{display:block;font-family:var(--mono);font-size:.63rem;letter-spacing:.09em;
+text-transform:uppercase;color:var(--dim)}
+.resthero h2{margin:6px 0 0;font-family:var(--disp);font-variation-settings:"wdth" 108;
+font-size:2.5rem;font-weight:800;letter-spacing:-.025em;line-height:1.02;color:var(--txt)}
+.resthero.act h2{color:var(--brand2-lt,#8FBADD)}
+/* L'activite exterieure parle acier : ce que Forge observe sans le commander.
+   Jamais d'aplat — l'aplat plein reste la couleur de l'action. */
+.restnos{display:inline-flex;align-items:center;gap:6px;margin-top:8px;
+font-size:.63rem;color:var(--dim)}
+.restnos svg{flex:0 0 auto;color:var(--brand2)}
+.resthero p{margin:12px 0 18px;font-size:.86rem;line-height:1.55;color:var(--mut)}
+.resthero p b{color:var(--txt);font-weight:600}
+.restnext{margin:0}
+.restnext .vi{color:var(--brand)}
+.restnext b{color:var(--txt)}
+/* Une activite n'a pas de destination : pas de chevron, pas de curseur,
+   bordure tiretee. Un chevron promettrait un ecran de saisie inexistant. */
+.restoth{margin:0 0 6px;border-style:dashed;cursor:default;background:0}
+.restoth:last-child{margin-bottom:0}
+.restoth .vi{color:var(--brand2)}
+.restoth b{color:var(--txt)}
+.restwk{display:flex;align-items:baseline;gap:10px;margin:2px 0 9px}
+.restbig{font-family:var(--mono);font-size:1.75rem;font-weight:700;color:var(--txt);line-height:1}
+.restbig i{font-style:normal;color:var(--dim);margin:0 3px;font-weight:400}
+.restwt{margin-left:auto;font-size:.68rem;color:var(--mut)}
+.prog.ok i{background:var(--ok)}
+/* Aujourd'hui sans seance : cercle de laiton, pas de bloc plein — le plein
+   reste le marqueur de la seance ouverte. Une activite declaree porte ses
+   deux lettres en acier. */
+.dcell.tod.rest{background:var(--sf3);box-shadow:inset 0 0 0 1.5px var(--brand-line,rgba(217,164,65,.34))}
+.dcell.rest.on{background:var(--sf3);box-shadow:inset 0 0 0 1.5px var(--brand)}
+.dcell.hasact .dv{color:var(--brand2);font-size:.6rem;letter-spacing:.04em}
 .tpane{animation:tpIn .22s ease both}
 @keyframes tpIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.tpane{animation:none}}
@@ -561,7 +639,7 @@ font-weight:700;color:var(--brand2);margin:0 0 3px}
 .infobox b{font-family:var(--mono);font-weight:600}
 /* --- Exercice termine : la carte passe au vert --- */
 .exo.done{border-color:rgba(52,199,89,.42);background:linear-gradient(180deg,rgba(52,199,89,.07),transparent 120px)}
-.exo.done .eh .ix{color:var(--ok)}
+.exo.done .eh .ix,.exo.done:not(.coll) .eh .ix{color:var(--ok)}
 .donecnt.ok{color:var(--ok);display:inline-flex;align-items:center;gap:4px}
 .donecnt.ok svg{flex:0 0 auto}
 /* Le bouton "Changer" n'est plus qu'une icone, glissee avant le compteur. */
@@ -1286,16 +1364,24 @@ border-radius:11px;padding:11px 12px;margin-bottom:7px;cursor:pointer;font-size:
 text-transform:uppercase;font-size:.72rem;cursor:pointer;border:1px solid var(--line);background:none;color:var(--mut)}
 .vscr-sheetbtns button#vsrst{width:116px;flex:0 0 auto}
 .vscr-sheetbtns button.pr{flex:1 1 auto;border:0;background:var(--brand);color:var(--ink)}
-/* numerotation en chiffres tabulaires, comme la maquette : les numeros
-   s'alignent d'un exercice a l'autre au lieu de danser. */
-.exo .eh .ix{color:var(--brand);font-size:.7rem;font-weight:600;margin-right:7px;
+/* Numerotation en chiffres tabulaires : les numeros s'alignent d'un exercice
+   a l'autre au lieu de danser. Le numero est un repere de position, pas une
+   information : il ne doit jamais crier plus fort que le nom du mouvement.
+   Ce qu'on cherche en voulant "un effet", c'est la colonne — un rail
+   vertical regulier — et elle s'obtient par l'alignement et un filet, pas
+   par des points de corps. Le laiton, lui, redevient ce qu'il est : la
+   couleur de ce qu'on est en train de faire, donc du seul exercice ouvert. */
+.exo .eh .ix{color:var(--dim);font-size:.78rem;font-weight:600;letter-spacing:.02em;
+flex:0 0 auto;min-width:22px;padding-right:10px;margin-right:11px;
+border-right:1px solid var(--line);align-self:stretch;display:flex;align-items:center;
 font-family:var(--mono);font-variant-numeric:tabular-nums}
+.exo:not(.coll) .eh .ix{color:var(--brand);font-weight:700}
 /* Exercice ouvert : le nom peut passer sur deux lignes plutot que d'etre
    coupe par le bouton Changer — un nom d'exercice tronque ne sert a rien. */
 .exo:not(.coll) .eh .nm{font-family:var(--disp);font-variation-settings:"wdth" 108;
 font-weight:700;letter-spacing:-.01em;font-size:.9rem;white-space:normal;line-height:1.2}
 .exo:not(.coll) .acctog{align-items:flex-start}
-.exo:not(.coll) .acctog .ix{margin-top:2px}
+.exo:not(.coll) .acctog .ix{align-items:flex-start;padding-top:3px}
 .exo:not(.coll) .acctog .chev{margin-top:2px}
 .donecnt{font-family:var(--mono);font-variant-numeric:tabular-nums}
 /* Le compteur de series reste visible ouvert comme replie, comme sur la
@@ -3181,7 +3267,7 @@ function importProfile(txt){
        les memes rattrapages qu'aux profils deja presents sur l'appareil. */
     try{migrateKeys(p);migrateBW(p);migrateKcal(p)}catch(e){}
     PROFILES.push(p);ACTIVE=p.id;saveP();toast("Profil importe");VIEW="app";SECT="train";
-    TAB=(p.prog&&p.prog.sessions&&p.prog.sessions.length)?todayIdx(p.prog.sessions):0;render();return true}
+    syncToday(p);render();return true}
   catch(x){toast("Sauvegarde illisible");return false}
 }
 
@@ -3361,14 +3447,46 @@ NUTAB="rep", PROFTAB="id",
 CBSNOOZE=null,
 /* Etat de demarrage retenu au moment ou l'accordeon a choisi son ouverture :
    il ne se rejoue qu'au passage de "pas lancee" a "en cours". */
-ACCRUN={};
+ACCRUN={},
+/* Vrai quand l'ecran d'entrainement montre le jour d'aujourd'hui et qu'il n'y
+   a pas de seance prevue. Un tap sur un autre jour le leve. */
+RESTVIEW=false;
 /* Onglet du jour par defaut : on pointe sur la seance prevue aujourd'hui
    plutot que sur le premier jour du programme — mercredi ouvre la seance
    de mercredi, pas systematiquement celle de lundi. */
-function todayIdx(sess){
+/* Index de la seance d'aujourd'hui, ou -1 s'il n'y en a pas. L'ancien
+   todayIdx() retombait sur 0, ce qui ouvrait la seance du lundi un vendredi
+   de repos — c'etait la source de confusion. */
+function todaySess(sess){
   const dow=(new Date().getDay()+6)%7;
-  const i=sess.findIndex(s=>s.day===dow);
-  return i>=0?i:0;
+  return (sess||[]).findIndex(s=>s.day===dow);
+}
+/* L'app s'aligne sur la date : aujourd'hui d'abord, et si rien n'est prevu
+   on le dit au lieu d'ouvrir la seance d'un autre jour. */
+function syncToday(p){
+  const sess=(p&&p.prog&&p.prog.sessions)||[];
+  if(!sess.length){RESTVIEW=false;TAB=0;return}
+  const i=todaySess(sess);
+  RESTVIEW=(i<0);
+  TAB=(i>=0)?i:nextSessIdx(p);
+}
+/* Prochaine seance a partir de demain, en tournant sur la semaine. */
+function nextSessIdx(p){
+  const sess=(p&&p.prog&&p.prog.sessions)||[];
+  if(!sess.length)return 0;
+  const dow=(new Date().getDay()+6)%7;
+  for(let k=1;k<=7;k++){
+    const d=(dow+k)%7,i=sess.findIndex(z=>z.day===d);
+    if(i>=0)return i;
+  }
+  return 0;
+}
+function daysUntilSess(p,idx){
+  const sess=(p&&p.prog&&p.prog.sessions)||[];
+  if(!sess[idx])return null;
+  const dow=(new Date().getDay()+6)%7;
+  for(let k=0;k<=7;k++)if((dow+k)%7===sess[idx].day)return k;
+  return null;
 }
 /* Jours de la semaine en cours (a partir du lundi) ou une seance a deja
    ete archivee : sert a cocher le bandeau des sept jours. */
@@ -3487,7 +3605,7 @@ function renderHome(){
   APP.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{
     ACTIVE=b.dataset.open;saveP();VIEW="app";SECT="train";
     const op=PROFILES.find(x=>x.id===ACTIVE);
-    TAB=(op&&op.prog&&op.prog.sessions&&op.prog.sessions.length)?todayIdx(op.prog.sessions):0;
+    syncToday(op);
     render()});
   document.getElementById("np").onclick=()=>{
     askText("Nouveau profil","Tu pourras le renommer plus tard.","","Prénom / nom",n=>{
@@ -3751,9 +3869,9 @@ function renderWiz(p){
   const b2=document.getElementById("wback2");if(b2)b2.onclick=()=>{WIZ=0;WIZSPLIT=false;renderWiz(p)};
   const gn=document.getElementById("wgen");if(gn)gn.onclick=()=>{
     p.done=true;saveP();document.body.classList.remove("wz-on");
-    VIEW="app";SECT="train";TAB=todayIdx(p.prog.sessions);render()};
+    VIEW="app";SECT="train";syncToday(p);render()};
   const wq=document.getElementById("wq");if(wq)wq.onclick=()=>{VIEW="app";SECT="train";document.body.classList.remove("wz-on");
-    if(p.prog&&p.prog.sessions&&p.prog.sessions.length)TAB=todayIdx(p.prog.sessions);render()};
+    syncToday(p);render()};
 }
 
 /* ---- Application principale ---- */
@@ -3856,13 +3974,20 @@ function renderMain(p){
     for(let d=0;d<7;d++){
       const si=sess.findIndex(z=>z.day===d),isS=si>=0,on=isS&&si===TAB;
       const done=isS&&wdone[d];
-      h+='<button class="dcell'+(on?" on":"")+(isS?"":" rest")+(d===dowNow?" tod":"")+'"'
-        +(isS?' data-tab="'+si+'"':' disabled')
-        +' aria-label="'+DAYS_FR[d]+' · '+(isS?esc(sess[si].k):"repos")+'">'
+      /* Un jour sans seance reste cliquable quand c'est aujourd'hui : il
+         ramene sur l'ecran du jour. Et s'il porte une activite declaree,
+         la bande le dit — deux lettres suffisent a s'y retrouver. */
+      const a=(c.acts&&c.acts[d])||"";
+      const isAct=a&&a!=="—"&&a!=="Repos";
+      const isTodayRest=(d===dowNow&&!isS);
+      const cur=isS?(si===TAB&&!RESTVIEW):(d===dowNow&&RESTVIEW);
+      h+='<button class="dcell'+(cur?" on":"")+(isS?"":" rest")+(d===dowNow?" tod":"")+(isAct&&!isS?" hasact":"")+'"'
+        +(isS?' data-tab="'+si+'"':(isTodayRest?' data-today="1"':' disabled'))
+        +' aria-label="'+DAYS_FR[d]+' · '+(isS?esc(sess[si].k):(isAct?esc(a):"repos"))+'">'
         +'<span class="dl">'+DAYS_FR[d].charAt(0)+'</span>'
         +'<span class="dv">'+(isS?(done
           ?'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>'
-          :'J'+(si+1)):'—')+'</span>'
+          :'J'+(si+1)):(isAct?esc(a.slice(0,2).toUpperCase()):"—"))+'</span>'
         +'</button>';
     }
     h+='</div>';
@@ -3883,13 +4008,20 @@ function renderMain(p){
   const mg=document.getElementById("medgo");
   /* Le compteur de l'en-tete ouvre directement la collection. */
   if(mg)mg.onclick=()=>{SECT="hist";HISTAB="med";PANEL={};renderMain(p);window.scrollTo(0,0)};
-  APP.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{TAB=+b.dataset.tab;PANEL={};renderMain(p);window.scrollTo(0,0)});
+  /* Choisir un jour a la main sort de l'ecran "aujourd'hui c'est repos" :
+     on a demande a voir une seance precise. */
+  APP.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{
+    TAB=+b.dataset.tab;RESTVIEW=false;PANEL={};renderMain(p);window.scrollTo(0,0)});
+  /* Revenir sur aujourd'hui depuis la bande des jours. */
+  const tdb=APP.querySelector("[data-today]");
+  if(tdb)tdb.onclick=()=>{syncToday(p);PANEL={};renderMain(p);window.scrollTo(0,0)};
   APP.querySelectorAll("[data-sect]").forEach(b=>b.onclick=()=>{
     SECT=b.dataset.sect;PANEL={};renderMain(p);window.scrollTo(0,0)});
   const pg=document.getElementById("pg");
   if(!(SECT==="train"&&FOCUS[TAB]))closeFocus();
   requestAnimationFrame(measureBars);
-  if(SECT==="train") renderSession(p,sess[TAB]||sess[0],TAB,pg);
+  if(SECT==="train"&&RESTVIEW) renderRest(p,pg);
+  else if(SECT==="train") renderSession(p,sess[TAB]||sess[0],TAB,pg);
   else if(SECT==="hist") renderHist(p,pg);
   else if(SECT==="nut") renderNutri(p,pg);
   else if(SECT==="shop") renderShop(p,pg);
@@ -4461,6 +4593,97 @@ function advanceIfDone(p,s,ti,plan,order,xi){
     });
   },900);
   return true;
+}
+/* ================================================================
+   JOURNEE SANS SEANCE
+   Ouvrir la seance du lundi un vendredi de repos etait la source de
+   confusion : on croyait avoir une seance a faire. L'ecran dit ce qu'est
+   la journee — repos, ou l'activite declaree au chapitre "Ton cadre" —
+   puis quand tombe la prochaine seance, et laisse la consulter d'un tap.
+   ================================================================ */
+function renderRest(p,pg){
+  document.body.classList.remove("ab-on");
+  const c=p.cfg,dow=(new Date().getDay()+6)%7;
+  const act=(c.acts&&c.acts[dow])||"";
+  const isAct=act&&act!=="—"&&act!=="Repos";
+  const ni=nextSessIdx(p),nd=daysUntilSess(p,ni);
+  const ns=(p.prog.sessions||[])[ni];
+  const wdone=weekDoneDays(p);
+  const doneW=(p.prog.sessions||[]).filter(z=>wdone[z.day]).length;
+  const totW=(p.prog.sessions||[]).length;
+  /* La derniere seance passee de la semaine : elle donne la raison mecanique
+     du jour de repos, qui vaut mieux qu'un encouragement. */
+  let prevDay=null;
+  for(let k=1;k<=7;k++){
+    const d=(dow-k+7)%7;
+    if((p.prog.sessions||[]).some(z=>z.day===d)){prevDay=d;break}
+  }
+  const dts=new Date();
+  const dateTxt=DAYS_FR[dow]+" "+dts.getDate()+" "+["janvier","février","mars","avril","mai","juin",
+    "juillet","août","septembre","octobre","novembre","décembre"][dts.getMonth()];
+  /* Phrase du jour : un constat mecanique, jamais un encouragement. */
+  let phrase;
+  if(isAct){
+    const nxtTomorrow=(nd===1);
+    phrase=nxtTomorrow&&ns
+      ? esc(act)+" aujourd'hui, <b>"+esc(ns.k)+" demain</b> : la séance arrive sur des jambes et un dos reposés. L'ordre est bon."
+      : (prevDay!=null
+        ? esc(act)+" aujourd'hui, au lendemain de la séance de "+esc(DAYS_FR[prevDay].toLowerCase())+". Bouger sans charger, c'est ce qu'il fallait."
+        : esc(act)+" aujourd'hui. Pas de musculation prévue : c'est l'activité que tu as déclarée pour ce jour.");
+  }else{
+    phrase=prevDay!=null
+      ? "Pas de séance aujourd'hui, et c'est écrit dans le programme. <b>La charge de "+esc(DAYS_FR[prevDay].toLowerCase())+" travaille pendant que tu ne fais rien.</b>"
+      : "Pas de séance aujourd'hui, et c'est écrit dans le programme. <b>Le repos est ce qui transforme la charge en progrès.</b>";
+  }
+  let h='<div class="page on"><div class="resthero'+(isAct?" act":"")+'">'
+    +'<span class="restdate">'+esc(dateTxt)+'</span>'
+    +'<h2>'+(isAct?esc(act):"Repos")+'</h2>'
+    +(isAct?'<span class="restnos">'
+      +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>'
+      +'Activité déclarée · Forge ne la suit pas</span>':'')
+    +'<p>'+phrase+'</p></div>';
+  if(ns){
+    h+='<div class="card"><h4>Prochaine séance</h4>'
+      +'<button class="vrow2 restnext" id="restgo">'
+      +'<span class="vi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6M8 7v10M16 7v10M20 9v6M8 12h8"/></svg></span>'
+      +'<span class="vtx"><b>'+esc(DAYS_FR[ns.day])+' — '+esc(ns.k)+'</b>'
+      +'<small>'+ns.exos.length+' exercices · '+(nd===1?"demain":(nd!=null&&nd>1?"dans "+nd+" jours":"aujourd\'hui"))+'</small></span>'
+      +'<span class="va"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>'
+      +'</div>';
+  }
+  /* Le compte de la semaine vient en dernier et ne commente rien : une carte
+     qui situe et se tait. Un mot de plus la rendrait felicitation ou reproche. */
+  h+='<div class="card"><h4>Cette semaine</h4>'
+    +'<div class="restwk"><span class="restbig">'+doneW+'<i>/</i>'+totW+'</span>'
+    +'<span class="restwt">séances faites</span></div>'
+    +'<div class="prog ok"><i style="width:'+(totW?Math.round(100*doneW/totW):0)+'%"></i></div>'
+    +'</div>';
+  /* Les autres activites declarees n'apparaissent que si elles disent quelque
+     chose que la bande des sept jours ne dit pas deja : leur place dans la
+     semaine. Sur un jour de repos pur, la bande suffit. */
+  if(isAct){
+    const others=[];
+    for(let d=0;d<7;d++){
+      if(d===dow)continue;
+      const a=(c.acts&&c.acts[d])||"";
+      if(!a||a==="—"||a==="Repos")continue;
+      const before=(p.prog.sessions||[]).find(z=>z.day===(d+6)%7);
+      const after=(p.prog.sessions||[]).find(z=>z.day===(d+1)%7);
+      const situ=after?("avant "+after.k):(before?("après "+before.k):"");
+      others.push({d:d,a:a,s:situ});
+    }
+    if(others.length)
+      h+='<div class="card"><h4>Aussi déclaré</h4>'
+        +others.map(o=>'<div class="vrow2 restoth">'
+          +'<span class="vi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20l4-9 5 3 5-9"/></svg></span>'
+          +'<span class="vtx"><b>'+esc(DAYS_FR[o.d])+' — '+esc(o.a)+'</b>'
+          +(o.s?'<small>'+esc(o.s)+'</small>':'')+'</span></div>').join("")
+        +'</div>';
+  }
+  h+='<div style="height:26px"></div></div>';
+  pg.innerHTML=h;
+  const g=document.getElementById("restgo");
+  if(g)g.onclick=()=>{RESTVIEW=false;TAB=ni;renderMain(p);window.scrollTo(0,0)};
 }
 function renderSession(p,s,ti,pg){
   const pain=p.cfg.pain||[];
@@ -6649,7 +6872,7 @@ try{
 /* ---------------- Démarrage : profil actif rechargé automatiquement ---------------- */
 PROFILES.forEach(p=>{try{migrateKeys(p);pruneChecks(p);migrateBW(p);migrateKcal(p)}catch(e){}});
 saveP();
-if(ACTIVE&&prof()) VIEW=prof().done?"app":"wiz";
+if(ACTIVE&&prof()){VIEW=prof().done?"app":"wiz";syncToday(prof());}
 else VIEW="home";
 render();
 </script>
