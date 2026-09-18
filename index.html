@@ -70,7 +70,13 @@ background:#14181D;border-top:1px solid var(--line);
 padding:7px 6px calc(8px + env(safe-area-inset-bottom));max-width:680px;margin:0 auto}
 .bntab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
 border:0;background:0;color:var(--mut);border-radius:10px;padding:5px 2px;cursor:pointer;font-family:inherit}
-.bntab b{font-size:14px;font-weight:700;font-style:normal;line-height:1.1}
+/* Le <b> qui enveloppe l'icone etait une boite de texte de 14 px contenant un
+   dessin de 22 : l'icone debordait de sa propre ligne. Il devient un
+   conteneur neutre, et la taille du dessin vit dans ses attributs autant que
+   dans la feuille de style — si l'une des deux ne s'applique pas, l'autre
+   tient. */
+.bntab b{display:flex;align-items:center;justify-content:center;
+font-size:0;line-height:0;font-weight:400;font-style:normal}
 /* Le libelle etait a 9,28 px, sous le plancher de lisibilite de l'app —
    sur une barre qu'on regarde en sueur, telephone pose a soixante
    centimetres. Il remonte a 9,92 px, l'icone gagne trois pixels et son
@@ -654,7 +660,6 @@ font-weight:700;color:var(--brand2);margin:0 0 3px}
 .infobox b{font-family:var(--mono);font-weight:600}
 /* --- Exercice termine : la carte passe au vert --- */
 .exo.done{border-color:rgba(52,199,89,.42);background:linear-gradient(180deg,rgba(52,199,89,.07),transparent 120px)}
-.exo.done .eh .ix,.exo.done:not(.coll) .eh .ix{color:var(--ok)}
 .donecnt.ok{color:var(--ok);display:inline-flex;align-items:center;gap:4px}
 .donecnt.ok svg{flex:0 0 auto}
 /* Le bouton "Changer" n'est plus qu'une icone, glissee avant le compteur. */
@@ -1380,23 +1385,27 @@ text-transform:uppercase;font-size:.72rem;cursor:pointer;border:1px solid var(--
 .vscr-sheetbtns button#vsrst{width:116px;flex:0 0 auto}
 .vscr-sheetbtns button.pr{flex:1 1 auto;border:0;background:var(--brand);color:var(--ink)}
 /* Numerotation en chiffres tabulaires : les numeros s'alignent d'un exercice
-   a l'autre au lieu de danser. Le numero est un repere de position, pas une
-   information : il ne doit jamais crier plus fort que le nom du mouvement.
-   Ce qu'on cherche en voulant "un effet", c'est la colonne — un rail
-   vertical regulier — et elle s'obtient par l'alignement et un filet, pas
-   par des points de corps. Le laiton, lui, redevient ce qu'il est : la
-   couleur de ce qu'on est en train de faire, donc du seul exercice ouvert. */
-.exo .eh .ix{color:var(--dim);font-size:.78rem;font-weight:600;letter-spacing:.02em;
+   a l'autre au lieu de danser, dans une colonne fermee par un filet.
+   Le chiffre se cale sur la PREMIERE ligne du titre, replie comme deplie :
+   centre sur toute la hauteur du bloc, il remontait ou descendait selon que
+   le nom tenait sur une ou deux lignes, et la colonne cessait d'etre droite.
+   Le filet, lui, s'etire sur toute la hauteur — c'est lui qui fait le rail. */
+.exo .eh .ix{color:var(--brand);font-size:.78rem;font-weight:700;letter-spacing:.02em;
 flex:0 0 auto;min-width:22px;padding-right:10px;margin-right:11px;
-border-right:1px solid var(--line);align-self:stretch;display:flex;align-items:center;
+border-right:1px solid var(--line);align-self:stretch;
+display:flex;align-items:flex-start;line-height:1;
 font-family:var(--mono);font-variant-numeric:tabular-nums}
-.exo:not(.coll) .eh .ix{color:var(--brand);font-weight:700}
+/* Un exercice boucle prend le vert, comme sa carte. */
+.exo.done .eh .ix{color:var(--ok)}
 /* Exercice ouvert : le nom peut passer sur deux lignes plutot que d'etre
    coupe par le bouton Changer — un nom d'exercice tronque ne sert a rien. */
 .exo:not(.coll) .eh .nm{font-family:var(--disp);font-variation-settings:"wdth" 108;
 font-weight:700;letter-spacing:-.01em;font-size:.9rem;white-space:normal;line-height:1.2}
 .exo:not(.coll) .acctog{align-items:flex-start}
-.exo:not(.coll) .acctog .ix{align-items:flex-start;padding-top:3px}
+/* Les deux etats n'ont ni le meme corps de titre ni le meme retrait en tete
+   de carte : le calage du chiffre sur la premiere ligne se mesure par etat. */
+.exo.coll .eh .ix{padding-top:5px}
+.exo:not(.coll) .eh .ix{padding-top:4px}
 .exo:not(.coll) .acctog .chev{margin-top:2px}
 .donecnt{font-family:var(--mono);font-variant-numeric:tabular-nums}
 /* Le compteur de series reste visible ouvert comme replie, comme sur la
@@ -1683,7 +1692,7 @@ cursor:pointer;font-family:inherit;border:1px solid var(--line);background:var(-
 #portlock{display:none}
 body.lockport #portlock{position:fixed;inset:0;z-index:70;background:var(--bg);
 align-items:center;justify-content:center;padding:24px;text-align:center}
-@media (orientation:landscape) and (max-height:520px){
+@media (orientation:landscape) and (max-height:520px) and (min-width:560px){
   body.lockport #portlock{display:flex}
   body.lockport>*:not(#portlock){visibility:hidden}
 }
@@ -1692,7 +1701,7 @@ align-items:center;justify-content:center;padding:24px;text-align:center}
 #portlock b{font-family:var(--disp);font-variation-settings:"wdth" 108;font-size:1.1rem;font-weight:800}
 #portlock span{font-size:.78rem;line-height:1.5;color:var(--mut)}
 #portlock em{font-style:normal;font-size:.68rem;color:var(--dim)}
-@media (orientation:landscape) and (max-height:520px){
+@media (orientation:landscape) and (max-height:520px) and (min-width:560px){
   .wrap,.page{max-width:430px;margin-left:auto;margin-right:auto}
   .bnav,.actbar,#tmr{max-width:430px;left:0;right:0;margin-left:auto;margin-right:auto}
   .daystrip,header{max-width:430px;margin-left:auto;margin-right:auto}
@@ -1841,7 +1850,7 @@ const APPMARK='<svg viewBox="0 0 64 64" aria-label="Forge Yourself">'
    maquette (auparavant une icone remplie, tournee, dans un viewBox 64x64
    totalement different du reste de la barre : le "ratio" ne correspondait
    pas). */
-const BARICON='<b><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9v6M8 7v10M16 7v10M20 9v6M8 12h8"/></svg></b>';
+const BARICON='<b><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M4 9v6M8 7v10M16 7v10M20 9v6M8 12h8"/></svg></b>';
 /* Icone du bouton "Changer" (remplacer un exercice) : un vrai pictogramme
    d'echange dessine, coherent avec le reste de l'appli, plutot que le
    glyphe Unicode ⇄ dont le rendu variait selon la police du telephone. */
@@ -1851,10 +1860,10 @@ const VARICO='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke
 /* Icones des trois autres onglets de la barre du bas : traits simples en
    currentColor plutot que des glyphes typographiques (◔◈◉), illisibles a
    16px selon la police du systeme. */
-const ICON_HIST='<b><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M4 20V14M12 20V8M20 20V4"/></svg></b>';
-const ICON_NUT='<b><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20c0-9 6-15 15-15 0 9-6 15-15 15Z"/><path d="M4 20c3-3 6-6 10-10"/></svg></b>';
+const ICON_HIST='<b><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M4 20V14M12 20V8M20 20V4"/></svg></b>';
+const ICON_NUT='<b><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20c0-9 6-15 15-15 0 9-6 15-15 15Z"/><path d="M4 20c3-3 6-6 10-10"/></svg></b>';
 const ICON_SHOP='<b><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 11.2H6.2z"/><path d="M9 8V6a3 3 0 016 0v2"/></svg></b>';
-const ICON_PROF='<b><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></b>';
+const ICON_PROF='<b><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></b>';
 
 const _MSV={};
 function muscleSVG(prim,sec,id){
