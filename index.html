@@ -4086,7 +4086,11 @@ function renderFocus(p,s,ti,plan,order){
         const fin=document.getElementById("finish");if(fin)fin.click();return}
       go(i+1);return;
     }
-    saveSet();
+    /* Les repetitions et la charge sont deja ecrites au moment ou la
+       feuille de selection se ferme : il n'y a plus rien a enregistrer ici.
+       L'appel qui restait pointait sur une fonction disparue avec les
+       anciens champs de saisie, et il faisait echouer tout le gestionnaire
+       — le bouton ne validait plus rien. */
     S("chk_"+sKey(p,s.sid,x.id,cur),true);
     /* le repos demarre tout seul : c'est la raison d'etre du mode focus */
     startT(smartRest(p,s,x,e,cur),"Repos · "+e.n+" — série "+(cur+1)+"/"+allS);
