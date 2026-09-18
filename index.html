@@ -175,15 +175,66 @@ p.scs{color:var(--mut);font-size:.76rem;margin:0 0 14px}
 body[data-sect="hist"]{background:var(--sec-hist-bg)}
 body[data-sect="hist"] .card{background:var(--sec-hist-card)}
 body[data-sect="hist"] .card h4{color:var(--sec-hist-ac)}
-/* Sous-menu par onglet de Suivi (Volume / Poids / Calories) — un vrai
-   commutateur, comme la maquette, pas une simple suite de cartes. */
-/* Deux rangees de trois : la barre ne glisse pas et l'onglet actif se
-   repere sans chercher. */
-.histabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:0 0 12px}
-.histab{height:44px;border:0;border-radius:8px;background:var(--sec-hist-card);
-color:var(--mut);font-family:inherit;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;
-font-weight:700;cursor:pointer}
-.histab.on{background:var(--sec-hist-ac);color:#F2F6FC}
+/* ================================================================
+   SOUS-ONGLETS — un seul composant pour Suivi, Nutrition et Profil
+   Trois sections sur quatre ont plus de matiere qu'un ecran : les laisser
+   en scroll continu dans l'une et les onglets dans l'autre etait la vraie
+   incoherence. Le meme commutateur partout, dans la couleur de sa section.
+   La pastille glisse d'un onglet a l'autre : c'est le seul mouvement de
+   l'app, il dit d'ou l'on vient et ou l'on va.
+   ================================================================ */
+.stabs{position:relative;display:flex;gap:2px;margin:0 0 14px;padding:4px;
+border-radius:14px;background:var(--sf);border:1px solid var(--line);
+overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.stabs::-webkit-scrollbar{display:none}
+.stabs .stind{position:absolute;top:4px;left:0;height:calc(100% - 8px);width:0;
+border-radius:11px;background:var(--brand);pointer-events:none;z-index:0;opacity:0;
+transition:transform .28s cubic-bezier(.32,.9,.3,1),width .28s cubic-bezier(.32,.9,.3,1),opacity .18s}
+.stabs.ready .stind{opacity:1}
+/* Quand la barre deborde, son bord droit s'estompe : c'est le seul signe
+   honnete qu'il reste des onglets au-dela du cadre. */
+.stabs.ovf{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent);
+mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent)}
+.stab{position:relative;z-index:1;flex:1 0 auto;min-height:40px;padding:0 12px;border:0;
+background:0;color:var(--mut);font-family:var(--disp);font-size:.66rem;letter-spacing:.05em;
+text-transform:uppercase;font-weight:700;cursor:pointer;white-space:nowrap;border-radius:11px;
+transition:color .22s;-webkit-tap-highlight-color:transparent}
+.stab.on{color:var(--ink)}
+.stab:active{transform:scale(.97)}
+body[data-sect="hist"] .stabs{background:var(--sec-hist-card);border-color:rgba(74,124,168,.24)}
+body[data-sect="hist"] .stabs .stind{background:var(--sec-hist-ac)}
+body[data-sect="hist"] .stab.on{color:#F2F6FC}
+body[data-sect="nut"] .stabs{background:var(--sec-nut-card);border-color:rgba(111,160,122,.24)}
+body[data-sect="nut"] .stabs .stind{background:var(--sec-nut-ac)}
+@media (prefers-reduced-motion:reduce){.stabs .stind{transition:none}.stab:active{transform:none}}
+/* La section change de contenu sans changer de page : un fondu court
+   signale que c'est le meme ecran qui se recompose. */
+/* ================================================================
+   ENCOURAGEMENTS
+   Le ton reste celui de l'app : constater, pas congratuler. Une serie
+   cochee ne merite pas une fanfare — un exercice boucle, si. Chaque
+   marque est courte, factuelle, et n'apparait qu'une fois.
+   ================================================================ */
+.setrow.pulse{animation:ckPulse .42s ease}
+@keyframes ckPulse{0%{background:rgba(111,160,122,.20)}100%{background:transparent}}
+.exdone{display:flex;align-items:center;gap:9px;margin:10px 0 0;padding:10px 11px;
+border-radius:11px;background:rgba(111,160,122,.10);border:1px solid rgba(111,160,122,.30);
+animation:exdIn .3s cubic-bezier(.3,1.2,.4,1) both}
+@keyframes exdIn{from{opacity:0;transform:translateY(7px) scale(.98)}to{opacity:1;transform:none}}
+.exdone .exdi{flex:0 0 auto;display:flex;color:var(--ok)}
+.exdone .exdt{min-width:0}
+.exdone .exdt b{display:block;font-size:.78rem;color:var(--ok);font-weight:700}
+.exdone .exdt span{display:block;font-size:.68rem;color:var(--mut);margin-top:2px}
+/* Le bandeau d'encouragement de Suivi : une phrase, tiree de ce que les
+   donnees disent reellement — jamais une formule generique. */
+.cheerb{display:flex;align-items:flex-start;gap:10px;margin:0 0 14px;padding:12px 13px;
+border-radius:13px;background:var(--sec-hist-card);border:1px solid rgba(74,124,168,.26)}
+.cheerb .chi{flex:0 0 auto;display:flex;color:var(--sec-hist-ac);margin-top:1px}
+.cheerb .cht{min-width:0;font-size:.79rem;line-height:1.45}
+.cheerb .cht b{color:var(--sec-hist-ac)}
+.tpane{animation:tpIn .22s ease both}
+@keyframes tpIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.tpane{animation:none}}
 body[data-sect="nut"]{background:var(--sec-nut-bg)}
 body[data-sect="nut"] .card{background:var(--sec-nut-card)}
 body[data-sect="nut"] .card h4{color:var(--sec-nut-ac)}
@@ -425,13 +476,19 @@ font-size:.62rem;letter-spacing:.06em;text-transform:uppercase}
    (Plex Mono). Le bouton et les pastilles se lisent comme une seule serie,
    au lieu d'un bouton en romain suivi de pastilles en machine a ecrire. */
 .sbtn,.stag{flex:0 1 auto;display:inline-flex;align-items:center;gap:4px;height:40px;
-padding:0 8px;border-radius:9px;background:var(--sf2);border:1px solid transparent;
+padding:0 7px;border-radius:9px;background:var(--sf2);border:1px solid transparent;
 font-family:var(--disp);font-size:.6rem;letter-spacing:.04em;text-transform:uppercase;
 font-weight:700;color:var(--mut);white-space:nowrap;min-width:0}
-.sbtn{border-color:var(--line);color:var(--txt);cursor:pointer}
+/* Reglages est le seul element cliquable de la rangee : les trois autres
+   sont des mesures. Sans surface propre ni chevron, rien ne le disait —
+   il prend donc le laiton de l'action et une fleche qui annonce l'ouverture. */
+.sbtn{background:var(--sf3);border-color:var(--brand-line,rgba(217,164,65,.34));
+color:var(--brand);cursor:pointer;padding-right:4px}
+.sbtn .sbch{flex:0 0 auto;opacity:.75;margin-left:1px}
+.sbtn:active{transform:scale(.97)}
 .sbtn.on{border-color:var(--brand);color:var(--brand)}
-.sbtn svg,.stag svg{flex:0 0 auto;color:var(--mut)}
-.sbtn.on svg{color:var(--brand)}
+.stag svg{flex:0 0 auto;color:var(--mut)}
+.sbtn svg{flex:0 0 auto;color:var(--brand)}
 .stag b{font-family:var(--mono);font-size:.7rem;font-weight:600;color:var(--musc-p);
 letter-spacing:0;text-transform:none}
 /* Les trois mesures de la seance se lisent d'un bloc : l'unite passe en
@@ -2270,6 +2327,16 @@ const END_FULL=["Séance bouclée, complète. Rien à ajouter.",
 const END_PART=["Séance archivée. Ce qui compte, c'est que tu sois venu — la prochaine reprend là où celle-ci s'arrête.",
   "Pas tout fait, mais du solide dans les jambes. Ça compte quand même.",
   "Séance écourtée, mais faite. Mieux vaut ça que zéro."];
+/* Reserves d'encouragements. Le tirage est deterministe (hachage de la
+   cle) : la meme serie ne change pas de phrase entre deux rendus, et deux
+   series voisines n'ont pas la meme. */
+const CHEER_LAST=["Dernière série de l'exercice.","Plus qu'une et c'est plié.",
+  "La dernière : c'est celle qui compte.","Une de plus et on passe à la suite."];
+const CHEER_EX=["Exercice bouclé.","Celui-là est plié.","Rangé. Au suivant.",
+  "Terminé, proprement.","Toutes les séries y sont."];
+const CHEER_HALF=["Moitié de séance. Le plus dur est derrière.",
+  "La moitié est faite : le rythme est bon.","Mi-parcours. On ne lâche pas."];
+function pickCheer(pool,seed){return pool[hashStr(String(seed))%pool.length]}
 function endMessage(tl,prs,newBadges,perfect){
   if(newBadges.length===1) return "Nouvelle médaille : "+newBadges[0].n+" — "+newBadges[0].d.toLowerCase()+".";
   if(newBadges.length>1) return newBadges.length+" nouvelles médailles débloquées d'un coup.";
@@ -3102,7 +3169,9 @@ STARTED={},HISTAB="vol",
 
 /* Exercice dont les disques viennent de changer : l'animation d'apparition
    ne se declenche que sur une action de l'utilisateur, jamais au chargement. */
-CHGFX=null;
+CHGFX=null,
+/* Sous-onglets de Nutrition et de Profil — memes commutateurs que Suivi. */
+NUTAB="rep", PROFTAB="id";
 /* Onglet du jour par defaut : on pointe sur la seance prevue aujourd'hui
    plutot que sur le premier jour du programme — mercredi ouvre la seance
    de mercredi, pas systematiquement celle de lundi. */
@@ -3498,6 +3567,44 @@ function renderWiz(p){
 }
 
 /* ---- Application principale ---- */
+/* ================================================================
+   SOUS-ONGLETS : rendu et cablage communs
+   subTabs() ecrit la barre, wireTabs() la cable et place la pastille.
+   La pastille est positionnee en JS parce qu'elle doit suivre des onglets
+   de largeurs differentes — six mots courts dans Suivi, trois longs dans
+   Nutrition. Au premier rendu elle est posee sans transition, sinon elle
+   glisserait depuis le bord gauche a chaque changement d'ecran.
+   ================================================================ */
+function subTabs(tabs,cur,attr){
+  return '<div class="stabs" role="tablist" data-tabs="'+attr+'"><i class="stind"></i>'
+    +tabs.map(t=>'<button type="button" role="tab" aria-selected="'+(cur===t[0]?"true":"false")
+      +'" class="stab'+(cur===t[0]?" on":"")+'" '+attr+'="'+t[0]+'">'+t[1]+'</button>').join("")
+    +'</div>';
+}
+function placeInd(bar,animate){
+  const on=bar.querySelector(".stab.on"),ind=bar.querySelector(".stind");
+  if(!on||!ind)return;
+  if(!animate)ind.style.transition="none";
+  ind.style.width=on.offsetWidth+"px";
+  ind.style.transform="translateX("+on.offsetLeft+"px)";
+  bar.classList.add("ready");
+  bar.classList.toggle("ovf",bar.scrollWidth-bar.clientWidth>4);
+  if(!animate)requestAnimationFrame(()=>{ind.style.transition=""});
+}
+function wireTabs(pg,attr,fn){
+  const bar=pg.querySelector('[data-tabs="'+attr+'"]');
+  if(!bar)return;
+  requestAnimationFrame(()=>placeInd(bar,false));
+  bar.querySelectorAll("["+attr+"]").forEach(b=>b.onclick=()=>{
+    if(b.classList.contains("on"))return;
+    bar.querySelectorAll(".stab").forEach(x=>{x.classList.remove("on");x.setAttribute("aria-selected","false")});
+    b.classList.add("on");b.setAttribute("aria-selected","true");
+    placeInd(bar,true);
+    b.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"});
+    /* on laisse la pastille partir avant de recomposer la page */
+    setTimeout(()=>fn(b.getAttribute(attr)),110);
+  });
+}
 function renderMain(p){
   const c=p.cfg,sess=p.prog.sessions;
   /* Chaque section a son propre ton de fond (moins sombre que l'Entrainement,
@@ -3916,6 +4023,88 @@ function renderFocus(p,s,ti,plan,order){
     FOC.querySelectorAll("[data-fdf]").forEach(z=>z.className=(l.diff===z.dataset.fdf)?"dsel":"")});
 }
 
+/* ================================================================
+   BARRE D'ACTION : construite a part pour pouvoir etre rafraichie sans
+   redessiner la page. Cocher une serie fait passer la seance de "prete a
+   lancer" a "en cours", puis a "terminee" : la barre doit suivre au
+   moment ou ca arrive, pas au prochain rendu complet.
+   ================================================================ */
+function buildActBar(p,s,ti,plan,fkey){
+    const tlb=tally(p,s,plan);
+    const abDone=tlb.done+tlb.bonus,abTot=tlb.tot;
+    const abAll=abTot>0&&abDone>=abTot;
+    const abRun=!abAll&&(abDone>0||STARTED[fkey]);
+    const abCur=plan.items.find(x=>{
+      const all=x.allSets||x.sets;
+      for(let i=0;i<all;i++)if(!G("chk_"+sKey(p,s.sid,x.id,i),false))return true;
+      return false;
+    });
+    const abMin=sessionElapsed(p,s);
+    let ab='<div class="actbar'+(abAll?" done":(abRun?" run":""))+'">';
+    if(abRun||abAll)ab+='<div class="abprog"><i style="width:'+(abTot?Math.round(100*abDone/abTot):0)+'%"></i></div>';
+    ab+='<div class="abin"><div class="abtx">';
+    if(abAll)
+      ab+='<span class="ablb">Séance terminée'+(abMin!=null?' · '+abMin+' min':'')+'</span>'
+        +'<span class="abmt">'+abDone+' / '+abTot+' séries</span>';
+    else if(abRun)
+      ab+='<span class="ablb">En cours'+(abMin!=null?' · '+abMin+' min':'')+'</span>'
+        +'<span class="abmt">'+abDone+' / '+abTot+' séries'+(abCur?' · '+esc((byId(abCur.id)||{n:""}).n):'')+'</span>';
+    else
+      ab+='<span class="ablb">Prête à lancer</span>'
+        +'<span class="abmt">'+plan.sets+' séries · '+plan.est+' min</span>';
+    ab+='</div>';
+    if(abAll)
+      ab+='<button type="button" class="abbtn ok" id="abfinish">Archiver'
+        +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 7"/></svg></button>';
+    else if(abRun)
+      ab+='<button type="button" class="abbtn gh" id="abfocus">'
+        +'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M9 12h6"/></svg>Focus</button>';
+    else
+      ab+='<button type="button" class="abbtn" id="startbtn" aria-expanded="'+(STARTPANEL[ti]===true?"true":"false")+'">Démarrer'
+        +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>';
+    ab+='</div></div>';
+    return ab;
+}
+function bindActBar(p,s,ti,plan,fkey){
+  const startbtn=document.getElementById("startbtn");
+  if(startbtn)startbtn.onclick=()=>{STARTPANEL[ti]=true;renderMain(p)};
+  const abfocus=document.getElementById("abfocus");
+  if(abfocus)abfocus.onclick=()=>{FOCOVR[fkey]=true;FOCUS["i"+ti]=0;renderMain(p)};
+  const abfinish=document.getElementById("abfinish");
+  if(abfinish)abfinish.onclick=()=>{const f=document.getElementById("finish");if(f)f.click()};
+}
+function syncActBar(p,s,ti,plan,fkey){
+  const cur=document.querySelector(".actbar");
+  if(!cur)return;
+  const w=document.createElement("div");w.innerHTML=buildActBar(p,s,ti,plan,fkey);
+  const nb=w.firstElementChild;if(!nb)return;
+  cur.replaceWith(nb);
+  bindActBar(p,s,ti,plan,fkey);
+}
+/* Bandeau de fin d'exercice : ce qui vient d'etre fait, chiffre, avec une
+   phrase courte. Il remplace le simple passage au vert de la carte, qui ne
+   disait rien de l'effort accompli. */
+function markExDone(p,s,x,card){
+  if(card.querySelector(".exdone"))return;
+  const e=byId(x.id);if(!e)return;
+  const all=x.allSets||x.sets;
+  let reps=0,vol=0;
+  for(let j=0;j<all;j++){
+    const r=G("srep_"+sKey(p,s.sid,x.id,j),null),k=G("skg_"+sKey(p,s.sid,x.id,j),null);
+    const rr=(r!=null&&r!=="")?parseFloat(r):repsMid(x.reps);
+    const kk=(k!=null&&k!=="")?parseFloat(k):(p.ovr[x.id]!=null?parseFloat(p.ovr[x.id]):x.charge);
+    if(rr>0)reps+=rr;
+    if(rr>0&&kk>0)vol+=rr*kk;
+  }
+  const det=all+" série"+(all>1?"s":"")+" · "+Math.round(reps)+" répétitions"
+    +(vol>0?" · "+String(Math.round(vol)).replace(/\B(?=(\d{3})+(?!\d))/g," ")+" kg soulevés":"");
+  const el=document.createElement("div");
+  el.className="exdone";
+  el.innerHTML='<span class="exdi"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 7"/></svg></span>'
+    +'<span class="exdt"><b>'+esc(pickCheer(CHEER_EX,x.id+"|"+today()))+'</b><span>'+esc(det)+'</span></span>';
+  const body=card.querySelector(".body")||card;
+  body.appendChild(el);
+}
 function renderSession(p,s,ti,pg){
   const pain=p.cfg.pain||[];
   const dm=dayDur(p,s),plan=planSession(s,dm,p.cfg),def=p.cfg.dur||60;
@@ -3964,7 +4153,7 @@ function renderSession(p,s,ti,pg){
   h+='<div class="srow">'
     +'<button class="sbtn'+(setOpen?" on":"")+'" data-pan="menu" aria-expanded="'+(setOpen?"true":"false")+'">'
     +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>'
-    +'Réglages</button>'
+    +'Réglages<svg class="sbch" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+(setOpen?"M6 15l6-6 6 6":"M6 9l6 6 6-6")+'"/></svg></button>'
     +'<span class="stag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6M8 7v10M16 7v10M20 9v6M8 12h8"/></svg>'
     +'<b>'+plan.n+'</b><span class="u">exos</span></span>'
     +'<span class="stag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></svg>'
@@ -4256,42 +4445,7 @@ function renderSession(p,s,ti,pg){
      fond et le filet : elle ne recouvre rien, elle prend sa place. Son
      contenu suit l'etat de la seance — ce qu'on va lancer, ou l'avancement,
      ou l'archivage, qui n'est plus enterre en bas de page. */
-  {
-    const tlb=tally(p,s,plan);
-    const abDone=tlb.done+tlb.bonus,abTot=tlb.tot;
-    const abAll=abTot>0&&abDone>=abTot;
-    const abRun=!abAll&&(done>0||STARTED[fkey]);
-    const abCur=plan.items.find(x=>{
-      const all=x.allSets||x.sets;
-      for(let i=0;i<all;i++)if(!G("chk_"+sKey(p,s.sid,x.id,i),false))return true;
-      return false;
-    });
-    const abMin=sessionElapsed(p,s);
-    let ab='<div class="actbar'+(abAll?" done":(abRun?" run":""))+'">';
-    if(abRun||abAll)ab+='<div class="abprog"><i style="width:'+(abTot?Math.round(100*abDone/abTot):0)+'%"></i></div>';
-    ab+='<div class="abin"><div class="abtx">';
-    if(abAll)
-      ab+='<span class="ablb">Séance terminée'+(abMin!=null?' · '+abMin+' min':'')+'</span>'
-        +'<span class="abmt">'+abDone+' / '+abTot+' séries</span>';
-    else if(abRun)
-      ab+='<span class="ablb">En cours'+(abMin!=null?' · '+abMin+' min':'')+'</span>'
-        +'<span class="abmt">'+abDone+' / '+abTot+' séries'+(abCur?' · '+esc((byId(abCur.id)||{n:""}).n):'')+'</span>';
-    else
-      ab+='<span class="ablb">Prête à lancer</span>'
-        +'<span class="abmt">'+plan.sets+' séries · '+plan.est+' min</span>';
-    ab+='</div>';
-    if(abAll)
-      ab+='<button type="button" class="abbtn ok" id="abfinish">Archiver'
-        +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 7"/></svg></button>';
-    else if(abRun)
-      ab+='<button type="button" class="abbtn gh" id="abfocus">'
-        +'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M9 12h6"/></svg>Focus</button>';
-    else
-      ab+='<button type="button" class="abbtn" id="startbtn" aria-expanded="'+(STARTPANEL[ti]===true?"true":"false")+'">Démarrer'
-        +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>';
-    ab+='</div></div>';
-    h+=ab;
-  }
+  h+=buildActBar(p,s,ti,plan,fkey);
   pg.innerHTML=h;
   document.body.classList.add("ab-on");
   /* Les deux hauteurs sont mesurees plutot que supposees : la navigation
@@ -4319,10 +4473,9 @@ function renderSession(p,s,ti,pg){
   /* La carte equipement partage le meme mecanisme d'accordeon, mais son
      panier ne doit pas la replier au passage. */
   pg.querySelectorAll(".exo.gear [data-gear]").forEach(b=>b.addEventListener("click",ev=>ev.stopPropagation()));
-  const startbtn=document.getElementById("startbtn");
-  /* le bouton ne lance rien tout seul : il ouvre le choix du mode, qui est
-     ce qui lance vraiment la seance. */
-  if(startbtn)startbtn.onclick=()=>{STARTPANEL[ti]=true;renderMain(p)};
+  /* le bouton Demarrer ne lance rien tout seul : il ouvre le choix du mode,
+     qui est ce qui lance vraiment la seance. Cable avec la barre d'action. */
+  bindActBar(p,s,ti,plan,fkey);
   const spclose=document.getElementById("spclose");
   if(spclose)spclose.onclick=()=>{STARTPANEL[ti]=false;renderMain(p)};
   /* La feuille se referme aussi en tapant a cote : c'est le geste attendu
@@ -4381,14 +4534,26 @@ function renderSession(p,s,ti,pg){
       /* Le compteur de l'entete et la couleur de la carte suivent la
          derniere serie cochee, sans redessiner toute la page. */
       const card=row.closest(".exo"),cnt=card&&card.querySelector(".donecnt");
+      let fin=false,nDone=0;
+      const allSets=x.allSets||x.sets;
+      for(let j=0;j<allSets;j++)if(G("chk_"+sKey(p,s.sid,x.id,j),false))nDone++;
+      fin=nDone>=allSets;
       if(cnt){
-        const all=x.allSets||x.sets;let n=0;
-        for(let j=0;j<all;j++)if(G("chk_"+sKey(p,s.sid,x.id,j),false))n++;
-        const fin=n>=all;
-        cnt.innerHTML=(fin?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 7"/></svg>':"")+n+"/"+all;
+        cnt.innerHTML=(fin?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 7"/></svg>':"")+nDone+"/"+allSets;
         cnt.classList.toggle("ok",fin);
         card.classList.toggle("done",fin);
       }
+      /* ---- Encouragements : trois moments, pas un de plus ---- */
+      if(on){
+        row.classList.remove("pulse");void row.offsetWidth;row.classList.add("pulse");
+        if(fin&&card)markExDone(p,s,x,card);
+        else if(nDone===allSets-1)toast(pickCheer(CHEER_LAST,x.id+"|"+nDone));
+        const tl2=tally(p,s,plan),dn2=tl2.done+tl2.bonus;
+        /* la mi-seance ne se signale qu'une fois, au moment exact ou on la franchit */
+        if(!fin&&tl2.tot>3&&dn2*2>=tl2.tot&&(dn2-1)*2<tl2.tot)
+          toast(pickCheer(CHEER_HALF,s.sid+"|"+today()));
+      }else if(card){const b=card.querySelector(".exdone");if(b)b.remove()}
+      syncActBar(p,s,ti,plan,fkey);
     };
     row.onclick=ev=>{if(ev.target.closest(".sfld"))return;toggle()};
     row.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();toggle()}};
@@ -4422,10 +4587,6 @@ function renderSession(p,s,ti,pg){
   });
   pg.querySelectorAll("[data-dur]").forEach(b=>b.onclick=()=>{
     setDayDur(p,s,+b.dataset.dur);renderMain(p)});
-  const abfocus=document.getElementById("abfocus");
-  if(abfocus)abfocus.onclick=()=>{FOCOVR[fkey]=true;FOCUS["i"+ti]=0;renderMain(p)};
-  const abfinish=document.getElementById("abfinish");
-  if(abfinish)abfinish.onclick=()=>{const f=document.getElementById("finish");if(f)f.click()};
   const bknow=document.getElementById("bknow");
   if(bknow)bknow.onclick=()=>backupDialog(p);
   const bklater=document.getElementById("bklater");
@@ -4797,10 +4958,14 @@ const NTIPS=[
 
 function renderNutri(p,pg){
   const c=p.cfg,b=body(p);
+  const NTABS=[["rep","Repères"],["jour","Journée type"],["cons","Conseils"]];
+  if(!NTABS.some(t=>t[0]===NUTAB))NUTAB="rep";
+  const NT=NUTAB;
   let h='<div class="page on"><div class="secrule nut"></div><h2 class="sc">Nutrition</h2>'
    +'<p class="scs">Des repères calculés à partir de ton objectif, du volume réel de ton programme et de tes données corporelles. À ajuster sur ce que tu observes, pas à suivre au gramme près.</p>';
+  h+=subTabs(NTABS,NUTAB,"data-nutab")+'<div class="tpane">';
 
-  h+='<div class="card"><h4>Données corporelles</h4>'
+  if(NT==="rep")h+='<div class="card"><h4>Données corporelles</h4>'
    +'<div class="grid2">'
    +'<div class="fld"><label>Poids (kg)</label><input type="number" step="0.1" inputmode="decimal" data-b="wt" placeholder="ex. 78" value="'+esc(b.wt)+'"></div>'
    +'<div class="fld"><label>Taille (cm)</label><input type="number" inputmode="numeric" data-b="ht" placeholder="ex. 180" value="'+esc(b.ht)+'"></div>'
@@ -4816,19 +4981,19 @@ function renderNutri(p,pg){
    +'</div>';
 
   if(!bodyOK(b)){
-    h+='<div class="empty">Renseigne au moins le poids, la taille et l\'âge pour obtenir tes repères.</div></div>';
-    pg.innerHTML=h;bindBody(p,pg);return;
+    h+='<div class="empty">Renseigne au moins le poids, la taille et l\'âge dans l\'onglet « Repères » pour obtenir tes repères.</div></div></div>';
+    pg.innerHTML=h;bindBody(p,pg);wireTabs(pg,"data-nutab",v=>{NUTAB=v;renderMain(p)});return;
   }
   const n=nutri(p);
   if(n.bad){
-    h+='<div class="alert d"><b>Valeurs incohérentes</b>'+esc(n.bad)+'</div></div>';
-    pg.innerHTML=h;bindBody(p,pg);return;
+    h+='<div class="alert d"><b>Valeurs incohérentes</b>'+esc(n.bad)+'</div></div></div>';
+    pg.innerHTML=h;bindBody(p,pg);wireTabs(pg,"data-nutab",v=>{NUTAB=v;renderMain(p)});return;
   }
 
-  h+='<div class="alert i"><b>'+n.kcal+' kcal par jour · '+GOALS[c.goal].n.toLowerCase()+'</b>'
+  if(NT==="rep")h+='<div class="alert i"><b>'+n.kcal+' kcal par jour · '+GOALS[c.goal].n.toLowerCase()+'</b>'
    +'Rythme visé : '+esc(n.pace)+'. '+esc(n.goal.note)+'</div>';
 
-  n.warn.forEach(x=>{h+='<div class="alert w"><b>'+esc(x.t)+'</b>'+esc(x.d)+'</div>'});
+  if(NT==="rep")n.warn.forEach(x=>{h+='<div class="alert w"><b>'+esc(x.t)+'</b>'+esc(x.d)+'</div>'});
 
   /* Les trois macros en une figure : un anneau dit la repartition en
      energie, les trois lignes disent les grammes. Un tableau seul obligeait
@@ -4838,7 +5003,7 @@ function renderNutri(p,pg){
   const seg=(v,off,col)=>'<circle cx="46" cy="46" r="'+RR+'" fill="none" stroke="'+col+'" stroke-width="11"'
     +' stroke-dasharray="'+(CC*v/kt).toFixed(1)+' '+(CC*(1-v/kt)).toFixed(1)+'"'
     +' stroke-dashoffset="'+(-CC*off/kt).toFixed(1)+'" transform="rotate(-90 46 46)"/>';
-  h+='<div class="card"><h4>Macronutriments</h4>'
+  if(NT==="rep")h+='<div class="card"><h4>Macronutriments</h4>'
    +'<div class="macrow"><svg class="macring" width="92" height="92" viewBox="0 0 92 92" aria-hidden="true">'
    +'<circle cx="46" cy="46" r="'+RR+'" fill="none" stroke="var(--sf2)" stroke-width="11"/>'
    +seg(kp,0,"var(--brand)")+seg(kf,kp,"var(--musc-s)")+seg(kc,kp+kf,"var(--brand2)")
@@ -4864,7 +5029,7 @@ function renderNutri(p,pg){
      recette — aucune preparation, seulement des portions a assembler. */
   const perMeal=Math.round(n.pro/4);
   const hiLvl=perMeal>=34;
-  h+='<div class="card"><h4>Une journée type</h4>'
+  if(NT==="jour")h+='<div class="card"><h4>Une journée type</h4>'
    +'<p class="mut" style="margin-top:-4px">Un exemple d\'assemblage pour visualiser les volumes, pas un menu à suivre. Vise <b class="macg">'+perMeal+' g</b> de protéines par repas.</p>'
    +'<div class="mealgrid">'
    +DAYEX.map((d,ix)=>'<div class="mealc"><span class="mealic">'+fIco(d.i)+'</span>'
@@ -4878,7 +5043,7 @@ function renderNutri(p,pg){
      differentes. C'est la carte la plus utile de l'ecran — elle traduit un
      chiffre abstrait en portions reconnaissables. */
   const blocs=Math.round(n.pro/30*10)/10;
-  h+='<div class="card"><h4>Environ 30 g de protéines</h4>'
+  if(NT==="jour")h+='<div class="card"><h4>Environ 30 g de protéines</h4>'
    +'<p class="mut" style="margin-top:-4px">Ta cible du jour représente <b class="macg">'+String(blocs).replace(".",",")+'</b> de ces portions.</p>'
    +'<div class="pgrid">'
    +PRO30.map(f=>'<div class="pcell">'+fIco(f[0])+'<b>'+esc(f[2])+'</b><span>'+esc(f[1])+'</span></div>').join("")
@@ -4901,14 +5066,14 @@ function renderNutri(p,pg){
   /* Conseils : d'abord ceux qui dependent de l'objectif choisi, puis les
      regles communes rangees par sujet — on cherche une reponse precise,
      pas une liste a puces indifferenciee. */
-  h+='<div class="card"><h4>Pour ton objectif · '+esc(GOALS[c.goal].n)+'</h4>'
+  if(NT==="cons")h+='<div class="card"><h4>Pour ton objectif · '+esc(GOALS[c.goal].n)+'</h4>'
    +tips.map(t=>'<div class="nrow goal"><span class="ndot"></span><span>'+esc(t)+'</span></div>').join("")
    +'</div>';
-  h+='<div class="card"><h4>Les repères qui valent pour tout le monde</h4>'
+  if(NT==="cons")h+='<div class="card"><h4>Les repères qui valent pour tout le monde</h4>'
    +NTIPS.map(t=>'<div class="ntip">'+fIco(t.k)+'<div class="ntiptx"><b>'+esc(t.t)+'</b><span>'+esc(t.d)+'</span></div></div>').join("")
    +'</div>';
 
-  h+='<div class="card info"><details class="tech">'
+  if(NT==="cons")h+='<div class="card info"><details class="tech">'
    +'<summary>Information — d\'où viennent ces chiffres ?</summary><div class="tb">'
    +'<p><span class="k">Métabolisme de base : '+n.bmr+' kcal</span></p>'
    +'<p class="mut">Formule de Mifflin-St Jeor, à partir du poids, de la taille, de l\'âge et du sexe. C\'est ce que le corps dépense au repos complet.</p>'
@@ -4921,8 +5086,9 @@ function renderNutri(p,pg){
    +'<p class="mut">Ces repères s\'adressent à un adulte en bonne santé. En cas de pathologie, de traitement, de grossesse ou d\'un suivi diététique en cours, c\'est l\'avis du professionnel qui prime sur ce calcul.</p>'
    +'</div></details></div>';
 
-  h+='<div style="height:26px"></div></div>';
+  h+='</div><div style="height:26px"></div></div>';
   pg.innerHTML=h;bindBody(p,pg);
+  wireTabs(pg,"data-nutab",v=>{NUTAB=v;renderMain(p)});
 }
 function bindBody(p,pg){
   const b=body(p);
@@ -5461,6 +5627,43 @@ function records(p){
   }).filter(Boolean).sort((a,b)=>b.kg-a.kg);
 }
 
+/* ================================================================
+   BANDEAU DE SUIVI : une phrase tiree de ce que les donnees disent, pas
+   une formule de politesse. S'il n'y a rien de vrai a dire, il n'y a pas
+   de bandeau — un encouragement generique vaut moins que rien.
+   ================================================================ */
+function histCheer(p){
+  const H=(p.hist||[]);
+  if(!H.length)return "";
+  const day=x=>{const t=new Date(x+"T00:00:00");return isNaN(t)?null:t};
+  const now=new Date(today()+"T00:00:00");
+  const dd=x=>{const t=day(x);return t?Math.round((now-t)/86400000):null};
+  const w0=weekStart(today());
+  const wPrev=weekStart(new Date(now-7*86400000).toISOString().slice(0,10));
+  const nThis=H.filter(r=>weekStart(r.date)===w0).length;
+  const nPrev=H.filter(r=>weekStart(r.date)===wPrev).length;
+  const last=dd(H[0].date);
+  let txt=null;
+  if(last!=null&&last>=14)
+    txt="<b>Content de te revoir.</b> "+last+" jours depuis la dernière séance : reprends sur des charges un cran en dessous, elles remonteront vite.";
+  else if(nThis>=3)
+    txt="<b>"+nThis+" séances cette semaine.</b> C'est le rythme qui construit, pas la séance héroïque du dimanche.";
+  else if(nThis>0&&nThis>nPrev)
+    txt="<b>"+nThis+" séance"+(nThis>1?"s":"")+" cette semaine</b>, contre "+nPrev+" la précédente. La courbe part dans le bon sens.";
+  else if(nThis>0)
+    txt="<b>"+nThis+" séance"+(nThis>1?"s":"")+" cette semaine.</b> Encore une et la semaine est pleine.";
+  else if(last!=null&&last<=3)
+    txt="<b>Dernière séance il y a "+(last===0?"aujourd'hui":last+" jour"+(last>1?"s":""))+".</b> La semaine ne fait que commencer.";
+  if(!txt&&H.length>=5)
+    txt="<b>"+H.length+" séances archivées.</b> C'est l'accumulation qui se lit dans ces courbes, pas le détail d'une séance.";
+  if(!txt)return "";
+  const pc=p.prCount||0;
+  if(pc>0&&last!=null&&last<=7)
+    txt+=" "+pc+" record"+(pc>1?"s":"")+" à ce jour.";
+  return '<div class="cheerb"><span class="chi">'
+    +'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 15l6-7 4 4 5-6"/></svg>'
+    +'</span><span class="cht">'+txt+'</span></div>';
+}
 function renderHist(p,pg){
   if(!p.blog)p.blog=[];
   const b=body(p);
@@ -5485,10 +5688,8 @@ function renderHist(p,pg){
   const HTABS=[["vol","Volume"],["charge","Charges"],["poids","Poids"],
     ["cal","Calories"],["med","Médailles"],["prog","Programme"]];
   if(!HTABS.some(t=>t[0]===HISTAB))HISTAB="vol";
-  h+='<div class="histabs" role="tablist">'
-    +HTABS.map(t=>'<button type="button" role="tab" aria-selected="'+(HISTAB===t[0]?"true":"false")
-      +'" class="histab'+(HISTAB===t[0]?" on":"")+'" data-histab="'+t[0]+'">'+t[1]+'</button>').join("")
-    +'</div>';
+  h+=histCheer(p);
+  h+=subTabs(HTABS,HISTAB,"data-histab")+'<div class="tpane">';
   if(HISTAB==="vol"){
     /* ---------------- Volume, records, medailles ---------------- */
     const volW=weeklyVolume(p),volS=sessionVolume(p);
@@ -5623,10 +5824,10 @@ function renderHist(p,pg){
   });
   }
   if(HISTAB==="med")h+=renderMedalTab(p);
-  h+='<div style="height:26px"></div></div>';
+  h+='</div><div style="height:26px"></div></div>';
   pg.innerHTML=h;
 
-  pg.querySelectorAll("[data-histab]").forEach(b=>b.onclick=()=>{HISTAB=b.dataset.histab;renderMain(p)});
+  wireTabs(pg,"data-histab",v=>{HISTAB=v;renderMain(p)});
   pg.querySelectorAll("[data-hdel]").forEach(x=>x.onclick=()=>{p.hist.splice(+x.dataset.hdel,1);saveP();renderMain(p)});
 
   const hup=document.getElementById("hupd");
@@ -5794,13 +5995,17 @@ function shopIco(cat){
 
 function renderProfil(p,pg){
   const c=p.cfg;
+  const PTABS=[["id","Identité"],["prog","Programme"],["sea","Séance"],["don","Données"]];
+  if(!PTABS.some(t=>t[0]===PROFTAB))PROFTAB="id";
+  const PT=PROFTAB;
   let h='<div class="page on"><div class="secrule prof"></div><h2 class="sc">Profil</h2><p class="scs">Réglages de ce profil uniquement. Les autres profils ne sont pas affectés.</p>';
   /* Acces a la boutique : une entree, pas un onglet permanent. */
   h+='<button class="vrow2 shopgo" id="goshop">'
     +'<span class="vi">'+shopIco("base")+'</span>'
     +'<span class="vtx"><b>Boutique</b><small>Matériel et nutrition — sélection '+SHOP_MERCHANT+'</small></span>'
     +'<span class="va"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></span></button>';
-  h+='<div class="card"><h4>Identité</h4>'
+  h+=subTabs(PTABS,PROFTAB,"data-proftab")+'<div class="tpane">';
+  if(PT==="id")h+='<div class="card"><h4>Identité</h4>'
     +'<div class="fld"><label>Nom</label><input id="p-n" value="'+esc(p.name)+'"></div>'
     +'<div class="row" style="gap:8px"><div class="fld half"><label>Niveau</label>'
     +'<select id="p-l">'+[1,2,3].map(l=>'<option value="'+l+'"'+(c.lvl===l?" selected":"")+'>'+LVL[l]+'</option>').join("")+'</select></div>'
@@ -5809,58 +6014,64 @@ function renderProfil(p,pg){
     +'<div class="fld"><label>Durée habituelle d\'une séance</label><select id="p-d">'
     +DURS.map(d=>'<option value="'+d.m+'"'+((c.dur||60)===d.m?" selected":"")+'>'+d.m+' min — '+d.n+'</option>').join("")+'</select></div>'
     +'<p class="mut">Le niveau reste affiché en haut de l\'app et sur l\'écran de sélection des profils — il suit le profil s\'il est transmis à quelqu\'un.</p></div>';
-  h+='<div class="card"><h4>1RM de référence</h4><div class="grid2">'
+  if(PT==="id")h+='<div class="card"><h4>1RM de référence</h4><div class="grid2">'
     +[["dc","Développé couché"],["squat","Squat"],["sdt","Soulevé de terre"],["row","Rowing"]].map(r=>
       '<div class="fld"><label>'+r[1]+'</label><input type="number" step="0.5" inputmode="decimal" data-prm="'+r[0]+'" value="'+esc(c.rm[r[0]])+'"></div>').join("")
     +'</div><p class="mut" style="margin-top:10px">Valeurs en kilogrammes. Modifier un 1RM recalcule les charges du programme. Retest conseillé tous les 2 mois sur 3 à 6 répétitions proches de l\'échec.</p></div>';
-  h+='<div class="card"><h4>Programme</h4>'
+  if(PT==="prog")h+='<div class="card"><h4>Programme</h4>'
     +'<p class="mut">'+SPLITS[c.split].n+' · '+c.days.map(d=>DAYS_FR[d]).join(", ")+' · généré le '+esc(fullDate(p.prog.gen))+'</p>'
     +'<button class="btn g" id="p-wiz">Reprendre l\'assistant de configuration</button>'
     +'<button class="btn g" id="p-regen">Renouveler les exercices</button>'
     +'<p class="mut">Retire les exercices actuels et en tire de nouveaux sur les mêmes schémas moteurs, pour toutes les séances. Tes charges sont conservées ; les séries cochées en cours sont perdues.</p></div>';
-  h+='<div class="card"><h4>Zones à ménager</h4>'
+  if(PT==="prog")h+='<div class="card"><h4>Zones à ménager</h4>'
     +'<p class="mut">'+((c.pain&&c.pain.length)
       ?'Actuellement : <b style="color:var(--warn)">'+esc(painLabel(c.pain))+'</b>. Les exercices qui chargent ces articulations sont écartés de tes séances.'
       :'Aucune zone signalée. Si une articulation te fait mal, indique-la : les exercices qui la chargent sortiront des séances.')+'</p>'
     +'<button class="btn g" id="p-pain">Modifier les zones</button>'
     +((c.pain&&c.pain.length)?'<p class="mut">Pour que le programme reconstruise de vraies séances en contournant la zone — au lieu de simplement écarter des exercices — utilise « Renouveler les exercices » ci-dessus.</p>':'')
     +'</div>';
-  h+='<div class="card"><h4>Réglages de séance</h4><div class="row wr" style="gap:8px">'
+  if(PT==="sea")h+='<div class="card"><h4>Réglages de séance</h4><div class="row wr" style="gap:8px">'
     +'<button class="mini'+(p.set.timer?" on":"")+'" id="s-t">Minuteur</button>'
     +'<button class="mini'+(p.set.sound?" on":"")+'" id="s-s">Bip</button>'
     +(HAS_VIB?'<button class="mini'+(p.set.vib?" on":"")+'" id="s-v">Vibration</button>':'')+'</div>'
     +(HAS_VIB?'':'<p class="mut" style="margin-top:8px">La vibration n\'existe pas dans Safari iOS : seul le bip signale la fin du repos.</p>')
     +'</div>';
-  h+='<div class="card"><h4>Sauvegarde &amp; partage</h4>'
+  if(PT==="don")h+='<div class="card"><h4>Sauvegarde &amp; partage</h4>'
     +'<p>Les données de ce profil vivent uniquement sur cet appareil. Un vidage du cache du navigateur les efface : exporte régulièrement.</p>'
     +'<button class="btn g" id="p-exp">Sauvegarder ce profil</button>'
     +'<p class="mut"><b>Sur iPhone / iPad :</b> ouvre le lien dans Safari, bouton Partager puis « Sur l\'écran d\'accueil ». '
     +'L\'app s\'ouvre alors en plein écran, sans barre d\'adresse, et garde ses données. Depuis un fichier reçu par AirDrop, cet ajout n\'est pas possible : passe par le lien.</p>'
     +'<p class="mut"><b>Transmettre l\'app :</b> envoie le fichier HTML (AirDrop, mail, message) ou son lien. La personne l\'ouvre dans son navigateur, ajoute la page à son écran d\'accueil, crée son propre profil — ses données restent chez elle, aucune ne remonte vers toi.</p></div>';
-  h+='<button class="btn d" id="p-del">Supprimer ce profil</button><div style="height:26px"></div></div>';
+  if(PT==="don")h+='<button class="btn d" id="p-del">Supprimer ce profil</button>';
+  h+='</div><div style="height:26px"></div></div>';
   pg.innerHTML=h;
+  wireTabs(pg,"data-proftab",v=>{PROFTAB=v;renderMain(p)});
   const gs=document.getElementById("goshop");
   if(gs)gs.onclick=()=>{SECT="shop";SHOPGO=null;renderMain(p);window.scrollTo(0,0)};
-  document.getElementById("p-n").onchange=e=>{p.name=e.target.value.trim()||p.name;saveP();renderMain(p)};
-  document.getElementById("p-l").onchange=e=>{c.lvl=+e.target.value;saveP();renderMain(p)};
-  document.getElementById("p-d").onchange=e=>{c.dur=+e.target.value;saveP();toast("Format de séance mis à jour");renderMain(p)};
-  document.getElementById("p-g").onchange=e=>{c.goal=e.target.value;p.prog=generate(c);pruneChecks(p);saveP();toast("Programme recalculé");renderMain(p)};
+  /* Chaque onglet ne rend qu'une partie des controles : tout cablage passe
+     par un getter tolerant a l'absence. */
+  const el=id=>document.getElementById(id);
+  const on=(id,ev,fn)=>{const x=el(id);if(x)x[ev]=fn};
+  on("p-n","onchange",e=>{p.name=e.target.value.trim()||p.name;saveP();renderMain(p)});
+  on("p-l","onchange",e=>{c.lvl=+e.target.value;saveP();renderMain(p)});
+  on("p-d","onchange",e=>{c.dur=+e.target.value;saveP();toast("Format de séance mis à jour");renderMain(p)});
+  on("p-g","onchange",e=>{c.goal=e.target.value;p.prog=generate(c);pruneChecks(p);saveP();toast("Programme recalculé");renderMain(p)});
   pg.querySelectorAll("[data-prm]").forEach(i=>i.onchange=()=>{
     c.rm[i.dataset.prm]=i.value;p.prog=generate(c);pruneChecks(p);saveP();toast("Charges recalculées");renderMain(p)});
-  document.getElementById("p-wiz").onclick=()=>{WIZ=0;VIEW="wiz";render()};
-  document.getElementById("p-pain").onclick=()=>painDialog(p);
-  document.getElementById("p-regen").onclick=()=>askConfirm("Renouveler les exercices ?",
+  on("p-wiz","onclick",()=>{WIZ=0;VIEW="wiz";render()});
+  on("p-pain","onclick",()=>painDialog(p));
+  on("p-regen","onclick",()=>askConfirm("Renouveler les exercices ?",
     "Toutes les séances reçoivent de nouveaux exercices. Les charges saisies sont conservées, les séries cochées en cours sont perdues.","Renouveler",ok=>{
       if(!ok)return;
-      c.rot=(c.rot||0)+1;p.prog=generate(c);pruneChecks(p);saveP();toast("Nouveaux exercices");renderMain(p)});
-  const tg=(id,k)=>document.getElementById(id).onclick=()=>{p.set[k]=!p.set[k];saveP();renderMain(p)};
+      c.rot=(c.rot||0)+1;p.prog=generate(c);pruneChecks(p);saveP();toast("Nouveaux exercices");renderMain(p)}));
+  const tg=(id,k)=>on(id,"onclick",()=>{p.set[k]=!p.set[k];saveP();renderMain(p)});
   tg("s-t","timer");tg("s-s","sound");if(HAS_VIB)tg("s-v","vib");
-  document.getElementById("p-exp").onclick=()=>backupDialog(p);
-  document.getElementById("p-del").onclick=()=>{
+  on("p-exp","onclick",()=>backupDialog(p));
+  on("p-del","onclick",()=>{
     askConfirm("Supprimer « "+p.name+" » ?",
       "Le profil, son programme et tout son historique seront effacés définitivement.","Supprimer",ok=>{
       if(!ok)return;
-      PROFILES=PROFILES.filter(x=>x.id!==p.id);ACTIVE=PROFILES.length?PROFILES[0].id:null;saveP();VIEW="home";render()})};
+      PROFILES=PROFILES.filter(x=>x.id!==p.id);ACTIVE=PROFILES.length?PROFILES[0].id:null;saveP();VIEW="home";render()})});
 }
 
 /* ---------------- Démarrage : profil actif rechargé automatiquement ---------------- */
