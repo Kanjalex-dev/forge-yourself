@@ -33,7 +33,9 @@
 --pr:#FF5A50;--p25:#46566B;--p20:#2D6FD0;--p15:#F5C518;--p10:#3FA34D;--p5:#F2F4F7;--p125:#B8BFC9;
 /* Le 25 kg passe du rouge au graphite : la note de direction artistique
    reserve le rouge aux records personnels, "plus aucun disque rouge". */
---p2:#A8B0BA;--p1:#8A93A0;--p05:#7E8794;
+/* Fractionnaires : un degrade de gris continu, du plus lourd (clair) au
+   plus leger (sombre), pour les distinguer d'un coup d'oeil. */
+--p25k:#D4D9E0;--p2:#BCC3CC;--p125k:#A3ABB6;--p1:#8A93A0;--p05:#6F7784;
 /* Chaque couleur n'a plus qu'un seul sens dans toute l'app : l'or est
    reserve a la charge/l'action/la medaille obtenue, le bleu au temps et a
    l'identite Suivi, le rouge exclusivement aux records. Les muscles ne
@@ -96,17 +98,27 @@ display:flex;align-items:center;justify-content:center;font-weight:700;color:var
 .tsub{font-size:.64rem;color:var(--mut);text-align:center;margin-top:4px}
 /* Compteur de medailles dans l'en-tete : la recompense est visible depuis
    l'ecran d'entrainement, pas seulement enterree dans Suivi. */
-.medchip{display:flex;align-items:center;gap:5px;flex:0 0 auto;background:var(--sf2);
-border:1px solid var(--line);border-radius:20px;padding:4px 10px 4px 7px;cursor:pointer;font-family:inherit}
-.medchip b{font-family:var(--mono);font-size:.72rem;color:var(--txt);font-weight:600}
-.medchip:hover,.medchip:focus-visible{border-color:var(--brand)}
+/* La recompense est ce qui ramene : elle merite la meme presence que
+   l'avatar, pas une pastille de la taille d'une note de bas de page. */
+.medchip{display:flex;align-items:center;gap:7px;flex:0 0 auto;background:var(--sf2);
+border:1px solid rgba(245,197,24,.38);border-radius:22px;padding:5px 13px 5px 6px;
+cursor:pointer;font-family:inherit;height:38px}
+.medchip b{font-family:var(--mono);font-size:.95rem;color:var(--txt);font-weight:700;line-height:1}
+.medchip svg{flex:0 0 auto}
+.medchip:hover,.medchip:focus-visible{border-color:var(--brand);background:rgba(245,197,24,.10)}
 /* Bandeau des sept jours de la semaine (maquette A1) : une colonne par
    jour, l'etat sous l'initiale — seance faite, jour en cours, repos. */
 /* Le bandeau des jours et le filet de progression restent en haut quand on
    fait defiler la seance : on garde sous les yeux ou on en est et sur quel
    jour on travaille, meme au dixieme exercice. */
 .daystrip{display:flex;gap:5px;max-width:680px;margin:0 auto;padding:6px 14px;
-position:sticky;top:0;z-index:22;background:var(--bg)}
+/* Collee sous la zone systeme, pas sous l'ecran : a 0 le bandeau se figeait
+   derriere l'encoche et la pile photo, ou l'iOS translucide le laissait
+   transparaitre. Le fond remonte jusqu'en haut par une ombre portee de la
+   hauteur de l'inset, de sorte qu'aucun contenu ne defile a l'air libre
+   derriere la barre d'etat. */
+position:sticky;top:env(safe-area-inset-top,0px);z-index:22;background:var(--bg);
+box-shadow:0 -1px 0 0 var(--bg),0 calc(-1 * env(safe-area-inset-top,0px)) 0 0 var(--bg)}
 body[data-sect="hist"] .daystrip{background:var(--sec-hist-bg)}
 .dcell{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;
 padding:6px 0 7px;border:0;border-radius:8px;background:var(--sf2);color:var(--txt);
@@ -235,7 +247,7 @@ border-radius:4px;background:linear-gradient(180deg,#9AA3AF 0 38%,#6B7480 38%)}
 .alert.d{border-color:var(--dang);background:#2A0F0F55;color:#FCA5A5}
 .alert b{display:block;margin-bottom:2px}
 .prog{height:6px;background:var(--sf2);border-radius:3px;overflow:hidden;margin:2px 0}
-.page > .prog{position:sticky;top:52px;z-index:21;margin:2px -14px 10px;padding:0 14px;
+.page > .prog{position:sticky;top:calc(52px + env(safe-area-inset-top,0px));z-index:21;margin:2px -14px 10px;padding:0 14px;
 background:var(--bg);height:auto;border-radius:0;overflow:visible}
 .page > .prog::after{content:"";display:block;height:6px;background:var(--sf2);border-radius:3px}
 .page > .prog i{position:relative;z-index:1;height:6px;border-radius:3px;margin-bottom:-6px}
@@ -389,18 +401,103 @@ font-size:.62rem;letter-spacing:.06em;text-transform:uppercase}
    libelles (Archivo en petites capitales) et meme famille pour les chiffres
    (Plex Mono). Le bouton et les pastilles se lisent comme une seule serie,
    au lieu d'un bouton en romain suivi de pastilles en machine a ecrire. */
-.sbtn,.stag{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:36px;
-padding:0 11px;border-radius:9px;background:var(--sf2);border:1px solid transparent;
-font-family:var(--disp);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;
-font-weight:700;color:var(--mut);white-space:nowrap}
+.sbtn,.stag{flex:0 1 auto;display:inline-flex;align-items:center;gap:5px;height:34px;
+padding:0 8px;border-radius:9px;background:var(--sf2);border:1px solid transparent;
+font-family:var(--disp);font-size:.6rem;letter-spacing:.04em;text-transform:uppercase;
+font-weight:700;color:var(--mut);white-space:nowrap;min-width:0}
 .sbtn{border-color:var(--line);color:var(--txt);cursor:pointer}
 .sbtn.on{border-color:var(--brand);color:var(--brand)}
 .sbtn svg,.stag svg{flex:0 0 auto;color:var(--mut)}
 .sbtn.on svg{color:var(--brand)}
-.stag b{font-family:var(--mono);font-size:.72rem;font-weight:600;color:var(--musc-p);
+.stag b{font-family:var(--mono);font-size:.7rem;font-weight:600;color:var(--musc-p);
 letter-spacing:0;text-transform:none}
+/* Les trois mesures de la seance se lisent d'un bloc : l'unite passe en
+   abrege pour que la rangee tienne dans la largeur sans glisser. */
+.stag .u{font-size:.55rem;letter-spacing:.04em}
 .stag.w{color:var(--warn)}
 .stag.w b{color:var(--warn)}
+
+/* --- Ligne de serie : la ligne entiere est la cible tactile --- */
+.setrow{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .14s ease,border-color .14s ease}
+.setrow{border:1px solid transparent}
+.setrow:active{background:var(--sf3,#1c2430)}
+.setrow.ok{background:rgba(52,199,89,.10);border-color:rgba(52,199,89,.35)}
+.setrow.ok .sno{color:var(--ok)}
+/* Case dessinee : 26 px de cible, la meme lecture qu'une case systeme. */
+.ckbox{flex:0 0 auto;width:26px;height:26px;border-radius:7px;border:2px solid var(--line);
+background:var(--sf);position:relative;transition:background .14s ease,border-color .14s ease}
+.ckbox.on{background:var(--ok);border-color:var(--ok)}
+.ckbox.on::after{content:"";position:absolute;left:8px;top:3.5px;width:6px;height:12px;
+border:solid #052e16;border-width:0 2.6px 2.6px 0;transform:rotate(42deg)}
+.setrow.dim .ckbox{border-style:dashed}
+/* Pas a pas des repetitions */
+/* --- Encart d'information bleu, motif commun --- */
+.infobox{display:flex;align-items:flex-start;gap:9px;margin:8px 0;padding:9px 11px;
+border-radius:10px;background:rgba(45,111,208,.10);border:1px solid rgba(45,111,208,.28);
+font-size:.74rem;line-height:1.45;color:var(--txt)}
+.infobox .ibico{flex:0 0 auto;color:var(--brand2);display:flex;margin-top:1px}
+.infobox .ibtx{min-width:0}
+.infobox .iblbl{display:inline-block;font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;
+font-weight:700;color:var(--brand2);margin-right:5px}
+.infobox b{font-family:var(--mono);font-weight:600}
+/* --- Exercice termine : la carte passe au vert --- */
+.exo.done{border-color:rgba(52,199,89,.42);background:linear-gradient(180deg,rgba(52,199,89,.07),transparent 120px)}
+.exo.done .eh .ix{color:var(--ok)}
+.donecnt.ok{color:var(--ok);display:inline-flex;align-items:center;gap:4px}
+.donecnt.ok svg{flex:0 0 auto}
+/* Le bouton "Changer" n'est plus qu'une icone, glissee avant le compteur. */
+.vbtn.ico{padding:0;width:32px;height:32px;justify-content:center;flex:0 0 auto}
+.vbtn.ico svg{margin:0}
+
+/* --- Feuille de saisie d'une valeur (reps, charge) --- */
+#pick{position:fixed;inset:0;z-index:70}
+#pick[hidden]{display:none}
+.pkveil{position:absolute;inset:0;background:rgba(2,5,9,.62);backdrop-filter:blur(2px)}
+.pksheet{position:absolute;left:0;right:0;bottom:0;background:var(--sf2);border-top:1px solid var(--line);
+border-radius:18px 18px 0 0;padding:10px 16px calc(18px + env(safe-area-inset-bottom,0px));
+max-width:680px;margin:0 auto;animation:pkup .2s cubic-bezier(.2,.7,.2,1) both}
+@keyframes pkup{from{transform:translateY(18px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.pksheet{animation:none}}
+.pkgrab{width:36px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 12px}
+.pkhd{display:flex;align-items:baseline;gap:8px;margin-bottom:12px}
+.pkhd b{font-family:var(--disp);font-variation-settings:"wdth" 108;font-size:1rem;font-weight:800}
+.pkhd span{font-size:.7rem;color:var(--mut);flex:1 1 auto;min-width:0}
+.pkx{background:0;border:0;color:var(--mut);font-size:1.5rem;line-height:1;cursor:pointer;
+padding:0 2px;font-family:inherit}
+/* La valeur en cours, en grand : c'est elle qu'on regarde en ajustant. */
+.pkval{display:flex;align-items:baseline;justify-content:center;gap:6px;margin:2px 0 14px}
+.pkval input{width:130px;background:0;border:0;border-bottom:2px solid var(--line);outline:0;
+color:var(--brand);font-family:var(--mono);font-size:2.4rem;font-weight:700;text-align:center;
+padding:0 0 4px;font-variant-numeric:tabular-nums}
+.pkval input:focus{border-color:var(--brand)}
+.pkval span{font-size:.9rem;color:var(--mut);font-family:var(--mono)}
+/* Increments reels : pour une charge ce sont les paires de disques. */
+.pksteps{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+.pkstep{flex:1 1 0;min-width:52px;height:46px;border-radius:10px;border:1px solid var(--line);
+background:var(--sf);color:var(--txt);font-family:var(--mono);font-size:.82rem;font-weight:600;
+cursor:pointer;display:flex;align-items:center;justify-content:center}
+.pkstep:active{background:var(--brand);border-color:var(--brand);color:#111}
+.pkall{display:flex;align-items:center;gap:9px;padding:11px 12px;border-radius:10px;
+background:rgba(45,111,208,.10);border:1px solid rgba(45,111,208,.28);margin-bottom:12px;
+font-size:.76rem;color:var(--txt);cursor:pointer}
+.pkall[hidden]{display:none}
+.pkall input{appearance:none;width:22px;height:22px;border-radius:6px;border:2px solid var(--brand2);
+background:0;position:relative;flex:0 0 auto;margin:0;cursor:pointer}
+.pkall input:checked{background:var(--brand2)}
+.pkall input:checked::after{content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;
+border:solid #fff;border-width:0 2.4px 2.4px 0;transform:rotate(42deg)}
+/* --- Pastilles de saisie dans la ligne de serie : deux jumelles --- */
+.spill{flex:0 0 auto;display:flex;align-items:center;gap:7px;height:38px;padding:0 11px;
+border-radius:9px;background:var(--sf);border:1px solid var(--line);color:var(--txt);
+cursor:pointer;font-family:inherit;width:92px;justify-content:space-between}
+.spill em{font-style:normal;font-size:.56rem;letter-spacing:.06em;text-transform:uppercase;
+font-weight:700;color:var(--mut);font-family:var(--disp)}
+.spill b{font-family:var(--mono);font-size:.92rem;font-weight:600;color:var(--txt);
+font-variant-numeric:tabular-nums}
+.spill:active{border-color:var(--brand)}
+.setrow.ok .spill{background:var(--sf2)}
+.fsrow.cu .spill{height:42px;width:104px;background:var(--sf2);border-color:var(--line)}
+.fsrow.cu .spill b{font-size:1.02rem}
 /* Filet d'identite de section et ligne de titre de Suivi (planche A3) */
 .histrule{height:3px;border-radius:2px;background:var(--sec-hist-ac);margin:0 0 14px}
 .shd2{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
@@ -436,7 +533,7 @@ border-radius:9px;padding:8px 11px;font-size:.74rem;cursor:pointer;font-family:i
 .srl{font-size:.74rem;color:var(--txt);font-weight:600}
 .seg.sm button{padding:7px 11px;font-size:.72rem}
 .spanel .vrow2 .vi svg{width:19px;height:19px}
-.srow{display:flex;gap:7px;flex-wrap:nowrap;align-items:center;margin-bottom:8px;
+.srow{display:flex;gap:6px;flex-wrap:nowrap;align-items:center;margin-bottom:8px;
 overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;
 padding-bottom:2px;
 /* le dernier reglage s'estompe au bord au lieu d'etre tranche net : on
@@ -486,7 +583,8 @@ font-weight:600;padding:8px 15px;border-radius:8px;cursor:pointer;font-variant-n
    ligne repliee garde un resume tabulaire pour rester utile sans s'ouvrir. */
 .exo.coll .body,.exo.coll .tech{display:none}
 .acctog{background:0;border:0;display:flex;align-items:center;gap:8px;flex:1 1 auto;
-min-width:0;padding:0;cursor:pointer;font-family:inherit;text-align:left;color:inherit}
+min-width:0;padding:0;cursor:pointer;font-family:inherit;text-align:left;color:inherit;
+-webkit-tap-highlight-color:transparent}
 .acctog{gap:9px}
 /* Le nom pousse le compteur et le chevron en bout de ligne : sans cela ils
    restaient colles au titre et laissaient un vide a droite du bloc. */
@@ -953,6 +1051,19 @@ cursor:pointer;font-family:inherit;border:1px solid var(--line);background:var(-
 <button id="tmrp">+30 s</button><button id="tmrs">Stop</button></div>
 <div id="tst"></div>
 <div id="focus"></div>
+<!-- Feuille de saisie d'une valeur de serie : un tap sur une pastille
+     l'ouvre, on ajuste au pouce sur de vrais increments, et on peut
+     reporter la valeur sur les series suivantes sans la ressaisir. -->
+<div id="pick" hidden><div class="pkveil" data-pkclose></div>
+<div class="pksheet" role="dialog" aria-modal="true" aria-labelledby="pk-t">
+<div class="pkgrab"></div>
+<div class="pkhd"><b id="pk-t"></b><span id="pk-s"></span>
+<button type="button" class="pkx" data-pkclose aria-label="Fermer">×</button></div>
+<div class="pkval"><input id="pk-i" type="number" inputmode="decimal" aria-label="Valeur"><span id="pk-u"></span></div>
+<div class="pksteps" id="pk-st"></div>
+<label class="pkall" id="pk-all"><input type="checkbox" id="pk-allc"><span></span></label>
+<button type="button" class="btn pr" id="pk-ok">Valider</button>
+</div></div>
 <div id="mdl"><div class="mbox" role="dialog" aria-modal="true">
 <div class="mt" id="mdl-t"></div><div class="mm" id="mdl-m"></div>
 <div class="mh" id="mdl-h" hidden></div>
@@ -2511,6 +2622,7 @@ function bars(cv,pts,lastCol){
    ================================================================ */
 const APP=document.getElementById("app");
 let VIEW="home",TAB=0,SECT="train",FOCUS={},FOCOVR={},WIZ=0,ACC={},STARTPANEL={},SHOPCAT_SEL="all",HISTAB="vol",BADGEALL=false,
+
 /* Exercice dont les disques viennent de changer : l'animation d'apparition
    ne se declenche que sur une action de l'utilisateur, jamais au chargement. */
 CHGFX=null;
@@ -2825,9 +2937,9 @@ function renderMain(p){
     +'<div class="who"><h1>'+esc(p.name)+'</h1>'
     +'<div class="sub">'+SPLITS[c.split].n+' · '+GOALS[c.goal].n+'</div></div>'
     +'<button class="medchip" id="medgo" aria-label="'+earnedN+' médailles obtenues — voir le suivi">'
-    +'<svg width="15" height="15" viewBox="0 0 42 42" aria-hidden="true">'
-    +'<circle cx="21" cy="21" r="19" fill="var(--brand)"/><circle cx="21" cy="21" r="12" fill="var(--sf2)"/>'
-    +'<circle cx="21" cy="21" r="5" fill="var(--musc-s)"/></svg><b>'+earnedN+'</b></button></header>';
+    +'<svg width="26" height="26" viewBox="0 0 42 42" aria-hidden="true">'
+    +'<circle cx="21" cy="21" r="19" fill="var(--brand)"/><circle cx="21" cy="21" r="12.5" fill="var(--sf2)"/>'
+    +'<circle cx="21" cy="21" r="6" fill="var(--brand)"/></svg><b>'+earnedN+'</b></button></header>';
   /* barre temporelle */
   if(c.startDate&&c.eventDate){
     const s=new Date(c.startDate+"T00:00:00"),e=new Date(c.eventDate+"T00:00:00"),n=new Date();
@@ -3054,8 +3166,8 @@ function renderFocus(p,s,ti,plan,order){
     if(k===cur){
       h+='<div class="fsrow cu'+(bonus?" bonus":"")+'">'
         +'<span class="fsno">S'+(k+1)+'</span>'
-        +'<label class="sfld"><span>Reps</span><input type="number" inputmode="numeric" class="rep" id="fsrep" value="'+esc(rv)+'"></label>'
-        +'<label class="sfld"><span>kg</span><input type="number" step="0.5" inputmode="decimal" id="fskg" value="'+esc(kv)+'"></label>'
+        +'<button type="button" class="spill" data-fpick="rep|'+k+'" aria-label="Répétitions de la série en cours"><em>reps</em><b>'+esc(rv)+'</b></button>'
+        +'<button type="button" class="spill" data-fpick="kg|'+k+'" aria-label="Charge de la série en cours"><em>kg</em><b>'+(kv===""||kv==null?"—":esc(kv))+'</b></button>'
         +'<span class="fstate">En cours</span></div>';
     }else{
       h+='<div class="fsrow'+(dn[k]?" dn":"")+(bonus?" bonus":"")+'">'
@@ -3120,16 +3232,30 @@ function renderFocus(p,s,ti,plan,order){
     for(let z=k;z<allS;z++)DEL("chk_"+sKey(p,s.sid,x.id,z));
     renderMain(p)});
 
-  const fsrep=document.getElementById("fsrep"),fskg=document.getElementById("fskg");
-  const saveSet=()=>{
-    if(cur<0)return;
-    if(fsrep){const v=fsrep.value.trim();
-      v===""?DEL("srep_"+sKey(p,s.sid,x.id,cur)):S("srep_"+sKey(p,s.sid,x.id,cur),+v)}
-    if(fskg){const v=fskg.value.trim();
-      v===""?DEL("skg_"+sKey(p,s.sid,x.id,cur)):S("skg_"+sKey(p,s.sid,x.id,cur),parseFloat(v))}
-  };
-  if(fsrep)fsrep.onchange=saveSet;
-  if(fskg)fskg.onchange=saveSet;
+  /* Les deux pastilles de la serie en cours ouvrent la meme feuille qu'en
+     liste : un seul geste de saisie dans toute l'application. */
+  document.querySelectorAll("[data-fpick]").forEach(b=>b.onclick=()=>{
+    const [kind,ks]=b.dataset.fpick.split("|");
+    const k=+ks,rest=allS-k-1;
+    const key=(kind==="rep"?"srep_":"skg_")+sKey(p,s.sid,x.id,k);
+    const cv=G(key,null);
+    const val=cv!=null?cv:(kind==="rep"?repDef:((ch!=null&&!isNaN(ch))?ch:0));
+    openPick({
+      title:(kind==="rep"?"Répétitions":"Charge"),
+      sub:"Série "+(k+1)+" / "+allS+" · "+e.n,
+      unit:(kind==="rep"?"reps":"kg"),
+      value:val,step:(kind==="rep"?1:.5),
+      min:0,max:(kind==="rep"?99:500),
+      steps:(kind==="rep"?REPSTEPS:KGSTEPS),
+      allLabel:rest>0?("Appliquer aux "+rest+" série"+(rest>1?"s":"")+" suivante"+(rest>1?"s":"")):null,
+      onApply:(v,all)=>{
+        const set=(j,vv)=>{const kk=(kind==="rep"?"srep_":"skg_")+sKey(p,s.sid,x.id,j);
+          vv==null?DEL(kk):S(kk,vv)};
+        set(k,v);
+        if(all)for(let j=k+1;j<allS;j++)set(j,v);
+        renderMain(p);
+      }});
+  });
 
   document.getElementById("fvalid").onclick=()=>{
     if(allDone){
@@ -3231,11 +3357,11 @@ function renderSession(p,s,ti,pg){
     +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>'
     +'Réglages</button>'
     +'<span class="stag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6M8 7v10M16 7v10M20 9v6M8 12h8"/></svg>'
-    +'<b>'+plan.n+'</b> exos</span>'
+    +'<b>'+plan.n+'</b><span class="u">exos</span></span>'
     +'<span class="stag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></svg>'
-    +'<b>'+plan.est+'</b> min</span>'
+    +'<b>'+plan.est+'</b><span class="u">min</span></span>'
     +(kcSess!=null?'<span class="stag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s5 4.5 5 9a5 5 0 01-10 0c0-1.8.8-3.4 1.7-4.6.5 1.4 1.4 2.1 2.3 2.1 1 0 1.5-1 1-2.7-.4-1.4-.7-2.6-.5-3.8z"/></svg>'
-      +'<b>'+kcSess+'</b> kcal</span>':'')
+      +'<b>'+kcSess+'</b><span class="u">kcal</span></span>':'')
     +(dm!==def?'<span class="stag w">format <b>'+dm+'</b> min</span>':'')
     +(pain.length?'<span class="stag w"><b>'+pain.length+'</b> zone'+(pain.length>1?"s":"")+'</span>':'')
     +(varyRank(p,s)?'<span class="stag">variante <b>'+varyRank(p,s)+'</b></span>':'')
@@ -3323,18 +3449,9 @@ function renderSession(p,s,ti,pg){
         +' de la séance, affiché'+(nOut>1?"s":"")+' barré'+(nOut>1?"s":"")+' plus bas. ':'')
       +'Les charges de tes exercices habituels sont conservées et reviendront dès que tu retireras la zone.</div>';
   }
-  const nxt=(s.day+1)%7,prev=(s.day+6)%7;
-  const an=p.cfg.acts[nxt],ap=p.cfg.acts[prev];
-  if((an&&an!=="—"&&an!=="Repos")||(ap&&ap!=="—"&&ap!=="Repos")){
-    /* Contexte des jours voisins : une ligne discrete, pas un bloc d'alerte
-       qui occupe le quart de l'ecran avant meme d'avoir vu un exercice. */
-    const ctx=[];
-    if(ap&&ap!=="—"&&ap!=="Repos")ctx.push("Veille : "+ap);
-    if(an&&an!=="—"&&an!=="Repos")ctx.push("Lendemain : "+an);
-    h+='<div class="ctxline"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>'
-      +'<span>'+esc(ctx.join(" · "))
-      +(an&&an!=="—"&&an!=="Repos"?' — garde l\'intensité prescrite, sans aller à l\'échec.':'')+'</span></div>';
-  }
+  /* La ligne "Veille / Lendemain" a ete retiree : elle rappelait a
+     l'utilisateur ce qu'il a lui-meme programme et coutait une ligne avant
+     le premier exercice. L'avertissement utile (menager une zone) reste. */
 
   /* L'ordre d'affichage suit l'usage : d'abord ce qui est au programme du
      jour, puis le bonus, puis les exercices écartés — qu'on ne veut pas voir
@@ -3366,23 +3483,30 @@ function renderSession(p,s,ti,pg){
     if(x.spared&&!sepSpared&&!foc){sepSpared=true;
       h+='<div class="plansep">Écartés — '+esc(painLabel(pain))+'</div>';}
     const thumb=!x.spared&&e.img&&IMG(e.img);
-    h+='<div class="exo'+(coll?" coll":"")+(x.inPlan?"":(x.spared?" spared":" bonus"))+'">'
+    /* Exercice termine : la carte passe au vert, repliee comme depliee. */
+    const xdone=allS0>0&&doneN>=allS0;
+    h+='<div class="exo'+(coll?" coll":"")+(xdone?" done":"")+(x.inPlan?"":(x.spared?" spared":" bonus"))+'">'
       +'<div class="eh">'
       /* Ligne repliee : vignette + resume chiffre, comme la planche — on
          reconnait l'exercice et on sait ce qu'il demande sans le deplier.
          Ligne ouverte : le nom prend la place, le detail est juste dessous,
          et "Changer" n'a de sens que la, sur l'exercice qu'on regarde. */
-      +'<button class="acctog" data-acc="'+pos+'" aria-label="'+(coll?"Déplier":"Replier")+' cet exercice">'
+      /* La ligne entiere ouvre et ferme l'exercice : "Changer" se glisse
+         juste avant le compteur de series, qui garde ainsi sa place en bout
+         de ligne d'un exercice a l'autre — c'est ce reperage qu'on lit en
+         diagonale. Le bouton n'est qu'une icone : le mot coutait la place
+         qui manquait au compteur. */
+      +'<div class="acctog" data-acc="'+pos+'" role="button" tabindex="0" aria-expanded="'+(coll?"false":"true")+'" aria-label="'+(coll?"Déplier":"Replier")+' '+esc(e.n)+'">'
       +'<span class="ix">'+(xi+1<10?"0":"")+(xi+1)+'</span>'
       +(coll?'<span class="acth">'+(thumb?'<img alt="" decoding="async" src="'+thumb+'">':'<i>ill.</i>')+'</span>':'')
       +'<span class="nm">'+esc(e.n)
       +(coll?'<small>'+x.sets+' × '+esc(x.reps)+(ch!=null&&!isNaN(ch)?' · '+esc(kg(ch)):'')
         +' · repos '+mmss(smartRest(p,s,x,e))+'</small>':'')
       +'</span>'
-      +'<span class="donecnt">'+doneN+'/'+allS0+'</span>'
+      +(coll?'':'<button class="vbtn ico" data-var="'+xi+'" title="Remplacer cet exercice par un autre" aria-label="Remplacer cet exercice">'+VARICO+'</button>')
+      +'<span class="donecnt'+(xdone?" ok":"")+'">'+(xdone?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 7"/></svg>':'')+doneN+'/'+allS0+'</span>'
       +'<span class="chev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 10l6 6 6-6"/></svg></span>'
-      +'</button>'
-      +(coll?'':'<button class="vbtn" data-var="'+xi+'" title="Remplacer cet exercice par un autre" aria-label="Remplacer cet exercice">'+VARICO+'Changer</button>')
+      +'</div>'
       +'</div>'
       +'<div class="body">'
       +'<div class="chips"><span class="chip"><b>'+x.sets+'</b> × '+x.reps+'</span>'
@@ -3406,10 +3530,11 @@ function renderSession(p,s,ti,pg){
     const prevEx=lastExRecord(p,x.id);
     if(prevEx){
       const pe=prevEx.ex;
-      h+='<div class="prevrow"><span class="prevlbl">Précédent</span> '
+      h+='<div class="infobox prev"><span class="ibico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4h4"/><path d="M12 8v4.5l3 1.7"/></svg></span>'
+        +'<span class="ibtx"><span class="iblbl">La dernière fois</span> '
         +'<b>'+pe.done+'/'+pe.sets+'</b> séries'
         +(pe.kg!=null?' · <b>'+esc(kg(pe.kg))+'</b>':(pe.bw!=null?' · <b>'+esc(kg(pe.bw))+'</b> (poids du corps)':''))
-        +(pe.diff?' · '+DIFFL[pe.diff]:'')+' <span class="mut">— '+esc(shortDate(prevEx.date))+'</span></div>';
+        +(pe.diff?' · '+DIFFL[pe.diff]:'')+' <span class="mut">— '+esc(shortDate(prevEx.date))+'</span></span></div>';
     }
     /* Case a cocher, reps et charge par serie, empilees et modifiables
        individuellement — chaque serie garde sa propre valeur (utile en
@@ -3423,11 +3548,20 @@ function renderSession(p,s,ti,pg){
       const dim=x.inPlan&&i>=x.sets;
       const rv=G("srep_"+sKey(p,s.sid,x.id,i),repDef);
       const kv=G("skg_"+sKey(p,s.sid,x.id,i),(ch!=null&&!isNaN(ch))?ch:"");
-      h+='<div class="setrow'+(dim?" dim":"")+'">'
-        +'<input type="checkbox" data-ck="'+xi+"|"+i+'"'+(G(k,false)?" checked":"")+' aria-label="Série '+(i+1)+' effectuée">'
+      const ck=G(k,false);
+      /* Toute la ligne valide la serie : le pouce tombe n'importe ou entre
+         la case et les champs, pas sur une cible de 19 px en bout de ligne.
+         Les champs eux-memes restent inertes au tap, sinon on cocherait la
+         serie en voulant corriger une valeur. */
+      h+='<div class="setrow'+(dim?" dim":"")+(ck?" ok":"")+'" data-ckrow="'+xi+"|"+i+'" role="button" tabindex="0"'
+        +' aria-pressed="'+(ck?"true":"false")+'" aria-label="Série '+(i+1)+(ck?' — effectuée':' — marquer comme effectuée')+'">'
+        +'<span class="ckbox'+(ck?" on":"")+'" aria-hidden="true"></span>'
         +'<span class="sno">S'+(i+1)+'</span><span class="sflex"></span>'
-        +'<label class="sfld"><span>Reps</span><input type="number" inputmode="numeric" class="rep" data-srep="'+xi+"|"+i+'" value="'+esc(rv)+'"></label>'
-        +'<label class="sfld"><span>kg</span><input type="number" step="0.5" inputmode="decimal" data-skg="'+xi+"|"+i+'" value="'+esc(kv)+'"></label>'
+        /* Deux pastilles jumelles : meme hauteur, meme largeur, meme
+           typographie. Un tap ouvre la feuille de saisie — pas de clavier
+           numerique au milieu d'une serie. */
+        +'<button type="button" class="spill" data-pick="rep|'+xi+"|"+i+'" aria-label="Répétitions de la série '+(i+1)+'"><em>reps</em><b>'+esc(rv)+'</b></button>'
+        +'<button type="button" class="spill" data-pick="kg|'+xi+"|"+i+'" aria-label="Charge de la série '+(i+1)+'"><em>kg</em><b>'+(kv===""||kv==null?"—":esc(kv))+'</b></button>'
         +'</div>';
     }
     h+='</div>';
@@ -3486,10 +3620,13 @@ function renderSession(p,s,ti,pg){
      ne sont presentes que lorsqu'il est ouvert. */
   const fmode=document.getElementById("fmode");
   if(fmode)fmode.onclick=()=>{PANEL[ti]=null;FOCOVR[ti+"_"+today()]=!foc;FOCUS["i"+ti]=0;renderMain(p)};
-  pg.querySelectorAll("[data-acc]").forEach(b=>b.onclick=()=>{
+  pg.querySelectorAll("[data-acc]").forEach(b=>{
+    b.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();b.click()}};
+    b.onclick=ev=>{
+    if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".vbtn"))return;
     const pos=+b.dataset.acc;
     ACC[ti]=(ACC[ti]===pos)?-1:pos;
-    renderMain(p)});
+    renderMain(p)}});
   const startbtn=document.getElementById("startbtn");
   /* le bouton ne lance rien tout seul : il ouvre le choix du mode, qui est
      ce qui lance vraiment la seance. */
@@ -3536,20 +3673,60 @@ function renderSession(p,s,ti,pg){
     toast(p.cfg.pain.length?"Zones ménagées : "+painLabel(p.cfg.pain):"Plus aucune zone ménagée");
     renderMain(p);window.scrollTo(0,0)};
 
-  pg.querySelectorAll("[data-ck]").forEach(b=>b.onchange=()=>{
-    const [xi,si]=b.dataset.ck.split("|");
-    const x=plan.items[+xi],k="chk_"+sKey(p,s.sid,x.id,si);
-    b.checked?S(k,true):DEL(k);
-    if(b.checked){const e=byId(x.id);startT(smartRest(p,s,x,e,+si),"Repos · "+e.n+" — série "+(+si+1)+"/"+x.sets)}
-    refreshProgress(p,s,pg,plan)});
-  pg.querySelectorAll("[data-srep]").forEach(i=>i.onchange=()=>{
-    const [xi,si]=i.dataset.srep.split("|"),x=plan.items[+xi];
-    const v=i.value.trim();
-    v===""?DEL("srep_"+sKey(p,s.sid,x.id,si)):S("srep_"+sKey(p,s.sid,x.id,si),+v)});
-  pg.querySelectorAll("[data-skg]").forEach(i=>i.onchange=()=>{
-    const [xi,si]=i.dataset.skg.split("|"),x=plan.items[+xi];
-    const v=i.value.trim();
-    v===""?DEL("skg_"+sKey(p,s.sid,x.id,si)):S("skg_"+sKey(p,s.sid,x.id,si),parseFloat(v))});
+  /* La ligne entiere est la cible : on tape a cote des champs, pas dessus. */
+  pg.querySelectorAll("[data-ckrow]").forEach(row=>{
+    const toggle=()=>{
+      const [xi,si]=row.dataset.ckrow.split("|");
+      const x=plan.items[+xi],k="chk_"+sKey(p,s.sid,x.id,si);
+      const on=!G(k,false);
+      on?S(k,true):DEL(k);
+      row.classList.toggle("ok",on);
+      row.setAttribute("aria-pressed",on?"true":"false");
+      const bx=row.querySelector(".ckbox");if(bx)bx.classList.toggle("on",on);
+      if(on){const e=byId(x.id);startT(smartRest(p,s,x,e,+si),"Repos · "+e.n+" — série "+(+si+1)+"/"+x.sets)}
+      refreshProgress(p,s,pg,plan);
+      /* Le compteur de l'entete et la couleur de la carte suivent la
+         derniere serie cochee, sans redessiner toute la page. */
+      const card=row.closest(".exo"),cnt=card&&card.querySelector(".donecnt");
+      if(cnt){
+        const all=x.allSets||x.sets;let n=0;
+        for(let j=0;j<all;j++)if(G("chk_"+sKey(p,s.sid,x.id,j),false))n++;
+        const fin=n>=all;
+        cnt.innerHTML=(fin?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 7"/></svg>':"")+n+"/"+all;
+        cnt.classList.toggle("ok",fin);
+        card.classList.toggle("done",fin);
+      }
+    };
+    row.onclick=ev=>{if(ev.target.closest(".sfld"))return;toggle()};
+    row.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();toggle()}};
+  });
+  /* Un tap sur une pastille ouvre la feuille : repetitions et charge
+     passent par le meme geste. */
+  pg.querySelectorAll("[data-pick]").forEach(b=>b.onclick=ev=>{
+    ev.stopPropagation();
+    const [kind,xis,sis]=b.dataset.pick.split("|");
+    const xi=+xis,si=+sis,x=plan.items[xi],e=byId(x.id);
+    const allS=x.allSets||x.sets,rest=allS-si-1;
+    const key=(kind==="rep"?"srep_":"skg_")+sKey(p,s.sid,x.id,si);
+    const cur=G(key,null);
+    const ch0=p.ovr[x.id]!=null?parseFloat(p.ovr[x.id]):x.charge;
+    const val=cur!=null?cur:(kind==="rep"?Math.round(repsMid(x.reps)):((ch0!=null&&!isNaN(ch0))?ch0:0));
+    openPick({
+      title:(kind==="rep"?"Répétitions":"Charge"),
+      sub:"Série "+(si+1)+" / "+allS+" · "+e.n,
+      unit:(kind==="rep"?"reps":"kg"),
+      value:val,step:(kind==="rep"?1:.5),
+      min:0,max:(kind==="rep"?99:500),
+      steps:(kind==="rep"?REPSTEPS:KGSTEPS),
+      allLabel:rest>0?("Appliquer aux "+rest+" série"+(rest>1?"s":"")+" suivante"+(rest>1?"s":"")):null,
+      onApply:(v,all)=>{
+        const set=(j,vv)=>{const kk=(kind==="rep"?"srep_":"skg_")+sKey(p,s.sid,x.id,j);
+          vv==null?DEL(kk):S(kk,vv)};
+        set(si,v);
+        if(all)for(let j=si+1;j<allS;j++)set(j,v);
+        renderMain(p);
+      }});
+  });
   pg.querySelectorAll("[data-dur]").forEach(b=>b.onclick=()=>{
     setDayDur(p,s,+b.dataset.dur);renderMain(p)});
   pg.querySelectorAll("[data-ch]").forEach(i=>i.onchange=()=>{
@@ -4050,7 +4227,7 @@ function lastExRecord(p,exId){
    barre olympique, les petits (2, 1, 0,5) pour les halteres reglables et les
    micro-ajustements. */
 const PLATES=[[25,"var(--p25)"],[20,"var(--p20)"],[15,"var(--p15)"],[10,"var(--p10)"],
-  [5,"var(--p5)"],[2.5,"var(--p125)"],[2,"var(--p2)"],[1.25,"var(--p125)"],
+  [5,"var(--p5)"],[2.5,"var(--p25k)"],[2,"var(--p2)"],[1.25,"var(--p125k)"],
   [1,"var(--p1)"],[.5,"var(--p05)"]];
 /* Decompose une charge par cote en disques reels, du plus lourd au plus
    leger. */
@@ -4117,17 +4294,50 @@ function workCard(p,s,x,e,ch,ov,xi,foc){
   h+='</div></div>';
   /* Commandes secondaires sous les deux blocs, alignees a droite. */
   h+='<div class="wacts">'
-    +(!foc&&showPrec?'<span class="mut" style="font-size:.66rem">Préc. '+esc(kg(lu))+'</span>':'')
-    +(!foc?'<button class="mini xs" data-hi="'+xi+'">Courbe</button>':'')
+    /* "Prec." faisait doublon avec l'encart "La derniere fois", qui dit la
+       meme chose en plus lisible. */
+    /* Plus de bouton "Courbe" ici : l'evolution d'une charge se lit dans
+       Suivi, ou elle est comparable aux autres. Pendant la seance, la seule
+       question est la charge du jour. */
     +(ov!=null?'<button class="mini xs on" '+(foc?'id="fra"':'data-ra="'+xi+'"')+'>Auto</button>':'')
     +(e.eq==="pdc"&&LEST_OK[e.id]?'<input type="number" step="0.5" inputmode="decimal" class="lestin" '
       +(foc?'id="flest"':'data-lest="'+xi+'"')+' value="'+(lestOf(p,e)||"")+'" aria-label="Lest ajouté en kg">'
       +'<span class="mut" style="font-size:.66rem">kg de lest</span>':'')
     +'</div>';
-  if(!foc)h+=(vide?'<div class="leg" data-infb="c'+xi+'" hidden style="margin:6px 0 0">'+esc(freeLoadWhy(e))+'</div>':'')
-    +'<div data-hb="'+xi+'" hidden style="margin-top:8px"><canvas class="ch"></canvas></div>';
+  if(!foc)h+=(vide?'<div class="leg" data-infb="c'+xi+'" hidden style="margin:6px 0 0">'+esc(freeLoadWhy(e))+'</div>':'');
   return h;
 }
+/* Feuille de saisie d'une valeur de serie. Un seul composant pour les
+   repetitions et la charge : meme geste, meme rendu, et les increments
+   proposes sont ceux qui existent vraiment (une repetition, une paire de
+   disques). La saisie libre reste possible pour le cas particulier. */
+function openPick(o){
+  const box=document.getElementById("pick");
+  const inp=document.getElementById("pk-i"),st=document.getElementById("pk-st");
+  document.getElementById("pk-t").textContent=o.title;
+  document.getElementById("pk-s").textContent=o.sub||"";
+  document.getElementById("pk-u").textContent=o.unit||"";
+  inp.value=(o.value==null||isNaN(o.value))?"":o.value;
+  inp.step=o.step||1;
+  st.innerHTML=o.steps.map(v=>'<button type="button" class="pkstep" data-pkd="'+v+'">'
+    +(v>0?"+":"−")+String(Math.abs(v)).replace(".",",")+'</button>').join("");
+  const all=document.getElementById("pk-all"),allc=document.getElementById("pk-allc");
+  all.hidden=!o.allLabel;
+  if(o.allLabel){all.querySelector("span").textContent=o.allLabel;allc.checked=false}
+  const clamp=v=>Math.max(o.min,Math.min(o.max,Math.round(v*100)/100));
+  st.querySelectorAll("[data-pkd]").forEach(b=>b.onclick=()=>{
+    inp.value=clamp((parseFloat(inp.value)||0)+parseFloat(b.dataset.pkd));
+  });
+  const close=()=>{box.hidden=true;document.body.classList.remove("pk-on")};
+  box.querySelectorAll("[data-pkclose]").forEach(b=>b.onclick=close);
+  document.getElementById("pk-ok").onclick=()=>{
+    const v=inp.value.trim()===""?null:clamp(parseFloat(inp.value));
+    close();o.onApply(v,o.allLabel?allc.checked:false);
+  };
+  box.hidden=false;document.body.classList.add("pk-on");
+}
+/* Increments de charge : les paires de disques qui existent en salle. */
+const KGSTEPS=[-5,-2.5,-1.25,1.25,2.5,5],REPSTEPS=[-5,-1,1,5];
 /* Detail des disques a charger, en toutes lettres : "20 + 1,25 kg / côté". */
 function barbellDetail(totalKg){
   const bar=20;let per=Math.round(((totalKg-bar)/2)*100)/100;
@@ -4151,13 +4361,25 @@ function loadSVG(eq,totalKg){
   /* Le diametre suit la racine du poids, pas le poids : un 2,5 kg reste un
      disque lisible et un 25 kg reste le plus gros sans ecraser les autres. */
   const plateH=w=>Math.round(Math.max(30,Math.min(70,26+Math.sqrt(w/25)*44)));
-  const plateW=w=>w>=20?17:(w>=15?16:(w>=10?14:(w>=5?12:(w>=2?10:8))));
+  const plateW=w=>w>=20?17:(w>=15?16:(w>=10?14:(w>=5?12:(w>=2?11:9))));
+  /* Le poids est grave dans le disque des qu'il y tient. Sur les disques
+     etroits (2,5 kg et moins) le chiffre est ecrit dans le sens du disque,
+     a la verticale, comme sur les fontes reelles : c'est plus lisible qu'un
+     chiffre horizontal ecrase entre deux bords. */
+  const lab=(xx,W,Hh,v)=>{
+    const t=v%1?String(v).replace(".",","):String(v);
+    const cx=xx+W/2,cy=H/2;
+    if(W>=13&&Hh>=36)
+      return '<text x="'+cx.toFixed(1)+'" y="'+(cy+3.5)+'" text-anchor="middle" font-size="9" font-weight="700" fill="#0009" font-family="IBM Plex Mono, ui-monospace, monospace">'+t+'</text>';
+    if(Hh>=30&&t.length<=3)
+      return '<text x="'+cx.toFixed(1)+'" y="'+cy+'" text-anchor="middle" dominant-baseline="central" font-size="7" font-weight="700" fill="#0009" font-family="IBM Plex Mono, ui-monospace, monospace" transform="rotate(-90 '+cx.toFixed(1)+' '+cy+')">'+t+'</text>';
+    return "";
+  };
   const disc=(x,pl,dir)=>{
     const W=plateW(pl[0]),Hh=plateH(pl[0]),y=(H-Hh)/2;
     const xx=dir<0?x-W:x;
     return {w:W,svg:'<rect x="'+xx.toFixed(1)+'" y="'+y+'" width="'+W+'" height="'+Hh+'" rx="3" fill="'+pl[1]+'" stroke="#0007" stroke-width="1"/>'
-      +(Hh>=36&&W>=12?'<text x="'+(xx+W/2).toFixed(1)+'" y="'+(H/2+3.5)+'" text-anchor="middle" font-size="9" font-weight="700" fill="#0009" font-family="IBM Plex Mono, ui-monospace, monospace">'
-        +(pl[0]%1?String(pl[0]).replace(".",","):pl[0])+'</text>':'')};
+      +lab(xx,W,Hh,pl[0])};
   };
   if(eq==="halteres"){
     /* La charge d'un exercice aux halteres est celle des DEUX mains : on
