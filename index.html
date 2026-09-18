@@ -217,6 +217,8 @@ body[data-sect="nut"] .stabs .stind{background:var(--sec-nut-ac)}
    ================================================================ */
 .setrow.pulse{animation:ckPulse .42s ease}
 @keyframes ckPulse{0%{background:rgba(111,160,122,.20)}100%{background:transparent}}
+.fb .exdone{width:100%;margin:9px 0 0}
+.ffoot .exdone{margin:0 0 9px;background:rgba(111,160,122,.12)}
 .exdone{display:flex;align-items:center;gap:9px;margin:10px 0 0;padding:10px 11px;
 border-radius:11px;background:rgba(111,160,122,.10);border:1px solid rgba(111,160,122,.30);
 animation:exdIn .3s cubic-bezier(.3,1.2,.4,1) both}
@@ -532,8 +534,13 @@ letter-spacing:0;text-transform:none}
 .setrow{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .14s ease,border-color .14s ease}
 .setrow{border:1px solid transparent}
 .setrow:active{background:var(--sf3,#1c2430)}
-.setrow.ok{background:rgba(52,199,89,.10);border-color:rgba(52,199,89,.35)}
+.setrow.ok{background:rgba(111,160,122,.12);border-color:rgba(111,160,122,.38)}
 .setrow.ok .sno{color:var(--ok)}
+/* Une serie validee se lit d'un bloc : les pastilles de repetitions et de
+   charge suivent la ligne au lieu de rester en gris au milieu du vert. */
+.setrow.ok .spill{background:rgba(111,160,122,.10);border-color:rgba(111,160,122,.40)}
+.setrow.ok .spill b{color:var(--ok)}
+.setrow.ok .spill em{color:rgba(111,160,122,.85)}
 /* Case dessinee : 26 px de cible, la meme lecture qu'une case systeme. */
 .ckbox{flex:0 0 auto;width:26px;height:26px;border-radius:7px;border:2px solid var(--line);
 background:var(--sf);position:relative;transition:background .14s ease,border-color .14s ease}
@@ -558,7 +565,7 @@ font-weight:700;color:var(--brand2);margin:0 0 3px}
 .donecnt.ok{color:var(--ok);display:inline-flex;align-items:center;gap:4px}
 .donecnt.ok svg{flex:0 0 auto}
 /* Le bouton "Changer" n'est plus qu'une icone, glissee avant le compteur. */
-.vbtn.ico{padding:0;width:38px;height:38px;justify-content:center;flex:0 0 auto}
+.vbtn.ico{padding:0;width:34px;height:34px;justify-content:center;flex:0 0 auto;margin-left:6px}
 .vbtn.ico svg{margin:0}
 
 /* --- Feuille de saisie d'une valeur (reps, charge) --- */
@@ -607,7 +614,6 @@ font-weight:700;color:var(--mut);font-family:var(--disp)}
 .spill b{font-family:var(--mono);font-size:.92rem;font-weight:600;color:var(--txt);
 font-variant-numeric:tabular-nums}
 .spill:active{border-color:var(--brand)}
-.setrow.ok .spill{background:var(--sf2)}
 .fsrow.cu .spill{height:42px;width:104px;background:var(--sf2);border-color:var(--line)}
 .fsrow.cu .spill b{font-size:1.02rem}
 
@@ -846,8 +852,14 @@ font-size:.8rem}
 /* La place de la barre est reservee en bas de page. */
 body.ab-on{padding-bottom:calc(86px + env(safe-area-inset-bottom) + var(--abh, 70px))}
 /* Trois etages qui ne se recouvrent pas : navigation, barre d'action,
-   minuteur de repos. Le repos se pose au-dessus de la barre, pas dessus. */
-body.ab-on #tmr{bottom:calc(var(--navh, 69px) + var(--abh, 70px))}
+   minuteur de repos. Le repos se pose au-dessus de la barre, pas dessus.
+   Deux precisions : la regle ne vaut que sur l'ecran d'entrainement, seul
+   endroit ou la barre d'action existe (ailleurs le minuteur reprend sa
+   place contre la navigation, au lieu de flotter a la hauteur d'une barre
+   invisible) ; et pose sur la barre, il n'a plus a reserver la marge de
+   securite du bas de l'ecran, qui le faisait paraitre trop haut. */
+body[data-sect] #tmr{bottom:var(--navh, 69px);padding-bottom:10px}
+body[data-sect="train"].ab-on #tmr{bottom:calc(var(--navh, 69px) + var(--abh, 70px))}
 /* Ni la barre ni sa reserve n'ont de sens hors de l'entrainement, ni en
    plein ecran focus. */
 body:not([data-sect="train"]) .actbar{display:none}
@@ -1287,8 +1299,15 @@ font-weight:700;letter-spacing:-.01em;font-size:.9rem;white-space:normal;line-he
 .exo:not(.coll) .acctog .chev{margin-top:2px}
 .donecnt{font-family:var(--mono);font-variant-numeric:tabular-nums}
 /* Le compteur de series reste visible ouvert comme replie, comme sur la
-   planche : c'est le "0 / 4" de la ligne d'exercice. */
-.exo:not(.coll) .eh .donecnt{align-self:flex-start;margin-top:3px}
+   planche : c'est le "0 / 4" de la ligne d'exercice.
+   Ouvert, le titre passe sur deux lignes et tout ce qui l'accompagne se cale
+   sur sa PREMIERE ligne : le compteur, le chevron et le bouton Changer, qui
+   sans cela se centrait sur la hauteur totale du bloc et flottait seul. */
+.exo:not(.coll) .eh{align-items:flex-start}
+.exo:not(.coll) .eh .donecnt{align-self:flex-start;margin-top:5px}
+.exo:not(.coll) .eh .vbtn.ico{align-self:flex-start;margin-top:-1px}
+.exo:not(.coll) .eh .chev{margin-top:5px}
+.vbtn.ico{width:34px;height:34px}
 .exo .body{padding:0 13px 12px}
 .vis{display:flex;gap:8px;align-items:stretch;margin:8px 0}
 .vis .an{flex:1;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;
@@ -1549,6 +1568,23 @@ color:var(--txt);font-size:.86rem;font-family:inherit;width:100%;margin-bottom:1
 cursor:pointer;font-family:inherit;border:1px solid var(--line);background:var(--sf2);color:var(--txt)}
 #mdl .mb button.pr{background:var(--brand);border-color:var(--brand);color:var(--ink)}
 #mdl .mb button.dg{background:0;border-color:var(--dang);color:var(--dang)}
+/* ================================================================
+   ORIENTATION
+   Aucun navigateur mobile ne laisse une page web verrouiller l'orientation
+   sans passer par le plein ecran : sur Safari iOS c'est impossible, point.
+   Ce qu'on peut faire, et qui repond au vrai probleme — la mise en page qui
+   bascule quand on repose le telephone —, c'est garder la colonne verticale
+   quelle que soit l'orientation. En paysage sur un telephone, l'app reste
+   une colonne de proportions portrait, centree. Le manifeste demande par
+   ailleurs le portrait, ce que les navigateurs Android respectent une fois
+   l'app installee.
+   ================================================================ */
+@media (orientation:landscape) and (max-height:520px){
+  .wrap,.page{max-width:430px;margin-left:auto;margin-right:auto}
+  .bnav,.actbar,#tmr{max-width:430px;left:0;right:0;margin-left:auto;margin-right:auto}
+  .daystrip,header{max-width:430px;margin-left:auto;margin-right:auto}
+  #focus{max-width:430px;margin:0 auto}
+}
 </style>
 </head>
 <body>
@@ -3692,6 +3728,19 @@ function renderWiz(p){
    Nutrition. Au premier rendu elle est posee sans transition, sinon elle
    glisserait depuis le bord gauche a chaque changement d'ecran.
    ================================================================ */
+/* Hauteur reelle de la navigation et de la barre d'action : les trois
+   etages du bas (navigation, barre, minuteur) s'empilent sur ces mesures.
+   Elle change avec l'encoche du telephone et avec le filet de progression,
+   donc on la relit a chaque rendu — et sur toutes les sections, pas
+   seulement l'entrainement, sinon le minuteur reste cale sur la hauteur
+   d'une barre qui n'existe plus. */
+function measureBars(){
+  const nv=document.querySelector(".bnav"),ab=document.querySelector(".actbar");
+  const R=document.documentElement.style;
+  if(nv)R.setProperty("--navh",Math.ceil(nv.getBoundingClientRect().height)+"px");
+  R.setProperty("--abh",(ab&&getComputedStyle(ab).display!=="none")
+    ?Math.ceil(ab.getBoundingClientRect().height)+"px":"0px");
+}
 function subTabs(tabs,cur,attr){
   return '<div class="stabs" role="tablist" data-tabs="'+attr+'"><i class="stind"></i>'
     +tabs.map(t=>'<button type="button" role="tab" aria-selected="'+(cur===t[0]?"true":"false")
@@ -3795,6 +3844,7 @@ function renderMain(p){
     SECT=b.dataset.sect;PANEL={};renderMain(p);window.scrollTo(0,0)});
   const pg=document.getElementById("pg");
   if(!(SECT==="train"&&FOCUS[TAB]))closeFocus();
+  requestAnimationFrame(measureBars);
   if(SECT==="train") renderSession(p,sess[TAB]||sess[0],TAB,pg);
   else if(SECT==="hist") renderHist(p,pg);
   else if(SECT==="nut") renderNutri(p,pg);
@@ -4026,6 +4076,9 @@ function renderFocus(p,s,ti,plan,order){
   /* --- pied fixe : le repos puis la validation. Ancres au bas de l'ecran
      pour qu'on n'ait jamais a faire defiler la page entre deux series. --- */
   h+='<div class="ffoot">';
+  /* Exercice boucle : le bandeau se pose juste au-dessus du minuteur et du
+     bouton, la ou l'oeil est deja — pas au milieu de la liste des series. */
+  if(allDone)h+=exDoneHTML(p,s,x,e);
   h+='<div class="frest" id="frest" hidden>'
     +'<div class="frtop"><span class="frv" id="frv">0:00</span>'
     +'<span class="frl">Repos calculé · <b id="frtot">'+mmss(smartRest(p,s,x,e,Math.max(0,cur)))+'</b></span>'
@@ -4279,13 +4332,15 @@ function syncActBar(p,s,ti,plan,fkey){
   const nb=w.firstElementChild;if(!nb)return;
   cur.replaceWith(nb);
   bindActBar(p,s,ti,plan,fkey);
+  /* la barre change de hauteur avec son filet de progression : le minuteur
+     qui se pose dessus doit apprendre la nouvelle mesure tout de suite */
+  requestAnimationFrame(measureBars);
 }
 /* Bandeau de fin d'exercice : ce qui vient d'etre fait, chiffre, avec une
    phrase courte. Il remplace le simple passage au vert de la carte, qui ne
    disait rien de l'effort accompli. */
-function markExDone(p,s,x,card){
-  if(card.querySelector(".exdone"))return;
-  const e=byId(x.id);if(!e)return;
+function exDoneHTML(p,s,x,e){
+  if(!e)return "";
   const all=x.allSets||x.sets;
   let reps=0,vol=0;
   for(let j=0;j<all;j++){
@@ -4297,12 +4352,63 @@ function markExDone(p,s,x,card){
   }
   const det=all+" série"+(all>1?"s":"")+" · "+Math.round(reps)+" répétitions"
     +(vol>0?" · "+String(Math.round(vol)).replace(/\B(?=(\d{3})+(?!\d))/g," ")+" kg soulevés":"");
-  const el=document.createElement("div");
-  el.className="exdone";
-  el.innerHTML='<span class="exdi"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 7"/></svg></span>'
-    +'<span class="exdt"><b>'+esc(pickCheer(CHEER_EX,x.id+"|"+today()))+'</b><span>'+esc(det)+'</span></span>';
-  const body=card.querySelector(".body")||card;
-  body.appendChild(el);
+  return '<div class="exdone"><span class="exdi"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 7"/></svg></span>'
+    +'<span class="exdt"><b>'+esc(pickCheer(CHEER_EX,x.id+"|"+today()))+'</b><span>'+esc(det)+'</span></span></div>';
+}
+function markExDone(p,s,x,card){
+  if(card.querySelector(".exdone"))return;
+  const e=byId(x.id);if(!e)return;
+  const html=exDoneHTML(p,s,x,e);
+  if(!html)return;
+  const w=document.createElement("div");w.innerHTML=html;
+  const el=w.firstElementChild;
+  /* Le bandeau se pose dans la ligne de ressenti, la ou se porte le regard
+     une fois la derniere serie cochee — pas tout en bas de la carte. */
+  const fb=card.querySelector(".fb");
+  if(fb)fb.appendChild(el);
+  else (card.querySelector(".body")||card).appendChild(el);
+}
+/* ================================================================
+   ENCHAINEMENT AUTOMATIQUE
+   Un exercice est fini quand ses series sont cochees ET que les deux
+   questions de bilan ont une reponse. A ce moment la carte se replie, la
+   suivante s'ouvre et l'ecran s'y place : c'est le geste qu'on faisait a
+   la main trois fois par seance.
+   ================================================================ */
+function exFullyDone(p,s,x){
+  const all=x.allSets||x.sets;
+  for(let j=0;j<all;j++)if(!G("chk_"+sKey(p,s.sid,x.id,j),false))return false;
+  const l=p.logs.find(z=>z.k===logKey(s.sid,x.id))||{};
+  return !!(l.ok&&l.diff);
+}
+function advanceIfDone(p,s,ti,plan,order,xi){
+  const pos=order.findIndex(o=>o.xi===xi);
+  if(pos<0)return false;
+  if(!exFullyDone(p,s,order[pos].x))return false;
+  let nxt=-1;
+  for(let k=pos+1;k<order.length;k++){
+    const xx=order[k].x,all=xx.allSets||xx.sets;
+    let n=0;for(let j=0;j<all;j++)if(G("chk_"+sKey(p,s.sid,xx.id,j),false))n++;
+    if(n<all){nxt=k;break}
+  }
+  ACC[ti]=(nxt>=0)?nxt:-1;
+  /* on laisse le bandeau de fin se lire avant de replier */
+  setTimeout(()=>{
+    renderMain(p);
+    requestAnimationFrame(()=>{
+      const cards=document.querySelectorAll("#pg .exo:not(.gear)");
+      const target=(nxt>=0)?cards[nxt]:null;
+      if(target){
+        /* La bande des jours est collante : on se cale sous elle, pas sous
+           le haut de la fenetre, sinon le titre de l'exercice passe dessous. */
+        const ds=document.querySelector(".daystrip");
+        const off=(ds?ds.getBoundingClientRect().bottom:0)+12;
+        const y=target.getBoundingClientRect().top+window.scrollY-Math.max(72,off);
+        window.scrollTo({top:Math.max(0,y),behavior:"smooth"});
+      }
+    });
+  },900);
+  return true;
 }
 function renderSession(p,s,ti,pg){
   const pain=p.cfg.pain||[];
@@ -4610,6 +4716,7 @@ function renderSession(p,s,ti,pg){
       +'<button data-ok="'+ti+"|"+xi+'|non" class="'+(fb.ok==="non"?"non":"")+'">Non</button>'
       +'<span class="lb">Ressenti</span>'
       +DIFFS.map(d=>'<button data-df="'+ti+"|"+xi+"|"+d+'" class="'+(fb.diff===d?"dsel":"")+'">'+DIFFL[d]+'</button>').join("")
+      +(doneN>=allS0?exDoneHTML(p,s,x,e):'')
       +'</div></div>';
     h+='<details class="tech"><summary>Technique &amp; erreurs fréquentes</summary><div class="tb">'
       +'<p><span class="k">Départ :</span> '+esc(e.d.a)+'</p>'
@@ -4669,9 +4776,7 @@ function renderSession(p,s,ti,pg){
      change de hauteur avec l'encoche du telephone, et la barre d'action
      avec son filet de progression. */
   requestAnimationFrame(()=>{
-    const nv=document.querySelector(".bnav"),abx=document.querySelector(".actbar");
-    if(nv)document.documentElement.style.setProperty("--navh",Math.round(nv.getBoundingClientRect().height)+"px");
-    if(abx)document.documentElement.style.setProperty("--abh",Math.round(abx.getBoundingClientRect().height)+"px");
+    measureBars();
   });
   /* le drapeau d'animation ne vaut que pour ce rendu-ci */
   CHGFX=null;
@@ -4782,7 +4887,7 @@ function renderSession(p,s,ti,pg){
       /* ---- Encouragements : trois moments, pas un de plus ---- */
       if(on){
         row.classList.remove("pulse");void row.offsetWidth;row.classList.add("pulse");
-        if(fin&&card)markExDone(p,s,x,card);
+        if(fin&&card){markExDone(p,s,x,card);advanceIfDone(p,s,ti,plan,order,+xi)}
         else if(nDone===allSets-1)toast(pickCheer(CHEER_LAST,x.id+"|"+nDone));
         const tl2=tally(p,s,plan),dn2=tl2.done+tl2.bonus;
         /* la mi-seance ne se signale qu'une fois, au moment exact ou on la franchit */
@@ -4906,13 +5011,15 @@ function renderSession(p,s,ti,pg){
     l.ok=l.ok===v?null:v;saveP();
     b.parentNode.querySelectorAll("[data-ok]").forEach(o=>{
       const ov=o.dataset.ok.split("|")[2];
-      o.className=(l.ok===ov)?(ov==="oui"?"oui":"non"):""})});
+      o.className=(l.ok===ov)?(ov==="oui"?"oui":"non"):""});
+    advanceIfDone(p,s,ti,plan,order,+xi)});
   pg.querySelectorAll("[data-df]").forEach(b=>b.onclick=()=>{
     const [t,xi,v]=b.dataset.df.split("|");const k=logKey(s.sid,plan.items[+xi].id);
     let l=p.logs.find(x=>x.k===k);if(!l){l={k:k};p.logs.push(l)}
     l.diff=l.diff===v?null:v;saveP();
     b.parentNode.querySelectorAll("[data-df]").forEach(o=>{
-      o.className=(l.diff===o.dataset.df.split("|")[2])?"dsel":""})});
+      o.className=(l.diff===o.dataset.df.split("|")[2])?"dsel":""});
+    advanceIfDone(p,s,ti,plan,order,+xi)});
   document.getElementById("snote").onchange=e=>{p.notes[s.sid]=e.target.value;saveP()};
   document.getElementById("reset").onclick=()=>{
     s.exos.forEach(x=>{for(let i=0;i<x.sets;i++){DEL("chk_"+sKey(p,s.sid,x.id,i));DEL("srep_"+sKey(p,s.sid,x.id,i));DEL("skg_"+sKey(p,s.sid,x.id,i))}});
@@ -6441,6 +6548,14 @@ function renderProfil(p,pg){
       if(!ok)return;
       PROFILES=PROFILES.filter(x=>x.id!==p.id);ACTIVE=PROFILES.length?PROFILES[0].id:null;saveP();VIEW="home";render()})});
 }
+
+/* Verrouillage du portrait : accepte par Chrome/Android sur une app
+   installee, ignore partout ailleurs — Safari iOS ne l'expose pas du tout.
+   On tente, on n'insiste pas, et la mise en page paysage prend le relais. */
+try{
+  if(screen&&screen.orientation&&screen.orientation.lock)
+    screen.orientation.lock("portrait").catch(()=>{});
+}catch(e){}
 
 /* ---------------- Démarrage : profil actif rechargé automatiquement ---------------- */
 PROFILES.forEach(p=>{try{migrateKeys(p);pruneChecks(p);migrateBW(p);migrateKcal(p)}catch(e){}});
