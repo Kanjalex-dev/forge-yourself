@@ -161,8 +161,10 @@ body[data-sect="hist"] .card{background:var(--sec-hist-card)}
 body[data-sect="hist"] .card h4{color:var(--sec-hist-ac)}
 /* Sous-menu par onglet de Suivi (Volume / Poids / Calories) — un vrai
    commutateur, comme la maquette, pas une simple suite de cartes. */
-.histabs{display:flex;gap:4px;margin:0 0 12px}
-.histab{flex:1 1 auto;height:34px;border:0;border-radius:8px;background:var(--sec-hist-card);
+/* Deux rangees de trois : la barre ne glisse pas et l'onglet actif se
+   repere sans chercher. */
+.histabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:0 0 12px}
+.histab{height:36px;border:0;border-radius:8px;background:var(--sec-hist-card);
 color:var(--mut);font-family:inherit;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;
 font-weight:700;cursor:pointer}
 .histab.on{background:var(--sec-hist-ac);color:#F2F6FC}
@@ -498,6 +500,110 @@ font-variant-numeric:tabular-nums}
 .setrow.ok .spill{background:var(--sf2)}
 .fsrow.cu .spill{height:42px;width:104px;background:var(--sf2);border-color:var(--line)}
 .fsrow.cu .spill b{font-size:1.02rem}
+
+/* --- Onglet Medailles --- */
+.medhero{display:flex;align-items:center;gap:16px}
+.medring{flex:0 0 auto}
+.medhtx{display:flex;flex-direction:column;gap:3px;min-width:0}
+.medbig{font-family:var(--disp);font-variation-settings:"wdth" 110;font-size:2rem;font-weight:800;
+line-height:1;color:var(--brand)}
+.medbig i{font-style:normal;font-size:1rem;color:var(--mut);font-weight:700}
+.medlast{font-size:.72rem;color:var(--mut)}
+.medlast b{color:var(--txt)}
+.nextb2 .nb2r{display:flex;align-items:center;gap:11px;margin-top:8px}
+.nb2ic{flex:0 0 auto;display:flex;opacity:.75}
+.nb2ic svg{width:34px;height:34px}
+.nb2t{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px}
+.nb2t b{font-size:.86rem;font-weight:700}
+.nb2t small{font-size:.68rem;color:var(--mut)}
+.nb2n{flex:0 0 auto;font-family:var(--mono);font-size:1.05rem;font-weight:700;color:var(--brand)}
+.nb2n i{font-style:normal;font-size:.72rem;color:var(--mut)}
+.medcnt{font-family:var(--mono);font-size:.74rem;color:var(--mut)}
+.medcur{font-family:var(--mono);color:var(--musc-p)}
+/* Les paliers d'une famille, dans l'ordre : on lit la collection comme une
+   frise, pas comme une grille anonyme. */
+.medrow{display:flex;gap:6px;margin-top:10px}
+.medcell{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px;
+padding:9px 3px 8px;border-radius:9px;background:var(--sf2);border:1px solid transparent;opacity:.5}
+.medcell.got{opacity:1;border-color:rgba(245,197,24,.35);background:rgba(245,197,24,.07)}
+.medcell.fresh{border-color:var(--brand);box-shadow:0 0 0 3px rgba(245,197,24,.16)}
+.medcell .medico{display:flex}
+.medcell .medico svg{width:26px;height:26px}
+.medn{font-size:.55rem;line-height:1.15;text-align:center;color:var(--mut);
+overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.medcell.got .medn{color:var(--txt)}
+.medt{font-family:var(--mono);font-size:.6rem;color:var(--mut)}
+.medcell.got .medt{color:var(--brand)}
+
+/* --- Nutrition : figures et cartes illustrees --- */
+.macrow{display:flex;align-items:center;gap:16px;margin:4px 0 2px}
+.macring{flex:0 0 auto}
+.maclist{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:7px}
+.macline{display:flex;align-items:center;gap:8px;font-size:.76rem}
+.macdot{flex:0 0 auto;width:9px;height:9px;border-radius:3px}
+.macn{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.macg{flex:0 0 auto;font-family:var(--mono);font-weight:600;color:var(--txt)}
+.macp{flex:0 0 auto;width:38px;text-align:right;font-family:var(--mono);font-size:.7rem;color:var(--mut)}
+.fico{flex:0 0 auto;color:var(--musc-p)}
+/* Grille des equivalences : dix portions, une maille reguliere. */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:7px;margin:10px 0 4px}
+.pcell{display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;
+padding:11px 6px 10px;border-radius:10px;background:var(--sf2);border:1px solid var(--line)}
+.pcell b{font-family:var(--mono);font-size:.78rem;font-weight:600;color:var(--txt)}
+.pcell span{font-size:.58rem;line-height:1.2;color:var(--mut)}
+/* Journee type */
+.mealgrid{display:flex;flex-direction:column;gap:7px;margin:10px 0}
+.mealc{display:flex;gap:11px;align-items:flex-start;padding:11px;border-radius:10px;
+background:var(--sf2);border:1px solid var(--line)}
+.mealic{flex:0 0 auto;width:36px;height:36px;border-radius:9px;background:var(--sf);
+display:flex;align-items:center;justify-content:center;color:var(--brand)}
+.mealtx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px}
+.mealtx b{font-size:.82rem;font-weight:700}
+.mealkc{font-family:var(--mono);font-size:.64rem;color:var(--brand2)}
+.mealit{font-size:.72rem;color:var(--mut);line-height:1.4}
+/* Conseils */
+.nrow{display:flex;align-items:flex-start;gap:9px;font-size:.76rem;line-height:1.5;margin:7px 0}
+.nrow.water{margin-top:12px;padding:10px 11px;border-radius:10px;background:rgba(45,111,208,.10);
+border:1px solid rgba(45,111,208,.26);align-items:center}
+.nrow.water b{font-family:var(--mono);color:var(--brand2)}
+.ndot{flex:0 0 auto;width:5px;height:5px;border-radius:50%;background:var(--brand);margin-top:8px}
+.ntip{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line)}
+.ntip:first-of-type{border-top:0}
+.ntiptx{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ntiptx b{font-size:.78rem;font-weight:700}
+.ntiptx span{font-size:.74rem;line-height:1.5;color:var(--mut)}
+
+/* --- Equipement de la seance, dans le sous-menu Reglages --- */
+.gearblk{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.gearrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.gearrow:last-of-type{border-bottom:0}
+.geart{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+.geart b{font-size:.78rem;font-weight:650}
+.geart small{font-size:.66rem;color:var(--mut);line-height:1.35}
+.cartb{flex:0 0 auto;width:36px;height:36px;border-radius:9px;border:1px solid var(--line);
+background:var(--sf2);color:var(--sec-shop-ac);display:flex;align-items:center;justify-content:center;
+cursor:pointer;font-family:inherit}
+.cartb:hover,.cartb:focus-visible{border-color:var(--sec-shop-ac)}
+/* --- Boutique : fiches en liste --- */
+.shoplist{display:flex;flex-direction:column;gap:9px}
+.shopcard2{background:var(--sec-shop-card,var(--sf));border:1px solid var(--line);border-radius:12px;padding:13px}
+.shopcard2.hi{border-color:var(--sec-shop-ac);box-shadow:0 0 0 3px rgba(200,170,110,.16)}
+.shc2hd{display:flex;align-items:center;gap:10px}
+.shc2ic{flex:0 0 auto;width:36px;height:36px;border-radius:9px;background:var(--sf2);
+display:flex;align-items:center;justify-content:center;color:var(--sec-shop-ac)}
+.shc2t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.shc2t b{font-size:.88rem;font-weight:700}
+.shc2c{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:var(--mut)}
+.shc2d{font-size:.75rem;line-height:1.5;color:var(--mut);margin:9px 0 11px}
+.shc2go{display:inline-flex;align-items:center;justify-content:center;gap:7px;width:auto;
+text-decoration:none;padding:9px 14px}
+
+.vrow2.shopgo{margin-bottom:14px;border-color:rgba(200,170,110,.32)}
+.vrow2.shopgo .vi{color:var(--sec-shop-ac)}
+.bkbtn{display:inline-flex;align-items:center;gap:5px;background:0;border:0;color:var(--mut);
+font-family:var(--disp);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;
+cursor:pointer;padding:0;margin:0 0 10px}
+.bkbtn:hover,.bkbtn:focus-visible{color:var(--txt)}
 /* Filet d'identite de section et ligne de titre de Suivi (planche A3) */
 .histrule{height:3px;border-radius:2px;background:var(--sec-hist-ac);margin:0 0 14px}
 .shd2{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
@@ -2621,7 +2727,10 @@ function bars(cv,pts,lastCol){
    RENDU
    ================================================================ */
 const APP=document.getElementById("app");
-let VIEW="home",TAB=0,SECT="train",FOCUS={},FOCOVR={},WIZ=0,ACC={},STARTPANEL={},SHOPCAT_SEL="all",HISTAB="vol",BADGEALL=false,
+let VIEW="home",TAB=0,SECT="train",FOCUS={},FOCOVR={},WIZ=0,ACC={},STARTPANEL={},SHOPCAT_SEL="all",
+/* Article de la boutique a mettre en evidence au prochain rendu, quand on
+   y arrive depuis le bloc "Equipement necessaire" de la seance. */
+SHOPGO=null,HISTAB="vol",
 
 /* Exercice dont les disques viennent de changer : l'animation d'apparition
    ne se declenche que sur une action de l'utilisateur, jamais au chargement. */
@@ -2980,13 +3089,16 @@ function renderMain(p){
     +'<button class="bntab'+(SECT==="train"?" on":"")+'" data-sect="train">'+BARICON+'<span>Entraînement</span></button>'
     +'<button class="bntab'+(SECT==="hist"?" on":"")+'" data-sect="hist">'+ICON_HIST+'<span>Suivi</span></button>'
     +'<button class="bntab'+(SECT==="nut"?" on":"")+'" data-sect="nut">'+ICON_NUT+'<span>Nutrition</span></button>'
-    +'<button class="bntab'+(SECT==="shop"?" on":"")+'" data-sect="shop">'+ICON_SHOP+'<span>Boutique</span></button>'
+    /* La Boutique quitte la barre principale : elle n'a rien a faire au
+       meme rang que l'entrainement. Elle vit dans Profil, et garde son fond
+       et son accent propres pour rester identifiable. */
     +'<button class="bntab'+(SECT==="prof"?" on":"")+'" data-sect="prof">'+ICON_PROF+'<span>Profil</span></button>'
     +'</nav>';
   APP.innerHTML=h;
   document.getElementById("switch").onclick=()=>{VIEW="home";render()};
   const mg=document.getElementById("medgo");
-  if(mg)mg.onclick=()=>{SECT="hist";HISTAB="vol";PANEL={};renderMain(p);window.scrollTo(0,0)};
+  /* Le compteur de l'en-tete ouvre directement la collection. */
+  if(mg)mg.onclick=()=>{SECT="hist";HISTAB="med";PANEL={};renderMain(p);window.scrollTo(0,0)};
   APP.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{TAB=+b.dataset.tab;PANEL={};renderMain(p);window.scrollTo(0,0)});
   APP.querySelectorAll("[data-sect]").forEach(b=>b.onclick=()=>{
     SECT=b.dataset.sect;PANEL={};renderMain(p);window.scrollTo(0,0)});
@@ -3397,6 +3509,16 @@ function renderSession(p,s,ti,pg){
       +'<span class="vtx"><b>Changer tous les exercices</b><small>'
       +(varyRank(p,s)?'Variante n° '+varyRank(p,s)+' en cours':'Mêmes schémas moteurs, autres mouvements')+'</small></span>'
       +'<span class="va"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></span></button>';
+    /* Ce qu'il faut dans le sac, deduit du materiel des exercices du jour.
+       Le panier ne vend rien ici : il emmene a la fiche correspondante de
+       la boutique, l'achat se fait chez le marchand. */
+    const gear=sessionGear(p,plan);
+    h+='<div class="gearblk"><span class="srl">Équipement de la séance</span>'
+      +gear.map(g=>'<div class="gearrow"><span class="geart"><b>'+esc(g.n)+'</b><small>'+esc(g.w)+'</small></span>'
+        +(shopByNeed(g.k)?'<button type="button" class="cartb" data-gear="'+g.k+'" aria-label="Voir '+esc(g.n)+' dans la boutique" title="Voir dans la boutique">'
+          +'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="20" r="1.4"/><circle cx="17.5" cy="20" r="1.4"/><path d="M2.5 3.5h2.2l2.3 11.2a1.6 1.6 0 0 0 1.6 1.3h8.6a1.6 1.6 0 0 0 1.6-1.2l1.5-6.3H6"/></svg></button>':'')
+        +'</div>').join("")
+      +'<p class="sf">Serviette et gourde valent pour toutes les séances ; le reste dépend du matériel du jour.</p></div>';
     h+='</div>';
   }
 
@@ -3729,6 +3851,10 @@ function renderSession(p,s,ti,pg){
   });
   pg.querySelectorAll("[data-dur]").forEach(b=>b.onclick=()=>{
     setDayDur(p,s,+b.dataset.dur);renderMain(p)});
+  pg.querySelectorAll("[data-gear]").forEach(b=>b.onclick=()=>{
+    const it=shopByNeed(b.dataset.gear);
+    if(!it)return;
+    SHOPGO=it.id;SHOPCAT_SEL="all";SECT="shop";PANEL={};renderMain(p);window.scrollTo(0,0)});
   pg.querySelectorAll("[data-ch]").forEach(i=>i.onchange=()=>{
     const xi=i.dataset.ch,x=plan.items[+xi],v=i.value.trim();
     if(v===""){delete p.ovr[x.id]}else{
@@ -4032,6 +4158,62 @@ function nutri(p){
 
 /* repartition indicative sur la journee */
 const MEALS=[["Petit-déjeuner",.25],["Déjeuner",.30],["Collation",.15],["Dîner",.30]];
+/* --- Pictogrammes alimentaires ---------------------------------------
+   Dessines a la main, au meme trait que le reste de l'application : deux
+   couleurs, pas de photo, rien a telecharger. Ils servent a reperer une
+   source de proteines d'un coup d'oeil dans une grille, pas a decorer. */
+const FICO={
+  volaille:'<path d="M12.2 11.8a5.8 5.8 0 1 1 8.2-8.2 5.8 5.8 0 0 1-8.2 8.2z"/><path d="M12.2 11.8 9.4 14.6"/><circle cx="7.4" cy="16.6" r="2.4"/><circle cx="5.2" cy="18.8" r="2.4"/>',
+  viande:'<path d="M4.2 10.6C4.2 6.9 7.6 4 11.8 4h2.6c3.7 0 6.6 2.6 6.6 5.9 0 2.8-2.2 5.1-5.1 5.5-1.7.2-3 1.6-3.1 3.3-.1 1.8-1.7 3.3-3.7 3.3-3.3 0-5.9-2.6-5.9-5.8v-1.4"/><path d="M8.4 10.2c1.6-1 3.4-1 5 0"/>',
+  poisson:'<path d="M20.6 12c-2.4 3.5-5.4 5.3-8.6 5.3S6 15.5 3.4 12C6 8.5 8.8 6.7 12 6.7s6.2 1.8 8.6 5.3z"/><path d="M3.4 12 1.2 8.9v6.2L3.4 12z"/><path d="M12 6.9V4.6"/><circle cx="17" cy="11" r=".9"/>',
+  oeuf:'<ellipse cx="9.4" cy="14.2" rx="4.8" ry="6.4"/><ellipse cx="16.6" cy="11.4" rx="3.6" ry="4.8"/>',
+  laitage:'<path d="M6 8h12l-1.2 12.2A2 2 0 0 1 14.8 22H9.2a2 2 0 0 1-2-1.8L6 8z"/><path d="M5 8h14V5.5A1.5 1.5 0 0 0 17.5 4h-11A1.5 1.5 0 0 0 5 5.5V8z"/><path d="M10 12.5v5M14 12.5v5"/>',
+  legumineuse:'<path d="M3.5 11h17a8.5 8.5 0 0 1-8.5 8.5A8.5 8.5 0 0 1 3.5 11z"/><path d="M8 8.2c0-1.4 1.2-1.6 1.2-2.8M12 7.8c0-1.6 1.3-1.8 1.3-3.1M16 8.2c0-1.4 1.2-1.6 1.2-2.8"/>',
+  tofu:'<path d="M12 3 4 7v10l8 4 8-4V7l-8-4z"/><path d="M4 7l8 4 8-4M12 11v10"/>',
+  whey:'<path d="M7 8h10l-.8 12.1A2 2 0 0 1 14.2 22H9.8a2 2 0 0 1-2-1.9L7 8z"/><path d="M6.5 8 8 4.4A2 2 0 0 1 9.9 3h4.2a2 2 0 0 1 1.9 1.4L17.5 8z"/><path d="M8.6 13h6.8"/>',
+  cereale:'<path d="M12 21V9"/><path d="M12 12c0-3-2-5-5-5 0 3 2 5 5 5zM12 12c0-3 2-5 5-5 0 3-2 5-5 5zM12 18c0-3-2-5-5-5 0 3 2 5 5 5zM12 18c0-3 2-5 5-5 0 3-2 5-5 5z"/>',
+  fruit:'<path d="M12 8c-1-2.5-3.2-3.6-5.2-2.8C4.3 6.2 3.5 9.6 5 13.5c1.2 3.1 3.4 5.6 5 5.6M12 8c1-2.5 3.2-3.6 5.2-2.8 2.5 1 3.3 4.4 1.8 8.3-1.2 3.1-3.4 5.6-5 5.6"/><path d="M12 8V4.5M12 4.5c1.6 0 2.6-1 2.8-2.3-1.6-.2-2.6.7-2.8 2.3z"/>',
+  eau:'<path d="M12 3s6 6.4 6 11a6 6 0 0 1-12 0c0-4.6 6-11 6-11z"/><path d="M9 14.5a3 3 0 0 0 3 3"/>'
+};
+function fIco(k,cls){
+  return '<svg class="fico '+(cls||"")+'" width="24" height="24" viewBox="0 0 24 24" fill="none" '
+    +'stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+    +(FICO[k]||"")+'</svg>';
+}
+/* Portions apportant environ 30 g de proteines. Ce sont des reperes de
+   volume, pas une prescription : on veut que l'utilisateur sache a quoi
+   ressemble sa cible dans une assiette. */
+const PRO30=[
+  ["volaille","Blanc de poulet","130 g"],["viande","Bœuf maigre","150 g"],
+  ["poisson","Cabillaud","150 g"],["poisson","Thon","120 g"],
+  ["oeuf","Œufs entiers","5"],["laitage","Skyr / fromage blanc 0 %","300 g"],
+  ["tofu","Tofu ferme","200 g"],["legumineuse","Lentilles cuites","250 g"],
+  ["whey","Whey","1 dose (30 g)"],["volaille","Dinde","140 g"]
+];
+/* Journee type : une illustration d'assemblage, pas un menu a suivre. Trois
+   niveaux selon la cible proteique par repas, pour que l'exemple reste
+   credible a 20 g comme a 45 g. */
+const DAYEX=[
+  {m:"Petit-déjeuner",i:"laitage",lo:["200 g de skyr","40 g de flocons d'avoine","1 fruit"],
+   hi:["300 g de skyr","60 g de flocons d'avoine","1 fruit","20 g d'amandes"]},
+  {m:"Déjeuner",i:"volaille",lo:["120 g de volaille","150 g de riz cuit","légumes à volonté"],
+   hi:["180 g de volaille","200 g de riz cuit","légumes à volonté","1 c. à s. d'huile d'olive"]},
+  {m:"Collation",i:"whey",lo:["1 dose de whey","1 fruit"],
+   hi:["1 dose de whey","2 tranches de pain complet","1 fruit"]},
+  {m:"Dîner",i:"poisson",lo:["130 g de poisson","200 g de pommes de terre","légumes"],
+   hi:["180 g de poisson","300 g de pommes de terre","légumes","1 yaourt"]}
+];
+/* Conseils generaux, ranges par moment plutot qu'en vrac : on cherche la
+   reponse a "je fais quoi autour de ma seance ?", pas une liste de regles. */
+const NTIPS=[
+  {k:"eau",t:"Autour de la séance",d:"Un repas complet 1 h 30 à 2 h avant, avec des glucides et peu de gras. Après, le plus simple marche : des protéines et des glucides dans les deux heures. La fenêtre de 30 minutes est un mythe commercial — c'est le total de la journée qui compte."},
+  {k:"cereale",t:"Répartir les protéines",d:"Trois à quatre prises de 25 à 40 g dans la journée font mieux qu'un seul gros apport le soir. Au-delà d'environ 40 g par prise, le surplus n'accélère rien."},
+  {k:"eau",t:"Hydratation",d:"35 ml par kilo de poids de corps environ, et un demi-litre de plus les jours de séance. Une perte de 2 % du poids en eau coûte déjà de la force."},
+  {k:"fruit",t:"Le reste de l'assiette",d:"Fibres, légumes et fruits ne sont pas des figurants : ils tiennent la satiété à calories égales, ce qui rend un déficit soutenable et un surplus digeste."},
+  {k:"laitage",t:"Compléments",d:"La whey n'est qu'une source de protéines pratique, pas un produit dopant. La créatine monohydrate (3 à 5 g par jour, tous les jours) est le seul complément dont l'effet sur la force est solidement établi. Le reste se discute au cas par cas."},
+  {k:"viande",t:"Ce qui sabote tout",d:"L'alcool compte comme des calories vides et dégrade la récupération et le sommeil. Le manque de sommeil reste le levier le plus sous-estimé : moins de 6 h, la progression s'arrête quel que soit le reste."}
+];
+
 
 function renderNutri(p,pg){
   const c=p.cfg,b=body(p);
@@ -4068,24 +4250,60 @@ function renderNutri(p,pg){
 
   n.warn.forEach(x=>{h+='<div class="alert w"><b>'+esc(x.t)+'</b>'+esc(x.d)+'</div>'});
 
-  h+='<div class="card"><h4>Macronutriments</h4><table class="t">'
+  /* Les trois macros en une figure : un anneau dit la repartition en
+     energie, les trois lignes disent les grammes. Un tableau seul obligeait
+     a calculer de tete la part de chacun. */
+  const kp=n.pro*4,kf=n.fat*9,kc=n.carb*4,kt=Math.max(1,kp+kf+kc);
+  const RR=38,CC=2*Math.PI*RR;
+  const seg=(v,off,col)=>'<circle cx="46" cy="46" r="'+RR+'" fill="none" stroke="'+col+'" stroke-width="11"'
+    +' stroke-dasharray="'+(CC*v/kt).toFixed(1)+' '+(CC*(1-v/kt)).toFixed(1)+'"'
+    +' stroke-dashoffset="'+(-CC*off/kt).toFixed(1)+'" transform="rotate(-90 46 46)"/>';
+  h+='<div class="card"><h4>Macronutriments</h4>'
+   +'<div class="macrow"><svg class="macring" width="92" height="92" viewBox="0 0 92 92" aria-hidden="true">'
+   +'<circle cx="46" cy="46" r="'+RR+'" fill="none" stroke="var(--sf2)" stroke-width="11"/>'
+   +seg(kp,0,"var(--brand)")+seg(kf,kp,"var(--musc-s)")+seg(kc,kp+kf,"var(--brand2)")
+   +'</svg>'
+   +'<div class="maclist">'
+   +[["Protéines",n.pro,kp,"var(--brand)"],["Lipides",n.fat,kf,"var(--musc-s)"],["Glucides",n.carb,kc,"var(--brand2)"]]
+     .map(m=>'<div class="macline"><span class="macdot" style="background:'+m[3]+'"></span>'
+       +'<span class="macn">'+m[0]+'</span>'
+       +'<span class="macg">'+m[1]+' g</span>'
+       +'<span class="macp">'+Math.round(m[2]/kt*100)+' %</span></div>').join("")
+   +'</div></div>'
+   +'<table class="t" style="margin-top:12px">'
    +'<tr><th>Macro</th><th class="r">Par jour</th><th class="r">g/kg</th><th class="r">kcal</th></tr>'
-   +'<tr><td>Protéines</td><td class="r">'+n.pro+' g</td><td class="r">'+(n.pro/n.w).toFixed(1).replace(".",",")+'</td><td class="r">'+(n.pro*4)+'</td></tr>'
-   +'<tr><td>Lipides</td><td class="r">'+n.fat+' g</td><td class="r">'+(n.fat/n.w).toFixed(1).replace(".",",")+'</td><td class="r">'+(n.fat*9)+'</td></tr>'
-   +'<tr><td>Glucides</td><td class="r">'+n.carb+' g</td><td class="r">'+(n.carb/n.w).toFixed(1).replace(".",",")+'</td><td class="r">'+(n.carb*4)+'</td></tr>'
-   +'</table><p class="mut" style="margin-top:8px">Eau : environ '+(n.water/1000).toFixed(1).replace(".",",")+' L par jour, +0,5 L les jours de séance. Fibres : 25 à 30 g.</p></div>';
+   +'<tr><td>Protéines</td><td class="r">'+n.pro+' g</td><td class="r">'+(n.pro/n.w).toFixed(1).replace(".",",")+'</td><td class="r">'+kp+'</td></tr>'
+   +'<tr><td>Lipides</td><td class="r">'+n.fat+' g</td><td class="r">'+(n.fat/n.w).toFixed(1).replace(".",",")+'</td><td class="r">'+kf+'</td></tr>'
+   +'<tr><td>Glucides</td><td class="r">'+n.carb+' g</td><td class="r">'+(n.carb/n.w).toFixed(1).replace(".",",")+'</td><td class="r">'+kc+'</td></tr>'
+   +'</table>'
+   +'<div class="nrow water">'+fIco("eau")+'<span>Environ <b>'+(n.water/1000).toFixed(1).replace(".",",")+' L</b> d\'eau par jour, +0,5 L les jours de séance. Fibres : 25 à 30 g.</span></div>'
+   +'</div>';
 
-  h+='<div class="card"><h4>Répartition type sur la journée</h4><table class="t">'
-   +'<tr><th>Repas</th><th class="r">kcal</th><th class="r">Protéines</th></tr>'
-   +MEALS.map(m=>'<tr><td>'+m[0]+'</td><td class="r">'+Math.round(n.kcal*m[1]/10)*10+'</td><td class="r">'+Math.round(n.pro/4)+' g</td></tr>').join("")
-   +'</table><p class="mut" style="margin-top:8px">Étaler les protéines sur 3 à 4 prises est plus efficace que de tout concentrer sur un repas. La collation tombe bien avant ou après la séance.</p></div>';
+  /* Journee type : quatre repas, ce qu'ils pesent, et un exemple
+     d'assemblage pour donner une idee du volume reel. Ce n'est pas une
+     recette — aucune preparation, seulement des portions a assembler. */
+  const perMeal=Math.round(n.pro/4);
+  const hiLvl=perMeal>=34;
+  h+='<div class="card"><h4>Une journée type</h4>'
+   +'<p class="mut" style="margin-top:-4px">Un exemple d\'assemblage pour visualiser les volumes, pas un menu à suivre. Vise <b class="macg">'+perMeal+' g</b> de protéines par repas.</p>'
+   +'<div class="mealgrid">'
+   +DAYEX.map((d,ix)=>'<div class="mealc"><span class="mealic">'+fIco(d.i)+'</span>'
+     +'<div class="mealtx"><b>'+d.m+'</b>'
+     +'<span class="mealkc">'+Math.round(n.kcal*MEALS[ix][1]/10)*10+' kcal · '+perMeal+' g de protéines</span>'
+     +'<span class="mealit">'+esc((hiLvl?d.hi:d.lo).join(" · "))+'</span></div></div>').join("")
+   +'</div>'
+   +'<p class="mut">Étaler les protéines sur trois à quatre prises est plus efficace que de tout concentrer le soir. La collation se place bien avant ou après la séance.</p></div>';
 
-  h+='<div class="card"><h4>Équivalences — environ 30 g de protéines</h4>'
-   +'<div class="chips">'
-   +['130 g de blanc de poulet','140 g de dinde','150 g de bœuf maigre','150 g de cabillaud','120 g de thon',
-     '300 g de skyr ou fromage blanc 0 %','5 œufs entiers','200 g de tofu ferme','250 g de lentilles cuites',
-     '1 dose de whey (30 g)'].map(x=>'<span class="chip">'+x+'</span>').join("")
-   +'</div><p class="mut">Assembler 3 à 4 de ces portions dans la journée couvre l\'essentiel de la cible protéique.</p></div>';
+  /* Equivalences illustrees : la meme quantite de proteines, dix formes
+     differentes. C'est la carte la plus utile de l'ecran — elle traduit un
+     chiffre abstrait en portions reconnaissables. */
+  const blocs=Math.round(n.pro/30*10)/10;
+  h+='<div class="card"><h4>Environ 30 g de protéines</h4>'
+   +'<p class="mut" style="margin-top:-4px">Ta cible du jour représente <b class="macg">'+String(blocs).replace(".",",")+'</b> de ces portions.</p>'
+   +'<div class="pgrid">'
+   +PRO30.map(f=>'<div class="pcell">'+fIco(f[0])+'<b>'+esc(f[2])+'</b><span>'+esc(f[1])+'</span></div>').join("")
+   +'</div>'
+   +'<p class="mut">Les valeurs sont arrondies : une source animale apporte l\'essentiel des acides aminés en une portion, une source végétale demande de varier dans la journée.</p></div>';
 
   const tips={
     masse:["Le surplus est modeste par construction : prendre plus vite revient surtout à prendre du gras qu\'il faudra reperdre.",
@@ -4100,9 +4318,15 @@ function renderNutri(p,pg){
     sport:["Les glucides priment à l\'approche de l\'échéance : ce sont eux qui tiennent l\'intensité.",
       "Ne cumule pas déficit calorique et semaine de forte charge, la blessure vient de là.",
       "Teste ta stratégie alimentaire à l\'entraînement, jamais le jour J."]}[c.goal];
-  h+='<div class="card"><h4>Conseils pour cet objectif</h4>'
-   +tips.map(t=>'<p>• '+esc(t)+'</p>').join("")
-   +'<p class="mut" style="margin-top:6px">Communs à tous les objectifs : un repas complet 1 h 30 à 2 h avant la séance, du sommeil régulier (le levier le plus sous-estimé), et l\'alcool compté comme des calories vides qui dégradent la récupération.</p></div>';
+  /* Conseils : d'abord ceux qui dependent de l'objectif choisi, puis les
+     regles communes rangees par sujet — on cherche une reponse precise,
+     pas une liste a puces indifferenciee. */
+  h+='<div class="card"><h4>Pour ton objectif · '+esc(GOALS[c.goal].n)+'</h4>'
+   +tips.map(t=>'<div class="nrow goal"><span class="ndot"></span><span>'+esc(t)+'</span></div>').join("")
+   +'</div>';
+  h+='<div class="card"><h4>Les repères qui valent pour tout le monde</h4>'
+   +NTIPS.map(t=>'<div class="ntip">'+fIco(t.k)+'<div class="ntiptx"><b>'+esc(t.t)+'</b><span>'+esc(t.d)+'</span></div></div>').join("")
+   +'</div>';
 
   h+='<div class="card info"><details class="tech">'
    +'<summary>Information — d\'où viennent ces chiffres ?</summary><div class="tb">'
@@ -4582,30 +4806,66 @@ function medIco(earned){
       +'<path d="M15.3 17.5v-2.7a2.7 2.7 0 015.4 0v2.7" fill="none" stroke="var(--line)" stroke-width="2"/>'
       +'</svg>';
 }
-function renderBadgeCard(p){
-  const list=badgeList(p),earned=list.filter(x=>x.earned).length,nb=nextBadge(p);
-  /* Les obtenues d'abord — une vitrine se regarde par ce qu'on y a mis,
-     pas par les cases vides ; la derniere gagnee porte la pastille. */
-  const got=list.filter(x=>x.earned),left=list.filter(x=>!x.earned);
-  const ordered=got.concat(left);
+/* renderBadgeCard a ete remplacee par l'onglet Medailles : la
+   gratification a desormais son ecran, elle n'est plus une carte coincee
+   entre deux graphiques. */
+/* Libelles et sens des quatre familles de medailles. Une famille = une
+   question ("est-ce que je viens ?", "est-ce que j'en fais assez ?"...) ;
+   c'est ce qui rend la collection lisible au lieu d'une grille de jetons. */
+const BCATS={
+  seances:{n:"Assiduité",d:"Séances terminées",u:"séance"},
+  series:{n:"Volume",d:"Séries effectuées au total",u:"série"},
+  prs:{n:"Records",d:"Charges battues sur un mouvement",u:"record"},
+  perfect:{n:"Précision",d:"Séances où tous les objectifs sont atteints",u:"séance"}
+};
+/* Onglet Medailles : la collection complete, famille par famille, avec la
+   progression vers le palier suivant. C'est l'ecran de recompense — il ne
+   reprend aucune carte des autres onglets. */
+function renderMedalTab(p){
+  const list=badgeList(p),st=badgeStats(p);
+  const earned=list.filter(x=>x.earned).length,tot=BADGES.length;
+  const pct=Math.round(earned/tot*100);
   const lastId=p.lastBadge||null;
-  const shown=BADGEALL?ordered:ordered.slice(0,4);
-  let h='<div class="card"><div class="bhd"><h4>Médailles · '+earned+'/'+BADGES.length+'</h4>'
-    +(ordered.length>4?'<button type="button" class="bmore" id="bmore">'+(BADGEALL?"Réduire":"Tout voir")+'</button>':'')
-    +'</div>'
-    +'<div class="badgegrid">'
-    +shown.map(x=>'<div class="bslot'+(x.earned?" got":"")+(x.b.id===lastId?" fresh":"")
-      +'" title="'+esc(x.b.n)+' — '+esc(x.b.d)+'">'
-      +(x.b.id===lastId?'<span class="bnew">Nouvelle</span>':'')
-      +'<span class="bslico">'+medIco(x.earned)+'</span><span class="bslon">'+esc(x.b.n)+'</span></div>').join("")
-    +'</div>';
+  const last=lastId?list.find(x=>x.b.id===lastId):null;
+  const nb=nextBadge(p);
+  /* Anneau de progression : une seule figure pour dire ou en est la
+     collection, plutot qu'un ratio perdu dans un titre. */
+  const R=34,C=2*Math.PI*R;
+  let h='<div class="card medhero">'
+    +'<svg class="medring" width="92" height="92" viewBox="0 0 92 92" aria-hidden="true">'
+    +'<circle cx="46" cy="46" r="'+R+'" fill="none" stroke="var(--sf2)" stroke-width="8"/>'
+    +'<circle cx="46" cy="46" r="'+R+'" fill="none" stroke="var(--brand)" stroke-width="8" stroke-linecap="round"'
+    +' stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C*(1-earned/tot)).toFixed(1)+'"'
+    +' transform="rotate(-90 46 46)"/></svg>'
+    +'<div class="medhtx"><span class="medbig">'+earned+'<i>/'+tot+'</i></span>'
+    +'<span class="vollb">médailles obtenues · '+pct+' %</span>'
+    +(last?'<span class="medlast">Dernière : <b>'+esc(last.b.n)+'</b></span>':'')
+    +'</div></div>';
   if(nb){
-    const cur=badgeStats(p)[nb.cat]||0,pct=Math.min(100,Math.round(cur/nb.thr*100));
-    h+='<div class="nextbadge"><div class="nbtx"><span class="vollb">Prochaine · '+esc(nb.n)+'</span>'
-      +'<div class="prog"><i style="width:'+pct+'%"></i></div></div>'
-      +'<span class="nbnum">'+cur+' / '+nb.thr+'</span></div>';
-  }else h+='<p class="mut" style="margin-top:10px">Toutes les médailles sont débloquées.</p>';
-  h+='</div>';
+    const cur=st[nb.cat]||0,pc=Math.min(100,Math.round(cur/nb.thr*100));
+    h+='<div class="card nextb2"><span class="vollb">Prochaine médaille</span>'
+      +'<div class="nb2r"><span class="nb2ic">'+medIco(false)+'</span>'
+      +'<div class="nb2t"><b>'+esc(nb.n)+'</b><small>'+esc(nb.d)+'</small>'
+      +'<div class="prog"><i style="width:'+pc+'%"></i></div></div>'
+      +'<span class="nb2n">'+cur+'<i>/'+nb.thr+'</i></span></div>'
+      +'<p class="mut">Encore '+(nb.thr-cur)+' '+BCATS[nb.cat].u+(nb.thr-cur>1?"s":"")+'.</p></div>';
+  }else h+='<div class="card"><p class="mut">Toutes les médailles sont débloquées. Il n\'y a plus rien à décrocher : reste la charge.</p></div>';
+  /* La collection, famille par famille : une ligne de paliers ou l'on voit
+     d'un coup ce qui est pris et ce qui reste. */
+  Object.keys(BCATS).forEach(cat=>{
+    const fam=list.filter(x=>x.b.cat===cat);
+    const got=fam.filter(x=>x.earned).length;
+    const cur=st[cat]||0;
+    h+='<div class="card medfam"><div class="bhd"><h4>'+esc(BCATS[cat].n)+'</h4>'
+      +'<span class="medcnt">'+got+'/'+fam.length+'</span></div>'
+      +'<p class="mut" style="margin-top:-4px">'+esc(BCATS[cat].d)+' · <b class="medcur">'+cur+'</b> à ce jour</p>'
+      +'<div class="medrow">'
+      +fam.map(x=>'<div class="medcell'+(x.earned?" got":"")+(x.b.id===lastId?" fresh":"")+'">'
+        +'<span class="medico">'+medIco(x.earned)+'</span>'
+        +'<span class="medn">'+esc(x.b.n)+'</span>'
+        +'<span class="medt">'+x.thr+'</span></div>').join("")
+      +'</div></div>';
+  });
   return h;
 }
 
@@ -4636,17 +4896,21 @@ function renderHist(p,pg){
      comme la maquette Direction A : ce n'est pas qu'un reordonnancement de
      cartes en scroll continu, c'est un vrai commutateur qui montre une
      seule section a la fois. ---------------- */
-  h+='<div class="histabs">'
-    +'<button type="button" class="histab'+(HISTAB==="vol"?" on":"")+'" data-histab="vol">Volume</button>'
-    +'<button type="button" class="histab'+(HISTAB==="poids"?" on":"")+'" data-histab="poids">Poids</button>'
-    +'<button type="button" class="histab'+(HISTAB==="cal"?" on":"")+'" data-histab="cal">Calories</button>'
+  /* Six onglets, deux rangees : tout est visible sans glisser la barre, et
+     chaque onglet repond a une seule question. Aucune carte n'apparait dans
+     deux onglets a la fois. */
+  const HTABS=[["vol","Volume"],["charge","Charges"],["poids","Poids"],
+    ["cal","Calories"],["med","Médailles"],["prog","Programme"]];
+  if(!HTABS.some(t=>t[0]===HISTAB))HISTAB="vol";
+  h+='<div class="histabs" role="tablist">'
+    +HTABS.map(t=>'<button type="button" role="tab" aria-selected="'+(HISTAB===t[0]?"true":"false")
+      +'" class="histab'+(HISTAB===t[0]?" on":"")+'" data-histab="'+t[0]+'">'+t[1]+'</button>').join("")
     +'</div>';
   if(HISTAB==="vol"){
     /* ---------------- Volume, records, medailles ---------------- */
     const volW=weeklyVolume(p),volS=sessionVolume(p);
     const volBySession=volW.length<3&&volS.length>=volW.length;
     vol=volBySession?volS:volW;
-    const recs=records(p);
     /* Carte volume facon maquette : le chiffre du moment en gros et son
        ecart avec la periode precedente en tete, l'histogramme dessous. */
     h+='<div class="card"><h4>Volume '+(volBySession?"par séance":"hebdomadaire")+'</h4>';
@@ -4664,17 +4928,30 @@ function renderHist(p,pg){
       h+='<p class="mut">Séries effectuées × répétitions × charge. C\'est le meilleur indicateur unique de la charge de travail : s\'il stagne plusieurs semaines alors que le poids monte, la progression vient surtout de l\'intensité.</p>';
     }
     h+='</div>';
-    h+=renderBadgeCard(p);
+  }
+  if(HISTAB==="charge"){
+    /* Tout ce qui repond a "est-ce que je pousse plus lourd ?" : les
+       meilleures charges, puis la courbe d'un mouvement precis. */
+    const recs=records(p);
     if(recs.length){
-      /* Records en lignes, comme la maquette : pastille de tendance, nom,
-         date, et la charge en gros — le rouge ne sert qu'a ca. */
       h+='<div class="card"><h4 style="color:var(--pr)">Records personnels</h4>'
-        +recs.slice(0,10).map(r=>'<div class="recrow"><span class="recico">'
+        +'<p class="mut" style="margin-top:-4px">La charge la plus lourde enregistrée sur chaque mouvement.</p>'
+        +recs.slice(0,12).map(r=>'<div class="recrow"><span class="recico">'
           +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 15l6-7 4 4 5-6"/></svg>'
           +'</span><span class="rectx"><b>'+esc(r.n)+'</b><small>'+esc(shortDate(r.date))+'</small></span>'
           +'<span class="reckg">'+kg(r.kg)+'</span></div>').join("")
         +'</div>';
     }
+    h+='<div class="card"><h4>Évolution par exercice</h4>';
+    const ids=Object.keys(p.used);
+    if(!ids.length) h+='<div class="empty">Saisis des charges pendant tes séances pour voir les courbes.</div>';
+    else{
+      h+='<div class="fld"><label>Exercice</label><select id="hsel">'
+        +ids.map(i=>'<option value="'+i+'">'+esc((byId(i)||{n:i}).n)+'</option>').join("")+'</select></div>'
+        +'<canvas class="ch" id="hch"></canvas>'
+        +'<p class="mut">Une charge qui plafonne trois séances de suite n\'appelle pas forcément plus de poids : vérifie d\'abord que les répétitions prescrites sont toutes tenues.</p>';
+    }
+    h+='</div>';
   }
   if(HISTAB==="poids"){
     /* ---------------- Suivi corporel ---------------- */
@@ -4722,6 +4999,7 @@ function renderHist(p,pg){
     h+='</div>';
   }
 
+  if(HISTAB==="prog"){
   const hu=historyUpdate(p,false);
   h+='<div class="card"><h4>Mise à jour du programme</h4>';
   if(!p.hist.length)
@@ -4746,16 +5024,8 @@ function renderHist(p,pg){
   }
   h+='</div>';
 
-  h+='<div class="card"><h4>Charges par exercice</h4>';
-  const ids=Object.keys(p.used);
-  if(!ids.length) h+='<div class="empty">Saisis des charges pendant tes séances pour voir les courbes.</div>';
-  else{
-    h+='<div class="fld"><label>Exercice</label><select id="hsel">'
-      +ids.map(i=>'<option value="'+i+'">'+esc((byId(i)||{n:i}).n)+'</option>').join("")+'</select></div>'
-      +'<canvas class="ch" id="hch"></canvas>';
-  }
-  h+='</div>';
-
+  /* Les seances archivees sont la matiere premiere du recalcul : elles
+     vivent dans le meme onglet que la mise a jour qu'elles alimentent. */
   h+='<h2 class="sc" style="margin-top:18px">Séances archivées</h2>';
   if(!p.hist.length) h+='<div class="empty">Aucune séance archivée. Termine une séance pour la retrouver ici.</div>';
   p.hist.slice(0,25).forEach((r,i)=>{
@@ -4768,12 +5038,12 @@ function renderHist(p,pg){
       +'<button class="mini" data-hdel="'+i+'" style="margin-top:8px;color:var(--dang);border-color:#7f1d1d">Supprimer</button>'
       +'</div>';
   });
+  }
+  if(HISTAB==="med")h+=renderMedalTab(p);
   h+='<div style="height:26px"></div></div>';
   pg.innerHTML=h;
 
   pg.querySelectorAll("[data-histab]").forEach(b=>b.onclick=()=>{HISTAB=b.dataset.histab;renderMain(p)});
-  const bm=document.getElementById("bmore");
-  if(bm)bm.onclick=()=>{BADGEALL=!BADGEALL;renderMain(p)};
   pg.querySelectorAll("[data-hdel]").forEach(x=>x.onclick=()=>{p.hist.splice(+x.dataset.hdel,1);saveP();renderMain(p)});
 
   const hup=document.getElementById("hupd");
@@ -4826,57 +5096,127 @@ function renderHist(p,pg){
    que des chiffres inventes. La boutique ne recommande que du materiel
    generique lie a l'entrainement, jamais un produit qui influerait sur
    le programme ou les stats — elle reste a l'ecart du reste de l'app. */
-const SHOP_CAT={eq:"Équipement",nut:"Nutrition",tex:"Textile"};
+const SHOP_CAT={base:"L'essentiel",eq:"Équipement",nut:"Nutrition"};
+/* Boutique v1 : liens externes vers un seul marchand (Decathlon), qui
+   couvre a la fois l'equipement et la nutrition sportive. Ce sont des URL
+   de categorie et non de reference produit : une reference disparait du
+   catalogue, une categorie non. Aucun lien n'est affilie pour l'instant —
+   tant qu'aucun partenariat n'est signe, on ne le laisse pas entendre.
+   Le champ "need" relie l'article a un besoin de la seance, ce qui permet
+   au bloc "Equipement necessaire" de pointer directement dessus. */
+const SHOP_MERCHANT="Decathlon";
 const SHOP=[
-  {id:"belt",cat:"eq",n:"Ceinture de force cuir 10 mm",d:"Le cuir se forme à ta taille en quelques séances — utile dès que les charges au squat ou au soulevé de terre deviennent sérieuses."},
-  {id:"straps",cat:"eq",n:"Sangles de tirage",d:"Pour ne plus lâcher la barre avant que le dos ait fini de travailler, sur le rowing et le tirage."},
-  {id:"knee",cat:"eq",n:"Genouillères 7 mm",d:"Un peu de soutien et de chaleur sur les séries lourdes de squat — pas un traitement, un confort."},
-  {id:"whey",cat:"nut",n:"Whey protéine, neutre ou aromatisée",d:"Utile pour atteindre l'apport en protéines calculé dans l'onglet Nutrition sans multiplier les repas."},
-  {id:"crea",cat:"nut",n:"Créatine monohydrate",d:"Le complément le mieux documenté pour la force et le volume d'entraînement, à dose stable au quotidien."},
-  {id:"shoes",cat:"tex",n:"Chaussures d'entraînement à semelle plate",d:"Une base stable sous les pieds pour le squat et le soulevé de terre, sans amorti qui absorbe la poussée."}
+  {id:"serviette",cat:"base",need:"serviette",n:"Serviette de sport microfibre",
+   d:"La règle de base en salle : on ne s'assoit pas sur un banc sans poser sa serviette. Sèche vite, tient dans une poche.",
+   u:"https://www.decathlon.fr/vc/serviette-microfibre-sport"},
+  {id:"gourde",cat:"base",need:"gourde",n:"Gourde 750 ml à 1 L",
+   d:"Une séance d'une heure demande à peu près un demi-litre. Une gourde à portée évite les allers-retours à la fontaine entre les séries.",
+   u:"https://www.decathlon.fr/tous-les-sports/fitness-cardio-training/gourdes-de-fitness"},
+  {id:"shaker",cat:"base",need:"shaker",n:"Shaker",
+   d:"Utile seulement si tu prends de la whey ou de la créatine. Sinon, une gourde suffit.",
+   u:"https://www.decathlon.fr/search?Ntt=shaker"},
+  {id:"straps",cat:"eq",need:"straps",n:"Sangles de tirage",
+   d:"Pour que la prise ne lâche pas avant le dos, sur le rowing, le tirage et le soulevé de terre lourd. À réserver aux séries les plus lourdes : sinon la prise ne progresse plus.",
+   u:"https://www.decathlon.fr/tous-les-sports/musculation-cross-training/accessoires-de-tirage-musculation"},
+  {id:"belt",cat:"eq",need:"belt",n:"Ceinture de force",
+   d:"Utile au-delà d'environ 1,2 fois ton poids de corps au squat ou au soulevé de terre. En dessous, elle masque un gainage à construire.",
+   u:"https://www.decathlon.fr/tous-les-sports/musculation-cross-training/ceintures-de-musculation-ceinture-lestee"},
+  {id:"corde",cat:"eq",need:"corde",n:"Corde à sauter",
+   d:"L'échauffement le moins cher et le plus efficace : trois minutes suffisent à monter la température et à réveiller les appuis.",
+   u:"https://www.decathlon.fr/tous-les-sports/musculation-cross-training/corde-a-sauter"},
+  {id:"elast",cat:"eq",need:"elastique",n:"Élastiques de musculation",
+   d:"Pour l'échauffement des épaules, l'assistance aux tractions et le travail à la maison quand la salle saute.",
+   u:"https://www.decathlon.fr/vc/elastique-musculation-pas-cher"},
+  {id:"tapis",cat:"eq",need:"tapis",n:"Tapis de sol",
+   d:"Gainage, étirements, travail au sol : indispensable dès que le programme sort du rack.",
+   u:"https://www.decathlon.fr/tous-les-sports/fitness-cardio-training/tapis-de-sol"},
+  {id:"halteres",cat:"eq",need:"halteres",n:"Haltères réglables",
+   d:"Le seul achat lourd qui vaut le coup pour s'entraîner chez soi : une paire réglable remplace un râtelier entier.",
+   u:"https://www.decathlon.fr/tous-les-sports/musculation-cross-training/halteres-poids"},
+  {id:"whey",cat:"nut",need:"whey",n:"Whey protéine",
+   d:"Une source de protéines pratique, rien de plus. Utile quand la cible calculée dans Nutrition ne passe pas dans les repas — inutile si elle passe.",
+   u:"https://www.decathlon.fr/tous-les-sports/musculation-cross-training/proteines-et-complements-alimentaires"},
+  {id:"crea",cat:"nut",need:"creatine",n:"Créatine monohydrate",
+   d:"3 à 5 g par jour, tous les jours, y compris les jours de repos. C'est le seul complément dont l'effet sur la force est solidement établi.",
+   u:"https://www.decathlon.fr/nutrition-sante/creatine"},
+  {id:"barre",cat:"nut",need:"barre",n:"Barres et collations protéinées",
+   d:"Dépannage pour une prise de protéines quand tu n'as pas de vrai repas sous la main. À traiter comme une solution de secours, pas comme une habitude.",
+   u:"https://www.decathlon.fr/tous-les-sports/nutrition-sante/barres-energetiques-proteinees"}
 ];
+function shopByNeed(k){return SHOP.find(x=>x.need===k)||null}
+/* Equipement a prevoir pour une seance donnee : deduit du materiel des
+   exercices du jour, pas d'une liste figee. Le necessaire d'abord, le
+   confortable ensuite. */
+function sessionGear(p,plan){
+  const eqs={};
+  plan.items.forEach(x=>{const e=byId(x.id);if(e)eqs[e.eq]=true});
+  const out=[{k:"serviette",n:"Serviette",w:"Obligatoire sur les bancs et les machines."},
+             {k:"gourde",n:"Gourde",w:"Environ 0,5 L sur une séance d'une heure."}];
+  if(eqs.barre||eqs.halteres)
+    out.push({k:"straps",n:"Sangles de tirage",w:"Pour les séries lourdes de tirage."});
+  if(eqs.barre)
+    out.push({k:"belt",n:"Ceinture de force",w:"Au-delà de 1,2 × ton poids de corps."});
+  if(eqs.pdc||eqs.elastique)
+    out.push({k:"elastique",n:"Élastiques",w:"Assistance aux tractions, échauffement des épaules."});
+  if(eqs.pdc)
+    out.push({k:"tapis",n:"Tapis de sol",w:"Gainage et travail au sol."});
+  return out;
+}
 function renderShop(p,pg){
-  const rec=records(p)[0];
-  const hero=SHOP[0];
-  let h='<div class="page on"><h2 class="sc">Boutique</h2><p class="scs">Sélection partenaires — liens affiliés.</p>';
-  h+='<div class="shophero">'
-    +'<div class="shopvis"><span class="mut">[ Visuel produit ]</span><span class="shoptag">Lien affilié</span></div>'
-    +'<div class="shopbody">'
-    +'<div class="shopwhy">'+(rec?esc("Parce que tu progresses sur "+rec.n+" — actuellement "+kg(rec.kg)):"Pensé pour accompagner ta progression")+'</div>'
-    +'<div class="shopname">'+esc(hero.n)+'</div>'
-    +'<p class="mut" style="margin:4px 0 10px">'+esc(hero.d)+'</p>'
-    +'<div class="shopbuy"><span class="shopprice">[PRIX] €</span><span class="mut" style="flex:1 1 auto;font-size:.68rem">[PARTENAIRE]</span>'
-    +'<button class="btn sm" data-shopgo="'+hero.id+'">Voir</button></div>'
-    +'</div></div>';
-  h+='<div class="shoptrust"><span class="ti">i</span><span>Je touche une commission sur chaque lien, sans surcoût pour toi. Rien ici n\'entre dans ton programme ni dans tes stats. '
-    +'<a href="#" id="shopcrit">Mes critères →</a></span></div>';
   const cat=SHOPCAT_SEL||"all";
-  h+='<div class="chips">'
+  const list=SHOP.filter(x=>cat==="all"||x.cat===cat);
+  /* La boutique n'est plus un onglet : elle a donc besoin d'un retour. */
+  let h='<div class="page on"><button class="bkbtn" id="shopback">'
+   +'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Profil</button>'
+   +'<h2 class="sc">Boutique</h2>'
+   +'<p class="scs">Le matériel qui sert vraiment, et rien d\'autre. Les liens ouvrent le catalogue '+SHOP_MERCHANT+' dans ton navigateur.</p>';
+  /* On dit exactement ce qu'il en est : aucun partenariat, aucune
+     commission, aucun acces aux donnees d'entrainement. Le jour ou un
+     partenariat existera, cette phrase changera — pas avant. */
+  h+='<div class="infobox"><span class="ibico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></span>'
+   +'<span class="ibtx"><span class="iblbl">Version 1</span>Sélection personnelle, sans partenariat ni commission : les liens renvoient simplement vers '+SHOP_MERCHANT+', qui couvre l\'équipement et la nutrition au même endroit. '
+   +'La boutique n\'a accès ni à ton programme ni à tes charges, et ne s\'ouvre jamais pendant une séance.</span></div>';
+  h+='<div class="chips" style="margin:12px 0 10px">'
     +'<span class="chip tog'+(cat==="all"?" sel":"")+'" data-shopcat="all">Tout</span>'
     +Object.keys(SHOP_CAT).map(k=>'<span class="chip tog'+(cat===k?" sel":"")+'" data-shopcat="'+k+'">'+SHOP_CAT[k]+'</span>').join("")
     +'</div>';
-  const list=SHOP.slice(1).filter(x=>cat==="all"||x.cat===cat);
-  h+='<div class="shopgrid">'+list.map(x=>'<div class="shopcard">'
-    +'<div class="shopvis sm"><span class="mut">[ Visuel ]</span></div>'
-    +'<div class="shopcardb"><div class="shopname sm">'+esc(x.n)+'</div>'
-    +'<span class="shopprice sm">[PRIX] €</span><span class="mut" style="font-size:.62rem;display:block">[PARTENAIRE] · affilié</span></div>'
+  h+='<div class="shoplist">'+list.map(x=>'<div class="shopcard2" id="sh-'+x.id+'">'
+    +'<div class="shc2hd"><span class="shc2ic">'+shopIco(x.cat)+'</span>'
+    +'<div class="shc2t"><b>'+esc(x.n)+'</b><span class="shc2c">'+esc(SHOP_CAT[x.cat])+' · '+SHOP_MERCHANT+'</span></div></div>'
+    +'<p class="shc2d">'+esc(x.d)+'</p>'
+    +'<a class="btn sm shc2go" href="'+x.u+'" target="_blank" rel="noopener noreferrer">Voir chez '+SHOP_MERCHANT
+    +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg></a>'
     +'</div>').join("")+'</div>';
-  h+='<p class="mut" style="margin:14px 0 4px">La Boutique ne s\'ouvre jamais pendant une séance.</p>';
-  h+='</div>';
+  h+='<div style="height:26px"></div></div>';
   pg.innerHTML=h;
   pg.querySelectorAll("[data-shopcat]").forEach(c=>c.onclick=()=>{SHOPCAT_SEL=c.dataset.shopcat;renderMain(p)});
-  pg.querySelectorAll("[data-shopgo]").forEach(b=>b.onclick=()=>toast("Partenariat à intégrer lors de la commercialisation"));
-  const crit=document.getElementById("shopcrit");
-  if(crit)crit.onclick=ev=>{ev.preventDefault();mdOpen({title:"Mes critères de sélection",
-    html:'<p class="mut">Je ne recommande que du matériel que j\'utiliserais moi-même : robuste, simple, sans effet de mode. '
-      +'Aucun produit n\'est mis en avant parce qu\'il paie plus qu\'un autre — la commission ne change jamais le prix que tu payes. '
-      +'La boutique n\'a aucun accès à ton programme, tes charges ou tes séances : elle ne t\'y renvoie jamais pendant l\'entraînement.</p>',
-    ok:"Fermer",noCancel:true,cb:function(){}})};
+  const bk=document.getElementById("shopback");
+  if(bk)bk.onclick=()=>{SECT="prof";renderMain(p);window.scrollTo(0,0)};
+  /* Arrive depuis le bloc "Equipement necessaire" : on met en evidence
+     l'article vise, sinon l'utilisateur atterrit dans une liste sans savoir
+     ce qu'il etait venu chercher. */
+  if(SHOPGO){
+    const el=document.getElementById("sh-"+SHOPGO);
+    if(el){el.classList.add("hi");if(el.scrollIntoView)el.scrollIntoView({block:"center"})}
+    SHOPGO=null;
+  }
+}
+/* Un pictogramme par famille, au meme trait que le reste. */
+function shopIco(cat){
+  const d={base:'<path d="M5 8h14l-1.2 11.2A2 2 0 0 1 15.8 21H8.2a2 2 0 0 1-2-1.8L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+    eq:'<path d="M4 9v6M8 7v10M16 7v10M20 9v6M8 12h8"/>',
+    nut:'<path d="M7 8h10l-.8 12.1A2 2 0 0 1 14.2 22H9.8a2 2 0 0 1-2-1.9L7 8z"/><path d="M6.5 8 8 4.4A2 2 0 0 1 9.9 3h4.2a2 2 0 0 1 1.9 1.4L17.5 8z"/><path d="M8.6 13h6.8"/>'}[cat]||"";
+  return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+d+'</svg>';
 }
 
 function renderProfil(p,pg){
   const c=p.cfg;
   let h='<div class="page on"><h2 class="sc">Profil</h2><p class="scs">Réglages de ce profil uniquement. Les autres profils ne sont pas affectés.</p>';
+  /* Acces a la boutique : une entree, pas un onglet permanent. */
+  h+='<button class="vrow2 shopgo" id="goshop">'
+    +'<span class="vi">'+shopIco("base")+'</span>'
+    +'<span class="vtx"><b>Boutique</b><small>Matériel et nutrition — sélection '+SHOP_MERCHANT+'</small></span>'
+    +'<span class="va"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></span></button>';
   h+='<div class="card"><h4>Identité</h4>'
     +'<div class="fld"><label>Nom</label><input id="p-n" value="'+esc(p.name)+'"></div>'
     +'<div class="row" style="gap:8px"><div class="fld half"><label>Niveau</label>'
@@ -4916,6 +5256,8 @@ function renderProfil(p,pg){
     +'<p class="mut"><b>Transmettre l\'app :</b> envoie le fichier HTML (AirDrop, mail, message) ou son lien. La personne l\'ouvre dans son navigateur, ajoute la page à son écran d\'accueil, crée son propre profil — ses données restent chez elle, aucune ne remonte vers toi.</p></div>';
   h+='<button class="btn d" id="p-del">Supprimer ce profil</button><div style="height:26px"></div></div>';
   pg.innerHTML=h;
+  const gs=document.getElementById("goshop");
+  if(gs)gs.onclick=()=>{SECT="shop";SHOPGO=null;renderMain(p);window.scrollTo(0,0)};
   document.getElementById("p-n").onchange=e=>{p.name=e.target.value.trim()||p.name;saveP();renderMain(p)};
   document.getElementById("p-l").onchange=e=>{c.lvl=+e.target.value;saveP();renderMain(p)};
   document.getElementById("p-d").onchange=e=>{c.dur=+e.target.value;saveP();toast("Format de séance mis à jour");renderMain(p)};
