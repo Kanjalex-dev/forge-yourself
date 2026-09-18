@@ -30,7 +30,10 @@
    chaud (le disque de 15 kg) porte la mise en avant, le reste reste sobre. */
 --bg:#0D1014;--sf:#161B22;--sf2:#1E242E;--sf3:#272F3B;--line:#2C3644;--txt:#E8ECF1;--mut:#8794A6;
 --brand:#F5C518;--brand2:#2D6FD0;--ok:#4ADE80;--warn:#F0A830;--dang:#F2706B;
---pr:#FF5A50;--p25:#E4322B;--p20:#2D6FD0;--p15:#F5C518;--p10:#3FA34D;--p5:#F2F4F7;--p125:#B8BFC9;
+--pr:#FF5A50;--p25:#46566B;--p20:#2D6FD0;--p15:#F5C518;--p10:#3FA34D;--p5:#F2F4F7;--p125:#B8BFC9;
+/* Le 25 kg passe du rouge au graphite : la note de direction artistique
+   reserve le rouge aux records personnels, "plus aucun disque rouge". */
+--p2:#A8B0BA;--p1:#8A93A0;--p05:#7E8794;
 /* Chaque couleur n'a plus qu'un seul sens dans toute l'app : l'or est
    reserve a la charge/l'action/la medaille obtenue, le bleu au temps et a
    l'identite Suivi, le rouge exclusivement aux records. Les muscles ne
@@ -198,6 +201,10 @@ color:var(--txt);font-size:.86rem;font-family:inherit;width:100%;font-variant-nu
 .barbell{display:flex;flex-direction:column;gap:5px;background:var(--sf2);
 border-radius:9px;padding:8px 12px;margin:2px 0 8px}
 .barbell .bbwrap{position:relative;width:100%;height:56px;display:flex;align-items:center}
+/* L'haltere est vu en entier : pas de fut qui file hors champ, et le dessin
+   se centre au lieu d'etre cale a gauche comme la barre. */
+.barbell.db .bbwrap{justify-content:center}
+.barbell.db .bbrod{display:none}
 /* le fut traverse tout le bloc et passe derriere les disques */
 .barbell .bbrod{position:absolute;left:0;right:0;top:50%;height:7px;margin-top:-3.5px;
 border-radius:4px;background:linear-gradient(180deg,#9AA3AF 0 38%,#6B7480 38%)}
@@ -378,16 +385,22 @@ font-size:.62rem;letter-spacing:.06em;text-transform:uppercase}
    en dessous et se referme des que le choix est fait. */
 /* Point d'entree unique des reglages de seance + pastilles d'etat : on voit
    d'un coup d'oeil ce qui s'ecarte de l'habitude, sans rangee de raccourcis. */
-.sbtn{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 13px;
-border-radius:10px;border:1px solid var(--line);background:var(--sf2);color:var(--txt);
-font-family:inherit;font-size:.76rem;font-weight:600;cursor:pointer}
+/* Rangee de tete homogene : meme hauteur, meme fond, meme famille pour les
+   libelles (Archivo en petites capitales) et meme famille pour les chiffres
+   (Plex Mono). Le bouton et les pastilles se lisent comme une seule serie,
+   au lieu d'un bouton en romain suivi de pastilles en machine a ecrire. */
+.sbtn,.stag{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:36px;
+padding:0 11px;border-radius:9px;background:var(--sf2);border:1px solid transparent;
+font-family:var(--disp);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;
+font-weight:700;color:var(--mut);white-space:nowrap}
+.sbtn{border-color:var(--line);color:var(--txt);cursor:pointer}
 .sbtn.on{border-color:var(--brand);color:var(--brand)}
-.sbtn svg{flex:0 0 auto}
-.stag{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);
-font-size:.64rem;color:var(--musc-p);background:var(--sf2);border-radius:7px;padding:7px 9px;
-white-space:nowrap}
-.stag svg{flex:0 0 auto;color:var(--mut)}
+.sbtn svg,.stag svg{flex:0 0 auto;color:var(--mut)}
+.sbtn.on svg{color:var(--brand)}
+.stag b{font-family:var(--mono);font-size:.72rem;font-weight:600;color:var(--musc-p);
+letter-spacing:0;text-transform:none}
 .stag.w{color:var(--warn)}
+.stag.w b{color:var(--warn)}
 /* Filet d'identite de section et ligne de titre de Suivi (planche A3) */
 .histrule{height:3px;border-radius:2px;background:var(--sec-hist-ac);margin:0 0 14px}
 .shd2{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
@@ -510,40 +523,53 @@ min-height:110px;overflow:hidden;padding:6px;margin:8px 0 0}
    comme un seul amas et plus rien ne se detache. */
 .workcard{background:var(--sf2);border:1px solid rgba(245,197,24,.25);border-radius:10px;
 padding:11px 13px 12px;margin:10px 0}
-.workcard .wlbl{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700;
-color:var(--brand);margin-bottom:9px}
-/* Une seule rangee, comme la planche : mannequins a gauche, zone de barre
-   a droite ou le fut passe DERRIERE le selecteur de charge. */
-/* Chaque intitule au-dessus de sa colonne : muscles a gauche, charge a
-   droite — et l'intensite en bout de ligne en mode focus. */
-.workcard .wlbl2{display:flex;align-items:baseline;gap:10px;margin-bottom:8px;
-font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700}
-.workcard .wlbl2 .r{flex:0 0 auto;width:78px;color:var(--mut)}
-.workcard .wlbl2 .l{flex:1 1 auto;color:var(--brand)}
-.workcard .wlbl2 .rm{flex:0 0 auto;color:var(--mut);font-family:var(--mono);
-text-transform:none;letter-spacing:0;font-size:.64rem}
-.workcard .wrow{display:flex;align-items:flex-start;gap:14px;margin-bottom:8px}
-.workcard .mp{flex:0 0 auto;width:78px;display:flex;gap:5px;justify-content:center}
-/* Colonne de droite : la barre, puis le selecteur cale dessous. */
-.workcard .wcol{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:6px}
-.workcard .wcol .cbar.stepper{margin:0;gap:5px;flex-wrap:nowrap}
-.workcard .wcol .stepbtn{width:38px;height:38px}
-.workcard .wcol input.chbig{width:76px;font-size:1.32rem}
-/* Pied de bloc : disques a gauche, commandes secondaires a droite — elles
-   avaient une rangee a elles, qui rallongeait la carte pour rien. */
-.workcard .wfoot{display:flex;align-items:center;justify-content:space-between;gap:10px;
-padding-top:8px;border-top:1px solid rgba(255,255,255,.07);
-font-family:var(--mono);font-size:.68rem;color:var(--musc-p);line-height:1.4}
-.workcard .wfoot .wfd{min-width:0}
-.workcard .wfoot .wfa{flex:0 0 auto;display:flex;align-items:center;gap:6px}
+/* ---------------- Bloc de charge : deux cartes distinctes ----------------
+   Le corps a gauche, la fonte a droite. Ce sont deux natures d'information
+   differentes ; dans un seul cadre, l'oeil devait faire le tri lui-meme.
+   Les deux cartes partagent la meme hauteur, la scene du materiel garde le
+   meme axe quel que soit le nombre de disques, et le selecteur se centre
+   toujours dessous : d'un exercice a l'autre, rien ne bouge. */
+.wsplit{display:flex;align-items:stretch;gap:8px;margin:10px 0 0}
+.wcard{background:var(--sf2);border:1px solid var(--line);border-radius:10px;
+padding:10px 11px 11px;display:flex;flex-direction:column;gap:8px}
+.wcard.mus{flex:0 0 auto;width:112px;align-items:center;text-align:center;padding:10px 8px 11px}
+.wcard.load{flex:1 1 auto;min-width:0;border-color:rgba(245,197,24,.25);align-items:center}
+.wcard .wlbl{font-size:.55rem;letter-spacing:.07em;text-transform:uppercase;font-weight:700;
+color:var(--mut);margin:0;display:flex;align-items:baseline;justify-content:center;gap:8px;
+width:100%;text-align:center}
+.wcard .wlbl.gold{color:var(--brand)}
+.wcard .wlbl .rm{font-family:var(--mono);text-transform:none;letter-spacing:0;
+font-size:.62rem;color:var(--mut)}
+.wcard .mp{display:flex;gap:4px;justify-content:center}
+.wcard .mp svg{width:36px;height:auto}
+/* Scene du materiel : hauteur constante, axe fixe. */
+.wcard .bbscene{width:100%;height:72px;display:flex;align-items:center;justify-content:center}
+.wcard .bbscene .barbell{width:100%;height:100%;background:0;border:0;padding:0;margin:0;gap:0}
+.wcard .bbscene .bbwrap{height:100%}
+.wcard .wnone{font-size:.72rem;color:var(--mut)}
+/* Selecteur centre sous le materiel, dans tous les cas. */
+.wcard.load .cbar.stepper{margin:0;gap:5px;flex-wrap:nowrap;justify-content:center}
+.wcard.load .stepbtn{width:40px;height:40px}
+.wcard.load input.chbig{width:78px;font-size:1.3rem}
+/* Legende d'une ligne, toujours au meme endroit. */
+.wcard .wleg{font-size:.64rem;line-height:1.35;color:var(--mut);text-align:center;margin-top:auto}
+.wcard.mus .wleg{font-size:.6rem;line-height:1.3;overflow-wrap:anywhere}
+.wcard.mus .wlbl{letter-spacing:.05em;line-height:1.25;display:block}
+.wcard .wleg.num{font-family:var(--mono);color:var(--musc-p);font-size:.58rem;
+letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.wacts{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin:7px 0 0;flex-wrap:wrap}
+.wacts .lestin{width:62px;background:var(--sf2);border:1px solid var(--line);border-radius:8px;
+padding:6px 8px;color:var(--txt);font-family:var(--mono);font-size:.74rem}
 .mini.xs{padding:5px 9px;font-size:.64rem}
-.workcard .wfoot.mus{border-top:0;padding-top:6px;font-family:var(--sans);font-size:.68rem;color:var(--mut)}
-.workcard .wfoot .wfd{flex:1 1 auto;min-width:0}
-.workcard .wfoot.mus .wfd{line-height:1.35}
-.workcard .mp{flex:0 0 auto;display:flex;gap:5px}
-.workcard .mp svg{width:34px;height:auto}
-.workcard .barbell{background:none;border:0;padding:0;margin:0;flex:1 1 auto;min-width:0}
-.workcard .cbar.substep{margin-top:6px}
+/* Effet au changement de charge : les disques naissent a leur place, une
+   fois, et seulement quand on a touche le selecteur — jamais au simple
+   affichage de la page. */
+@keyframes discIn{from{opacity:0;transform:scaleY(.7)}to{opacity:1;transform:scaleY(1)}}
+.wsplit.chgfx .bbpl rect,.wsplit.chgfx .bbpl text{transform-box:fill-box;transform-origin:center;
+animation:discIn .18s cubic-bezier(.2,.7,.2,1) both}
+.wsplit.chgfx input.chbig{animation:discIn .14s ease both}
+@media (prefers-reduced-motion:reduce){
+.wsplit.chgfx .bbpl rect,.wsplit.chgfx .bbpl text,.wsplit.chgfx input.chbig{animation:none}}
 .prevrow{font-size:.74rem;color:var(--txt);margin:6px 0 8px;line-height:1.4}
 .prevlbl{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:var(--brand2);margin-right:4px}
 .startzone{margin:16px 0}
@@ -2484,7 +2510,10 @@ function bars(cv,pts,lastCol){
    RENDU
    ================================================================ */
 const APP=document.getElementById("app");
-let VIEW="home",TAB=0,SECT="train",FOCUS={},FOCOVR={},WIZ=0,ACC={},STARTPANEL={},SHOPCAT_SEL="all",HISTAB="vol",BADGEALL=false;
+let VIEW="home",TAB=0,SECT="train",FOCUS={},FOCOVR={},WIZ=0,ACC={},STARTPANEL={},SHOPCAT_SEL="all",HISTAB="vol",BADGEALL=false,
+/* Exercice dont les disques viennent de changer : l'animation d'apparition
+   ne se declenche que sur une action de l'utilisateur, jamais au chargement. */
+CHGFX=null;
 /* Onglet du jour par defaut : on pointe sur la seance prevue aujourd'hui
    plutot que sur le premier jour du programme — mercredi ouvre la seance
    de mercredi, pas systematiquement celle de lundi. */
@@ -3202,14 +3231,14 @@ function renderSession(p,s,ti,pg){
     +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>'
     +'Réglages</button>'
     +'<span class="stag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6M8 7v10M16 7v10M20 9v6M8 12h8"/></svg>'
-    +plan.n+' exos</span>'
+    +'<b>'+plan.n+'</b> exos</span>'
     +'<span class="stag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></svg>'
-    +plan.est+' min</span>'
+    +'<b>'+plan.est+'</b> min</span>'
     +(kcSess!=null?'<span class="stag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s5 4.5 5 9a5 5 0 01-10 0c0-1.8.8-3.4 1.7-4.6.5 1.4 1.4 2.1 2.3 2.1 1 0 1.5-1 1-2.7-.4-1.4-.7-2.6-.5-3.8z"/></svg>'
-      +kcSess+' kcal</span>':'')
-    +(dm!==def?'<span class="stag w">format '+dm+' min</span>':'')
-    +(pain.length?'<span class="stag w">'+pain.length+' zone'+(pain.length>1?"s":"")+'</span>':'')
-    +(varyRank(p,s)?'<span class="stag">variante '+varyRank(p,s)+'</span>':'')
+      +'<b>'+kcSess+'</b> kcal</span>':'')
+    +(dm!==def?'<span class="stag w">format <b>'+dm+'</b> min</span>':'')
+    +(pain.length?'<span class="stag w"><b>'+pain.length+'</b> zone'+(pain.length>1?"s":"")+'</span>':'')
+    +(varyRank(p,s)?'<span class="stag">variante <b>'+varyRank(p,s)+'</b></span>':'')
     +(!p.set.timer?'<span class="stag w">minuteur coupé</span>':'')
     +'</div>';
 
@@ -3404,20 +3433,6 @@ function renderSession(p,s,ti,pg){
     h+='</div>';
     if(x.inPlan&&allS>x.sets)
       h+='<div class="leg">Les séries en pointillé sont retirées par le format du jour — fais-les si tu te sens bien.</div>';
-    if(e.eq==="pdc"&&bwCoef(e)!=null){
-      const bl=bwLoad(p,e,null),lv=lestOf(p,e);
-      h+='<div class="cbar"><label>'+(LEST_OK[e.id]?"Lest ajouté":"Charge effective")+'</label>'
-        +'<button class="ibtn" data-inf="b'+xi+'" aria-label="D\'où vient cette charge" title="D\'où vient cette charge">i</button>'
-        +(LEST_OK[e.id]?'<input type="number" step="0.5" inputmode="decimal" data-lest="'+xi+'" value="'+(lv||"")+'">':'')
-        +'<button class="mini" data-hi="'+xi+'">Courbe</button></div>'
-        +'<div class="leg" data-infb="b'+xi+'" hidden style="margin:-2px 0 8px">'
-        +(bl!=null
-          ?'≈ '+esc(kg(bl))+' déplacés — '+Math.round(bwCoef(e)*100)+' % de ton poids de corps'
-            +(lv?' + '+esc(kg(lv))+' de lest':'')+'. Ordre de grandeur : la part réellement déplacée dépend de tes appuis.'
-          :'Renseigne ton poids dans Nutrition ou un relevé dans Suivi pour que ces séries comptent dans ton volume.')
-        +'</div>'
-        +'<div data-hb="'+xi+'" hidden style="margin-bottom:8px"><canvas class="ch"></canvas></div>';
-    }
     const fb=p.logs.find(l=>l.k===logKey(s.sid,x.id))||{};
     h+='<div class="fb"><span class="lb">Objectif atteint ?</span>'
       +'<button data-ok="'+ti+"|"+xi+'|oui" class="'+(fb.ok==="oui"?"oui":"")+'">Oui</button>'
@@ -3464,6 +3479,8 @@ function renderSession(p,s,ti,pg){
   h+='<button class="btn" id="finish">Terminer la séance et l\'archiver</button>';
   h+='<button class="btn g" id="reset">Réinitialiser cette séance</button><div style="height:26px"></div></div>';
   pg.innerHTML=h;
+  /* le drapeau d'animation ne vaut que pour ce rendu-ci */
+  CHGFX=null;
 
   /* ces deux commandes vivent desormais dans le menu de reglages : elles
      ne sont presentes que lorsqu'il est ouvert. */
@@ -3568,6 +3585,10 @@ function renderSession(p,s,ti,pg){
     const lu=lastUsedKg(p,x.id,today());
     const cur=inp.value.trim()===""?(lu!=null?lu:0):parseFloat(inp.value);
     const nv=Math.max(0,r25(cur+(sign==="-"?-2.5:2.5)));
+    /* l'animation des disques ne se declenche que sur une action de
+       l'utilisateur, jamais au simple affichage de la page : le drapeau est
+       pose ici et consomme par le rendu qui suit. */
+    CHGFX=x.id;
     inp.value=nv;inp.dispatchEvent(new Event("change"))});
   /* Le bouton i ne fait qu'afficher ou masquer son explication : aucun
      rendu de page, rien de persiste. L'etat par defaut reste masque. */
@@ -4025,8 +4046,22 @@ function lastExRecord(p,exId){
    olympique 20 kg) et les dessine, colores selon le code IWF — la donnee
    reelle (quels disques mettre) devient l'image, plutot qu'un decor
    generique. Seulement pertinent sur un exercice a barre libre. */
+/* Gamme complete de disques, du plus lourd au plus leger : les gros pour la
+   barre olympique, les petits (2, 1, 0,5) pour les halteres reglables et les
+   micro-ajustements. */
 const PLATES=[[25,"var(--p25)"],[20,"var(--p20)"],[15,"var(--p15)"],[10,"var(--p10)"],
-  [5,"var(--p5)"],[2.5,"var(--p125)"],[1.25,"var(--p125)"]];
+  [5,"var(--p5)"],[2.5,"var(--p125)"],[2,"var(--p2)"],[1.25,"var(--p125)"],
+  [1,"var(--p1)"],[.5,"var(--p05)"]];
+/* Decompose une charge par cote en disques reels, du plus lourd au plus
+   leger. */
+function plateStack(perSide,min){
+  const out=[];let per=Math.round(perSide*100)/100;
+  PLATES.forEach(pl=>{
+    if(min&&pl[0]<min)return;
+    while(per>=pl[0]-.01){out.push(pl);per=Math.round((per-pl[0])*100)/100}
+  });
+  return out;
+}
 /* Bloc de charge, composant unique utilise par la liste ET le mode focus :
    une seule rangee comme la planche — mannequins a gauche, barre au centre
    dont le fut passe derriere le selecteur de charge pose a droite, puis le
@@ -4038,7 +4073,7 @@ function workCard(p,s,x,e,ch,ov,xi,foc){
   const vide=(ch==null||isNaN(ch));
   const lu=lastUsedKg(p,x.id,today());
   const showPrec=!foc&&lu!=null&&(vide||parseFloat(ch)!==lu);
-  const bbs=(e.eq==="barre"&&!vide)?barbellSVG(ch):"";
+  const bbs=((e.eq==="barre"||e.eq==="halteres")&&!vide)?loadSVG(e.eq,ch):"";
   /* Intitules de la planche : "Charge de travail / Muscles sollicites" dans
      la liste, "Sur la barre" + intensite reelle en mode focus. L'intensite
      n'est affichee que sur les mouvements dont on connait vraiment le 1RM
@@ -4049,17 +4084,24 @@ function workCard(p,s,x,e,ch,ov,xi,foc){
     const rm=(e.ref&&p.cfg.rm)?parseFloat(p.cfg.rm[e.ref]):NaN;
     if(rm>0&&ch!=null&&!isNaN(ch))rmTxt="1RM est. "+kg(rm)+" · "+Math.round(ch/rm*100)+" %";
   }
-  let h='<div class="workcard">'
-    /* Chaque intitule au-dessus de ce qu'il designe : les mannequins sont a
-       gauche, la barre a droite — les deux titres etaient invertis. */
-    +'<div class="wlbl2"><span class="r">Muscles sollicités</span><span class="l">'+(foc?"Sur la barre":"Charge de travail")+'</span>'
+  /* Deux blocs distincts sur la meme ligne — le corps a gauche, la fonte a
+     droite. Ce sont deux informations de nature differente ; les melanger
+     dans un seul cadre obligeait a lire de travers. Chacun garde sa hauteur
+     et son axe, de sorte que la mise en page ne saute pas d'un exercice a
+     l'autre, et le selecteur se centre toujours sous le materiel. */
+  let h='<div class="wsplit'+(CHGFX===x.id?" chgfx":"")+'">'
+    +'<div class="wcard mus"><div class="wlbl">Muscles sollicités</div>'
+    +'<div class="mp">'+muscleSVG(e.prim,e.sec||[],e.id)+'</div>'
+    +'<div class="wleg"><i style="color:var(--musc-p)">■</i> '+esc(e.prim.map(m=>MUS[m]).join(", "))
+    +(e.sec&&e.sec.length?'<br><i style="color:var(--musc-s)">■</i> '+esc(e.sec.map(m=>MUS[m]).join(", ")):'')
+    +'</div></div>'
+    +'<div class="wcard load"><div class="wlbl gold">'+(foc?"Sur la barre":"Charge de travail")
     +(foc&&rmTxt?'<span class="rm">'+esc(rmTxt)+'</span>':'')+'</div>'
-    +'<div class="wrow"><div class="mp">'+muscleSVG(e.prim,e.sec||[],e.id)+'</div>'
-    /* La barre occupe toute la colonne de droite et le selecteur se range
-       juste en dessous, cale sur elle : superposes, ni l'un ni l'autre ne
-       se lisait. */
-    +'<div class="wcol">'
-    +(bbs||'<span class="mut" style="font-size:.72rem">'+(e.eq==="pdc"?"Poids du corps":"Charge libre")+'</span>');
+    /* Scene de hauteur constante : le materiel garde le meme axe quel que
+       soit le nombre de disques. */
+    +'<div class="bbscene">'+(bbs
+      ||'<span class="wnone">'+(e.eq==="pdc"?"Poids du corps"
+        :(e.eq==="machine"||e.eq==="poulie"?"Pile guidée":(e.eq==="elastique"?"Élastique":"Charge libre")))+'</span>')+'</div>';
   if(e.eq!=="pdc"){
     h+='<div class="cbar stepper">'
       +'<button type="button" class="stepbtn" '+idm+' aria-label="Retirer 2,5 kg">−</button>'
@@ -4068,39 +4110,23 @@ function workCard(p,s,x,e,ch,ov,xi,foc){
       +'<button type="button" class="stepbtn" '+idp+' aria-label="Ajouter 2,5 kg">+</button>'
       +'</div>';
   }
+  /* Legende d'une seule ligne sous le selecteur, toujours au meme endroit. */
+  h+='<div class="wleg num">'+(bbs?esc(loadDetail(e.eq,ch))
+    :(e.eq==="pdc"?(bwLoad(p,e,null)!=null?esc("≈ "+kg(bwLoad(p,e,null))+" déplacés"+(lestOf(p,e)?" + "+kg(lestOf(p,e))+" de lest":"")):"poids à renseigner dans Nutrition")
+      :(vide?"charge libre":esc(kg(ch)))))+'</div>';
   h+='</div></div>';
-  /* Pied de bloc : les disques a prendre a gauche, et a droite les commandes
-     secondaires (precedent, courbe, retour au calcul auto) — elles etaient
-     sur une rangee a elles, qui allongeait la carte pour rien. */
-  const acts='<span class="wfa">'
+  /* Commandes secondaires sous les deux blocs, alignees a droite. */
+  h+='<div class="wacts">'
     +(!foc&&showPrec?'<span class="mut" style="font-size:.66rem">Préc. '+esc(kg(lu))+'</span>':'')
     +(!foc?'<button class="mini xs" data-hi="'+xi+'">Courbe</button>':'')
     +(ov!=null?'<button class="mini xs on" '+(foc?'id="fra"':'data-ra="'+xi+'"')+'>Auto</button>':'')
-    +'</span>';
-  if(bbs){
-    /* Les disques a prendre occupent leur ligne entiere — c'est ce qu'on lit
-       en chargeant la barre. Les commandes secondaires descendent sur la
-       ligne des muscles, plus courte, plutot que de couper la premiere. */
-    h+='<div class="wfoot"><span class="wfd">'+esc(barbellDetail(ch))+'</span></div>'
-      +'<div class="wfoot mus"><span class="wfd"><i style="color:var(--musc-p)">■</i> '+esc(e.prim.map(m=>MUS[m]).join(", "))
-      +(e.sec&&e.sec.length?' &nbsp;<i style="color:var(--musc-s)">■</i> '+esc(e.sec.map(m=>MUS[m]).join(", ")):'')
-      +'</span>'+acts+'</div>';
-  }else{
-    h+='<div class="wfoot mus"><span class="wfd"><i style="color:var(--musc-p)">■</i> '+esc(e.prim.map(m=>MUS[m]).join(", "))
-      +(e.sec&&e.sec.length?' &nbsp;<i style="color:var(--musc-s)">■</i> '+esc(e.sec.map(m=>MUS[m]).join(", ")):'')
-      +'</span>'+acts+'</div>';
-  }
+    +(e.eq==="pdc"&&LEST_OK[e.id]?'<input type="number" step="0.5" inputmode="decimal" class="lestin" '
+      +(foc?'id="flest"':'data-lest="'+xi+'"')+' value="'+(lestOf(p,e)||"")+'" aria-label="Lest ajouté en kg">'
+      +'<span class="mut" style="font-size:.66rem">kg de lest</span>':'')
+    +'</div>';
   if(!foc)h+=(vide?'<div class="leg" data-infb="c'+xi+'" hidden style="margin:6px 0 0">'+esc(freeLoadWhy(e))+'</div>':'')
     +'<div data-hb="'+xi+'" hidden style="margin-top:8px"><canvas class="ch"></canvas></div>';
-  if(e.eq==="pdc"&&bwCoef(e)!=null){
-    const bl=bwLoad(p,e,null),lv=lestOf(p,e);
-    h+='<div class="cbar substep"><span class="mut" style="font-size:.7rem">'
-      +(bl!=null?'≈ '+esc(kg(bl))+' déplacés':'Poids du corps')+'</span>'
-      +(LEST_OK[e.id]?'<input type="number" step="0.5" inputmode="decimal" '+(foc?'id="flest"':'data-lest="'+xi+'"')
-        +' value="'+(lv||"")+'" aria-label="Lest ajouté en kg"><span class="mut" style="font-size:.66rem">kg de lest</span>':'')
-      +'</div>';
-  }
-  return h+'</div>';
+  return h;
 }
 /* Detail des disques a charger, en toutes lettres : "20 + 1,25 kg / côté". */
 function barbellDetail(totalKg){
@@ -4108,42 +4134,126 @@ function barbellDetail(totalKg){
   if(!(per>0))return "";
   const out=[];
   PLATES.forEach(pl=>{while(per>=pl[0]-.01){out.push(pl[0]%1?String(pl[0]).replace(".",","):pl[0]);per=Math.round((per-pl[0])*100)/100}});
-  return out.join(" + ")+" kg / côté · barre "+bar+" kg";
+  return out.join(" + ")+" kg/côté · barre "+bar+" kg";
 }
-function barbellSVG(totalKg){
-  const bar=20;
-  let per=Math.round(((totalKg-bar)/2)*100)/100;
-  if(!(per>0))return "";
-  const plates=[];
-  PLATES.forEach(pl=>{while(per>=pl[0]-.01){plates.push(pl);per=Math.round((per-pl[0])*100)/100}});
-  if(!plates.length)return "";
-  /* Proportions de la maquette : la barre occupe la largeur disponible, les
-     disques montent jusqu'aux trois quarts de la hauteur du bloc et gardent
-     leurs rapports de taille reels (un 20 kg fait plus du triple d'un
-     1,25 kg). A ce format on reconnait les disques a prendre sans lire le
-     chiffre, ce qui est tout l'interet du dessin. */
-  const H=78,ROD=7,STEM=22,GAP=3;
-  const pw=w=>w>=20?15:(w>=15?14:(w>=10?12:(w>=5?10:(w>=2.5?8:7))));
-  const ph=w=>Math.round(Math.max(22,Math.min(72,20+w/25*52)));
-  let x=STEM+7;
-  const rects=plates.map(pl=>{
-    const W=pw(pl[0]),Hh=ph(pl[0]),y=(H-Hh)/2;
-    const r='<rect x="'+x+'" y="'+y.toFixed(1)+'" width="'+W+'" height="'+Hh+'" rx="3" fill="'+pl[1]+'" stroke="#0007" stroke-width="1"/>'
-      +(Hh>=34?'<text x="'+(x+W/2)+'" y="'+(H/2+3.5)+'" text-anchor="middle" font-size="9" font-weight="700" fill="#0009" font-family="IBM Plex Mono, ui-monospace, monospace">'
-        +(pl[0]%1?pl[0].toFixed(1).replace(".",","):pl[0])+'</text>':'');
-    x+=W+GAP;return r;
-  }).join("");
-  const w=x+4;
-  /* Le fut de barre est un element a part, etire par la mise en page sur
-     toute la largeur disponible : en SVG il aurait ete mis a l'echelle avec
-     les disques et se serait arrete au tiers du bloc. Les disques, eux,
-     gardent leurs proportions exactes. */
-  const svg='<svg viewBox="0 0 '+w+' '+H+'" preserveAspectRatio="xMinYMid meet" aria-hidden="true" class="bbpl" style="height:100%;width:'+w+'px;max-width:100%">'
-    +'<rect x="'+STEM+'" y="'+(H/2-11)+'" width="5" height="22" rx="2" fill="var(--p125)"/>'
-    +rects+'</svg>';
-  const perSide=plates.reduce((s,pl)=>s+pl[0],0);
+/* Dessin de la charge. Deux materiels, deux dessins :
+   — la BARRE part du bord droit du bloc (elle continue hors champ) et porte
+     ses disques a son extremite gauche, ce qui laisse toute la place au
+     selecteur juste en dessous ;
+   — l'HALTERE est vu en entier, avec ses disques des deux cotes.
+   Quand la charge est trop faible pour porter un disque, on dessine quand
+   meme le materiel nu (barre seule, manche seul) : c'est une information,
+   pas une absence. */
+const BARKG=20,DBKG=2;
+function loadSVG(eq,totalKg){
+  const H=72;
+  if(!(totalKg>=0)||isNaN(totalKg))return "";
+  /* Le diametre suit la racine du poids, pas le poids : un 2,5 kg reste un
+     disque lisible et un 25 kg reste le plus gros sans ecraser les autres. */
+  const plateH=w=>Math.round(Math.max(30,Math.min(70,26+Math.sqrt(w/25)*44)));
+  const plateW=w=>w>=20?17:(w>=15?16:(w>=10?14:(w>=5?12:(w>=2?10:8))));
+  const disc=(x,pl,dir)=>{
+    const W=plateW(pl[0]),Hh=plateH(pl[0]),y=(H-Hh)/2;
+    const xx=dir<0?x-W:x;
+    return {w:W,svg:'<rect x="'+xx.toFixed(1)+'" y="'+y+'" width="'+W+'" height="'+Hh+'" rx="3" fill="'+pl[1]+'" stroke="#0007" stroke-width="1"/>'
+      +(Hh>=36&&W>=12?'<text x="'+(xx+W/2).toFixed(1)+'" y="'+(H/2+3.5)+'" text-anchor="middle" font-size="9" font-weight="700" fill="#0009" font-family="IBM Plex Mono, ui-monospace, monospace">'
+        +(pl[0]%1?String(pl[0]).replace(".",","):pl[0])+'</text>':'')};
+  };
+  if(eq==="halteres"){
+    /* La charge d'un exercice aux halteres est celle des DEUX mains : on
+       dessine donc un haltere, celui d'une main. S'il ne tombe pas sur une
+       combinaison de disques reelle, c'est un haltere fixe : masses pleines
+       plutot que des disques numerotes qui mentiraient sur son montage. */
+    const hand=Math.round((totalKg/2)*100)/100;
+    const per=Math.max(0,Math.round(((hand-DBKG)/2)*100)/100);
+    const st0=plateStack(per);
+    const exact=st0.length&&Math.abs(per-st0.reduce((s,pl)=>s+pl[0],0))<.01;
+    const st=exact?st0:[];
+    if(!exact){
+      /* haltere fixe : deux masses pleines, acier */
+      const HANDLE=44,SL=8,MW=Math.max(13,Math.min(26,10+hand/30*18)),MH=Math.max(30,Math.min(64,26+hand/30*34));
+      const W=160,cx=W/2,my=(H-MH)/2;
+      const svg='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" aria-hidden="true" class="bbpl" style="height:100%;width:100%">'
+        +'<rect x="'+(cx-HANDLE/2)+'" y="'+(H/2-4)+'" width="'+HANDLE+'" height="8" rx="4" fill="#6B7480"/>'
+        +'<rect x="'+(cx-HANDLE/2)+'" y="'+(H/2-4)+'" width="'+HANDLE+'" height="3" rx="1.5" fill="#9AA3AF"/>'
+        +'<rect x="'+(cx-HANDLE/2-SL-MW)+'" y="'+my+'" width="'+MW+'" height="'+MH+'" rx="5" fill="var(--p125)" stroke="#0007"/>'
+        +'<rect x="'+(cx+HANDLE/2+SL)+'" y="'+my+'" width="'+MW+'" height="'+MH+'" rx="5" fill="var(--p125)" stroke="#0007"/>'
+        +'<rect x="'+(cx-HANDLE/2-SL)+'" y="'+(H/2-7)+'" width="'+SL+'" height="14" rx="3" fill="#8A93A0"/>'
+        +'<rect x="'+(cx+HANDLE/2)+'" y="'+(H/2-7)+'" width="'+SL+'" height="14" rx="3" fill="#8A93A0"/>'
+        +(MW>=22?'<text x="'+(cx-HANDLE/2-SL-MW/2)+'" y="'+(H/2+3.5)+'" text-anchor="middle" font-size="9" font-weight="700" fill="#0009" font-family="IBM Plex Mono, ui-monospace, monospace">'
+        +(hand%1?String(hand).replace(".",","):hand)+'</text>':'')
+        +'</svg>';
+      return '<div class="barbell db"><div class="bbwrap">'+svg+'</div></div>';
+    }
+    const HANDLE=44,SL=9;
+    let left="",right="",off=0;
+    st.forEach(pl=>{
+      const dR=disc(0,pl,1);
+      right+='<g transform="translate('+(off).toFixed(1)+',0)">'+dR.svg+'</g>';
+      const dL=disc(0,pl,1);
+      left+='<g transform="translate('+(-off-dL.w).toFixed(1)+',0)">'+dL.svg+'</g>';
+      off+=dR.w+3;
+    });
+    const half=HANDLE/2+SL+off+6;
+    const W=Math.max(120,half*2);
+    const cx=W/2;
+    const svg='<svg viewBox="0 0 '+W.toFixed(0)+' '+H+'" preserveAspectRatio="xMidYMid meet" aria-hidden="true" class="bbpl" style="height:100%;width:100%">'
+      +'<rect x="'+(cx-HANDLE/2)+'" y="'+(H/2-4)+'" width="'+HANDLE+'" height="8" rx="4" fill="#6B7480"/>'
+      +'<rect x="'+(cx-HANDLE/2)+'" y="'+(H/2-4)+'" width="'+HANDLE+'" height="3" rx="1.5" fill="#9AA3AF"/>'
+      +'<rect x="'+(cx-HANDLE/2-SL)+'" y="'+(H/2-9)+'" width="'+SL+'" height="18" rx="3" fill="var(--p125)"/>'
+      +'<rect x="'+(cx+HANDLE/2)+'" y="'+(H/2-9)+'" width="'+SL+'" height="18" rx="3" fill="var(--p125)"/>'
+      +'<g transform="translate('+(cx-HANDLE/2-SL)+',0)">'+left+'</g>'
+      +'<g transform="translate('+(cx+HANDLE/2+SL)+',0)">'+right+'</g>'
+      +'</svg>';
+    return '<div class="barbell db"><div class="bbwrap">'+svg+'</div></div>';
+  }
+  /* Barre : le fut file jusqu'au bord droit, les disques a gauche. */
+  const per=Math.round(((totalKg-BARKG)/2)*100)/100;
+  const st=per>0?plateStack(per):[];
+  const TIP=9;
+  let x=TIP,rects="";
+  /* du plus petit au plus gros en partant de l'exterieur, comme on charge */
+  st.slice().reverse().forEach(pl=>{const d=disc(x,pl,1);rects+=d.svg;x+=d.w+3});
+  const stem=x+2;
+  const W=Math.max(150,stem+60);
+  const svg='<svg viewBox="0 0 '+W.toFixed(0)+' '+H+'" preserveAspectRatio="xMinYMid meet" aria-hidden="true" class="bbpl" style="height:100%;width:'+W.toFixed(0)+'px;max-width:100%">'
+    +'<rect x="0" y="'+(H/2-9)+'" width="'+TIP+'" height="18" rx="3" fill="#5C6470"/>'
+    +rects
+    +'<rect x="'+stem+'" y="'+(H/2-11)+'" width="5" height="22" rx="2" fill="var(--p125)"/>'
+    +'</svg>';
   return '<div class="barbell"><div class="bbwrap"><span class="bbrod"></span>'+svg+'</div></div>';
 }
+/* Compatibilite : les anciens appels dessinent une barre. */
+function barbellSVG(totalKg){return loadSVG("barre",totalKg)}
+/* Detail de la charge en toutes lettres, selon le materiel. */
+function loadDetail(eq,totalKg){
+  if(!(totalKg>=0)||isNaN(totalKg))return "";
+  const lab=st=>st.map(pl=>pl[0]%1?String(pl[0]).replace(".",","):pl[0]).join(" + ");
+  const reste=(per,st)=>{
+    const r=Math.round((per-st.reduce((s,pl)=>s+pl[0],0))*100)/100;
+    return r>0.01?" · "+kg(r)+" non décomposable en disques":"";
+  };
+  if(eq==="halteres"){
+    /* La charge porte sur les deux mains : on annonce l'haltere d'une main,
+       et le total. Les disques ne sont detailles que si la charge tombe sur
+       une combinaison reelle (haltere reglable). */
+    const hand=Math.round((totalKg/2)*100)/100;
+    const per=Math.max(0,Math.round(((hand-DBKG)/2)*100)/100);
+    const st=plateStack(per);
+    const r=Math.round((per-st.reduce((s,pl)=>s+pl[0],0))*100)/100;
+    if(!st.length||r>0.01)return "2 haltères de "+kg(hand)+" = "+kg(totalKg);
+    return lab(st)+" kg/côté · 2 × "+kg(hand)+" = "+kg(totalKg);
+  }
+  /* En dessous du poids de la barre olympique, ce n'est pas une barre de
+     20 kg allegee : c'est une autre barre. On le dit plutot que d'afficher
+     un chiffre faux. */
+  if(totalKg<BARKG)return kg(totalKg)+" — barre plus légère qu'une olympique";
+  const per=Math.round(((totalKg-BARKG)/2)*100)/100;
+  const st=per>0?plateStack(per):[];
+  if(!st.length)return "barre seule · "+kg(BARKG);
+  return lab(st)+" kg/côté · barre "+BARKG+" kg"+reste(per,st);
+}
+function barbellDetail(totalKg){return loadDetail("barre",totalKg)}
 /* Libelle de la pastille de charge, commun a la liste et au mode focus. */
 function loadTxt(p,x,e,ov,ch){
   if(ch!=null&&!isNaN(ch))
