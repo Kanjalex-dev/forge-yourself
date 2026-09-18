@@ -148,8 +148,14 @@ display:flex;align-items:center;justify-content:center;height:12px}
 .dcell.rest .dv{color:#4B5563}
 /* aujourd'hui est toujours reperable, meme quand c'est un jour de repos
    ou qu'on consulte un autre jour : liseré or et initiale en clair. */
-.dcell.tod:not(.on){box-shadow:inset 0 0 0 1.5px var(--brand)}
-.dcell.tod:not(.on) .dl{color:var(--brand)}
+/* Deux choses differentes a dire, deux signes differents : le jour SELECTIONNE
+   porte le cercle de laiton, AUJOURD'HUI porte un point sous son initiale.
+   Le meme cercle pour les deux rendait la bande illisible des qu'on
+   consultait un autre jour que le sien. */
+.dcell.tod:not(.on) .dl{color:var(--brand);position:relative}
+.dcell.tod:not(.on) .dl::after{content:"";position:absolute;left:50%;bottom:-4px;
+width:3px;height:3px;margin-left:-1.5px;border-radius:50%;background:var(--brand)}
+.dcell.tod .dl{position:relative}
 .dcell.on{background:var(--brand)}
 .dcell.on .dl{color:#0B0E12}
 .dcell.on .dv{color:#0B0E12;font-weight:700}
@@ -320,6 +326,12 @@ font-size:2.5rem;font-weight:800;letter-spacing:-.025em;line-height:1.02;color:v
    Jamais d'aplat — l'aplat plein reste la couleur de l'action. */
 .restnos{display:inline-flex;align-items:center;gap:6px;margin-top:8px;
 font-size:.63rem;color:var(--dim)}
+/* Consulter un autre jour que le sien doit se voir : sans cette mention, on
+   croit lire aujourd'hui. */
+.restoth2{display:inline-block;margin-left:8px;padding:2px 7px;border-radius:5px;
+background:var(--sf2);border:1px solid var(--line);font-family:var(--disp);
+font-size:.58rem;letter-spacing:.07em;text-transform:uppercase;font-weight:700;color:var(--mut);
+vertical-align:2px}
 .restnos svg{flex:0 0 auto;color:var(--brand2)}
 .resthero p{margin:12px 0 18px;font-size:.86rem;line-height:1.55;color:var(--mut)}
 .resthero p b{color:var(--txt);font-weight:600}
@@ -340,8 +352,11 @@ font-size:.63rem;color:var(--dim)}
 /* Aujourd'hui sans seance : cercle de laiton, pas de bloc plein — le plein
    reste le marqueur de la seance ouverte. Une activite declaree porte ses
    deux lettres en acier. */
-.dcell.tod.rest{background:var(--sf3);box-shadow:inset 0 0 0 1.5px var(--brand-line,rgba(217,164,65,.34))}
+/* Aujourd'hui sans seance garde un fond releve, mais le cercle reste au jour
+   selectionne : l'aplat plein laiton demeure le marqueur de la seance ouverte. */
+.dcell.tod.rest{background:var(--sf3)}
 .dcell.rest.on{background:var(--sf3);box-shadow:inset 0 0 0 1.5px var(--brand)}
+.dcell.rest.on .dl{color:var(--brand)}
 .dcell.hasact .dv{color:var(--brand2);font-size:.6rem;letter-spacing:.04em}
 .tpane{animation:tpIn .22s ease both}
 @keyframes tpIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
@@ -3448,9 +3463,11 @@ CBSNOOZE=null,
 /* Etat de demarrage retenu au moment ou l'accordeon a choisi son ouverture :
    il ne se rejoue qu'au passage de "pas lancee" a "en cours". */
 ACCRUN={},
-/* Vrai quand l'ecran d'entrainement montre le jour d'aujourd'hui et qu'il n'y
-   a pas de seance prevue. Un tap sur un autre jour le leve. */
-RESTVIEW=false;
+/* Jour de la semaine (0 = lundi) actuellement montre en "jour sans seance",
+   ou null quand c'est une seance qui est ouverte. N'importe quel jour sans
+   seance est consultable, pas seulement aujourd'hui : c'est ce qui permet de
+   comprendre son cadre d'un coup d'oeil. */
+RESTVIEW=null;
 /* Onglet du jour par defaut : on pointe sur la seance prevue aujourd'hui
    plutot que sur le premier jour du programme — mercredi ouvre la seance
    de mercredi, pas systematiquement celle de lundi. */
@@ -3465,28 +3482,38 @@ function todaySess(sess){
    on le dit au lieu d'ouvrir la seance d'un autre jour. */
 function syncToday(p){
   const sess=(p&&p.prog&&p.prog.sessions)||[];
-  if(!sess.length){RESTVIEW=false;TAB=0;return}
+  if(!sess.length){RESTVIEW=null;TAB=0;return}
   const i=todaySess(sess);
-  RESTVIEW=(i<0);
+  const dow=(new Date().getDay()+6)%7;
+  RESTVIEW=(i<0)?dow:null;
   TAB=(i>=0)?i:nextSessIdx(p);
 }
-/* Prochaine seance a partir de demain, en tournant sur la semaine. */
-function nextSessIdx(p){
+/* Prochaine seance apres un jour donne (par defaut aujourd'hui), en tournant
+   sur la semaine. */
+function nextSessIdx(p,from){
   const sess=(p&&p.prog&&p.prog.sessions)||[];
   if(!sess.length)return 0;
-  const dow=(new Date().getDay()+6)%7;
+  const dow=(from==null)?(new Date().getDay()+6)%7:from;
   for(let k=1;k<=7;k++){
     const d=(dow+k)%7,i=sess.findIndex(z=>z.day===d);
     if(i>=0)return i;
   }
   return 0;
 }
-function daysUntilSess(p,idx){
+function daysUntilSess(p,idx,from){
   const sess=(p&&p.prog&&p.prog.sessions)||[];
   if(!sess[idx])return null;
-  const dow=(new Date().getDay()+6)%7;
+  const dow=(from==null)?(new Date().getDay()+6)%7:from;
   for(let k=0;k<=7;k++)if((dow+k)%7===sess[idx].day)return k;
   return null;
+}
+/* Date du jour <d> de la semaine en cours (0 = lundi), en toutes lettres. */
+const MOIS_FR=["janvier","février","mars","avril","mai","juin",
+  "juillet","août","septembre","octobre","novembre","décembre"];
+function weekDate(d){
+  const n=new Date(),dow=(n.getDay()+6)%7;
+  const t=new Date(n.getFullYear(),n.getMonth(),n.getDate()-dow+d);
+  return DAYS_FR[d]+" "+t.getDate()+" "+MOIS_FR[t.getMonth()];
 }
 /* Jours de la semaine en cours (a partir du lundi) ou une seance a deja
    ete archivee : sert a cocher le bandeau des sept jours. */
@@ -3974,15 +4001,14 @@ function renderMain(p){
     for(let d=0;d<7;d++){
       const si=sess.findIndex(z=>z.day===d),isS=si>=0,on=isS&&si===TAB;
       const done=isS&&wdone[d];
-      /* Un jour sans seance reste cliquable quand c'est aujourd'hui : il
-         ramene sur l'ecran du jour. Et s'il porte une activite declaree,
-         la bande le dit — deux lettres suffisent a s'y retrouver. */
+      /* Tout jour sans seance est cliquable, pas seulement aujourd'hui : c'est
+         ce qui permet de comprendre son cadre sans le deduire. Et s'il porte
+         une activite declaree, la bande le dit — deux lettres suffisent. */
       const a=(c.acts&&c.acts[d])||"";
       const isAct=a&&a!=="—"&&a!=="Repos";
-      const isTodayRest=(d===dowNow&&!isS);
-      const cur=isS?(si===TAB&&!RESTVIEW):(d===dowNow&&RESTVIEW);
+      const cur=isS?(si===TAB&&RESTVIEW==null):(RESTVIEW===d);
       h+='<button class="dcell'+(cur?" on":"")+(isS?"":" rest")+(d===dowNow?" tod":"")+(isAct&&!isS?" hasact":"")+'"'
-        +(isS?' data-tab="'+si+'"':(isTodayRest?' data-today="1"':' disabled'))
+        +(isS?' data-tab="'+si+'"':' data-restday="'+d+'"')
         +' aria-label="'+DAYS_FR[d]+' · '+(isS?esc(sess[si].k):(isAct?esc(a):"repos"))+'">'
         +'<span class="dl">'+DAYS_FR[d].charAt(0)+'</span>'
         +'<span class="dv">'+(isS?(done
@@ -4011,16 +4037,16 @@ function renderMain(p){
   /* Choisir un jour a la main sort de l'ecran "aujourd'hui c'est repos" :
      on a demande a voir une seance precise. */
   APP.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{
-    TAB=+b.dataset.tab;RESTVIEW=false;PANEL={};renderMain(p);window.scrollTo(0,0)});
-  /* Revenir sur aujourd'hui depuis la bande des jours. */
-  const tdb=APP.querySelector("[data-today]");
-  if(tdb)tdb.onclick=()=>{syncToday(p);PANEL={};renderMain(p);window.scrollTo(0,0)};
+    TAB=+b.dataset.tab;RESTVIEW=null;PANEL={};renderMain(p);window.scrollTo(0,0)});
+  /* Un jour sans seance ouvre sa propre fiche — aujourd'hui comme un autre. */
+  APP.querySelectorAll("[data-restday]").forEach(b=>b.onclick=()=>{
+    RESTVIEW=+b.dataset.restday;PANEL={};renderMain(p);window.scrollTo(0,0)});
   APP.querySelectorAll("[data-sect]").forEach(b=>b.onclick=()=>{
     SECT=b.dataset.sect;PANEL={};renderMain(p);window.scrollTo(0,0)});
   const pg=document.getElementById("pg");
   if(!(SECT==="train"&&FOCUS[TAB]))closeFocus();
   requestAnimationFrame(measureBars);
-  if(SECT==="train"&&RESTVIEW) renderRest(p,pg);
+  if(SECT==="train"&&RESTVIEW!=null) renderRest(p,pg);
   else if(SECT==="train") renderSession(p,sess[TAB]||sess[0],TAB,pg);
   else if(SECT==="hist") renderHist(p,pg);
   else if(SECT==="nut") renderNutri(p,pg);
@@ -4603,10 +4629,12 @@ function advanceIfDone(p,s,ti,plan,order,xi){
    ================================================================ */
 function renderRest(p,pg){
   document.body.classList.remove("ab-on");
-  const c=p.cfg,dow=(new Date().getDay()+6)%7;
+  const c=p.cfg,today0=(new Date().getDay()+6)%7;
+  const dow=(RESTVIEW==null)?today0:RESTVIEW;
+  const isToday=(dow===today0);
   const act=(c.acts&&c.acts[dow])||"";
   const isAct=act&&act!=="—"&&act!=="Repos";
-  const ni=nextSessIdx(p),nd=daysUntilSess(p,ni);
+  const ni=nextSessIdx(p,dow),nd=daysUntilSess(p,ni,dow);
   const ns=(p.prog.sessions||[])[ni];
   const wdone=weekDoneDays(p);
   const doneW=(p.prog.sessions||[]).filter(z=>wdone[z.day]).length;
@@ -4618,25 +4646,25 @@ function renderRest(p,pg){
     const d=(dow-k+7)%7;
     if((p.prog.sessions||[]).some(z=>z.day===d)){prevDay=d;break}
   }
-  const dts=new Date();
-  const dateTxt=DAYS_FR[dow]+" "+dts.getDate()+" "+["janvier","février","mars","avril","mai","juin",
-    "juillet","août","septembre","octobre","novembre","décembre"][dts.getMonth()];
+  const dateTxt=weekDate(dow)+(isToday?" · aujourd'hui":"");
   /* Phrase du jour : un constat mecanique, jamais un encouragement. */
+  /* Le jour consulte n'est pas forcement aujourd'hui : la phrase se conjugue. */
+  const QUAND=isToday?"aujourd'hui":"ce jour-là";
   let phrase;
   if(isAct){
-    const nxtTomorrow=(nd===1);
-    phrase=nxtTomorrow&&ns
-      ? esc(act)+" aujourd'hui, <b>"+esc(ns.k)+" demain</b> : la séance arrive sur des jambes et un dos reposés. L'ordre est bon."
+    phrase=(nd===1&&ns)
+      ? esc(act)+" "+QUAND+", <b>"+esc(ns.k)+" le lendemain</b> : la séance arrive sur des jambes et un dos reposés. L'ordre est bon."
       : (prevDay!=null
-        ? esc(act)+" aujourd'hui, au lendemain de la séance de "+esc(DAYS_FR[prevDay].toLowerCase())+". Bouger sans charger, c'est ce qu'il fallait."
-        : esc(act)+" aujourd'hui. Pas de musculation prévue : c'est l'activité que tu as déclarée pour ce jour.");
+        ? esc(act)+" "+QUAND+", au lendemain de la séance de "+esc(DAYS_FR[prevDay].toLowerCase())+". Bouger sans charger, c'est ce qu'il fallait."
+        : esc(act)+" "+QUAND+". Pas de musculation prévue : c'est l'activité déclarée pour ce jour.");
   }else{
     phrase=prevDay!=null
-      ? "Pas de séance aujourd'hui, et c'est écrit dans le programme. <b>La charge de "+esc(DAYS_FR[prevDay].toLowerCase())+" travaille pendant que tu ne fais rien.</b>"
-      : "Pas de séance aujourd'hui, et c'est écrit dans le programme. <b>Le repos est ce qui transforme la charge en progrès.</b>";
+      ? "Pas de séance "+QUAND+", et c'est écrit dans le programme. <b>La charge de "+esc(DAYS_FR[prevDay].toLowerCase())+" travaille pendant que tu ne fais rien.</b>"
+      : "Pas de séance "+QUAND+", et c'est écrit dans le programme. <b>Le repos est ce qui transforme la charge en progrès.</b>";
   }
   let h='<div class="page on"><div class="resthero'+(isAct?" act":"")+'">'
     +'<span class="restdate">'+esc(dateTxt)+'</span>'
+    +(isToday?'':'<span class="restoth2">Jour consulté</span>')
     +'<h2>'+(isAct?esc(act):"Repos")+'</h2>'
     +(isAct?'<span class="restnos">'
       +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>'
@@ -4647,7 +4675,9 @@ function renderRest(p,pg){
       +'<button class="vrow2 restnext" id="restgo">'
       +'<span class="vi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6M8 7v10M16 7v10M20 9v6M8 12h8"/></svg></span>'
       +'<span class="vtx"><b>'+esc(DAYS_FR[ns.day])+' — '+esc(ns.k)+'</b>'
-      +'<small>'+ns.exos.length+' exercices · '+(nd===1?"demain":(nd!=null&&nd>1?"dans "+nd+" jours":"aujourd\'hui"))+'</small></span>'
+      +'<small>'+ns.exos.length+' exercices · '+(isToday
+        ?(nd===1?"demain":(nd!=null&&nd>1?"dans "+nd+" jours":"aujourd'hui"))
+        :(nd===1?"le lendemain":(nd!=null&&nd>1?nd+" jours plus tard":"")))+'</small></span>'
       +'<span class="va"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>'
       +'</div>';
   }
@@ -4661,7 +4691,7 @@ function renderRest(p,pg){
   /* Les autres activites declarees n'apparaissent que si elles disent quelque
      chose que la bande des sept jours ne dit pas deja : leur place dans la
      semaine. Sur un jour de repos pur, la bande suffit. */
-  if(isAct){
+  {
     const others=[];
     for(let d=0;d<7;d++){
       if(d===dow)continue;
@@ -4683,7 +4713,7 @@ function renderRest(p,pg){
   h+='<div style="height:26px"></div></div>';
   pg.innerHTML=h;
   const g=document.getElementById("restgo");
-  if(g)g.onclick=()=>{RESTVIEW=false;TAB=ni;renderMain(p);window.scrollTo(0,0)};
+  if(g)g.onclick=()=>{RESTVIEW=null;TAB=ni;renderMain(p);window.scrollTo(0,0)};
 }
 function renderSession(p,s,ti,pg){
   const pain=p.cfg.pain||[];
