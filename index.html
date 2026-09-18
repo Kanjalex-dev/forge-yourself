@@ -1579,6 +1579,18 @@ cursor:pointer;font-family:inherit;border:1px solid var(--line);background:var(-
    ailleurs le portrait, ce que les navigateurs Android respectent une fois
    l'app installee.
    ================================================================ */
+#portlock{display:none}
+body.lockport #portlock{position:fixed;inset:0;z-index:70;background:var(--bg);
+align-items:center;justify-content:center;padding:24px;text-align:center}
+@media (orientation:landscape) and (max-height:520px){
+  body.lockport #portlock{display:flex}
+  body.lockport>*:not(#portlock){visibility:hidden}
+}
+#portlock .plbox{display:flex;flex-direction:column;align-items:center;gap:9px;max-width:330px}
+#portlock svg{color:var(--brand)}
+#portlock b{font-family:var(--disp);font-variation-settings:"wdth" 108;font-size:1.1rem;font-weight:800}
+#portlock span{font-size:.78rem;line-height:1.5;color:var(--mut)}
+#portlock em{font-style:normal;font-size:.68rem;color:var(--dim)}
 @media (orientation:landscape) and (max-height:520px){
   .wrap,.page{max-width:430px;margin-left:auto;margin-right:auto}
   .bnav,.actbar,#tmr{max-width:430px;left:0;right:0;margin-left:auto;margin-right:auto}
@@ -1592,6 +1604,18 @@ cursor:pointer;font-family:inherit;border:1px solid var(--line);background:var(-
 <div id="tmr"><span class="v" id="tmrv">0:00</span><span class="l" id="tmrl">Repos</span>
 <button id="tmrp">+30 s</button><button id="tmrs">Stop</button></div>
 <div id="tst"></div>
+<!-- Ecran vertical : aucun navigateur mobile ne laisse une page web
+     verrouiller l'orientation sans plein ecran, et Safari iOS ne l'expose
+     pas du tout. A defaut de l'empecher, on refuse la mise en page paysage
+     et on le dit — l'app se tient debout, et rien ne se reorganise dans le
+     dos de l'utilisateur. Se desactive dans Profil > Séance. -->
+<div id="portlock" aria-hidden="true">
+<div class="plbox">
+<svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M10.7 18.6h2.6"/><path d="M19.5 7.2a8 8 0 0 1 .3 5.6"/><path d="M4.5 7.2a8 8 0 0 0-.3 5.6"/></svg>
+<b>Forge se tient à la verticale</b>
+<span>L'écran est pensé en hauteur : séries, charges et disques s'y lisent d'un coup. Remets le téléphone droit.</span>
+<em>Tu peux autoriser le paysage dans Profil › Séance.</em>
+</div></div>
 <div id="focus"></div>
 <!-- Feuille de saisie d'une valeur de serie : un tap sur une pastille
      l'ouvre, on ajuste au pouce sur de vrais increments, et on peut
@@ -1630,6 +1654,16 @@ function esc(s){return(s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
 function today(){return new Date().toISOString().slice(0,10)}
 function r25(v){return Math.round(v/2.5)*2.5}
+/* Pas des boutons + et − de la carte de charge. Sur une barre, 2 kg est une
+   paire de disques de 1 kg ; sur un haltere, la charge lue est celle d'un
+   seul haltere et le demi-kilo existe. Le pas sert aussi de grille
+   d'arrondi : sans cela une charge de 45 kg augmentee de 2 retombait sur
+   47,5 par l'arrondi aux 2,5 kg. */
+function chStep(e){return (e&&e.eq==="halteres")?.5:2}
+/* On ajoute le pas a la valeur courante, sans la ramener sur une grille :
+   45 + 2 fait 47, pas 48. L'arrondi ne sert qu'a effacer les poussieres de
+   virgule flottante. */
+function rgrid(v){return Math.round(v*100)/100}
 function kg(v){return(Math.round(v*10)/10).toString().replace(/\.0$/,"").replace(".",",")+" kg"}
 function mmss(s){const m=Math.floor(s/60),r=s%60;return m+":"+(r<10?"0":"")+r}
 function epley(w,r){return w*(1+r/30)}
@@ -2127,7 +2161,7 @@ function newProfile(name){
       rm:{dc:"",squat:"",sdt:"",row:""},days:[0,2,4],acts:{},must:[],excl:[],
       dur:60,pain:[],body:{sex:"",age:"",ht:"",wt:"",act:"sed"}},
     prog:null,logs:[],hist:[],used:{},ovr:{},notes:{},blog:[],
-    set:{timer:true,sound:true,vib:true},wizStep:0,done:false};
+    set:{timer:true,sound:true,vib:true,portrait:true},wizStep:0,done:false};
   PROFILES.push(p);ACTIVE=p.id;saveP();return p;
 }
 
@@ -3734,6 +3768,12 @@ function renderWiz(p){
    donc on la relit a chaque rendu — et sur toutes les sections, pas
    seulement l'entrainement, sinon le minuteur reste cale sur la hauteur
    d'une barre qui n'existe plus. */
+/* Par defaut l'app se tient verticale : les profils crees avant ce reglage
+   n'ont pas la cle, et l'absence vaut oui. */
+function portraitOn(p){return !p||!p.set||p.set.portrait!==false}
+function applyPortrait(p){
+  document.body.classList.toggle("lockport",portraitOn(p));
+}
 function measureBars(){
   const nv=document.querySelector(".bnav"),ab=document.querySelector(".actbar");
   const R=document.documentElement.style;
@@ -3777,6 +3817,7 @@ function renderMain(p){
      jamais une autre identite) : on le porte sur le body pour que la nav
      basse et le reste de la page suivent d'un seul attribut. */
   document.body.dataset.sect=SECT;
+  applyPortrait(p);
   /* En-tete : le compteur de medailles remplace la pastille de niveau — le
      niveau est une donnee figee qu'on retrouve dans Profil, la medaille est
      la recompense vivante que la maquette met a droite du titre, et elle
@@ -4175,14 +4216,22 @@ function renderFocus(p,s,ti,plan,order){
       if(k>=0)arr[k].kg=parseFloat(v);else arr.push({date:d,kg:parseFloat(v)});
       p.used[x.id]=arr;
     }
+    /* comme dans la liste : les series non validees reprennent la charge
+       de l'exercice au lieu de garder l'ancienne, heritee */
+    for(let j=0;j<allS;j++){
+      if(G("chk_"+sKey(p,s.sid,x.id,j),false))continue;
+      DEL("skg_"+sKey(p,s.sid,x.id,j));
+    }
     saveP();toast("Charge enregistrée");renderMain(p)};
   if(fc)fc.onchange=()=>applyCh(fc.value.trim());
+  const fstp=chStep(e);
   const step=d=>{
     const lu=lastUsedKg(p,x.id,today());
     const base=(fc&&fc.value.trim()!=="")?parseFloat(fc.value):(lu!=null?lu:0);
-    applyCh(String(Math.max(0,r25(base+d))))};
-  const fm=document.getElementById("fchm");if(fm)fm.onclick=()=>step(-2.5);
-  const fp=document.getElementById("fchp");if(fp)fp.onclick=()=>step(2.5);
+    CHGFX=x.id;
+    applyCh(String(Math.max(0,rgrid(base+d))))};
+  const fm=document.getElementById("fchm");if(fm)fm.onclick=()=>step(-fstp);
+  const fp=document.getElementById("fchp");if(fp)fp.onclick=()=>step(fstp);
   const fra=document.getElementById("fra");
   if(fra)fra.onclick=()=>{delete p.ovr[x.id];saveP();toast("Retour au calcul automatique");renderMain(p)};
 
@@ -4946,44 +4995,50 @@ function renderSession(p,s,ti,pg){
     const it=shopByNeed(b.dataset.gear);
     if(!it)return;
     SHOPGO=it.id;SHOPCAT_SEL="all";SECT="shop";PANEL={};renderMain(p);window.scrollTo(0,0)});
-  pg.querySelectorAll("[data-ch]").forEach(i=>i.onchange=()=>{
-    const xi=i.dataset.ch,x=plan.items[+xi],v=i.value.trim();
-    if(v===""){delete p.ovr[x.id]}else{
-      p.ovr[x.id]=v;
-      const arr=p.used[x.id]||[];const d=today();const k=arr.findIndex(a=>a.date===d);
+  /* Un seul chemin d'enregistrement de la charge, et un seul rendu derriere.
+     Le rustinage a la main d'une pastille et d'un bouton laissait le reste
+     de la carte en arriere : le dessin des disques, la ligne de detail, le
+     bouton Auto — qui se dupliquait, cherche a un endroit ou il n'habite
+     plus — et surtout la charge affichee sur chaque serie en dessous. */
+  const setCharge=(xi,v)=>{
+    const x=plan.items[+xi];
+    if(v===""||v==null){delete p.ovr[x.id]}
+    else{
+      p.ovr[x.id]=String(v);
+      const arr=p.used[x.id]||[],d=today(),k=arr.findIndex(a=>a.date===d);
       if(k>=0)arr[k].kg=parseFloat(v);else arr.push({date:d,kg:parseFloat(v)});
       p.used[x.id]=arr;
     }
+    /* Les series qui n'ont pas de charge propre suivent celle de l'exercice :
+       on efface leur valeur heritee pour qu'elles reprennent la nouvelle. */
+    const all=x.allSets||x.sets;
+    for(let j=0;j<all;j++){
+      const kk="skg_"+sKey(p,s.sid,x.id,j);
+      if(G("chk_"+sKey(p,s.sid,x.id,j),false))continue;
+      DEL(kk);
+    }
     saveP();toast("Charge enregistrée");
-    /* on remplace la seule pastille concernee plutot que toute la page */
-    const ov=p.ovr[x.id],ch=ov!=null?parseFloat(ov):x.charge;
-    const chip=pg.querySelector('[data-cc="'+xi+'"]');
-    if(chip){chip.textContent=(ch!=null&&!isNaN(ch))?kg(ch)+(ov!=null?" · manuel":(x.src==="auto"?" · auto":"")):"charge libre";
-      chip.className="chip"+((ch!=null&&!isNaN(ch)&&ov==null&&x.src==="auto")?" auto":"")}
-    /* Le bouton "Auto" vit sur la ligne secondaire (.substep), pas sur la
-       ligne du stepper +/- lui-meme, pour ne pas la faire deborder. */
-    const bar=(i.closest(".workcard")||{}).querySelector?i.closest(".workcard").querySelector(".substep")||i.parentNode:i.parentNode;
-    const old=bar.querySelector("[data-ra]");
-    if(ov!=null&&!old){const btn=document.createElement("button");
-      btn.className="mini on";btn.setAttribute("data-ra",xi);btn.textContent="Auto";
-      btn.onclick=()=>{delete p.ovr[x.id];saveP();toast("Retour au calcul automatique");renderMain(p)};
-      bar.appendChild(btn)}
-    else if(ov==null&&old)old.remove();});
+    renderMain(p);
+  };
+  pg.querySelectorAll("[data-ch]").forEach(i=>i.onchange=()=>{
+    CHGFX=plan.items[+i.dataset.ch].id;
+    setCharge(i.dataset.ch,i.value.trim());});
   /* +/- du stepper de charge : ajuste la valeur du meme champ [data-ch]
      puis declenche son "change" existant, pour ne pas dupliquer la
      logique d'enregistrement (p.ovr, p.used, pastille, bouton Auto). */
   pg.querySelectorAll("[data-chstep]").forEach(b=>b.onclick=()=>{
     const [sign,xi]=b.dataset.chstep.split("|");
     const inp=pg.querySelector('[data-ch="'+xi+'"]');if(!inp)return;
-    const x=plan.items[+xi];
+    const x=plan.items[+xi],e2=byId(x.id);
+    const st=chStep(e2);
     const lu=lastUsedKg(p,x.id,today());
     const cur=inp.value.trim()===""?(lu!=null?lu:0):parseFloat(inp.value);
-    const nv=Math.max(0,r25(cur+(sign==="-"?-2.5:2.5)));
+    const nv=Math.max(0,rgrid(cur+(sign==="-"?-st:st)));
     /* l'animation des disques ne se declenche que sur une action de
        l'utilisateur, jamais au simple affichage de la page : le drapeau est
        pose ici et consomme par le rendu qui suit. */
     CHGFX=x.id;
-    inp.value=nv;inp.dispatchEvent(new Event("change"))});
+    setCharge(xi,nv);});
   /* Le bouton i ne fait qu'afficher ou masquer son explication : aucun
      rendu de page, rien de persiste. L'etat par defaut reste masque. */
   pg.querySelectorAll("[data-inf]").forEach(b=>b.onclick=()=>{
@@ -5554,10 +5609,29 @@ const PLATES=[[25,"var(--p25)"],[20,"var(--p20)"],[15,"var(--p15)"],[10,"var(--p
   [1,"var(--p1)"],[.5,"var(--p05)"]];
 /* Decompose une charge par cote en disques reels, du plus lourd au plus
    leger. */
+/* Le glouton pur se trompe des que les pas ne sont plus des multiples de
+   2,5 : pour 1,5 kg il prend un disque de 1,25 et laisse 0,25 orphelin,
+   alors que 1 + 0,5 tombe juste. On cherche donc d'abord une decomposition
+   exacte — la gamme est courte et les piles petites, la recherche est
+   instantanee — et on ne retombe sur le glouton que si rien n'est exact. */
+function plateExact(per,list,depth){
+  if(per<=.001)return [];
+  if(depth>12||!list.length)return null;
+  for(let i=0;i<list.length;i++){
+    const pl=list[i];
+    if(pl[0]>per+.001)continue;
+    const rest=plateExact(Math.round((per-pl[0])*100)/100,list.slice(i),depth+1);
+    if(rest)return [pl].concat(rest);
+  }
+  return null;
+}
 function plateStack(perSide,min){
-  const out=[];let per=Math.round(perSide*100)/100;
-  PLATES.forEach(pl=>{
-    if(min&&pl[0]<min)return;
+  let per=Math.round(perSide*100)/100;
+  const list=PLATES.filter(pl=>!min||pl[0]>=min);
+  const exact=plateExact(per,list,0);
+  if(exact)return exact;
+  const out=[];
+  list.forEach(pl=>{
     while(per>=pl[0]-.01){out.push(pl);per=Math.round((per-pl[0])*100)/100}
   });
   return out;
@@ -5607,11 +5681,12 @@ function workCard(p,s,x,e,ch,ov,xi,foc){
       ||'<span class="wnone">'+(e.eq==="pdc"?"Poids du corps"
         :(e.eq==="machine"||e.eq==="poulie"?"Pile guidée":(e.eq==="elastique"?"Élastique":"Charge libre")))+'</span>')+'</div>';
   if(e.eq!=="pdc"){
+    const st=chStep(e),stL=String(st).replace(".",",");
     h+='<div class="cbar stepper">'
-      +'<button type="button" class="stepbtn" '+idm+' aria-label="Retirer 2,5 kg">−</button>'
-      +'<input type="number" step="0.5" inputmode="decimal" class="chbig" '+idc+' value="'+(vide?"":ch)+'"'
+      +'<button type="button" class="stepbtn" '+idm+' aria-label="Retirer '+stL+' kg">−</button>'
+      +'<input type="number" step="'+st+'" inputmode="decimal" class="chbig" '+idc+' value="'+(vide?"":ch)+'"'
       +(vide&&lu!=null?' placeholder="'+lu+'"':'')+' aria-label="Charge de travail en kg"><span class="chunit">kg</span>'
-      +'<button type="button" class="stepbtn" '+idp+' aria-label="Ajouter 2,5 kg">+</button>'
+      +'<button type="button" class="stepbtn" '+idp+' aria-label="Ajouter '+stL+' kg">+</button>'
       +'</div>';
   }
   /* Legende d'une seule ligne sous le selecteur, toujours au meme endroit. */
@@ -6508,7 +6583,9 @@ function renderProfil(p,pg){
   if(PT==="sea")h+='<div class="card"><h4>Réglages de séance</h4><div class="row wr" style="gap:8px">'
     +'<button class="mini'+(p.set.timer?" on":"")+'" id="s-t">Minuteur</button>'
     +'<button class="mini'+(p.set.sound?" on":"")+'" id="s-s">Bip</button>'
-    +(HAS_VIB?'<button class="mini'+(p.set.vib?" on":"")+'" id="s-v">Vibration</button>':'')+'</div>'
+    +(HAS_VIB?'<button class="mini'+(p.set.vib?" on":"")+'" id="s-v">Vibration</button>':'')
+    +'<button class="mini'+(portraitOn(p)?" on":"")+'" id="s-p">Écran vertical</button></div>'
+    +'<p class="mut" style="margin-top:8px">« Écran vertical » refuse la mise en page paysage : si le téléphone tourne, l\'app demande de le remettre droit au lieu de tout réorganiser. Un vrai verrou d\'orientation n\'existe pas dans Safari — il faudrait une app installée depuis l\'App Store.</p>'
     +(HAS_VIB?'':'<p class="mut" style="margin-top:8px">La vibration n\'existe pas dans Safari iOS : seul le bip signale la fin du repos.</p>')
     +'</div>';
   if(PT==="don")h+='<div class="card"><h4>Sauvegarde &amp; partage</h4>'
@@ -6541,6 +6618,7 @@ function renderProfil(p,pg){
       c.rot=(c.rot||0)+1;p.prog=generate(c);pruneChecks(p);saveP();toast("Nouveaux exercices");renderMain(p)}));
   const tg=(id,k)=>on(id,"onclick",()=>{p.set[k]=!p.set[k];saveP();renderMain(p)});
   tg("s-t","timer");tg("s-s","sound");if(HAS_VIB)tg("s-v","vib");
+  on("s-p","onclick",()=>{p.set.portrait=!portraitOn(p);saveP();applyPortrait(p);renderMain(p)});
   on("p-exp","onclick",()=>backupDialog(p));
   on("p-del","onclick",()=>{
     askConfirm("Supprimer « "+p.name+" » ?",
