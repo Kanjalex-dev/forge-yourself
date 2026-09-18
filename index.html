@@ -3358,7 +3358,10 @@ CHGFX=null,
 /* Sous-onglets de Nutrition et de Profil — memes commutateurs que Suivi. */
 NUTAB="rep", PROFTAB="id",
 /* Bandeau de reprise ecarte pour aujourd'hui. */
-CBSNOOZE=null;
+CBSNOOZE=null,
+/* Etat de demarrage retenu au moment ou l'accordeon a choisi son ouverture :
+   il ne se rejoue qu'au passage de "pas lancee" a "en cours". */
+ACCRUN={};
 /* Onglet du jour par defaut : on pointe sur la seance prevue aujourd'hui
    plutot que sur le premier jour du programme — mercredi ouvre la seance
    de mercredi, pas systematiquement celle de lundi. */
@@ -4633,12 +4636,20 @@ function renderSession(p,s,ti,pg){
   /* accordéon : un seul exercice ouvert par défaut — le premier non terminé */
   const allSetsOf=xx=>xx.allSets||xx.sets;
   const doneCountOf=xx=>{let n=0;const a=allSetsOf(xx);for(let i=0;i<a;i++)if(G("chk_"+sKey(p,s.sid,xx.id,i),false))n++;return n};
-  if(ACC[ti]==null){
-    let defPos=0;
-    for(let i=0;i<order.length;i++){
-      if(doneCountOf(order[i].x)<allSetsOf(order[i].x)){defPos=i;break}
-    }
-    ACC[ti]=defPos;
+  /* Tant que la seance n'est pas lancee, tout est replie : la liste se lit
+     comme un sommaire, on voit ce qui attend sans qu'un exercice ouvert
+     laisse croire qu'on y est deja. Le premier exercice a faire s'ouvre au
+     demarrage — et seulement a ce moment-la, pas a chaque rendu, sinon on
+     ne pourrait plus rien replier de la seance. */
+  const runStart=(done>0||STARTED[fkey]===true);
+  const firstTodo=()=>{
+    for(let i=0;i<order.length;i++)
+      if(doneCountOf(order[i].x)<allSetsOf(order[i].x))return i;
+    return -1;
+  };
+  if(ACC[ti]==null||ACCRUN[ti]!==runStart){
+    ACC[ti]=runStart?firstTodo():-1;
+    ACCRUN[ti]=runStart;
   }
   /* Equipement du jour, presente comme un exercice replie en tete de
      liste : visible sans rien ouvrir, et ferme par defaut pour que la
