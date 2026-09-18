@@ -117,8 +117,17 @@ cursor:pointer;font-family:inherit;height:38px}
    transparaitre. Le fond remonte jusqu'en haut par une ombre portee de la
    hauteur de l'inset, de sorte qu'aucun contenu ne defile a l'air libre
    derriere la barre d'etat. */
-position:sticky;top:env(safe-area-inset-top,0px);z-index:22;background:var(--bg);
-box-shadow:0 -1px 0 0 var(--bg),0 calc(-1 * env(safe-area-inset-top,0px)) 0 0 var(--bg)}
+position:sticky;top:env(safe-area-inset-top,0px);z-index:22;background:var(--bg)}
+/* Cache de la zone systeme : une bande fixe de la hauteur de l'encoche, du
+   fond de la section. L'ombre portee qui jouait ce role peignait aussi
+   au-dessus de l'en-tete quand le bandeau n'etait pas colle, d'ou la bande
+   noire en remontant. Une bande fixe, elle, est toujours au meme endroit. */
+body::before{content:"";position:fixed;top:0;left:0;right:0;z-index:30;pointer-events:none;
+height:env(safe-area-inset-top,0px);background:var(--bg)}
+body[data-sect="hist"]::before{background:var(--sec-hist-bg)}
+body[data-sect="nut"]::before{background:var(--sec-nut-bg)}
+body[data-sect="shop"]::before{background:var(--sec-shop-bg)}
+body[data-sect="prof"]::before{background:var(--sec-prof-bg,var(--bg))}
 body[data-sect="hist"] .daystrip{background:var(--sec-hist-bg)}
 .dcell{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;
 padding:6px 0 7px;border:0;border-radius:8px;background:var(--sf2);color:var(--txt);
@@ -141,7 +150,11 @@ display:flex;align-items:center;justify-content:center;height:12px}
 line-height:1.02;color:var(--musc-p);min-width:0}
 .shd .sdur{flex:0 0 auto;font-family:var(--mono);font-size:.68rem;color:var(--mut);text-align:right}
 .shd .sdur b{color:var(--musc-p);font-weight:600}
-.page{display:none;max-width:680px;margin:0 auto;padding:12px 14px 0}
+/* La page occupe au moins la hauteur restante : sur un onglet au contenu
+   court, le fond de section descendait jusqu'a la barre du bas en laissant
+   croire que la barre etait mal placee. */
+.page{display:none;max-width:680px;margin:0 auto;padding:12px 14px 0;
+min-height:calc(100dvh - 150px)}
 .page.on{display:block}
 /* Titres en Archivo elargi (axe wdth), comme la direction artistique : le
    texte courant reste a largeur normale, seuls les titres s'etirent. */
@@ -439,8 +452,9 @@ border-radius:10px;background:rgba(45,111,208,.10);border:1px solid rgba(45,111,
 font-size:.74rem;line-height:1.45;color:var(--txt)}
 .infobox .ibico{flex:0 0 auto;color:var(--brand2);display:flex;margin-top:1px}
 .infobox .ibtx{min-width:0}
-.infobox .iblbl{display:inline-block;font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;
-font-weight:700;color:var(--brand2);margin-right:5px}
+.infobox .iblbl{display:block;font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;
+font-weight:700;color:var(--brand2);margin:0 0 3px}
+.infobox.prev .ibtx{color:var(--txt)}
 .infobox b{font-family:var(--mono);font-weight:600}
 /* --- Exercice termine : la carte passe au vert --- */
 .exo.done{border-color:rgba(52,199,89,.42);background:linear-gradient(180deg,rgba(52,199,89,.07),transparent 120px)}
@@ -604,6 +618,23 @@ text-decoration:none;padding:9px 14px}
 font-family:var(--disp);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;
 cursor:pointer;padding:0;margin:0 0 10px}
 .bkbtn:hover,.bkbtn:focus-visible{color:var(--txt)}
+
+/* --- Bouton de demarrage colle au-dessus de la barre du bas --- */
+.startdock{position:fixed;left:0;right:0;bottom:calc(84px + env(safe-area-inset-bottom,0px));
+z-index:40;max-width:680px;margin:0 auto;padding:0 14px;pointer-events:none}
+.startdock .btn{margin:0;pointer-events:auto;box-shadow:0 10px 26px rgba(2,5,9,.6)}
+/* La place du bouton est reservee en bas de page : sans cela il masquerait
+   en permanence la note de seance. */
+body.dock-on{padding-bottom:calc(146px + env(safe-area-inset-bottom))}
+/* --- Equipement presente comme une serie 0 --- */
+.exo.gear .ix.gix{color:var(--sec-shop-ac);display:inline-flex;margin-right:7px}
+.exo.gear .donecnt{font-family:var(--mono)}
+.exo.gear .body{padding:0 13px 12px}
+.exo.gear .gearrow:first-of-type{padding-top:2px}
+
+/* "Auto" dans le titre de la carte de charge */
+.wcard .wlbl .wauto{margin-left:auto;padding:3px 7px;font-size:.55rem;line-height:1}
+.wcard .wlbl{position:relative}
 /* Filet d'identite de section et ligne de titre de Suivi (planche A3) */
 .histrule{height:3px;border-radius:2px;background:var(--sec-hist-ac);margin:0 0 14px}
 .shd2{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
@@ -762,6 +793,9 @@ font-size:.62rem;color:var(--mut)}
 .wcard .wleg.num{font-family:var(--mono);color:var(--musc-p);font-size:.58rem;
 letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .wacts{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin:7px 0 0;flex-wrap:wrap}
+/* Vide depuis que Courbe et Auto ont trouve leur place ailleurs : la rangee
+   ne doit pas laisser une marge fantome. */
+.wacts:empty{display:none;margin:0}
 .wacts .lestin{width:62px;background:var(--sf2);border:1px solid var(--line);border-radius:8px;
 padding:6px 8px;color:var(--txt);font-family:var(--mono);font-size:.74rem}
 .mini.xs{padding:5px 9px;font-size:.64rem}
@@ -2730,7 +2764,10 @@ const APP=document.getElementById("app");
 let VIEW="home",TAB=0,SECT="train",FOCUS={},FOCOVR={},WIZ=0,ACC={},STARTPANEL={},SHOPCAT_SEL="all",
 /* Article de la boutique a mettre en evidence au prochain rendu, quand on
    y arrive depuis le bloc "Equipement necessaire" de la seance. */
-SHOPGO=null,HISTAB="vol",
+SHOPGO=null,
+/* Seances dont le mode a ete choisi aujourd'hui : le bouton flottant
+   "Demarrer" disparait des ce moment, meme avant la premiere serie. */
+STARTED={},HISTAB="vol",
 
 /* Exercice dont les disques viennent de changer : l'animation d'apparition
    ne se declenche que sur une action de l'utilisateur, jamais au chargement. */
@@ -3509,16 +3546,6 @@ function renderSession(p,s,ti,pg){
       +'<span class="vtx"><b>Changer tous les exercices</b><small>'
       +(varyRank(p,s)?'Variante n° '+varyRank(p,s)+' en cours':'Mêmes schémas moteurs, autres mouvements')+'</small></span>'
       +'<span class="va"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></span></button>';
-    /* Ce qu'il faut dans le sac, deduit du materiel des exercices du jour.
-       Le panier ne vend rien ici : il emmene a la fiche correspondante de
-       la boutique, l'achat se fait chez le marchand. */
-    const gear=sessionGear(p,plan);
-    h+='<div class="gearblk"><span class="srl">Équipement de la séance</span>'
-      +gear.map(g=>'<div class="gearrow"><span class="geart"><b>'+esc(g.n)+'</b><small>'+esc(g.w)+'</small></span>'
-        +(shopByNeed(g.k)?'<button type="button" class="cartb" data-gear="'+g.k+'" aria-label="Voir '+esc(g.n)+' dans la boutique" title="Voir dans la boutique">'
-          +'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="20" r="1.4"/><circle cx="17.5" cy="20" r="1.4"/><path d="M2.5 3.5h2.2l2.3 11.2a1.6 1.6 0 0 0 1.6 1.3h8.6a1.6 1.6 0 0 0 1.6-1.2l1.5-6.3H6"/></svg></button>':'')
-        +'</div>').join("")
-      +'<p class="sf">Serviette et gourde valent pour toutes les séances ; le reste dépend du matériel du jour.</p></div>';
     h+='</div>';
   }
 
@@ -3592,6 +3619,28 @@ function renderSession(p,s,ti,pg){
       if(doneCountOf(order[i].x)<allSetsOf(order[i].x)){defPos=i;break}
     }
     ACC[ti]=defPos;
+  }
+  /* Equipement du jour, presente comme un exercice replie en tete de
+     liste : visible sans rien ouvrir, et ferme par defaut pour que la
+     premiere serie reste l'element ouvert. */
+  {
+    const gear=sessionGear(p,plan);
+    const gopen=ACC[ti]===-10;
+    h+='<div class="exo gear'+(gopen?"":" coll")+'">'
+      +'<div class="eh">'
+      +'<div class="acctog" data-acc="-10" role="button" tabindex="0" aria-expanded="'+(gopen?"true":"false")+'" aria-label="'+(gopen?"Replier":"Déplier")+' l\'équipement de la séance">'
+      +'<span class="ix gix"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16v13H4z"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M4 12h16"/></svg></span>'
+      +'<span class="nm">Équipement<small>'+esc(gear.map(g=>g.n).join(" · "))+'</small></span>'
+      +'<span class="donecnt">'+gear.length+'</span>'
+      +'<span class="chev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 10l6 6 6-6"/></svg></span>'
+      +'</div></div>'
+      +'<div class="body">'
+      +gear.map(g=>'<div class="gearrow"><span class="geart"><b>'+esc(g.n)+'</b><small>'+esc(g.w)+'</small></span>'
+        +(shopByNeed(g.k)?'<button type="button" class="cartb" data-gear="'+g.k+'" aria-label="Voir '+esc(g.n)+' dans la boutique" title="Voir dans la boutique">'
+          +'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="20" r="1.4"/><circle cx="17.5" cy="20" r="1.4"/><path d="M2.5 3.5h2.2l2.3 11.2a1.6 1.6 0 0 0 1.6 1.3h8.6a1.6 1.6 0 0 0 1.6-1.2l1.5-6.3H6"/></svg></button>':'')
+        +'</div>').join("")
+      +'<p class="leg">Serviette et gourde valent pour toutes les séances ; le reste dépend du matériel du jour.</p>'
+      +'</div></div>';
   }
   order.forEach((o,pos)=>{
     const x=o.x,xi=o.xi;
@@ -3703,7 +3752,7 @@ function renderSession(p,s,ti,pg){
       +'<button class="mini" data-var2="'+xi+'" style="margin-top:6px">Voir les alternatives</button>'
       +'</div></details></div>';
   });
-  if(done===0){
+  if(done===0&&!STARTED[fkey]){
     /* Un seul point d'entree, comme la note de direction artistique :
        « Démarrer la séance » déplie au-dessus de lui le choix du mode, avec
        la phrase du jour. Ce sont les deux lignes de mode qui lancent la
@@ -3727,7 +3776,11 @@ function renderSession(p,s,ti,pg){
         +'</button>'
         +'</div>';
     }else{
-      h+='<button class="btn" id="startbtn" aria-expanded="false">Démarrer la séance</button>';
+      /* Le bouton reste a portee de pouce tant que la seance n'est pas
+         lancee : c'est la seule chose qu'on vient faire en arrivant. La
+         place qu'il occupait dans le flux est conservee, sinon la page
+         sautait au moment ou il se detachait. */
+      h+='<div class="startdock"><button class="btn" id="startbtn" aria-expanded="false">Démarrer la séance</button></div>';
     }
     h+='</div>';
   }
@@ -3749,6 +3802,12 @@ function renderSession(p,s,ti,pg){
     const pos=+b.dataset.acc;
     ACC[ti]=(ACC[ti]===pos)?-1:pos;
     renderMain(p)}});
+  /* La carte equipement partage le meme mecanisme d'accordeon, mais son
+     panier ne doit pas la replier au passage. */
+  pg.querySelectorAll(".exo.gear [data-gear]").forEach(b=>b.addEventListener("click",ev=>ev.stopPropagation()));
+  /* Le bouton flottant n'existe que tant que la seance n'est pas lancee :
+     la classe suit son rendu, jamais l'inverse. */
+  document.body.classList.toggle("dock-on",!!pg.querySelector(".startdock"));
   const startbtn=document.getElementById("startbtn");
   /* le bouton ne lance rien tout seul : il ouvre le choix du mode, qui est
      ce qui lance vraiment la seance. */
@@ -3758,9 +3817,9 @@ function renderSession(p,s,ti,pg){
   const spclose=document.getElementById("spclose");
   if(spclose)spclose.onclick=()=>{STARTPANEL[ti]=false;renderMain(p)};
   const gofocus=document.getElementById("gofocus");
-  if(gofocus)gofocus.onclick=()=>{STARTPANEL[ti]=false;FOCOVR[fkey]=true;FOCUS["i"+ti]=0;renderMain(p)};
+  if(gofocus)gofocus.onclick=()=>{STARTPANEL[ti]=false;FOCOVR[fkey]=true;FOCUS["i"+ti]=0;STARTED[fkey]=true;renderMain(p)};
   const gofull=document.getElementById("gofull");
-  if(gofull)gofull.onclick=()=>{STARTPANEL[ti]=false;FOCOVR[fkey]=false;renderMain(p)};
+  if(gofull)gofull.onclick=()=>{STARTPANEL[ti]=false;FOCOVR[fkey]=false;STARTED[fkey]=true;renderMain(p)};
   const tmode=document.getElementById("tmode");
   if(tmode)tmode.onchange=()=>{p.set.timer=!p.set.timer;saveP();if(!p.set.timer)stopT(true);renderMain(p)};
   pg.querySelectorAll("[data-var]").forEach(b=>b.onclick=()=>variantDialog(p,ti,+b.dataset.var));
@@ -4496,8 +4555,12 @@ function workCard(p,s,x,e,ch,ov,xi,foc){
     +'<div class="wleg"><i style="color:var(--musc-p)">■</i> '+esc(e.prim.map(m=>MUS[m]).join(", "))
     +(e.sec&&e.sec.length?'<br><i style="color:var(--musc-s)">■</i> '+esc(e.sec.map(m=>MUS[m]).join(", ")):'')
     +'</div></div>'
+    /* "Auto" appartient au titre de la charge : c'est lui qu'il annule.
+       Il n'apparait que si une charge a ete forcee a la main. */
     +'<div class="wcard load"><div class="wlbl gold">'+(foc?"Sur la barre":"Charge de travail")
-    +(foc&&rmTxt?'<span class="rm">'+esc(rmTxt)+'</span>':'')+'</div>'
+    +(foc&&rmTxt?'<span class="rm">'+esc(rmTxt)+'</span>':'')
+    +(ov!=null?'<button class="mini xs on wauto" '+(foc?'id="fra"':'data-ra="'+xi+'"')+' title="Revenir au calcul automatique">Auto</button>':'')
+    +'</div>'
     /* Scene de hauteur constante : le materiel garde le meme axe quel que
        soit le nombre de disques. */
     +'<div class="bbscene">'+(bbs
@@ -4523,7 +4586,6 @@ function workCard(p,s,x,e,ch,ov,xi,foc){
     /* Plus de bouton "Courbe" ici : l'evolution d'une charge se lit dans
        Suivi, ou elle est comparable aux autres. Pendant la seance, la seule
        question est la charge du jour. */
-    +(ov!=null?'<button class="mini xs on" '+(foc?'id="fra"':'data-ra="'+xi+'"')+'>Auto</button>':'')
     +(e.eq==="pdc"&&LEST_OK[e.id]?'<input type="number" step="0.5" inputmode="decimal" class="lestin" '
       +(foc?'id="flest"':'data-lest="'+xi+'"')+' value="'+(lestOf(p,e)||"")+'" aria-label="Lest ajouté en kg">'
       +'<span class="mut" style="font-size:.66rem">kg de lest</span>':'')
