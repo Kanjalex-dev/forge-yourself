@@ -232,6 +232,37 @@ border-radius:13px;background:var(--sec-hist-card);border:1px solid rgba(74,124,
 .cheerb .chi{flex:0 0 auto;display:flex;color:var(--sec-hist-ac);margin-top:1px}
 .cheerb .cht{min-width:0;font-size:.79rem;line-height:1.45}
 .cheerb .cht b{color:var(--sec-hist-ac)}
+/* Series par muscle : une ligne par groupe, la fourchette en fond. */
+.msgrid{display:flex;flex-direction:column;gap:7px;margin:11px 0 9px}
+.msrow{display:flex;align-items:center;gap:9px}
+.msn{flex:0 0 84px;font-size:.66rem;letter-spacing:.03em;color:var(--mut);
+line-height:1.2;overflow-wrap:anywhere}
+.mstrack{position:relative;flex:1 1 auto;height:17px;border-radius:5px;
+background:var(--sf2);overflow:hidden}
+.mstrack .msband{position:absolute;top:0;bottom:0;background:rgba(74,124,168,.16);
+border-left:1px solid rgba(74,124,168,.30);border-right:1px solid rgba(74,124,168,.30)}
+.mstrack .msprev{position:absolute;top:2px;bottom:2px;width:2px;background:var(--dim);border-radius:1px}
+.mstrack .msbar{position:absolute;left:0;top:3px;bottom:3px;border-radius:4px;
+background:var(--musc-s);transition:width .4s cubic-bezier(.3,.9,.3,1)}
+.mstrack .msbar.ok{background:var(--sec-hist-ac)}
+.mstrack .msbar.over{background:var(--warn)}
+.msv{flex:0 0 30px;text-align:right;font-family:var(--mono);font-size:.7rem;color:var(--mut)}
+.msv.ok{color:var(--sec-hist-ac)}
+.msv.over{color:var(--warn)}
+.mslgd{display:flex;gap:14px;flex-wrap:wrap;font-size:.62rem;color:var(--dim);margin-bottom:9px}
+.mslgd span{display:inline-flex;align-items:center;gap:5px}
+.mslgd i{display:inline-block;width:14px;height:9px;border-radius:2px}
+.mslgd .lband{background:rgba(74,124,168,.16);border:1px solid rgba(74,124,168,.30)}
+.mslgd .lprev{width:3px;height:12px;background:var(--dim)}
+/* Tendance du poids : le chiffre qui compte, et ce qu'il vaut face a l'objectif. */
+.trendb{margin:10px 0 0;padding:11px 12px;border-radius:11px;
+background:rgba(74,124,168,.09);border:1px solid rgba(74,124,168,.26)}
+.trhd{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.trbig{margin-left:auto;font-family:var(--mono);font-size:1.05rem;font-weight:700;
+color:var(--sec-hist-ac);white-space:nowrap}
+.trbig i{font-style:normal;font-size:.68rem;color:var(--mut);font-weight:400}
+.trendb p{margin:6px 0 0;font-size:.72rem;line-height:1.45;color:var(--mut)}
+@media (prefers-reduced-motion:reduce){.mstrack .msbar{transition:none}}
 .tpane{animation:tpIn .22s ease both}
 @keyframes tpIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.tpane{animation:none}}
@@ -746,6 +777,39 @@ border:1px solid rgba(201,151,63,.32)}
 .bktx{flex:1 1 180px;min-width:0;font-size:.74rem;line-height:1.45;color:var(--mut)}
 .bktx b{display:block;color:var(--txt);font-size:.8rem;font-weight:700;margin-bottom:2px}
 .bkacts{flex:0 0 auto;display:flex;gap:6px;margin-left:auto}
+/* Reprise : meme forme que le rappel de sauvegarde, en acier — c'est du
+   temps qu'il est question, pas d'un avertissement. */
+.cbwarn{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;margin:0 0 10px;
+padding:11px 12px;border-radius:11px;background:rgba(74,124,168,.10);
+border:1px solid rgba(74,124,168,.30)}
+.cbico{flex:0 0 auto;color:var(--brand2);display:flex;margin-top:1px}
+.cbtx{flex:1 1 180px;min-width:0;font-size:.74rem;line-height:1.45;color:var(--mut)}
+.cbtx b{display:block;color:var(--txt);font-size:.8rem;font-weight:700;margin-bottom:2px}
+.cbacts{flex:0 0 auto;display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+/* Montee en charge : replie par defaut, en retrait des series de travail —
+   c'est une preparation, pas la seance. */
+.wup{margin:10px 0 0;border:1px dashed var(--line);border-radius:11px;background:var(--sf2)}
+.wup summary{display:flex;align-items:center;gap:9px;list-style:none;cursor:pointer;
+min-height:42px;padding:0 12px;-webkit-tap-highlight-color:transparent}
+.wup summary::-webkit-details-marker{display:none}
+.wusum{flex:1 1 auto;font-family:var(--disp);font-size:.66rem;letter-spacing:.06em;
+text-transform:uppercase;font-weight:700;color:var(--mut)}
+.wucnt{flex:0 0 auto;font-family:var(--mono);font-size:.7rem;color:var(--dim)}
+.wuchev{flex:0 0 auto;display:flex;color:var(--dim);transition:transform .2s}
+.wup[open] .wuchev{transform:rotate(180deg)}
+.wubody{padding:2px 10px 10px}
+.wurow{display:flex;align-items:center;gap:9px;min-height:44px;padding:4px 6px;
+border-radius:9px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wurow.ok{background:rgba(111,160,122,.07)}
+.wurow .ckbox{width:22px;height:22px;border-radius:6px}
+.wurow .ckbox.on::after{left:6px;top:2px;width:5px;height:10px}
+.wul{flex:0 0 auto;font-family:var(--mono);font-size:.66rem;color:var(--dim);width:18px}
+.wubb{flex:1 1 auto;min-width:0;height:26px;display:flex;align-items:center;overflow:hidden;opacity:.85}
+.wubb svg{width:100%;height:100%}
+.wuv{flex:0 0 auto;font-family:var(--mono);font-size:.72rem;color:var(--mut)}
+.wuv b{color:var(--txt);font-weight:600}
+.wunote{margin:7px 6px 0;font-size:.63rem;line-height:1.4;color:var(--dim)}
+@media (prefers-reduced-motion:reduce){.wuchev{transition:none}}
 
 /* Filet d'identite : chaque section porte sa couleur sur trois pixels, la
    meme regle que Suivi appliquee partout (planches de la direction C). */
@@ -3052,7 +3116,47 @@ function importProfile(txt){
 }
 
 /* ---------------- Graphique ---------------- */
-function line(cv,pts,col){if(!cv)return;
+/* Moyenne glissante sur 7 jours calendaires (pas sur 7 releves) : peser
+   trois fois dans la meme semaine ne doit pas peser plus lourd qu'une fois. */
+/* Rythme hebdomadaire vise par l'objectif, en kilos. Les bornes suivent la
+   table de nutrition : un pourcentage du poids de corps, pas un chiffre
+   absolu identique pour tout le monde. */
+function goalPace(goal,w){
+  if(!(w>0))return null;
+  if(goal==="masse")return Math.round(w*.00375*100)/100;
+  if(goal==="seche")return -Math.round(w*.0065*100)/100;
+  if(goal==="recomp")return 0;
+  return null;
+}
+function movingAvg(pts,days){
+  return pts.map((p0,i)=>{
+    const t0=new Date(p0.d+"T00:00:00");
+    let sum=0,n=0;
+    for(let j=0;j<=i;j++){
+      const tj=new Date(pts[j].d+"T00:00:00");
+      if((t0-tj)/86400000<=days){sum+=pts[j].kg;n++}
+    }
+    return n?Math.round(sum/n*100)/100:null;
+  });
+}
+/* Pente par regression lineaire sur une fenetre de jours, en kg/semaine. */
+function weightTrend(blog,days){
+  const pts=blog.filter(x=>x.kg!=null).slice().sort((a,z)=>a.d<z.d?-1:1);
+  if(pts.length<3)return null;
+  const end=new Date(pts[pts.length-1].d+"T00:00:00");
+  const win=pts.filter(x=>(end-new Date(x.d+"T00:00:00"))/86400000<=days);
+  if(win.length<3)return null;
+  const t0=new Date(win[0].d+"T00:00:00");
+  const xs=win.map(x=>(new Date(x.d+"T00:00:00")-t0)/86400000),ys=win.map(x=>x.kg);
+  const n=xs.length,mx=xs.reduce((a,b)=>a+b,0)/n,my=ys.reduce((a,b)=>a+b,0)/n;
+  let num=0,den=0;
+  for(let i=0;i<n;i++){num+=(xs[i]-mx)*(ys[i]-my);den+=(xs[i]-mx)*(xs[i]-mx)}
+  if(den<=0)return null;
+  const span=Math.round(xs[n-1]-xs[0]);
+  if(span<7)return null;
+  return {perWeek:Math.round(num/den*7*100)/100,days:span,n:n,last:ys[n-1]};
+}
+function line(cv,pts,col,trend){if(!cv)return;
   const dpr=window.devicePixelRatio||1,W=cv.clientWidth||300,H=cv.clientHeight||92;
   cv.width=W*dpr;cv.height=H*dpr;const c=cv.getContext("2d");c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,W,H);
   if(pts.length<2){c.fillStyle="#64748b";c.font="11px -apple-system,sans-serif";c.textAlign="center";
@@ -3089,6 +3193,17 @@ function line(cv,pts,col){if(!cv)return;
       c.fillStyle=col;c.fill();
       c.strokeStyle="#0D1014";c.lineWidth=1.5;c.stroke();
     });
+  }
+  /* Moyenne lissee : le trait epais qui traverse le nuage. Le poids brut
+     varie de plus d'un kilo pour des raisons de sel et d'eau — c'est cette
+     ligne-la qui dit ce que fait le corps. */
+  if(trend&&trend.length===v.length){
+    c.beginPath();
+    let started=false;
+    trend.forEach((x,i)=>{if(x==null)return;
+      if(!started){c.moveTo(X(i),Y(x));started=true}else c.lineTo(X(i),Y(x))});
+    if(started){c.strokeStyle="#E9E5DC";c.lineWidth=2.6;c.lineJoin="round";
+      c.globalAlpha=.85;c.stroke();c.globalAlpha=1}
   }
   /* Peu de points : on ecrit la valeur, c'est plus lisible qu'une echelle. */
   if(v.length<=6){
@@ -3171,7 +3286,9 @@ STARTED={},HISTAB="vol",
    ne se declenche que sur une action de l'utilisateur, jamais au chargement. */
 CHGFX=null,
 /* Sous-onglets de Nutrition et de Profil — memes commutateurs que Suivi. */
-NUTAB="rep", PROFTAB="id";
+NUTAB="rep", PROFTAB="id",
+/* Bandeau de reprise ecarte pour aujourd'hui. */
+CBSNOOZE=null;
 /* Onglet du jour par defaut : on pointe sur la seance prevue aujourd'hui
    plutot que sur le premier jour du programme — mercredi ouvre la seance
    de mercredi, pas systematiquement celle de lundi. */
@@ -4029,6 +4146,84 @@ function renderFocus(p,s,ti,plan,order){
    lancer" a "en cours", puis a "terminee" : la barre doit suivre au
    moment ou ca arrive, pas au prochain rendu complet.
    ================================================================ */
+/* ================================================================
+   REPRISE APRES UNE INTERRUPTION
+   Le moment le plus fragile est le retour apres trois semaines d'arret, et
+   c'est celui ou la plupart des applications servent la meme seance qu'avant,
+   a la meme charge. Forge propose une remise en route : les charges du jour
+   baissent d'un cran, une seule fois, et rien ne culpabilise le retour.
+   Le geste reste reversible — c'est le meme reglage de charge que d'habitude.
+   ================================================================ */
+function comebackGap(p){
+  const H=p.hist||[];
+  if(!H.length)return null;
+  const t=new Date(H[0].date+"T00:00:00");
+  if(isNaN(t))return null;
+  const d=Math.round((new Date(today()+"T00:00:00")-t)/86400000);
+  if(!(d>=10))return null;
+  const cut=d>=45?null:(d>=21?12:7);
+  return {days:d,cut:cut};
+}
+function comebackApplied(p){return (p.cbDone||null)===today()}
+function applyComeback(p,plan,cut){
+  let n=0;
+  plan.items.forEach(x=>{
+    const ov=p.ovr[x.id],base=ov!=null?parseFloat(ov):x.charge;
+    if(base==null||isNaN(base)||base<=0)return;
+    const nv=r25(base*(1-cut/100));
+    if(nv>0&&nv!==base){p.ovr[x.id]=String(nv);n++}
+  });
+  p.cbDone=today();saveP();
+  return n;
+}
+/* ================================================================
+   MONTEE EN CHARGE
+   L'echauffement est l'angle mort des carnets : improvise, trop court avant
+   un squat lourd, ou saisi comme du travail et il pollue le volume. Ici il
+   est calcule (40 / 60 / 80 % de la charge du jour), dessine disque par
+   disque avec le meme composant que la charge de travail, coche a part —
+   ses cases ne portent pas le prefixe chk_, donc rien n'entre dans le
+   tonnage ni dans le decompte des series.
+
+   Il n'apparait que sur les mouvements ou il sert : un exercice composé,
+   charge, place en debut de seance. Replie par defaut.
+   ================================================================ */
+const WUP_PCT=[.4,.6,.8], WUP_REPS=[10,6,3];
+function warmupSets(p,x,e,ch){
+  if(!e||e.typ!=="c")return null;
+  const base=(ch!=null&&!isNaN(ch))?ch:null;
+  if(base==null||base<30)return null;
+  const bar=(e.eq==="barre")?BARKG:0;
+  const out=[];
+  WUP_PCT.forEach((f,i)=>{
+    let v=r25(base*f);
+    if(bar&&v<bar)v=bar;
+    if(out.length&&v<=out[out.length-1].kg)return;
+    out.push({kg:v,reps:WUP_REPS[i]});
+  });
+  return out.length>=2?out:null;
+}
+function warmupHTML(p,s,x,e,ch,xi){
+  const w=warmupSets(p,x,e,ch);
+  if(!w)return "";
+  let n=0;
+  const rows=w.map((r,i)=>{
+    const k="wu_"+sKey(p,s.sid,x.id,i);
+    const on=G(k,false);if(on)n++;
+    return '<div class="wurow'+(on?" ok":"")+'" data-wurow="'+xi+"|"+i+'" role="button" tabindex="0" aria-pressed="'+(on?"true":"false")+'">'
+      +'<span class="ckbox'+(on?" on":"")+'" aria-hidden="true"></span>'
+      +'<span class="wul">E'+(i+1)+'</span>'
+      +'<span class="wubb">'+loadSVG(e.eq,r.kg)+'</span>'
+      +'<span class="wuv">'+r.reps+' × <b>'+esc(kg(r.kg))+'</b></span></div>';
+  }).join("");
+  return '<details class="wup"'+(n&&n<w.length?" open":"")+'><summary>'
+    +'<span class="wusum">Montée en charge</span>'
+    +'<span class="wucnt">'+n+'/'+w.length+'</span>'
+    +'<span class="wuchev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 10l6 6 6-6"/></svg></span>'
+    +'</summary><div class="wubody">'+rows
+    +'<p class="wunote">Hors décompte : ces séries ne comptent ni dans le volume ni dans les séries de la séance. Repos court, 45 s.</p>'
+    +'</div></details>';
+}
 function buildActBar(p,s,ti,plan,fkey){
     const tlb=tally(p,s,plan);
     const abDone=tlb.done+tlb.bonus,abTot=tlb.tot;
@@ -4149,6 +4344,23 @@ function renderSession(p,s,ti,pg){
       +'</span>'
       +'<span class="bkacts"><button type="button" class="mini xs" id="bknow">Sauvegarder</button>'
       +'<button type="button" class="mini xs gh" id="bklater">Plus tard</button></span></div>';
+  }
+  /* Retour apres une interruption : constat, proposition, rien de plus. */
+  {
+    const cbg=comebackGap(p);
+    if(cbg&&!comebackApplied(p)&&CBSNOOZE!==today()){
+      h+='<div class="cbwarn"><span class="cbico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></span>'
+        +'<span class="cbtx"><b>Content de te revoir</b>'
+        +(cbg.cut==null
+          ? cbg.days+' jours sans séance. Au-delà d\'un mois et demi, mieux vaut repasser par l\'assistant : le programme se refera sur tes charges d\'aujourd\'hui, pas sur celles d\'avant.'
+          : cbg.days+' jours sans séance. Les premières séances se passent mieux un cran en dessous : −'+cbg.cut+' % sur les charges du jour, à remonter dès que ça repasse en « facile ».')
+        +'</span>'
+        +'<span class="cbacts">'
+        +(cbg.cut==null
+          ? '<button type="button" class="mini xs" id="cbwiz">Reprendre l\'assistant</button>'
+          : '<button type="button" class="mini xs" id="cbgo">Alléger de '+cbg.cut+' %</button>')
+        +'<button type="button" class="mini xs gh" id="cbno">Charges normales</button></span></div>';
+    }
   }
   h+='<div class="srow">'
     +'<button class="sbtn'+(setOpen?" on":"")+'" data-pan="menu" aria-expanded="'+(setOpen?"true":"false")+'">'
@@ -4347,6 +4559,7 @@ function renderSession(p,s,ti,pg){
     /* Rappel de la derniere fois, juste au-dessus des cases a cocher :
        la charge du jour se decide en regardant ce qui a ete fait, pas en
        cherchant plus bas dans un tableau de charges. */
+    h+=warmupHTML(p,s,x,e,ch,xi);
     const prevEx=lastExRecord(p,x.id);
     if(prevEx){
       const pe=prevEx.ex;
@@ -4520,6 +4733,25 @@ function renderSession(p,s,ti,pg){
     renderMain(p);window.scrollTo(0,0)};
 
   /* La ligne entiere est la cible : on tape a cote des champs, pas dessus. */
+  pg.querySelectorAll("[data-wurow]").forEach(row=>{
+    const tg=()=>{
+      const [xi,wi]=row.dataset.wurow.split("|");
+      const x=plan.items[+xi],e=byId(x.id);
+      const k="wu_"+sKey(p,s.sid,x.id,wi);
+      const on=!G(k,false);
+      on?S(k,true):DEL(k);
+      row.classList.toggle("ok",on);
+      row.setAttribute("aria-pressed",on?"true":"false");
+      const bx=row.querySelector(".ckbox");if(bx)bx.classList.toggle("on",on);
+      const det=row.closest(".wup"),cnt=det&&det.querySelector(".wucnt");
+      if(cnt){const all=det.querySelectorAll("[data-wurow]").length;
+        let nn=0;det.querySelectorAll("[data-wurow]").forEach(r2=>{if(r2.classList.contains("ok"))nn++});
+        cnt.textContent=nn+"/"+all}
+      if(on&&e)startT(45,"Montée en charge · "+e.n);
+    };
+    row.onclick=()=>tg();
+    row.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();tg()}};
+  });
   pg.querySelectorAll("[data-ckrow]").forEach(row=>{
     const toggle=()=>{
       const [xi,si]=row.dataset.ckrow.split("|");
@@ -4587,6 +4819,16 @@ function renderSession(p,s,ti,pg){
   });
   pg.querySelectorAll("[data-dur]").forEach(b=>b.onclick=()=>{
     setDayDur(p,s,+b.dataset.dur);renderMain(p)});
+  const cbgo=document.getElementById("cbgo");
+  if(cbgo)cbgo.onclick=()=>{
+    const g=comebackGap(p);if(!g||g.cut==null)return;
+    const n=applyComeback(p,plan,g.cut);
+    toast(n?n+" charge"+(n>1?"s":"")+" allégée"+(n>1?"s":""):"Rien à alléger");
+    renderMain(p)};
+  const cbwiz=document.getElementById("cbwiz");
+  if(cbwiz)cbwiz.onclick=()=>{WIZ=0;VIEW="wiz";render()};
+  const cbno=document.getElementById("cbno");
+  if(cbno)cbno.onclick=()=>{CBSNOOZE=today();renderMain(p)};
   const bknow=document.getElementById("bknow");
   if(bknow)bknow.onclick=()=>backupDialog(p);
   const bklater=document.getElementById("bklater");
@@ -5664,6 +5906,97 @@ function histCheer(p){
     +'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 15l6-7 4 4 5-6"/></svg>'
     +'</span><span class="cht">'+txt+'</span></div>';
 }
+/* ================================================================
+   SERIES PAR MUSCLE ET PAR SEMAINE
+   Le tonnage en kilos est trompeur : dix series de presse a cuisses pesent
+   dix fois un curl et ne disent rien de l'equilibre du programme. La mesure
+   qui compte en hypertrophie est le nombre de series dures par muscle et
+   par semaine. Le catalogue porte deja prim[] et sec[] : une serie compte
+   pleinement pour le muscle agoniste et pour moitie pour les synergistes.
+
+   Les fourchettes sont des reperes de litterature, pas des objectifs : au
+   dessous, le muscle est peu sollicite ; au dessus, on paie en recuperation
+   sans gain proportionnel. Elles ne notent personne.
+   ================================================================ */
+const MUSGRP=[
+  {k:"pecs",n:"Pectoraux",m:["pecs"],lo:10,hi:20},
+  {k:"dos",n:"Dos",m:["lats","rhomb","traps"],lo:10,hi:22},
+  {k:"epau",n:"Épaules",m:["delt_a","delt_l","delt_p"],lo:8,hi:20},
+  {k:"bras",n:"Bras",m:["bic","tri","avb"],lo:8,hi:20},
+  {k:"quad",n:"Quadriceps",m:["quad"],lo:10,hi:20},
+  {k:"isch",n:"Ischio-jambiers",m:["isch"],lo:8,hi:16},
+  {k:"fess",n:"Fessiers",m:["fess"],lo:8,hi:16},
+  {k:"tronc",n:"Tronc",m:["abs","obl","lomb"],lo:6,hi:16},
+  {k:"mol",n:"Mollets",m:["mol"],lo:6,hi:14}
+];
+/* Series par groupe sur les deux dernieres semaines pleines. */
+function setsPerMuscle(p){
+  const H=p.hist||[];if(!H.length)return null;
+  const w0=weekStart(today());
+  const prevD=new Date(new Date(w0+"T00:00:00")-7*86400000).toISOString().slice(0,10);
+  const w1=weekStart(prevD);
+  const acc={},accP={};
+  MUSGRP.forEach(g=>{acc[g.k]=0;accP[g.k]=0});
+  H.forEach(r=>{
+    const w=weekStart(r.date);
+    if(w!==w0&&w!==w1)return;
+    const tgt=(w===w0)?acc:accP;
+    (r.ex||[]).forEach(x=>{
+      const e=byId(x.id);if(!e)return;
+      const n=x.done||0;if(!n)return;
+      MUSGRP.forEach(g=>{
+        let f=0;
+        g.m.forEach(mm=>{
+          if((e.prim||[]).indexOf(mm)>=0)f=Math.max(f,1);
+          else if((e.sec||[]).indexOf(mm)>=0)f=Math.max(f,.5);
+        });
+        if(f)tgt[g.k]+=n*f;
+      });
+    });
+  });
+  return {cur:acc,prev:accP,week:w0};
+}
+function renderMuscleSets(p){
+  const d=setsPerMuscle(p);
+  if(!d)return "";
+  const tot=MUSGRP.reduce((a,g)=>a+d.cur[g.k],0);
+  if(tot<=0)return "";
+  const mx=Math.max.apply(null,MUSGRP.map(g=>Math.max(g.hi,d.cur[g.k],d.prev[g.k])))*1.06;
+  const low=[],high=[];
+  let h='<div class="card"><h4>Séries par muscle · cette semaine</h4>'
+    +'<p class="mut" style="margin-top:-4px">Une série compte pleinement pour le muscle visé, pour moitié pour ceux qui assistent. La bande claire est la fourchette utile.</p>'
+    +'<div class="msgrid">';
+  MUSGRP.forEach(g=>{
+    const v=d.cur[g.k],pv=d.prev[g.k];
+    const pct=x=>Math.max(0,Math.min(100,x/mx*100));
+    const inRange=v>=g.lo&&v<=g.hi;
+    if(v<g.lo*.6&&tot>12)low.push(g.n.toLowerCase());
+    if(v>g.hi)high.push(g.n.toLowerCase());
+    const cls=v>g.hi?" over":(inRange?" ok":"");
+    h+='<div class="msrow"><span class="msn">'+esc(g.n)+'</span>'
+      +'<span class="mstrack">'
+      +'<i class="msband" style="left:'+pct(g.lo).toFixed(1)+'%;width:'+(pct(g.hi)-pct(g.lo)).toFixed(1)+'%"></i>'
+      +(pv>0?'<i class="msprev" style="left:'+pct(pv).toFixed(1)+'%"></i>':'')
+      +'<i class="msbar'+cls+'" style="width:'+pct(v).toFixed(1)+'%"></i>'
+      +'</span>'
+      +'<span class="msv'+cls+'">'+String(Math.round(v*10)/10).replace(".",",")+'</span></div>';
+  });
+  h+='</div>'
+    +'<div class="mslgd"><span><i class="lband"></i>fourchette utile</span>'
+    +'<span><i class="lprev"></i>semaine précédente</span></div>';
+  let note;
+  if(low.length&&high.length)
+    note="Beaucoup de volume sur "+high.join(", ")+", peu sur "+low.join(", ")+". Déplacer deux séries de l'un vers l'autre coûte moins qu'en ajouter.";
+  else if(low.length)
+    note="Le programme couvre peu "+low.join(", ")+" cette semaine. Deux séries de plus suffiraient à rentrer dans la fourchette.";
+  else if(high.length)
+    note="Au-dessus de la fourchette sur "+high.join(", ")+" : au-delà, le volume se paie en récupération sans gain proportionnel.";
+  else note="Tous les groupes travaillés sont dans leur fourchette. Rien à corriger.";
+  h+='<p class="mut">'+esc(note)+'</p>'
+    +'<p class="mut">La semaine en cours n\'est pas finie : les barres montent encore jusqu\'à ta dernière séance.</p>'
+    +'</div>';
+  return h;
+}
 function renderHist(p,pg){
   if(!p.blog)p.blog=[];
   const b=body(p);
@@ -5712,6 +6045,7 @@ function renderHist(p,pg){
       h+='<p class="mut">Séries effectuées × répétitions × charge. C\'est le meilleur indicateur unique de la charge de travail : s\'il stagne plusieurs semaines alors que le poids monte, la progression vient surtout de l\'intensité.</p>';
     }
     h+='</div>';
+    h+=renderMuscleSets(p);
   }
   if(HISTAB==="charge"){
     /* Tout ce qui repond a "est-ce que je pousse plus lourd ?" : les
@@ -5754,8 +6088,34 @@ function renderHist(p,pg){
       if(kgs.length>=2){
         const d=kgs[kgs.length-1].kg-kgs[0].kg;
         const wk=Math.max(1,Math.round((new Date(kgs[kgs.length-1].d)-new Date(kgs[0].d))/6048e5));
-        h+='<p class="mut" style="text-align:right">'+(d>=0?"+":"")+d.toFixed(1).replace(".",",")+' kg sur '+wk+' semaine'+(wk>1?"s":"")
-          +' · '+(d/wk>=0?"+":"")+(d/wk).toFixed(2).replace(".",",")+' kg/semaine</p>';
+        /* Un seul chiffre de rythme sur cet ecran : la pente lissee plus bas.
+           Le premier-moins-dernier divise par le nombre de semaines donnait
+           une autre valeur, et c'etait celle qui se trompait. */
+        h+='<p class="mut" style="text-align:right">'+(d>=0?"+":"")+d.toFixed(1).replace(".",",")+' kg sur '+wk+' semaine'+(wk>1?"s":"")+'</p>';
+        /* La tendance lissee, qui est la seule lecture honnete du poids :
+           la mesure brute varie de plus d'un kilo pour des raisons d'eau,
+           de sel et de transit. */
+        const tr=weightTrend(p.blog,21);
+        if(tr){
+          const gcfg=p.cfg,gl=GOALS[gcfg.goal],tgt=goalPace(gcfg.goal,parseFloat(b.wt)||tr.last);
+          const sgn=tr.perWeek>=0?"+":"";
+          let verdict;
+          if(tgt==null)verdict="Objectif « "+gl.n.toLowerCase()+" » : c\'est la stabilité qui est visée, et la pente en est proche.";
+          else if(tgt===0)verdict=Math.abs(tr.perWeek)<=.2
+            ? "Conforme à l\'objectif : poids stable, le progrès se lit sur les charges."
+            : "L\'objectif vise un poids stable ; la pente s\'en écarte de "+Math.abs(tr.perWeek).toFixed(2).replace(".",",")+" kg par semaine.";
+          else{
+            const ratio=tr.perWeek/tgt;
+            verdict=ratio>=.6&&ratio<=1.6
+              ? "Conforme à l\'objectif ("+(tgt>0?"+":"")+tgt.toFixed(2).replace(".",",")+" kg/semaine visés)."
+              : (ratio<.6
+                 ? "En dessous du rythme visé ("+(tgt>0?"+":"")+tgt.toFixed(2).replace(".",",")+" kg/semaine). Après trois semaines pleines dans cet état, un ajustement de 150 à 200 kcal est plus efficace qu\'attendre."
+                 : "Au-dessus du rythme visé ("+(tgt>0?"+":"")+tgt.toFixed(2).replace(".",",")+" kg/semaine) : à ce rythme, la part non désirée augmente.");
+          }
+          h+='<div class="trendb"><div class="trhd"><span class="vollb">Tendance lissée</span>'
+            +'<b class="trbig">'+sgn+tr.perWeek.toFixed(2).replace(".",",")+' <i>kg/sem.</i></b></div>'
+            +'<p>Sur '+tr.days+' jours et '+tr.n+' relevés. '+esc(verdict)+'</p></div>';
+        }
       }
       if(tws.length>=2) h+='<p class="mut" style="margin:10px 0 2px">Tour de taille — '+tws.length+' relevés</p><canvas class="ch" id="tch"></canvas>';
     }
@@ -5859,7 +6219,11 @@ function renderHist(p,pg){
       p.blog=p.blog.filter(x=>x!==last);saveP();renderMain(p)});
 
   const bc=document.getElementById("bch");
-  if(bc)line(bc,bl.filter(x=>x.kg!=null).map(x=>({v:x.kg,d:shortDate(x.d)})),"#6FA07A");
+  if(bc){
+    const raw=bl.filter(x=>x.kg!=null);
+    const mv=raw.length>=4?movingAvg(raw,7):null;
+    line(bc,raw.map(x=>({v:x.kg,d:shortDate(x.d)})),"#6FA07A",mv);
+  }
   const tc=document.getElementById("tch");
   if(tc)line(tc,bl.filter(x=>x.tw!=null).map(x=>({v:x.tw,d:shortDate(x.d)})),"#FBBF24");
   /* le volume se lit en barres comparees, la derniere en or (maquette A3) */
