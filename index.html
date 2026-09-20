@@ -387,7 +387,15 @@ width:19px;height:19px;stroke-width:2}
    (seul element laiton et seule cible tactile), le compte de la semaine en
    dernier, muet.
    ================================================================ */
-.resthero{padding:6px 0 4px}
+/* Legende de la bande des sept jours : le compte de la semaine, a l'endroit
+   exact ou l'oeil vient de lire les sept pastilles. */
+.bandcap{display:flex;align-items:center;justify-content:space-between;gap:10px;
+font-size:.66rem;color:var(--mut);padding:0 0 12px;margin-top:-2px}
+.bandcap b{color:var(--txt);font-weight:600}
+.bandcap b.wfree{color:var(--warn)}
+/* Note de bas d'ecran : une information de contexte, pas une carte. */
+.alsol{font-size:.68rem;color:var(--dim);line-height:1.5;margin:12px 2px 0}
+.resthero{padding:2px 0 4px}
 .restdate{display:block;font-family:var(--mono);font-size:.63rem;letter-spacing:.09em;
 text-transform:uppercase;color:var(--dim)}
 .resthero h2{margin:6px 0 0;font-family:var(--disp);font-variation-settings:"wdth" 108;
@@ -399,7 +407,8 @@ font-size:2.5rem;font-weight:800;letter-spacing:-.025em;line-height:1.02;color:v
 font-size:.63rem;color:var(--dim)}
 /* Consulter un autre jour que le sien doit se voir : sans cette mention, on
    croit lire aujourd'hui. */
-.restoth2{display:inline-block;margin-left:8px;padding:2px 7px;border-radius:5px;
+.restoth2{display:inline-block;margin-left:9px;padding:2px 7px;border-radius:5px;
+vertical-align:middle;
 background:var(--sf2);border:1px solid var(--line);font-family:var(--disp);
 font-size:.58rem;letter-spacing:.07em;text-transform:uppercase;font-weight:700;color:var(--mut);
 vertical-align:2px}
@@ -5089,6 +5098,36 @@ function freeStep(p,st){
     }});
   wire();
 }
+/* Semaine en cours, en toutes lettres : "Semaine du 15 au 21". Elle sert de
+   reperage a la legende de la bande, pas de calcul. */
+function weekSpan(){
+  const a=new Date();a.setHours(12,0,0,0);
+  a.setDate(a.getDate()-((a.getDay()+6)%7));
+  const b=new Date(a);b.setDate(b.getDate()+6);
+  const M=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+  return a.getMonth()===b.getMonth()
+    ? "Semaine du "+a.getDate()+" au "+b.getDate()+" "+M[b.getMonth()]
+    : "Semaine du "+a.getDate()+" "+M[a.getMonth()]+" au "+b.getDate()+" "+M[b.getMonth()];
+}
+/* Les activites declarees des AUTRES jours, situees par rapport aux seances
+   voisines. Elles rejoignent "Ce qui vient" : c'est la meme question — qu'est-ce
+   qui m'attend — et ca fait une carte de moins. */
+function otherActsHTML(p,dow){
+  const c=p.cfg,out=[];
+  for(let d=0;d<7;d++){
+    if(d===dow)continue;
+    const a=(c.acts&&c.acts[d])||"";
+    if(!a||a==="—"||a==="Repos")continue;
+    const after=(p.prog.sessions||[]).find(z=>z.day===(d+1)%7);
+    const before=(p.prog.sessions||[]).find(z=>z.day===(d+6)%7);
+    const situ=after?("avant "+after.k):(before?("après "+before.k):"activité déclarée · Forge ne la suit pas");
+    out.push('<div class="vrow2 restoth">'
+      +'<span class="vi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20l4-9 5 3 5-9"/></svg></span>'
+      +'<span class="vtx"><b>'+esc(DAYS_FR[d])+' — '+esc(a)+'</b>'
+      +'<small>'+esc(situ)+'</small></span></div>');
+  }
+  return out.join("");
+}
 function renderRest(p,pg){
   document.body.classList.remove("ab-on");
   const c=p.cfg,today0=(new Date().getDay()+6)%7;
@@ -5114,26 +5153,38 @@ function renderRest(p,pg){
   const QUAND=isToday?"aujourd'hui":"ce jour-là";
   let phrase;
   if(isAct){
+    /* Planche 06 : la mention "Forge ne la suit pas" entre dans la phrase au
+       lieu d'occuper une pastille a part. Elle dit la meme chose et coute une
+       ligne de moins sur un ecran dont le propos est qu'on ne fait rien. */
+    const NS="Activité déclarée · <b>Forge ne la suit pas.</b> ";
     phrase=(nd===1&&ns)
-      ? esc(act)+" "+QUAND+", <b>"+esc(ns.k)+" le lendemain</b> : la séance arrive sur des jambes et un dos reposés. L'ordre est bon."
+      ? NS+"<b>"+esc(ns.k)+" demain</b> : la séance arrive sur des jambes et un dos reposés. L'ordre est bon."
       : (prevDay!=null
-        ? esc(act)+" "+QUAND+", au lendemain de la séance de "+esc(DAYS_FR[prevDay].toLowerCase())+". Bouger sans charger, c'est ce qu'il fallait."
-        : esc(act)+" "+QUAND+". Pas de musculation prévue : c'est l'activité déclarée pour ce jour.");
+        ? NS+"Au lendemain de la séance de "+esc(DAYS_FR[prevDay].toLowerCase())+" : bouger sans charger, c'est ce qu'il fallait."
+        : NS+"Pas de musculation prévue "+QUAND+".");
   }else{
     phrase=prevDay!=null
       ? "Pas de séance "+QUAND+", et c'est écrit dans le programme. <b>La charge de "+esc(DAYS_FR[prevDay].toLowerCase())+" travaille pendant que tu ne fais rien.</b>"
       : "Pas de séance "+QUAND+", et c'est écrit dans le programme. <b>Le repos est ce qui transforme la charge en progrès.</b>";
   }
-  let h='<div class="page on"><div class="resthero'+(isAct?" act":"")+'">'
-    +'<span class="restdate">'+esc(dateTxt)+'</span>'
-    +(isToday?'':'<span class="restoth2">Jour consulté</span>')
+  /* Planche 06, proposition B : le compte de la semaine devient la LEGENDE de
+     la bande des sept jours, qui est juste au-dessus et porte deja
+     l'information — chaque pastille dit son etat. La carte "Cette semaine" ne
+     faisait que la retraduire en chiffres cinq cents pixels plus bas ; c'est
+     ce doublon qui allongeait l'ecran et brouillait l'ordre de lecture. */
+  const freeW=freeWeekCount(p);
+  let h='<div class="page on">'
+    +'<div class="bandcap"><span>'+esc(weekSpan())+'</span>'
+    +'<span><b>'+doneW+' séance'+(doneW>1?'s':'')+'</b> sur '+totW
+    +(freeW?' · <b class="wfree">'+freeW+' libre'+(freeW>1?'s':'')+'</b>':'')
+    +'</span></div>'
+    +'<div class="resthero'+(isAct?" act":"")+'">'
+    +'<span class="restdate">'+esc(dateTxt)
+    +(isToday?'':'<span class="restoth2">Jour consulté</span>')+'</span>'
     +'<h2>'+(isAct?esc(act):"Repos")+'</h2>'
-    +(isAct?'<span class="restnos">'
-      +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>'
-      +'Activité déclarée · Forge ne la suit pas</span>':'')
     +'<p>'+phrase+'</p></div>';
   if(ns){
-    h+='<div class="card"><h4>Prochaine séance</h4>'
+    h+='<div class="card"><h4>Ce qui vient</h4>'
       +'<button class="vrow2 restnext" id="restgo">'
       +'<span class="vi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6M8 7v10M16 7v10M20 9v6M8 12h8"/></svg></span>'
       +'<span class="vtx"><b>'+esc(DAYS_FR[ns.day])+' — '+esc(ns.k)+'</b>'
@@ -5141,6 +5192,7 @@ function renderRest(p,pg){
         ?(nd===1?"demain":(nd!=null&&nd>1?"dans "+nd+" jours":"aujourd'hui"))
         :(nd===1?"le lendemain":(nd!=null&&nd>1?nd+" jours plus tard":"")))+'</small></span>'
       +'<span class="va"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>'
+      +otherActsHTML(p,dow)
       +'</div>';
   }
   /* Envie de s'entrainer quand meme : proposee seulement sur aujourd'hui.
@@ -5155,34 +5207,15 @@ function renderRest(p,pg){
       +'</p>'
       +'<button class="btn'+(fc>=2?" g":"")+'" id="freego">Lancer une séance libre</button></div>';
   }
-  /* Le compte de la semaine vient en dernier et ne commente rien : une carte
-     qui situe et se tait. Un mot de plus la rendrait felicitation ou reproche. */
-  h+='<div class="card"><h4>Cette semaine</h4>'
-    +'<div class="restwk"><span class="restbig">'+doneW+'<i>/</i>'+totW+'</span>'
-    +'<span class="restwt">séances faites</span></div>'
-    +'<div class="prog ok"><i style="width:'+(totW?Math.round(100*doneW/totW):0)+'%"></i></div>'
-    +'</div>';
-  /* Les autres activites declarees n'apparaissent que si elles disent quelque
-     chose que la bande des sept jours ne dit pas deja : leur place dans la
-     semaine. Sur un jour de repos pur, la bande suffit. */
-  {
-    const others=[];
-    for(let d=0;d<7;d++){
-      if(d===dow)continue;
-      const a=(c.acts&&c.acts[d])||"";
-      if(!a||a==="—"||a==="Repos")continue;
-      const before=(p.prog.sessions||[]).find(z=>z.day===(d+6)%7);
-      const after=(p.prog.sessions||[]).find(z=>z.day===(d+1)%7);
-      const situ=after?("avant "+after.k):(before?("après "+before.k):"");
-      others.push({d:d,a:a,s:situ});
-    }
-    if(others.length)
-      h+='<div class="card"><h4>Aussi déclaré</h4>'
-        +others.map(o=>'<div class="vrow2 restoth">'
-          +'<span class="vi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20l4-9 5 3 5-9"/></svg></span>'
-          +'<span class="vtx"><b>'+esc(DAYS_FR[o.d])+' — '+esc(o.a)+'</b>'
-          +(o.s?'<small>'+esc(o.s)+'</small>':'')+'</span></div>').join("")
-        +'</div>';
+  /* Sur un jour consulte, la seance libre n'est pas proposee : on ne peut en
+     lancer une qu'aujourd'hui. Une carte grisee poserait la question sans y
+     repondre — on l'explique en une ligne a la place. */
+  if(!isToday)h+='<p class="alsol">Sur un jour consulté, la séance libre n\'est pas proposée : on ne peut lancer une séance qu\'aujourd\'hui.</p>';
+  /* Si aucune seance ne vient — programme vide —, les activites declarees
+     n'ont pas trouve de carte : on leur en donne une. */
+  if(!ns){
+    const o2=otherActsHTML(p,dow);
+    if(o2)h+='<div class="card"><h4>Ce qui vient</h4>'+o2+'</div>';
   }
   h+='<div style="height:26px"></div></div>';
   pg.innerHTML=h;
