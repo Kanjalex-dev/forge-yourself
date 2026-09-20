@@ -63,6 +63,56 @@
 --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
 --emph:cubic-bezier(.2,0,0,1);
 }
+/* --- Double direction artistique -------------------------------------
+   Trois palettes, un seul systeme. Seuls les accents changent : le vert
+   "fait" et la terre cuite "record/danger" ne bougent jamais, parce que ce
+   sont des signaux, pas de la decoration. Le choix se pose sur <html> par
+   data-pal, donc une seule ligne bascule toute l'application. */
+html[data-pal="ardoise"]{--brand:#5E8BC9;--brand2:#8E7CC3;--brand-lt:#A9C4E6;--ink:#0B1220;
+--sec-shop-ac:#8FA6C4}
+html[data-pal="grenat"]{--brand:#C2557A;--brand2:#6E86B8;--brand-lt:#E3A6BC;--ink:#1A0D13;
+--sec-shop-ac:#C49AA8}
+/* Pastilles de choix de palette : on montre les deux accents cote a cote
+   sur le fond reel, parce qu'un nom de couleur ne se juge pas. */
+.palrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.palc{flex:1 1 92px;min-width:92px;display:flex;flex-direction:column;gap:7px;align-items:flex-start;
+border:1px solid var(--line);background:var(--sf2);border-radius:12px;padding:10px 10px 9px;
+cursor:pointer;font-family:inherit;color:var(--mut);text-align:left;position:relative}
+.palc.on{border-color:var(--brand);background:var(--sf3);color:var(--txt)}
+.palc b{font-size:.82rem;font-weight:700;letter-spacing:.01em}
+.palc .pdot{display:flex;gap:5px}
+.palc .pdot i{width:17px;height:17px;border-radius:50%;display:block}
+.palc small{font-size:.63rem;line-height:1.3;color:var(--mut)}
+.palreco{position:absolute;top:-8px;right:8px;background:var(--brand);color:var(--ink);
+font-size:.55rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+padding:2px 6px;border-radius:6px}
+/* --- Arret de seance : la liste de ce qui ne sera pas ecrit ------------ */
+.stoplist{margin:10px 0 0;padding:0 0 0 16px;font-size:.73rem;color:var(--mut);line-height:1.6}
+.stoplist li{margin:0 0 2px}
+.fstop{color:var(--dang)!important}
+/* --- Vignette du prochain exercice, en focus --------------------------- */
+.fnext{display:flex;align-items:center;gap:10px;margin-top:8px;
+border:1px solid var(--line);background:var(--sf2);border-radius:12px;padding:8px 10px}
+.fnxl{font-size:.56rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+color:var(--mut);writing-mode:vertical-rl;transform:rotate(180deg);opacity:.85}
+.fnxi{width:46px;height:46px;flex:0 0 46px;border-radius:9px;overflow:hidden;background:#fff;
+display:flex;align-items:center;justify-content:center}
+.fnxi img{width:100%;height:100%;object-fit:contain}
+.fnxt{display:flex;flex-direction:column;gap:1px;min-width:0}
+.fnxt b{font-size:.8rem;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fnxt small{font-size:.64rem;color:var(--mut)}
+/* --- Seance libre : humeur et texte d'accompagnement ------------------- */
+.moodrow{display:flex;flex-direction:column;gap:6px;margin:2px 0 12px}
+.moodc{display:flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--sf2);
+border-radius:11px;padding:9px 11px;cursor:pointer;font-family:inherit;color:var(--mut);
+font-size:.78rem;text-align:left;width:100%}
+.moodc.on{border-color:var(--brand);background:var(--sf3);color:var(--txt)}
+.moodtx{margin:0 0 12px;font-size:.74rem;line-height:1.5;color:var(--brand-lt);
+border-left:2px solid var(--brand);padding-left:10px}
+.freetag{display:inline-flex;align-items:center;gap:5px;font-size:.58rem;font-weight:800;
+letter-spacing:.07em;text-transform:uppercase;color:var(--ink);background:var(--brand);
+padding:2px 7px;border-radius:6px}
+.freecta{margin-top:14px}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--txt);font-family:var(--sans);
 font-size:15px;line-height:1.5;padding-bottom:calc(86px + env(safe-area-inset-bottom))}
@@ -1958,8 +2008,8 @@ const EX=[
  d:{a:"Allongé, haltères au niveau des pectoraux, coudes à 45° du buste.",b:"Pousse en rapprochant légèrement les haltères, descente en 3 s.",c:"Écarter les coudes à 90° — contrainte inutile sur l'épaule."}},
 {id:"dc_incl",n:"Développé incliné haltères 30°",pat:"push_h",prim:["pecs","delt_a"],sec:["tri"],eq:"halteres",lvl:1,rest:90,typ:"c",img:"developpe-incline-halteres-exercice-musculation.gif",
  d:{a:"Banc à 30°, haltères au niveau du haut des pectoraux.",b:"Pousse vers le haut et légèrement en arrière, descente 3 s.",c:"Incliner à 45°+ : ce sont les épaules qui prennent tout."}},
-{id:"chest_press",n:"Chest press machine",pat:"push_h",prim:["pecs"],sec:["delt_a","tri"],eq:"machine",lvl:1,rest:90,typ:"c",img:"chest-press-machine.gif",
- d:{a:"Assis dossier réglé, poignées au niveau des pectoraux.",b:"Pousse jusqu'à extension quasi complète, retour lent.",c:"Régler le siège trop haut : les épaules montent."}},
+{id:"chest_press",n:"Développé couché guidé (Smith)",pat:"push_h",prim:["pecs"],sec:["delt_a","tri"],eq:"machine",lvl:1,rest:90,typ:"c",img:"chest-press-machine.gif",
+ d:{a:"Allongé sous la barre guidée, omoplates serrées, barre à l'aplomb du milieu des pectoraux.",b:"Descente contrôlée jusqu'au sternum, poussée jusqu'à extension quasi complète.",c:"Régler le banc trop haut ou trop bas : la barre guidée ne tombe plus sur les pectoraux."}},
 {id:"ecarte_poulie",n:"Écarté poulie vis-à-vis",pat:"push_h_iso",prim:["pecs"],sec:[],eq:"poulie",lvl:2,rest:70,typ:"i",img:"ecarte-poulie-vis-a-vis-exercice-musculation-pectoraux.gif",
  d:{a:"Debout entre deux poulies, léger buste penché, coudes très légèrement fléchis.",b:"Rapproche les mains devant toi en arc de cercle, contracte 1 s.",c:"Plier les coudes : ça devient un développé."}},
 {id:"pompe",n:"Pompes",pat:"push_h",prim:["pecs"],sec:["delt_a","tri","abs"],eq:"pdc",lvl:1,rest:75,typ:"c",img:"pompe-musculation.gif",
@@ -2338,7 +2388,7 @@ function newProfile(name){
       rm:{dc:"",squat:"",sdt:"",row:""},days:[0,2,4],acts:{},must:[],excl:[],
       dur:60,pain:[],body:{sex:"",age:"",ht:"",wt:"",act:"sed"}},
     prog:null,logs:[],hist:[],used:{},ovr:{},notes:{},blog:[],
-    set:{timer:true,sound:true,vib:true,portrait:true},wizStep:0,done:false};
+    set:{timer:true,sound:true,vib:true,portrait:true,pal:"laiton"},wizStep:0,done:false};
   PROFILES.push(p);ACTIVE=p.id;saveP();return p;
 }
 
@@ -2371,12 +2421,19 @@ const BADGES=[
   {id:"p5",cat:"perfect",thr:5,n:"Précis",d:"5 séances sans accroc"},
   {id:"p15",cat:"perfect",thr:15,n:"Chirurgical",d:"15 séances sans accroc"},
   {id:"p30",cat:"perfect",thr:30,n:"Métronome",d:"30 séances sans accroc"},
-  {id:"p60",cat:"perfect",thr:60,n:"Sans faille",d:"60 séances sans accroc"}
+  {id:"p60",cat:"perfect",thr:60,n:"Sans faille",d:"60 séances sans accroc"},
+  /* Cinquieme famille : les seances lancees un jour ou rien n'etait prevu.
+     Elle recompense l'initiative, pas le volume — d'ou des paliers courts. */
+  {id:"i1",cat:"impr",thr:1,n:"Imprévu",d:"1 séance lancée un jour de repos"},
+  {id:"i5",cat:"impr",thr:5,n:"Pas de plan",d:"5 séances hors programme"},
+  {id:"i15",cat:"impr",thr:15,n:"Électron libre",d:"15 séances hors programme"},
+  {id:"i40",cat:"impr",thr:40,n:"Indomptable",d:"40 séances hors programme"}
 ];
 function badgeStats(p){
   return {seances:(p.hist||[]).length,
     series:(p.hist||[]).reduce((s,r)=>s+(r.done||0),0),
-    prs:p.prCount||0, perfect:p.perfectCount||0};
+    prs:p.prCount||0, perfect:p.perfectCount||0,
+    impr:(p.hist||[]).filter(r=>r&&r.free).length};
 }
 /* Etat complet, trié par catégorie puis seuil croissant — chaque entrée
    porte sa progression pour l'affichage même verrouillée. */
@@ -3607,8 +3664,26 @@ function weekDoneDays(p){
    PANELSEL porte la selection en cours de saisie tant qu'elle n'est pas validee. */
 let PANEL={},PANELSEL=null;
 
+/* Les trois palettes. « Recommandee » n'est pas un avis de gout : le laiton
+   est celle sur laquelle toutes les lisibilites ont ete verifiees. Aucune
+   n'est deduite du sexe declare — c'est un choix, pas une supposition. */
+const PALS=[
+  {k:"laiton",n:"Laiton",d:"Or et acier. Palette d'origine.",c1:"#D9A441",c2:"#4A7CA8",reco:true},
+  {k:"ardoise",n:"Ardoise",d:"Bleu froid et violet sourd.",c1:"#5E8BC9",c2:"#8E7CC3"},
+  {k:"grenat",n:"Grenat",d:"Rouge profond et bleu ardoise.",c1:"#C2557A",c2:"#6E86B8"}
+];
+function palOf(p){const k=p&&p.set&&p.set.pal;return PALS.some(x=>x.k===k)?k:"laiton"}
+function applyPal(p){document.documentElement.setAttribute("data-pal",palOf(p))}
+function palChips(p,attr){
+  return '<div class="palrow">'+PALS.map(x=>'<button type="button" class="palc'
+    +(palOf(p)===x.k?" on":"")+'" '+attr+'="'+x.k+'">'
+    +(x.reco?'<span class="palreco">Recommandé</span>':'')
+    +'<span class="pdot"><i style="background:'+x.c1+'"></i><i style="background:'+x.c2+'"></i></span>'
+    +'<b>'+x.n+'</b><small>'+esc(x.d)+'</small></button>').join("")+'</div>';
+}
 function render(){
   const p=prof();
+  applyPal(p);
   if(!p||VIEW==="home"){renderHome();return}
   if(!p.done||VIEW==="wiz"){renderWiz(p);return}
   renderMain(p);
@@ -3887,6 +3962,11 @@ function renderWiz(p){
     if(cf.length)cf.forEach(x=>{h+='<div class="alert w"><b>'+esc(x.t)+'</b>'+esc(x.d)+'</div>'});
     h+='<div class="infobox" style="margin-top:12px"><span class="ibico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></span>'
       +'<span class="ibtx">Tu pourras remplacer n\'importe quel exercice, écarter une zone ou changer le format d\'une séance à tout moment — rien n\'est figé.</span></div>';
+    /* L'apparence se choisit ici plutot que dans un chapitre a elle : c'est
+       le seul reglage de l'assistant qui ne change rien au programme. */
+    h+='<div class="card" style="margin-top:14px"><h4>Ton apparence</h4>'
+      +'<p class="mut">Modifiable à tout moment dans Profil › Séance.</p>'
+      +palChips(p,"data-wpal")+'</div>';
   }
 
   h+='<div style="height:26px"></div></div>';
@@ -3970,6 +4050,8 @@ function renderWiz(p){
     WIZ=Math.min(WSTEPS.length,WIZ+1);WIZSPLIT=false;renderWiz(p)};
   const pv=document.getElementById("wprev");if(pv)pv.onclick=()=>{WIZ=Math.max(0,WIZ-1);WIZSPLIT=false;renderWiz(p)};
   const b2=document.getElementById("wback2");if(b2)b2.onclick=()=>{WIZ=0;WIZSPLIT=false;renderWiz(p)};
+  APP.querySelectorAll("[data-wpal]").forEach(b=>b.onclick=()=>{
+    p.set.pal=b.dataset.wpal;saveP();applyPal(p);renderWiz(p)});
   const gn=document.getElementById("wgen");if(gn)gn.onclick=()=>{
     p.done=true;saveP();document.body.classList.remove("wz-on");
     VIEW="app";SECT="train";syncToday(p);render()};
@@ -4068,7 +4150,7 @@ function renderMain(p){
      jamais une autre identite) : on le porte sur le body pour que la nav
      basse et le reste de la page suivent d'un seul attribut. */
   document.body.dataset.sect=SECT;
-  applyPortrait(p);
+  applyPortrait(p);applyPal(p);pruneFree(p);
   /* En-tete : le compteur de medailles remplace la pastille de niveau — le
      niveau est une donnee figee qu'on retrouve dans Profil, la medaille est
      la recompense vivante que la maquette met a droite du titre, et elle
@@ -4172,6 +4254,65 @@ function sessionElapsed(p,s){
   if(!t)return null;
   const m=Math.round((Date.now()-t)/60000);
   return (m>=0&&m<600)?m:null;
+}
+/* ---------------- Arret d'une seance en cours ----------------
+   Un imprevu, une erreur de manipulation : la seance doit pouvoir revenir a
+   l'etat "a demarrer" sans rien laisser derriere elle. Une seule fonction
+   pour le mode focus et le mode standard — deux chemins paralleles finissent
+   toujours par diverger, et c'est alors l'un des deux qui oublie d'effacer
+   quelque chose. Rien n'est ecrit dans l'historique, donc rien n'est a
+   defaire cote volume, records ou medailles. */
+function stopSessionStats(p,s){
+  let ch=0;
+  (s.exos||[]).forEach(x=>{const a=(x.allSets||x.sets||0)+6;
+    for(let i=0;i<a;i++)if(G("chk_"+sKey(p,s.sid,x.id,i),false))ch++});
+  return {series:ch,min:sessionElapsed(p,s)};
+}
+function stopSession(p,s,ti){
+  /* On decoche tout : series, repetitions et charges saisies serie par
+     serie. La marge de 6 couvre les series bonus ajoutees en cours de
+     seance, qui depassent le format prevu. */
+  (s.exos||[]).forEach(x=>{const a=(x.allSets||x.sets||0)+6;
+    for(let i=0;i<a;i++){DEL("chk_"+sKey(p,s.sid,x.id,i));
+      DEL("srep_"+sKey(p,s.sid,x.id,i));DEL("skg_"+sKey(p,s.sid,x.id,i))}});
+  p.logs=(p.logs||[]).filter(l=>l.k.indexOf(s.sid+"_")!==0);
+  if(p.notes)delete p.notes[s.sid];
+  if(p.dayDur)delete p.dayDur[s.sid];
+  DEL(startKey(p,s));
+  const fkey=ti+"_"+today();
+  delete STARTED[fkey];delete FOCOVR[fkey];delete FOCUS["i"+ti];delete STARTPANEL[ti];
+  saveP();closeFocus();
+  toast("Séance arrêtée — rien n'a été enregistré");
+  renderMain(p);window.scrollTo(0,0);
+}
+function askStopSession(p,s,ti){
+  const st=stopSessionStats(p,s);
+  mdOpen({title:"Arrêter la séance ?",
+    msg:(st.series
+      ? st.series+" série"+(st.series>1?"s":"")+" cochée"+(st.series>1?"s":"")
+        +(st.min?" et "+st.min+" min écoulées":"")+" vont être effacées. La séance revient à l'état « à démarrer »."
+      : "Aucune série n'a encore été cochée. La séance revient à l'état « à démarrer »."),
+    html:'<ul class="stoplist">'
+      +'<li>Rien n\'entre dans l\'historique</li>'
+      +'<li>Aucun volume, aucun record, aucune médaille</li>'
+      +'<li>Aucune série ne reste cochée</li>'
+      +'<li>Les charges de ton programme sont conservées</li></ul>',
+    ok:"Arrêter sans enregistrer",cancel:"Continuer la séance",danger:true,
+    cb:ok=>{if(ok)stopSession(p,s,ti)}});
+}
+/* ---------------- Vignette du prochain exercice (focus) ----------------
+   Elle ne s'affiche qu'aux deux moments ou elle sert : pendant le repos, et
+   une fois l'exercice bouclé. En permanence, elle dirait a chaque serie de
+   penser a la suivante — exactement l'inverse de ce que le mode focus fait. */
+function nextExHTML(p,o){
+  if(!o)return "";
+  const e=byId(o.x.id);if(!e)return "";
+  const img=e.img&&!o.x.spared&&IMG(e.img);
+  const a=o.x.allSets||o.x.sets||0;
+  return '<div class="fnext"><span class="fnxl">Ensuite</span>'
+    +'<span class="fnxi">'+(img?'<img alt="" decoding="async" src="'+img+'">':'')+'</span>'
+    +'<span class="fnxt"><b>'+esc(e.n)+'</b>'
+    +'<small>'+a+' série'+(a>1?'s':'')+' · '+esc(EQL[e.eq]||e.eq)+'</small></span></div>';
 }
 function tally(p,s,plan){
   const items=(plan&&plan.items)||s.exos;
@@ -4307,6 +4448,10 @@ function renderFocus(p,s,ti,plan,order){
       +'" data-fgo="'+k+'" aria-label="Exercice '+(k+1)+' : '+esc((byId(oo.x.id)||{n:""}).n)+'"></button>').join("")
     +'</div>'
     +'<span class="fpos">'+(i+1)+' / '+nb+'</span>'
+    /* Le mode focus doit offrir exactement la meme sortie que le mode
+       standard : sans cela, s'arreter obligerait a revenir a la liste. */
+    +'<button class="fnav fstop" id="fstop" aria-label="Arrêter la séance sans enregistrer" title="Arrêter sans enregistrer">'
+    +'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9h6v6H9z"/></svg></button>'
     +'</div>';
 
   h+='<div class="fbody">';
@@ -4383,13 +4528,16 @@ function renderFocus(p,s,ti,plan,order){
   h+='<div class="ffoot">';
   /* Exercice boucle : le bandeau se pose juste au-dessus du minuteur et du
      bouton, la ou l'oeil est deja — pas au milieu de la liste des series. */
+  const nxo=(i<nb-1)?order[i+1]:null;
   if(allDone)h+=exDoneHTML(p,s,x,e);
+  if(allDone)h+=nextExHTML(p,nxo);
   h+='<div class="frest" id="frest" hidden>'
     +'<div class="frtop"><span class="frv" id="frv">0:00</span>'
     +'<span class="frl">Repos calculé · <b id="frtot">'+mmss(smartRest(p,s,x,e,Math.max(0,cur)))+'</b></span>'
     +'<button type="button" class="frb" id="frplus">+30 s</button>'
     +'<button type="button" class="frb" id="frskip">Passer</button></div>'
-    +'<div class="frbar"><i id="frbi"></i></div></div>';
+    +'<div class="frbar"><i id="frbi"></i></div>'
+    +nextExHTML(p,nxo)+'</div>';
 
   const lastEx=(i>=nb-1);
   h+='<button class="btn fvalid" id="fvalid">'
@@ -4405,6 +4553,7 @@ function renderFocus(p,s,ti,plan,order){
   FOC.querySelectorAll("[data-fgo]").forEach(b=>b.onclick=()=>go(+b.dataset.fgo));
   FOC.querySelectorAll("[data-fvar]").forEach(b=>b.onclick=()=>variantDialog(p,ti,+b.dataset.fvar));
   document.getElementById("fback").onclick=()=>{FOCOVR[ti+"_"+today()]=false;closeFocus();renderMain(p);window.scrollTo(0,0)};
+  document.getElementById("fstop").onclick=()=>askStopSession(p,s,ti);
 
   /* reprendre une serie deja passee : on la decoche, elle redevient la
      serie en cours — plutot que de bloquer sur une erreur de frappe. */
@@ -4730,6 +4879,146 @@ function advanceIfDone(p,s,ti,plan,order,xi){
    la journee — repos, ou l'activite declaree au chapitre "Ton cadre" —
    puis quand tombe la prochaine seance, et laisse la consulter d'un tap.
    ================================================================ */
+/* ================================================================
+   SEANCE LIBRE — un jour sans programme
+   ----------------------------------------------------------------
+   Le programme dit quand s'entrainer. Il ne dit pas qu'on n'a pas le droit
+   de le faire ailleurs. Une seance libre s'ajoute au programme, elle ne
+   remplace rien : la rotation des jours ne bouge pas, la semaine garde son
+   compte, et la seance porte sa marque "hors programme" jusque dans
+   l'historique. Elle ne vit qu'un jour : passee minuit, si elle n'a pas ete
+   archivee, elle disparait plutot que de revenir chaque semaine.
+   ================================================================ */
+const MOODS=[
+  {k:"forme",n:"En pleine forme",
+   t:"L'énergie ne se stocke pas. Autant la dépenser sur une barre plutôt que la laisser filer."},
+  {k:"defoul",n:"Besoin de me défouler",
+   t:"Une série lourde est un exutoire honnête. Vas-y franchement — mais la technique passe avant la charge, surtout aujourd'hui."},
+  {k:"flemme",n:"La flemme, mais j'y vais",
+   t:"Commencer est la seule partie difficile. Le premier exercice décide du reste ; après, ça roule tout seul."},
+  {k:"rattrap",n:"Rattraper une séance",
+   t:"Une séance rattrapée vaut mieux qu'une séance regrettée. Elle compte en plus, pas à la place de celle de demain."},
+  {k:"tete",n:"Me vider la tête",
+   t:"Personne ne pense à autre chose sous une série difficile. C'est exactement ce que tu viens chercher."}
+];
+function moodOf(k){return MOODS.find(m=>m.k===k)||MOODS[0]}
+/* Zones proposees. Ce sont des schemas moteurs, pas des noms de muscles :
+   le tirage vient du meme moteur que l'application entiere. */
+const FREEZ={
+  full:{n:"Tout le corps",pats:["knee","push_h","pull_h","push_v_iso","arm_b","core"],mus:["quad","pecs","dos"]},
+  haut:{n:"Haut du corps",pats:["push_h","pull_v","push_v","pull_h","arm_b","arm_t"],mus:["pecs","dos","delt_a"]},
+  bas:{n:"Bas du corps",pats:["knee","hip","knee_uni","hip_iso","calf","core"],mus:["quad","isch","fess"]},
+  bras:{n:"Bras & épaules",pats:["push_v","arm_b","arm_t","push_v_iso","arm_b","arm_t"],mus:["bic","tri","delt_a"]},
+  gain:{n:"Gainage & abdos",pats:["core","core","hip_iso","core","knee_iso","core"],mus:["abdos"]}
+};
+const FREEDUR=[30,45,60,75];
+/* Le materiel du jour peut differer de celui du profil : on s'entraine
+   parfois chez soi un jour de repos. Le choix ne modifie pas le profil. */
+const FREEEQ=[["salle","Salle complète"],["restreint","Haltères & élastiques"],["pdc","Poids du corps"]];
+/* Debut de la semaine en cours (lundi), au format des dates stockees. */
+function weekStartISO(){
+  const d=new Date();d.setHours(12,0,0,0);
+  d.setDate(d.getDate()-((d.getDay()+6)%7));
+  return d.toISOString().slice(0,10);
+}
+/* Seances libres de la semaine : celles deja archivees plus celle du jour si
+   elle existe encore. C'est ce compte qui declenche la mise en garde. */
+function freeWeekCount(p){
+  const w=weekStartISO();
+  let k=(p.hist||[]).filter(r=>r&&r.free&&r.date>=w).length;
+  if((p.prog&&p.prog.sessions||[]).some(z=>z.free&&z.fdate===today()))k++;
+  return k;
+}
+/* Une seance libre non archivee ne survit pas a sa journee. */
+function pruneFree(p){
+  if(!p.prog||!p.prog.sessions)return;
+  const before=p.prog.sessions.length;
+  p.prog.sessions=p.prog.sessions.filter(z=>!z.free||z.fdate===today());
+  if(p.prog.sessions.length!==before){
+    if(TAB>=p.prog.sessions.length)TAB=Math.max(0,p.prog.sessions.length-1);
+    saveP();
+  }
+}
+/* Muscles deja charges la veille et charges le lendemain : ce sont eux que
+   la seance libre a interet a eviter, parce qu'elle s'ajoute a une semaine
+   deja planifiee et que c'est la recuperation qui encaisse. */
+function freeAvoidMus(p,dow){
+  const av={};
+  [(dow+6)%7,(dow+1)%7].forEach(d=>{
+    (p.prog.sessions||[]).filter(z=>z.day===d&&!z.free).forEach(z=>
+      (z.exos||[]).forEach(x=>{const e=byId(x.id);
+        if(e)(e.prim||[]).forEach(m=>{av[m]=1})}));
+  });
+  return av;
+}
+function freeGenerate(p,opt){
+  const c=p.cfg;
+  const cfg=Object.assign({},c,{eq:opt.eq||c.eq});
+  const dow=(new Date().getDay()+6)%7;
+  const av=freeAvoidMus(p,dow);
+  /* Les exercices qui chargent un muscle deja pris la veille ou pris demain
+     passent dans "deja utilise" : pickFor les evite tant qu'il a mieux, sans
+     jamais vider une zone au point de ne plus rien proposer. */
+  const soft=EX.filter(e=>(e.prim||[]).some(m=>av[m])).map(e=>e.id);
+  const taken=[],exos=[];
+  (FREEZ[opt.zone]||FREEZ.full).pats.forEach((pat,j)=>{
+    const e=pickFor(pat,cfg,taken,soft,hashStr(opt.zone+today()+"_"+j+"_"+(c.rot||0)));
+    if(!e)return;
+    taken.push(e.id);
+    exos.push(Object.assign({id:e.id},prescribe(e,cfg)));
+  });
+  if(!exos.length)return null;
+  const sid="free-"+today();
+  return {day:dow,k:"Libre · "+(FREEZ[opt.zone]||FREEZ.full).n,sid:sid,exos:exos,
+    free:1,fdate:today(),mood:opt.mood,zone:opt.zone};
+}
+/* La feuille de lancement. Quatre reponses, pas une de plus : l'humeur (qui
+   choisit le texte), la duree, la zone et le materiel du jour. */
+function freeDialog(p){
+  const st={mood:"forme",dur:p.cfg.dur||60,zone:"full",eq:p.cfg.eq};
+  const cnt=freeWeekCount(p);
+  const over=cnt>=2;
+  const body=()=>''
+    +(over?'<div class="alert w"><b>Troisième séance hors programme cette semaine</b>'
+      +'Ce n\'est pas interdit, mais ce n\'est plus un surplus : c\'est du volume que ta récupération n\'a pas prévu. '
+      +'Les progrès se font pendant le repos, pas pendant la séance. Si tu la lances quand même, allège les charges et raccourcis le format.</div>':'')
+    +'<span class="fy-lbl2">Ton humeur aujourd\'hui</span>'
+    +'<div class="moodrow">'+MOODS.map(m=>'<button type="button" class="moodc'
+      +(st.mood===m.k?" on":"")+'" data-fmd="'+m.k+'">'+esc(m.n)+'</button>').join("")+'</div>'
+    +'<p class="moodtx">'+esc(moodOf(st.mood).t)+'</p>'
+    +'<div class="row" style="gap:8px">'
+    +'<div class="fld half"><label>Durée</label><select id="fq-dur">'
+      +FREEDUR.map(d=>'<option value="'+d+'"'+(st.dur===d?" selected":"")+'>'+d+' min</option>').join("")+'</select></div>'
+    +'<div class="fld half"><label>Zone</label><select id="fq-zone">'
+      +Object.keys(FREEZ).map(k=>'<option value="'+k+'"'+(st.zone===k?" selected":"")+'>'+esc(FREEZ[k].n)+'</option>').join("")+'</select></div>'
+    +'</div>'
+    +'<div class="fld"><label>Matériel disponible</label><select id="fq-eq">'
+      +FREEEQ.map(x=>'<option value="'+x[0]+'"'+(st.eq===x[0]?" selected":"")+'>'+esc(x[1])+'</option>').join("")+'</select></div>';
+  const wire=()=>{
+    MDH.querySelectorAll("[data-fmd]").forEach(b=>b.onclick=()=>{
+      st.mood=b.dataset.fmd;MDH.innerHTML=body();wire()});
+    const d=MDH.querySelector("#fq-dur");if(d)d.onchange=()=>{st.dur=+d.value};
+    const z=MDH.querySelector("#fq-zone");if(z)z.onchange=()=>{st.zone=z.value};
+    const q=MDH.querySelector("#fq-eq");if(q)q.onchange=()=>{st.eq=q.value};
+  };
+  mdOpen({title:"Séance hors programme",
+    msg:"Rien n'est prévu aujourd'hui. Cette séance s'ajoutera à ta semaine sans rien décaler, et sera marquée « hors programme » dans ton historique.",
+    html:body(),ok:over?"Lancer quand même":"Créer la séance",cancel:"Laisser tomber",
+    cb:ok=>{
+      if(!ok)return;
+      const s2=freeGenerate(p,st);
+      if(!s2){toast("Aucun exercice disponible avec ce matériel");return}
+      p.prog.sessions=(p.prog.sessions||[]).filter(z=>!z.free);
+      p.prog.sessions.push(s2);
+      if(!p.dayDur)p.dayDur={};
+      p.dayDur[s2.sid]={d:today(),m:st.dur};
+      saveP();
+      TAB=p.prog.sessions.length-1;RESTVIEW=null;SECT="train";PANEL={};
+      toast(moodOf(st.mood).t.split(".")[0]+".");
+      renderMain(p);window.scrollTo(0,0);
+    }});
+  wire();
+}
 function renderRest(p,pg){
   document.body.classList.remove("ab-on");
   const c=p.cfg,today0=(new Date().getDay()+6)%7;
@@ -4784,6 +5073,16 @@ function renderRest(p,pg){
       +'<span class="va"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>'
       +'</div>';
   }
+  /* Envie de s'entrainer quand meme : proposee seulement sur aujourd'hui.
+     Sur un jour consulte, la question n'a pas de sens. */
+  if(isToday){
+    const fc=freeWeekCount(p);
+    h+='<div class="card freecta"><h4>Envie de t\'entraîner quand même ?</h4>'
+      +'<p class="mut">Une séance hors programme s\'ajoute à ta semaine : elle ne décale rien, ne remplace aucune séance prévue, et compte comme un surplus.'
+      +(fc>=2?' <b style="color:var(--warn)">Tu en as déjà '+fc+' cette semaine</b> — au-delà de deux, c\'est la récupération qui paie.':'')
+      +'</p>'
+      +'<button class="btn'+(fc>=2?" g":"")+'" id="freego">Lancer une séance libre</button></div>';
+  }
   /* Le compte de la semaine vient en dernier et ne commente rien : une carte
      qui situe et se tait. Un mot de plus la rendrait felicitation ou reproche. */
   h+='<div class="card"><h4>Cette semaine</h4>'
@@ -4817,6 +5116,8 @@ function renderRest(p,pg){
   pg.innerHTML=h;
   const g=document.getElementById("restgo");
   if(g)g.onclick=()=>{RESTVIEW=null;TAB=ni;renderMain(p);window.scrollTo(0,0)};
+  const fg=document.getElementById("freego");
+  if(fg)fg.onclick=()=>freeDialog(p);
 }
 function renderSession(p,s,ti,pg){
   const pain=p.cfg.pain||[];
@@ -4838,6 +5139,11 @@ function renderSession(p,s,ti,pg){
      droite empilait deux elements de plus sans rien dire de neuf. */
   h+='<div class="shd"><h2>'+esc(s.k)+'</h2>'
     +'<span class="sdur"><b id="ptxt">'+progressText(t0)+'</b></span></div>';
+  /* Une seance libre le dit d'entree : elle ne remplace rien, elle s'ajoute.
+     Sans cette ligne, on la confondrait avec une seance du programme et on
+     croirait que la semaine a change. */
+  if(s.free)h+='<p class="scs"><span class="freetag">Hors programme</span> '
+    +esc(moodOf(s.mood).t)+'</p>';
   h+='<div class="prog"><i style="width:'+pct+'%"></i></div>';
   const op=PANEL[ti]||null;
   /* Un seul point d'entree pour les reglages de la seance, plutot qu'une
@@ -5179,7 +5485,9 @@ function renderSession(p,s,ti,pg){
   }
   h+='<div class="fld"><label>Note de séance</label><textarea id="snote" rows="3" placeholder="Charges, ressenti, douleurs, affluence…">'+esc(p.notes[s.sid]||"")+'</textarea></div>';
   h+='<button class="btn" id="finish">Terminer la séance et l\'archiver</button>';
-  h+='<button class="btn g" id="reset">Réinitialiser cette séance</button><div style="height:26px"></div></div>';
+  h+='<button class="btn d" id="stopses">Arrêter sans enregistrer</button>'
+    +'<p class="mut">Pour un imprévu ou une erreur de manipulation : la séance est décochée entièrement et revient à l\'état « à démarrer ». Rien n\'est archivé.</p>'
+    +'<div style="height:26px"></div></div>';
   /* --- Barre d'action de seance -----------------------------------------
      Une seule barre, posee au-dessus de la navigation dont elle reprend le
      fond et le filet : elle ne recouvre rien, elle prend sa place. Son
@@ -5443,15 +5751,12 @@ function renderSession(p,s,ti,pg){
       o.className=(l.diff===o.dataset.df.split("|")[2])?"dsel":""});
     advanceIfDone(p,s,ti,plan,order,+xi)});
   document.getElementById("snote").onchange=e=>{p.notes[s.sid]=e.target.value;saveP()};
-  document.getElementById("reset").onclick=()=>{
-    s.exos.forEach(x=>{for(let i=0;i<x.sets;i++){DEL("chk_"+sKey(p,s.sid,x.id,i));DEL("srep_"+sKey(p,s.sid,x.id,i));DEL("skg_"+sKey(p,s.sid,x.id,i))}});
-    p.logs=p.logs.filter(l=>l.k.indexOf(s.sid+"_")!==0);delete p.notes[s.sid];
-    if(p.dayDur)delete p.dayDur[s.sid];
-    saveP();toast("Séance réinitialisée");renderMain(p)};
+  document.getElementById("stopses").onclick=()=>askStopSession(p,s,ti);
   document.getElementById("finish").onclick=()=>{
     const prevBadgeSt=badgeStats(p);
     const tl=tally(p,s,plan);
     const rec={date:today(),k:s.k,day:s.day,done:tl.done+tl.bonus,tot:tl.tot,dur:dm,
+      free:s.free?1:0,mood:s.free?(s.mood||""):"",
       note:p.notes[s.sid]||"",ex:[]};
     /* Detection de record : on compare a la meilleure charge deja archivee
        AVANT d'ecrire celle du jour, et seulement si une reference existait
@@ -6360,7 +6665,8 @@ const BCATS={
   seances:{n:"Assiduité",d:"Séances terminées",u:"séance"},
   series:{n:"Volume",d:"Séries effectuées au total",u:"série"},
   prs:{n:"Records",d:"Charges battues sur un mouvement",u:"record"},
-  perfect:{n:"Précision",d:"Séances où tous les objectifs sont atteints",u:"séance"}
+  perfect:{n:"Précision",d:"Séances où tous les objectifs sont atteints",u:"séance"},
+  impr:{n:"Imprévu",d:"Séances lancées un jour sans programme",u:"séance"}
 };
 /* Onglet Medailles : la collection complete, famille par famille, avec la
    progression vers le palier suivant. C'est l'ecran de recompense — il ne
@@ -6955,6 +7261,10 @@ function renderProfil(p,pg){
     +'<p class="mut" style="margin-top:8px">« Écran vertical » refuse la mise en page paysage : si le téléphone tourne, l\'app demande de le remettre droit au lieu de tout réorganiser. Un vrai verrou d\'orientation n\'existe pas dans Safari — il faudrait une app installée depuis l\'App Store.</p>'
     +(HAS_VIB?'':'<p class="mut" style="margin-top:8px">La vibration n\'existe pas dans Safari iOS : seul le bip signale la fin du repos.</p>')
     +'</div>';
+  if(PT==="sea")h+='<div class="card"><h4>Apparence</h4>'
+    +'<p class="mut">Trois palettes, un seul système. Seuls les accents changent : le vert d\'une série faite et la terre cuite d\'un record ne bougent dans aucune des trois, parce que ce sont des signaux.</p>'
+    +palChips(p,"data-palk")
+    +'</div>';
   if(PT==="don")h+='<div class="card"><h4>Sauvegarde &amp; partage</h4>'
     +'<p>Les données de ce profil vivent uniquement sur cet appareil. Un vidage du cache du navigateur les efface : exporte régulièrement.</p>'
     +'<button class="btn g" id="p-exp">Sauvegarder ce profil</button>'
@@ -6986,6 +7296,9 @@ function renderProfil(p,pg){
   const tg=(id,k)=>on(id,"onclick",()=>{p.set[k]=!p.set[k];saveP();renderMain(p)});
   tg("s-t","timer");tg("s-s","sound");if(HAS_VIB)tg("s-v","vib");
   on("s-p","onclick",()=>{p.set.portrait=!portraitOn(p);saveP();applyPortrait(p);renderMain(p)});
+  pg.querySelectorAll("[data-palk]").forEach(b=>b.onclick=()=>{
+    p.set.pal=b.dataset.palk;saveP();applyPal(p);
+    toast("Palette "+(PALS.find(x=>x.k===p.set.pal)||{n:""}).n);renderMain(p)});
   on("p-exp","onclick",()=>backupDialog(p));
   on("p-del","onclick",()=>{
     askConfirm("Supprimer « "+p.name+" » ?",
