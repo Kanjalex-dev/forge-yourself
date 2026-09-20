@@ -11,9 +11,8 @@
 <meta name="description" content="Générateur et suivi de programme de musculation, hors ligne.">
 <meta name="theme-color" content="#0D1014">
 <meta name="format-detection" content="telephone=no">
-<link rel="icon" href="icon-192.png">
-<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
-<link rel="manifest" href="manifest.json">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230F1215'/><g transform='rotate(-18 32 32)'><rect x='15' y='29.5' width='34' height='5' rx='2.5' fill='%23D9A441'/><rect x='18.5' y='22' width='7' height='20' rx='3' fill='%234A7CA8'/><rect x='38.5' y='22' width='7' height='20' rx='3' fill='%234A7CA8'/><rect x='10.5' y='26' width='5.5' height='12' rx='2.5' fill='%23C96A4E'/><rect x='48' y='26' width='5.5' height='12' rx='2.5' fill='%23C96A4E'/></g></svg>">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
 <title>Forge Yourself</title>
 <style>
 /* Polices de la direction artistique embarquees en base64 : l'appli
@@ -249,6 +248,10 @@ h2.sc,.shd h2,.finhero h3,.vscr-tt b,.vscr-sheethd b,.histab,.dcell .dl,.wlbl,
 h2.sc,.shd h2,.finhero h3,.vscr-tt b,.vscr-sheethd b{font-variation-settings:"wdth" 113}
 h2.sc{font-size:1.15rem;margin:2px 0 2px;font-weight:800;letter-spacing:-.02em}
 p.scs{color:var(--mut);font-size:.76rem;margin:0 0 14px}
+/* La ligne "5 exercices - 13 series" et l'etiquette "Hors programme" tiennent
+   sur une ligne quand il y a la place, et passent a la ligne sinon, au lieu de
+   pousser l'etiquette hors de l'ecran. */
+p.scs .fbits{margin-right:7px}
 .card{background:var(--sf);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
 .card.sel{border-color:var(--brand);background:#2A2113}
 .card h4{margin:0 0 8px;font-size:.66rem;color:var(--brand);text-transform:uppercase;letter-spacing:.05em}
@@ -395,6 +398,38 @@ font-size:.66rem;color:var(--mut);padding:0 0 12px;margin-top:-2px}
 .bandcap b.wfree{color:var(--warn)}
 /* Note de bas d'ecran : une information de contexte, pas une carte. */
 .alsol{font-size:.68rem;color:var(--dim);line-height:1.5;margin:12px 2px 0}
+/* --- Jour de repos ---------------------------------------------------------
+   Un jour de repos est un jour ou il ne se passe rien, et l'ecran doit le
+   dire en ne montrant presque rien. Trois blocs, dans cet ordre : le titre,
+   l'activite exterieure si elle a ete declaree, une phrase. Puis, tout en bas
+   et discretement, la porte de sortie pour qui veut s'entrainer quand meme. */
+.restact{display:inline-flex;align-items:center;gap:8px;margin:14px 0 0;
+padding:7px 11px 7px 9px;border-radius:9px;
+background:var(--sf);border:1px solid var(--line);
+font-size:.76rem;color:var(--txt)}
+.restact svg{flex:0 0 auto;color:var(--brand2)}
+.restact b{font-weight:600}
+.restact small{display:block;font-size:.66rem;color:var(--dim);margin-top:1px}
+/* La phrase du jour : elle a de l'air autour d'elle, c'est ce qui lui donne
+   son poids. Pas de cadre, pas de fond — sinon c'est une carte de plus. */
+.restinsp{margin:22px 2px 0;font-family:var(--disp);
+font-variation-settings:"wdth" 104;
+font-size:1.02rem;line-height:1.5;font-weight:500;color:var(--txt);
+text-wrap:balance}
+.restinsp span{display:block;margin-top:8px;font-family:var(--sans);
+font-size:.74rem;font-weight:400;line-height:1.55;color:var(--mut)}
+/* Le vide qui separe la phrase de la proposition : il fait le calme de
+   l'ecran, il n'est pas la par defaut. */
+.restgap{height:clamp(40px,14vh,110px)}
+/* La proposition de seance libre : une ligne, un trait, un lien. Pas de carte,
+   pas d'aplat — l'aplat plein est la couleur de l'action, et lancer une seance
+   un jour de repos n'est pas l'action recommandee. */
+.freesob{border-top:1px solid var(--line);padding-top:16px;margin:0 2px}
+.freesob h4{margin:0 0 4px;font-size:.62rem;color:var(--brand);
+text-transform:uppercase;letter-spacing:.06em}
+.freesob p{margin:0 0 12px;font-size:.74rem;line-height:1.5;color:var(--mut)}
+.freesob .btn{margin-top:0}
+.freesob .fwarn{color:var(--warn)}
 .resthero{padding:2px 0 4px}
 .restdate{display:block;font-family:var(--mono);font-size:.63rem;letter-spacing:.09em;
 text-transform:uppercase;color:var(--dim)}
@@ -737,7 +772,11 @@ font-weight:700;color:var(--brand2);margin:0 0 3px}
 .donecnt.ok{color:var(--ok);display:inline-flex;align-items:center;gap:4px}
 .donecnt.ok svg{flex:0 0 auto}
 /* Le bouton "Changer" n'est plus qu'une icone, glissee avant le compteur. */
-.vbtn.ico{padding:0;width:34px;height:34px;justify-content:center;flex:0 0 auto;margin-left:6px}
+.vbtn.ico{padding:0;width:34px;height:34px;justify-content:center;flex:0 0 auto;margin-left:6px;
+/* Meme regle que .fstep : le bouton reste petit a l'oeil, la cible fait 44 px. */
+position:relative}
+.vbtn.ico::after{content:"";position:absolute;left:50%;top:50%;
+width:44px;height:44px;transform:translate(-50%,-50%)}
 .vbtn.ico svg{margin:0}
 
 /* --- Feuille de saisie d'une valeur (reps, charge) --- */
@@ -1355,7 +1394,11 @@ letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 .wacts:empty{display:none;margin:0}
 .wacts .lestin{width:62px;background:var(--sf2);border:1px solid var(--line);border-radius:8px;
 padding:6px 8px;color:var(--txt);font-family:var(--mono);font-size:.74rem}
-.mini.xs{padding:5px 10px;font-size:.7rem;min-height:38px}
+.mini.xs{padding:5px 10px;font-size:.7rem;min-height:38px;position:relative}
+/* 38 px annonces, mais le bouton se retrouve a 32 quand il partage une rangee
+   serree : la cible est fixee a 44 px par-dessous, quel que soit le calcul. */
+.mini.xs::after{content:"";position:absolute;left:0;right:0;top:50%;
+height:44px;transform:translateY(-50%)}
 /* Effet au changement de charge : les disques naissent a leur place, une
    fois, et seulement quand on a touche le selecteur — jamais au simple
    affichage de la page. */
@@ -1637,7 +1680,15 @@ color:var(--mut);cursor:pointer;font-family:inherit;display:flex;align-items:cen
 .fsteps{flex:1 1 auto;display:flex;gap:4px;align-items:center;min-width:0}
 .fstep{flex:1 1 0;height:22px;min-width:0;border:0;border-radius:2px;background:transparent;
 padding:0;cursor:pointer;background-image:linear-gradient(#232A33,#232A33);
-background-size:100% 3px;background-position:center;background-repeat:no-repeat}
+background-size:100% 3px;background-position:center;background-repeat:no-repeat;
+/* Le trait fait 3 px de haut, et c'est voulu : il indique, il ne s'impose pas.
+   Mais on le TOUCHE, et un doigt ne vise pas 22 px. La zone tactile est donc
+   etendue a 44 px par-dessus et par-dessous, sans rien changer au dessin.
+   Le pseudo-element deborde volontairement de la barre : elle n'a rien
+   au-dessus ni en dessous sur cette hauteur. */
+position:relative}
+.fstep::after{content:"";position:absolute;left:0;right:0;top:50%;
+height:44px;transform:translateY(-50%)}
 .fstep.dn{background-image:linear-gradient(var(--brand2),var(--brand2))}
 .fstep.cu{background-image:linear-gradient(var(--brand),var(--brand));background-size:100% 5px}
 .fpos{flex:0 0 auto;text-align:right;font-family:var(--mono);font-size:.72rem;color:var(--mut);
@@ -5109,24 +5160,47 @@ function weekSpan(){
     ? "Semaine du "+a.getDate()+" au "+b.getDate()+" "+M[b.getMonth()]
     : "Semaine du "+a.getDate()+" "+M[a.getMonth()]+" au "+b.getDate()+" "+M[b.getMonth()];
 }
-/* Les activites declarees des AUTRES jours, situees par rapport aux seances
-   voisines. Elles rejoignent "Ce qui vient" : c'est la meme question — qu'est-ce
-   qui m'attend — et ca fait une carte de moins. */
-function otherActsHTML(p,dow){
-  const c=p.cfg,out=[];
-  for(let d=0;d<7;d++){
-    if(d===dow)continue;
-    const a=(c.acts&&c.acts[d])||"";
-    if(!a||a==="—"||a==="Repos")continue;
-    const after=(p.prog.sessions||[]).find(z=>z.day===(d+1)%7);
-    const before=(p.prog.sessions||[]).find(z=>z.day===(d+6)%7);
-    const situ=after?("avant "+after.k):(before?("après "+before.k):"activité déclarée · Forge ne la suit pas");
-    out.push('<div class="vrow2 restoth">'
-      +'<span class="vi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20l4-9 5 3 5-9"/></svg></span>'
-      +'<span class="vtx"><b>'+esc(DAYS_FR[d])+' — '+esc(a)+'</b>'
-      +'<small>'+esc(situ)+'</small></span></div>');
-  }
-  return out.join("");
+/* ---------------- Jour de repos ----------------
+   Un jour de repos est un jour ou il ne se passe rien. L'ecran doit le dire en
+   ne montrant presque rien : le titre est TOUJOURS "Jour de repos", meme quand
+   une activite exterieure est declaree — c'est le cadre du jour, et l'activite
+   est une information qui s'y ajoute, pas un titre qui le remplace.
+
+   Ce qui a ete retire, et pourquoi : le rappel des seances a venir. Il disait
+   la meme chose que la bande des sept jours juste au-dessus, en trois fois plus
+   de place, et il transformait un ecran de repos en tableau de bord. Le calme
+   de cet ecran est son contenu. */
+
+/* Les phrases du jour. Ni encouragement, ni injonction : ce qui se passe
+   vraiment quand on ne fait rien. La seconde ligne, plus basse de ton, porte le
+   fait mecanique — c'est ce qui evite que la premiere sonne creux.
+   Le tirage est stable a la journee : la meme date donne la meme phrase, sinon
+   un simple retour sur l'ecran la changerait sous les yeux. */
+const REPOSTX=[
+  ["Le muscle ne se construit pas pendant l'effort.",
+   "Il se répare après, et c'est maintenant."],
+  ["Ce que tu as soulevé cette semaine travaille encore.",
+   "La fibre se reconstruit plus épaisse qu'avant — à condition qu'on la laisse faire."],
+  ["Un jour sans séance n'est pas un jour perdu.",
+   "C'est la moitié du programme, écrite noir sur blanc dans le plan."],
+  ["La progression se joue sur des mois, pas sur une journée.",
+   "Rien de ce que tu ferais aujourd'hui n'irait plus vite."],
+  ["Le système nerveux récupère plus lentement que les muscles.",
+   "C'est lui qui décide de la force du jour où tu reviens."],
+  ["Bien dormir fait plus pour la charge de demain que n'importe quelle série.",
+   "Sept à neuf heures : c'est la seule séance d'aujourd'hui."],
+  ["S'arrêter au bon moment est une compétence.",
+   "Elle se travaille comme le reste, et elle se perd aussi vite."],
+  ["Les records se préparent les jours où il ne se passe rien.",
+   "C'est aujourd'hui que se gagne la séance de la semaine prochaine."],
+  ["Manger normalement un jour de repos n'est pas une entorse.",
+   "La reconstruction demande de la matière, pas de la privation."],
+  ["La régularité bat l'intensité sur douze mois.",
+   "Tenir le plan, c'est aussi respecter les jours vides."]
+];
+function reposTx(dateStr){
+  const t=REPOSTX[hashStr("repos"+dateStr)%REPOSTX.length];
+  return '<p class="restinsp">'+esc(t[0])+'<span>'+esc(t[1])+'</span></p>';
 }
 function renderRest(p,pg){
   document.body.classList.remove("ab-on");
@@ -5135,92 +5209,49 @@ function renderRest(p,pg){
   const isToday=(dow===today0);
   const act=(c.acts&&c.acts[dow])||"";
   const isAct=act&&act!=="—"&&act!=="Repos";
-  const ni=nextSessIdx(p,dow),nd=daysUntilSess(p,ni,dow);
-  const ns=(p.prog.sessions||[])[ni];
   const wdone=weekDoneDays(p);
   const doneW=(p.prog.sessions||[]).filter(z=>wdone[z.day]).length;
   const totW=(p.prog.sessions||[]).length;
-  /* La derniere seance passee de la semaine : elle donne la raison mecanique
-     du jour de repos, qui vaut mieux qu'un encouragement. */
-  let prevDay=null;
-  for(let k=1;k<=7;k++){
-    const d=(dow-k+7)%7;
-    if((p.prog.sessions||[]).some(z=>z.day===d)){prevDay=d;break}
-  }
   const dateTxt=weekDate(dow)+(isToday?" · aujourd'hui":"");
-  /* Phrase du jour : un constat mecanique, jamais un encouragement. */
-  /* Le jour consulte n'est pas forcement aujourd'hui : la phrase se conjugue. */
-  const QUAND=isToday?"aujourd'hui":"ce jour-là";
-  let phrase;
-  if(isAct){
-    /* Planche 06 : la mention "Forge ne la suit pas" entre dans la phrase au
-       lieu d'occuper une pastille a part. Elle dit la meme chose et coute une
-       ligne de moins sur un ecran dont le propos est qu'on ne fait rien. */
-    const NS="Activité déclarée · <b>Forge ne la suit pas.</b> ";
-    phrase=(nd===1&&ns)
-      ? NS+"<b>"+esc(ns.k)+" demain</b> : la séance arrive sur des jambes et un dos reposés. L'ordre est bon."
-      : (prevDay!=null
-        ? NS+"Au lendemain de la séance de "+esc(DAYS_FR[prevDay].toLowerCase())+" : bouger sans charger, c'est ce qu'il fallait."
-        : NS+"Pas de musculation prévue "+QUAND+".");
-  }else{
-    phrase=prevDay!=null
-      ? "Pas de séance "+QUAND+", et c'est écrit dans le programme. <b>La charge de "+esc(DAYS_FR[prevDay].toLowerCase())+" travaille pendant que tu ne fais rien.</b>"
-      : "Pas de séance "+QUAND+", et c'est écrit dans le programme. <b>Le repos est ce qui transforme la charge en progrès.</b>";
-  }
-  /* Planche 06, proposition B : le compte de la semaine devient la LEGENDE de
-     la bande des sept jours, qui est juste au-dessus et porte deja
-     l'information — chaque pastille dit son etat. La carte "Cette semaine" ne
-     faisait que la retraduire en chiffres cinq cents pixels plus bas ; c'est
-     ce doublon qui allongeait l'ecran et brouillait l'ordre de lecture. */
   const freeW=freeWeekCount(p);
+  /* La legende de la bande des sept jours reste : elle tient sur une ligne et
+     elle appartient a la bande qui la surmonte, pas a cet ecran. */
   let h='<div class="page on">'
     +'<div class="bandcap"><span>'+esc(weekSpan())+'</span>'
     +'<span><b>'+doneW+' séance'+(doneW>1?'s':'')+'</b> sur '+totW
     +(freeW?' · <b class="wfree">'+freeW+' libre'+(freeW>1?'s':'')+'</b>':'')
     +'</span></div>'
-    +'<div class="resthero'+(isAct?" act":"")+'">'
+    +'<div class="resthero">'
     +'<span class="restdate">'+esc(dateTxt)
     +(isToday?'':'<span class="restoth2">Jour consulté</span>')+'</span>'
-    +'<h2>'+(isAct?esc(act):"Repos")+'</h2>'
-    +'<p>'+phrase+'</p></div>';
-  if(ns){
-    h+='<div class="card"><h4>Ce qui vient</h4>'
-      +'<button class="vrow2 restnext" id="restgo">'
-      +'<span class="vi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6M8 7v10M16 7v10M20 9v6M8 12h8"/></svg></span>'
-      +'<span class="vtx"><b>'+esc(DAYS_FR[ns.day])+' — '+esc(ns.k)+'</b>'
-      +'<small>'+ns.exos.length+' exercices · '+(isToday
-        ?(nd===1?"demain":(nd!=null&&nd>1?"dans "+nd+" jours":"aujourd'hui"))
-        :(nd===1?"le lendemain":(nd!=null&&nd>1?nd+" jours plus tard":"")))+'</small></span>'
-      +'<span class="va"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>'
-      +otherActsHTML(p,dow)
-      +'</div>';
+    +'<h2>Repos</h2>';
+  /* L'activite declaree, quand il y en a une : elle vient EN DESSOUS du titre,
+     comme une information. "Forge ne la suit pas" est dit une fois, en petit :
+     l'application ne compte ni la distance ni la depense, et il vaut mieux
+     l'annoncer que laisser chercher ou est passee la course. */
+  if(isAct){
+    h+='<p class="restact">'
+      +'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20l4-9 5 3 5-9"/></svg>'
+      +'<span><b>'+esc(act)+'</b>'
+      +'<small>Activité déclarée — Forge ne la suit pas.</small></span></p>';
   }
-  /* Envie de s'entrainer quand meme : proposee seulement sur aujourd'hui.
-     Sur un jour consulte, la question n'a pas de sens. */
+  h+=reposTx(weekDate(dow)+"|"+dow)+'</div>';
+  h+='<div class="restgap"></div>';
+  /* La porte de sortie, tout en bas et sans aplat : le repos reste la
+     recommandation, la seance libre est possible, pas suggeree. */
   if(isToday){
     const fc=freeWeekCount(p);
-    /* Planche 05, C1 : une offre, pas une injonction. Le repos reste la
-       recommandation par defaut, et la carte se lit apres ce qui est prevu. */
-    h+='<div class="card freecta"><h4>L\'envie est là malgré tout ?</h4>'
-      +'<p class="mut">Une séance libre, en supplément. Elle ne décale pas ton programme.'
-      +(fc>=2?' <b style="color:var(--warn)">Tu en as déjà '+fc+' cette semaine</b> — au-delà de deux, c\'est la récupération qui paie.':'')
+    h+='<div class="freesob"><h4>Envie de t\'entraîner quand même</h4>'
+      +'<p>Forge génère une séance d\'après ton programme : ton matériel, ton niveau, '
+      +'ton objectif. Elle s\'ajoute à la semaine sans rien décaler.'
+      +(fc>=2?' <b class="fwarn">Tu en as déjà '+fc+' cette semaine</b> — au-delà de deux, c\'est la récupération qui paie.':'')
       +'</p>'
-      +'<button class="btn'+(fc>=2?" g":"")+'" id="freego">Lancer une séance libre</button></div>';
-  }
-  /* Sur un jour consulte, la seance libre n'est pas proposee : on ne peut en
-     lancer une qu'aujourd'hui. Une carte grisee poserait la question sans y
-     repondre — on l'explique en une ligne a la place. */
-  if(!isToday)h+='<p class="alsol">Sur un jour consulté, la séance libre n\'est pas proposée : on ne peut lancer une séance qu\'aujourd\'hui.</p>';
-  /* Si aucune seance ne vient — programme vide —, les activites declarees
-     n'ont pas trouve de carte : on leur en donne une. */
-  if(!ns){
-    const o2=otherActsHTML(p,dow);
-    if(o2)h+='<div class="card"><h4>Ce qui vient</h4>'+o2+'</div>';
+      +'<button class="btn g" id="freego">Lancer une séance libre</button></div>';
+  }else{
+    h+='<p class="alsol">Sur un jour consulté, la séance libre n\'est pas proposée : on ne peut lancer une séance qu\'aujourd\'hui.</p>';
   }
   h+='<div style="height:26px"></div></div>';
   pg.innerHTML=h;
-  const g=document.getElementById("restgo");
-  if(g)g.onclick=()=>{RESTVIEW=null;TAB=ni;renderMain(p);window.scrollTo(0,0)};
   const fg=document.getElementById("freego");
   if(fg)fg.onclick=()=>freeDialog(p);
 }
@@ -5251,9 +5282,12 @@ function renderSession(p,s,ti,pg){
      l'etiquette "hors programme", puis le mot lie a l'humeur. L'etiquette est
      presente partout pour qu'on ne confonde jamais avec une seance du plan. */
   if(s.free){
-    const zn=(FREEZ[s.zone]||{}).n||"Séance",nse=(s.exos||[]).reduce((a,x)=>a+(x.sets||0),0);
+    /* Les chiffres viennent du PLAN, pas de la liste brute : le format du jour
+       comprime la seance, et annoncer "6 exercices - 15 series" au-dessus d'un
+       ecran qui en montre 5 et 13 fait douter de tout le reste. */
+    const zn=(FREEZ[s.zone]||{}).n||"Séance";
     h+='<p class="scs"><b>'+esc(zn)+' · '+(s.fdur||dm)+' min</b><br>'
-      +(s.exos||[]).length+' exercices · '+nse+' séries · '
+      +'<span class="fbits">'+plan.n+' exercice'+(plan.n>1?'s':'')+' · '+tot+' série'+(tot>1?'s':'')+'</span>'
       +'<span class="freetag">Hors programme</span></p>'
       +'<p class="moodtx">'+esc(moodOf(s.mood).t)+'</p>';
   }
@@ -5313,7 +5347,11 @@ function renderSession(p,s,ti,pg){
     +'<b>'+plan.est+'</b><span class="u">min</span></span>'
     +(kcSess!=null?'<span class="stag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s5 4.5 5 9a5 5 0 01-10 0c0-1.8.8-3.4 1.7-4.6.5 1.4 1.4 2.1 2.3 2.1 1 0 1.5-1 1-2.7-.4-1.4-.7-2.6-.5-3.8z"/></svg>'
       +'<b>'+kcSess+'</b><span class="u">kcal</span></span>':'')
-    +(dm!==def?'<span class="stag w">format <b>'+dm+'</b> min</span>':'')
+    /* Sur une seance libre, le format est deja annonce en toutes lettres dans
+       le bandeau juste au-dessus. Le repeter ici ajoute une pastille de plus a
+       une rangee qui deborde alors de l'ecran et se fait trancher par le
+       degrade : deux fois la meme information, pour un bug visuel. */
+    +((dm!==def&&!s.free)?'<span class="stag w">format <b>'+dm+'</b> min</span>':'')
     +(pain.length?'<span class="stag w"><b>'+pain.length+'</b> zone'+(pain.length>1?"s":"")+'</span>':'')
     +(varyRank(p,s)?'<span class="stag">variante <b>'+varyRank(p,s)+'</b></span>':'')
     +(!p.set.timer?'<span class="stag w">minuteur coupé</span>':'')
