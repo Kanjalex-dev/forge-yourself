@@ -1605,6 +1605,15 @@ color:var(--mut);background:var(--sf2);padding:5px 7px;border-radius:5px}
 border-radius:10px;padding:0 11px;height:46px}
 .fsrow.dn{opacity:.55}
 .fsrow.bonus{border-style:dashed;border-color:var(--line)}
+/* Une serie validee se lit pareil en focus qu'en mode standard : meme vert,
+   meme fond, meme bordure. Le focus se contentait d'un estompage, ce qui
+   faisait lire "desactive" la ou le mode standard dit "fait". Place apres
+   .bonus pour gagner sur border-color a specificite egale. */
+.fsrow.dn{opacity:1;background:rgba(111,160,122,.12);border-color:rgba(111,160,122,.38)}
+.fsrow.dn .fsno{color:var(--ok)}
+.fsrow.dn .fsval{color:var(--ok)}
+.fsrow.dn .fsok{color:var(--ok)}
+.fsrow.dn .fsedit{color:var(--mut)}
 .fsrow.cu{border-color:var(--brand);background:var(--sf);height:52px}
 .fsrow .fsno{flex:0 0 auto;width:20px;font-family:var(--mono);font-size:.72rem;color:var(--mut)}
 .fsrow.cu .fsno{color:var(--brand)}
