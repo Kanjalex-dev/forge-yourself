@@ -227,12 +227,12 @@ display:flex;align-items:center;justify-content:center;font-weight:700;color:var
 .cyref .r s{display:inline-block;min-width:3.4em;text-align:right;color:var(--mut);text-decoration:none}
 .cyref .r i{font-style:normal;color:var(--dim)}
 .cyref .r b{display:inline-block;min-width:4.8em;text-align:right;color:var(--ok)}
-.cydurs{display:flex;gap:8px;margin:0 0 14px}
-.cydur{flex:1;background:none;border:1px solid var(--line);border-radius:11px;padding:13px 8px;
- color:var(--txt);font:inherit;font-size:.8rem;font-weight:600;cursor:pointer;min-height:48px}
-.cydur.on{background:rgba(217,164,65,.09);border-color:rgba(217,164,65,.42)}
-.cydur i{display:block;font-style:normal;font-size:.58rem;letter-spacing:.07em;
- text-transform:uppercase;color:var(--brand);font-weight:700;margin-top:4px}
+/* Un nombre en ligne dans une phrase suit la meme convention que partout
+   ailleurs : chasse fixe, graisse normale, chiffres tabulaires. */
+.nb{font-family:var(--mono);font-weight:400;font-variant-numeric:tabular-nums}
+.cysep{display:flex;align-items:center;gap:12px;margin:16px 0 12px;
+ font-size:.66rem;letter-spacing:.09em;text-transform:uppercase;color:var(--mut);font-weight:700}
+.cysep:before,.cysep:after{content:"";flex:1;height:1px;background:var(--line)}
 .cyreco{display:block;font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;
  font-weight:700;color:var(--ink);opacity:.72;margin-bottom:3px}
 /* Compteur de medailles dans l'en-tete : la recompense est visible depuis
@@ -1044,7 +1044,10 @@ font-size:.7rem;color:var(--mut)}
 .shgear .vi{flex:0 0 auto;display:flex;color:var(--sec-shop-ac)}
 .shgear b{color:var(--txt);font-weight:600}
 .shlater{width:100%;margin-top:12px;background:0;border:0;color:var(--mut);
-font-family:inherit;font-size:.78rem;padding:9px;cursor:pointer}
+font-family:inherit;font-size:.78rem;padding:9px;cursor:pointer;min-height:44px}
+/* 44 px : releve a la recette du cycle, .shlater tombait a 32 px. Le defaut
+   est anterieur — la feuille de demarrage de seance le portait deja — mais il
+   entre dans les ecrans du cycle, donc il se corrige la ou il est defini. */
 .shlater:hover,.shlater:focus-visible{color:var(--txt)}
 
 /* Rappel de sauvegarde */
@@ -2528,13 +2531,20 @@ function newProfile(name){
    NON persiste : un « plus tard » ne doit pas se transformer en refus
    definitif qu'on ne sait plus annuler. */
 let CYCLE_REPORTE=false, CYCLE_SUITE=false;
+/* Numero du cycle ARCHIVE dont on affiche le bilan, ou null. Sert au solde
+   retrospectif et a la relecture depuis l'onglet Suivi. */
+let CYCLE_BILAN=null;
 
 /* Le bilan de fin de cycle. DEUX objets encadres, pas cinq : les trois
    chiffres de tete sont une rangee de mesures SANS encadre — sinon ils
    gagnent sur le tableau des charges, qui est le vrai contenu, la seule
    preuve tangible que six semaines ont servi a quelque chose. */
-function sheetCycleBilan(p){
-  const c=p.cycle, b=cycleBilan(p,c,today(),c.rmDebut||{},cyclePrs(p,c));
+function sheetCycleBilan(p,cycle){
+  const c=cycle||p.cycle;
+  /* c.rmDebut tel quel, sans ||{} : null veut dire « photo non prise » et
+     doit le rester jusqu'au bilan. Le remplacer par un objet vide ferait
+     afficher une progression depuis zero. */
+  const b=cycleBilan(p,c,c.fin||today(),c.rmDebut,cyclePrs(p,c));
   const g=GOALS[c.goal]?GOALS[c.goal].n:c.goal;
   const t=Math.round(b.tonnage/100)/10;
   let h='<div class="sheet" id="cysheet"><div class="shveil" data-cyclose></div>'
@@ -2549,7 +2559,21 @@ function sheetCycleBilan(p){
     +'<div><span class="l">Tonnage</span><span class="v">'+String(t).replace(".",",")+'<i> t</i></span></div>'
     +'<div><span class="l">Records</span><span class="v pr">'+b.records+'</span></div>'
     +'</div>';
-  if(b.hausses.length){
+  if(!b.connues){
+    /* On dit qu'on ne sait pas plutot que d'afficher une progression depuis
+       zero. C'est le seul endroit ou la retroactivite a une limite, et la
+       masquer couterait la credibilite de tous les autres chiffres. */
+    /* Pas d'encadre d'alerte : rien n'est en cause, rien n'est a faire, et le
+       champ n'existait pas. Peindre ca en laiton transformerait un fait du
+       passe en defaut a porter — et la DA interdit que warn porte une
+       information tout seul.
+       Et pas de promesse : « le prochain cycle les comparera » etait faux, son
+       antecedent etant les charges de depart DE CE cycle, qui n'existeront
+       jamais. La cause d'abord, puis on s'arrete. */
+    h+='<div class="card"><h4>Charges de référence</h4>'
+      +'<p class="mut" style="margin:0">Ce programme a commencé avant les cycles : '
+      +'il n\'y a pas de charges de départ à comparer.</p></div>';
+  } else if(b.hausses.length){
     h+='<div class="card"><h4>Charges de référence</h4>';
     b.hausses.forEach(x=>{
       /* cfg.rm porte les cles des quatre mouvements de reference — dc,
@@ -2602,12 +2626,40 @@ function sheetCycleSuite(p){
 
 /* La proposition d'ouverture, pour un profil qui n'a jamais eu de cycle —
    c'est la « migration » : un ecran, pas un script. */
+/* La feuille ne DEMANDE PLUS la duree, et c'est une decision produit.
+   Elle demandait de choisir entre 4, 6 et 8 semaines dans la phrase meme qui
+   apprend ce qu'est un cycle : dix secondes apres avoir decouvert la notion,
+   personne ne peut repondre — la demonstration que 6 est le bon chiffre tient
+   en quatre paragraphes et un tableau, et ils ne sont pas dans la feuille.
+   Le cycle s'ouvre donc a 6 semaines, et la duree se regle dans Profil apres
+   en avoir vecu un. Benefice secondaire : trois boutons cote a cote dans
+   93 px figes cassaient a Dynamic Type des le reglage x1,4. */
 function sheetCycleOuvrir(p){
-  let d='';
-  CYCLE_DUREES.forEach(w=>{
-    d+='<button type="button" class="cydur'+(w===CYCLE_DEFAUT?" on":"")+'" data-cydur="'+w+'">'
-      +w+' semaines'+(w===CYCLE_DEFAUT?'<i>Recommandé</i>':'')+'</button>';
-  });
+  /* Le second chemin, et il n'apparait QUE quand il a un sens : un programme
+     de plus de trois semaines avec des seances archivees. Quelqu'un qui tourne
+     depuis onze semaines ne veut pas « commencer un cycle 1 aujourd'hui » et
+     voir onze semaines de travail disparaitre. La donnee existe et elle est
+     vraie : prog.gen et hist. */
+  const solde=cycleSoldePossible(p);
+  let bas='';
+  if(solde){
+    /* « Solder ce que j'ai deja fait » etait la seule phrase de tout le systeme
+       ou l'app parle a la premiere personne — partout ailleurs elle dit « tu ».
+       Et « solder » est comptable : applique a onze semaines d'entrainement
+       reel, le mot dit « on passe ca en perte ». Il reste juste dans la
+       documentation, pas dans l'interface.
+       La forme reprend celle de la feuille « La suite » : titre, explication,
+       bouton contour. La hierarchie se lit alors par le TYPE d'objet — un
+       aplat plein, un contour — et non par la masse. */
+    bas='<div class="cysep"><span>ou</span></div>'
+      +'<div class="card"><h4>Les '+solde.semaines+' semaines écoulées</h4>'
+      +'<p class="mut" style="margin:0 0 11px">Ton programme tourne depuis '
+      +'<b class="nb">'+solde.semaines+'</b> semaines. Le clore comme premier cycle : '
+      +'tes séances, ton tonnage et tes records de cette période sont comptés. '
+      +'Aucune séance n\'est modifiée ni supprimée.</p>'
+      +'<button type="button" class="mini" id="cysolde">Compter les '
+      +solde.semaines+' semaines déjà faites</button></div>';
+  }
   return '<div class="sheet" id="cyopen"><div class="shveil" data-cyclose></div>'
     +'<div class="shbox" role="dialog" aria-modal="true" aria-labelledby="co-t">'
     +'<div class="shgrab"></div>'
@@ -2615,8 +2667,9 @@ function sheetCycleOuvrir(p){
     +'<p class="mut" style="margin:0 0 14px">Ton programme n\'a pas de terme. '
     +'Un cycle lui en donne un : à la fin, tu vois ce que tu as soulevé, et tu '
     +'décides de la suite. Ton programme et ton historique ne changent pas.</p>'
-    +'<div class="cydurs">'+d+'</div>'
-    +'<button type="button" class="btn" id="cygo">Lancer le cycle 1</button>'
+    +'<button type="button" class="btn" id="cygo">Lancer un cycle de '
+    +CYCLE_DEFAUT+' semaines</button>'
+    +bas
     +'<button type="button" class="shlater" data-cyclose>Plus tard</button>'
     +'</div></div>';
 }
@@ -2743,7 +2796,14 @@ function cycleClore(p,d){
    la meme discipline que les compteurs de medailles.
    rmAvant : les cfg.rm releves a l'ouverture. C'est la seule donnee que
    l'appelant doit avoir conservee, elle n'est pas deductible une fois ecrasee. */
+/* rmAvant a TROIS etats et ils ne disent pas la meme chose :
+   un objet = la photo existe, {} = la photo existe et etait vide,
+   null/undefined = LA PHOTO N'A PAS ETE PRISE.
+   Sans cette distinction, un cycle solde retrospectivement — un programme
+   commence avant que les cycles existent — affichait « 0 -> 67,5 kg » sur
+   chaque mouvement : une progression depuis rien, entierement fausse. */
 function cycleBilan(p,c,d,rmAvant,records){
+  const connues=rmAvant!=null;
   const seances=cycleSeances(p,c,d||today());
   /* Le poids de corps n'entre pas dans le tonnage : ce n'est pas une charge
      soulevee au sens du suivi. */
@@ -2751,11 +2811,43 @@ function cycleBilan(p,c,d,rmAvant,records){
     (u,e)=>u+(parseFloat(e.kg)||0)*(e.done||0),0),0);
   const apres={};
   Object.keys(p.cfg.rm||{}).forEach(k=>{const v=parseFloat(p.cfg.rm[k]);if(isFinite(v))apres[k]=v});
-  const hausses=Object.keys(apres).sort().map(id=>({id:id,avant:(rmAvant||{})[id]||0,apres:apres[id]}))
-    .filter(x=>x.apres>x.avant);
+  const hausses=connues
+    ? Object.keys(apres).sort().map(id=>({id:id,avant:(rmAvant||{})[id]||0,apres:apres[id]}))
+        .filter(x=>x.apres>x.avant)
+    : [];
   return {cycle:c,faites:seances.length,prevues:cyclePrevues(p,c),
-    tonnage:tonnage,records:records||0,rmAvant:rmAvant||{},rmApres:apres,hausses:hausses,
+    tonnage:tonnage,records:records||0,rmAvant:rmAvant||{},rmApres:apres,
+    hausses:hausses,connues:connues,
     realisation:cyclePrevues(p,c)>0?seances.length/cyclePrevues(p,c):null};
+}
+
+/* ---- Solder un programme commence avant les cycles ----
+   Semaines minimales ecoulees pour que ca ait un sens. En dessous, le bilan
+   n'aurait presque rien a montrer. */
+const CYCLE_SEMAINES_MIN_SOLDE=3;
+
+/* Le cycle qu'un solde retrospectif produirait, sans rien modifier.
+   RIEN N'EST DEVINE : la date de debut est prog.gen, la date a laquelle le
+   programme a reellement ete genere ; les seances sont celles de hist. La
+   seule donnee absente est rmDebut, et elle reste DELIBEREMENT nulle. */
+function cycleSoldePossible(p,d){
+  if(p.cycle||((p.cycles||[]).length)) return null;
+  if(!(p.hist||[]).length) return null;
+  if(!p.prog||!p.prog.gen) return null;
+  const ecoules=cycleJours(p.prog.gen,d||today());
+  /* Arrondi a la semaine la plus proche : 77 jours donnent 11 semaines, pas
+     12. Sur-compter gonflerait prevues et ferait rater le seuil des 75 % a
+     quelqu'un qui s'est pourtant entraine correctement. */
+  const semaines=Math.floor((ecoules+3)/7);
+  if(semaines<CYCLE_SEMAINES_MIN_SOLDE) return null;
+  return {no:1,debut:p.prog.gen,semaines:semaines,goal:p.cfg.goal,
+    rotation:p.cfg.rot||0,rmDebut:null};
+}
+function cycleSolder(p,d){
+  const c=cycleSoldePossible(p,d);
+  if(!c) return null;
+  p.cycle=c;
+  return cycleClore(p,d);
 }
 
 /* Faut-il PROPOSER — jamais appliquer — de passer au rang de variation suivant.
@@ -4809,7 +4901,11 @@ function renderMain(p){
      qu'au moment de l'archivage d'une seance, parce que le cycle peut echoir
      un jour ou l'utilisateur ne s'entraine pas — et qu'il doit alors le voir
      a la prochaine ouverture de l'app, pas trois seances plus tard. */
-  if(CYCLE_SUITE) h+=sheetCycleSuite(p);
+  if(CYCLE_BILAN!=null){
+    const arch=(p.cycles||[]).find(x=>x.no===CYCLE_BILAN);
+    if(arch) h+=sheetCycleBilan(p,arch); else CYCLE_BILAN=null;
+  }
+  else if(CYCLE_SUITE) h+=sheetCycleSuite(p);
   else if(p.cycle&&cycleEchu(p.cycle)&&!CYCLE_REPORTE) h+=sheetCycleBilan(p);
   else if(!p.cycle&&!(p.cycles||[]).length&&!CYCLE_REPORTE) h+=sheetCycleOuvrir(p);
   h+='<div id="pg"></div>';
@@ -4829,29 +4925,52 @@ function renderMain(p){
      « Plus tard » ne persiste rien : il met en sourdine pour la session. Un
      refus definitif qu'on ne sait plus annuler serait pire que la relance. */
   APP.querySelectorAll("[data-cyclose]").forEach(b=>b.onclick=()=>{
-    CYCLE_REPORTE=true;CYCLE_SUITE=false;renderMain(p)});
-  let d=CYCLE_DEFAUT;
-  APP.querySelectorAll("[data-cydur]").forEach(b=>b.onclick=()=>{
-    d=+b.dataset.cydur;
-    APP.querySelectorAll("[data-cydur]").forEach(x=>x.classList.toggle("on",x===b));
-    const go=document.getElementById("cygo");if(go)go.textContent="Lancer le cycle 1"});
+    CYCLE_REPORTE=true;CYCLE_SUITE=false;CYCLE_BILAN=null;renderMain(p)});
   const cygo=document.getElementById("cygo");
-  if(cygo)cygo.onclick=()=>{cycleOuvrir(p,d);saveP();toast("Cycle 1 lancé");renderMain(p)};
+  /* La duree vient des reglages, pas de la feuille. set.cycDur peut etre absent
+     sur un profil qui n'y a jamais touche : cycleOuvrir retombe alors sur le
+     defaut de lui-meme. */
+  if(cygo)cygo.onclick=()=>{cycleOuvrir(p,(p.set&&p.set.cycDur)||CYCLE_DEFAUT);
+    saveP();toast("Cycle 1 lancé");renderMain(p)};
+  /* Solder : on clot le cycle retrospectif, puis on montre son bilan tout de
+     suite. CYCLE_BILAN porte le cycle a afficher, parce que p.cycle est
+     desormais vide — le bilan d'un cycle archive ne peut pas se lire dans le
+     cycle en cours. */
+  /* Une ligne d'archive ouvre le bilan de SON cycle. Le chevron le promettait
+     depuis le debut ; il tenait sa promesse nulle part.
+     DELEGATION, et pas un cablage direct : les lignes d'archive sont rendues
+     dans #pg par renderHist, qui tourne APRES ce bloc. Un
+     querySelectorAll ici ne trouve rien — releve a la recette, le chevron
+     etait mort. */
+  APP.onclick=(e)=>{
+    const l=e.target.closest&&e.target.closest("[data-cycle]");
+    if(!l)return;
+    CYCLE_BILAN=+l.dataset.cycle;renderMain(p);
+  };
+  const cysolde=document.getElementById("cysolde");
+  if(cysolde)cysolde.onclick=()=>{
+    const clos=cycleSolder(p);
+    if(!clos){toast("Rien à solder");return}
+    saveP();CYCLE_BILAN=clos.no;renderMain(p)};
   /* Le bilan solde AVANT d'ouvrir la feuille de choix : une fois le cycle
      echu, il est termine, que l'utilisateur choisisse une suite ou non. */
   const cynext=document.getElementById("cynext");
-  if(cynext)cynext.onclick=()=>{cycleClore(p);saveP();CYCLE_SUITE=true;renderMain(p)};
+  if(cynext)cynext.onclick=()=>{
+    /* Si le bilan affiche un cycle DEJA archive — solde retrospectif,
+       relecture — il n'y a rien a cloturer : on passe directement au choix. */
+    if(CYCLE_BILAN==null) cycleClore(p);
+    CYCLE_BILAN=null;saveP();CYCLE_SUITE=true;renderMain(p)};
   const cysame=document.getElementById("cysame");
   if(cysame)cysame.onclick=()=>{
     /* Meme objectif, autres exercices : c'est exactement ce que fait
        « Renouveler les exercices ». generate() est deterministe, donc
        incrementer la rotation suffit — rien d'autre a inventer. */
     p.cfg.rot=(p.cfg.rot||0)+1;p.prog=generate(p.cfg);
-    cycleOuvrir(p,CYCLE_DEFAUT);CYCLE_SUITE=false;saveP();
+    cycleOuvrir(p,(p.set&&p.set.cycDur)||CYCLE_DEFAUT);CYCLE_SUITE=false;saveP();
     toast("Cycle "+p.cycle.no+" lancé");renderMain(p)};
   const cyagain=document.getElementById("cyagain");
   if(cyagain)cyagain.onclick=()=>{
-    cycleOuvrir(p,CYCLE_DEFAUT);CYCLE_SUITE=false;saveP();
+    cycleOuvrir(p,(p.set&&p.set.cycDur)||CYCLE_DEFAUT);CYCLE_SUITE=false;saveP();
     toast("Cycle "+p.cycle.no+" lancé");renderMain(p)};
   const cygoal=document.getElementById("cygoal");
   if(cygoal)cygoal.onclick=()=>{CYCLE_SUITE=false;p.wizStep=0;p.done=false;saveP();render()};
@@ -8068,6 +8187,18 @@ function renderProfil(p,pg){
     +'<p class="mut" style="margin-top:8px">« Écran vertical » refuse la mise en page paysage : si le téléphone tourne, l\'app demande de le remettre droit au lieu de tout réorganiser. Un vrai verrou d\'orientation n\'existe pas dans Safari — il faudrait une app installée depuis l\'App Store.</p>'
     +(HAS_VIB?'':'<p class="mut" style="margin-top:8px">La vibration n\'existe pas dans Safari iOS : seul le bip signale la fin du repos.</p>')
     +'</div>';
+  /* Duree de cycle. Elle vit ICI et pas dans la feuille d'ouverture : on ne
+     demande pas de choisir entre 4, 6 et 8 semaines dix secondes apres avoir
+     decouvert ce qu'est un cycle. Le reglage se change apres en avoir vecu un,
+     et il prend effet au cycle suivant. */
+  const cd=(p.set&&p.set.cycDur)||CYCLE_DEFAUT;
+  h+='<div class="card"><h4>Durée d\'un cycle</h4><div class="row">'
+    +CYCLE_DUREES.map(w=>'<button class="mini'+(w===cd?" on":"")
+      +'" data-cycdur="'+w+'">'+w+' semaines</button>').join("")
+    +'</div><p class="mut" style="margin-top:8px">'
+    +CYCLE_DEFAUT+' semaines est la durée recommandée : c\'est le minimum pour '
+    +'que les charges aient le temps de monter plusieurs fois, même au rythme le '
+    +'plus lent. Le changement s\'applique au prochain cycle, pas à celui en cours.</p></div>';
 
   if(PT==="don")h+='<div class="card"><h4>Sauvegarde &amp; partage</h4>'
     +'<p>Les données de ce profil vivent uniquement sur cet appareil. Un vidage du cache du navigateur les efface : exporte régulièrement.</p>'
@@ -8100,6 +8231,8 @@ function renderProfil(p,pg){
   const tg=(id,k)=>on(id,"onclick",()=>{p.set[k]=!p.set[k];saveP();renderMain(p)});
   tg("s-t","timer");tg("s-s","sound");if(HAS_VIB)tg("s-v","vib");
   on("s-p","onclick",()=>{p.set.portrait=!portraitOn(p);saveP();applyPortrait(p);renderMain(p)});
+  APP.querySelectorAll("[data-cycdur]").forEach(b=>b.onclick=()=>{
+    p.set.cycDur=+b.dataset.cycdur;saveP();renderMain(p)});
   pg.querySelectorAll("[data-palk]").forEach(b=>b.onclick=()=>{
     p.set.pal=b.dataset.palk;saveP();applyPal(p);
     toast("Palette "+(PALS.find(x=>x.k===p.set.pal)||{n:""}).n);renderMain(p)});
