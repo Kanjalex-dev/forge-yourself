@@ -421,6 +421,7 @@ font-size:.74rem;font-weight:400;line-height:1.55;color:var(--mut)}
 /* Le vide qui separe la phrase de la proposition : il fait le calme de
    l'ecran, il n'est pas la par defaut. */
 .restgap{height:clamp(40px,14vh,110px)}
+.restgap.court{height:18px}
 /* La proposition de seance libre : une ligne, un trait, un lien. Pas de carte,
    pas d'aplat — l'aplat plein est la couleur de l'action, et lancer une seance
    un jour de repos n'est pas l'action recommandee. */
@@ -1942,7 +1943,7 @@ html.ready #boot{opacity:0;pointer-events:none}
    FORGE — générateur + suivi de programme, multi-profils, hors ligne
    Toutes les données restent dans le localStorage de l'appareil.
    ================================================================ */
-const VER="1.2";
+const VER="1.3";
 const K="fg_";
 function G(k,d){try{const v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function S(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
@@ -3365,6 +3366,80 @@ function kcalSplit(p,plan,total){
    faciles a stabiliser. Un echec ou un ressenti "dur" remet le compteur
    a zero — la charge ne monte que sur une reussite nette. */
 const PROG_STREAK=2;
+/* Seuil quand le ressenti est "dur" sans echec declare. « J'ai atteint
+   l'objectif mais c'etait dur » est le signal d'un utilisateur pile au bon
+   niveau de charge : le jeter etait une perte d'information, le traiter
+   comme "correct" ferait monter trop vite. On ralentit. */
+const PROG_STREAK_DUR=3;
+/* Part des series cochees en dessous de laquelle une seance ne conclut
+   rien sur la charge. Trois series sur quatre est un choix, pas une
+   donnee : c'est le seuil ou l'ecart de volume cesse d'etre un alea de
+   seance. */
+const PROG_COMPLET=.75;
+
+/* Pas de montee. Trois corrections par rapport au pas unique d'origine :
+   - les grosses chaines bilaterales (squat, souleve de terre, hip thrust)
+     encaissent 5 kg, soit un disque de 2,5 kg par cote ; a 2,5 kg elles
+     plafonnaient a une progression trois a quatre fois plus lente que
+     possible ;
+   - les mouvements unilateraux (fentes, bulgare, pat "knee_uni") restent
+     a 2,5 kg : la charge y est portee par une jambe a la fois ;
+   - une charge d'halteres est LUE A L'UNITE dans toute l'app. Monter de
+     2,5 kg, c'est ajouter 5 kg de charge reelle d'un coup. C'est une
+     correction de bug, pas un reglage. */
+function progStep(e){
+  if(e.eq==="halteres")return 1;
+  if(e.typ!=="c")return 1;
+  if(e.pat==="knee"||e.pat==="hip")return 5;
+  return 2.5;
+}
+
+/* Part des series reellement cochees sur les series prevues.
+   Les archives anterieures a cette version n'ont ni done ni sets : elles
+   valent 1, donc elles se comportent exactement comme avant. Un historique
+   importe n'est pas reinterprete. */
+function completionOf(fb){
+  const n=+fb.sets;
+  if(!(n>0))return 1;
+  const d=(fb.done==null||isNaN(fb.done))?n:+fb.done;
+  return Math.max(0,Math.min(1,d/n));
+}
+
+/* Regle de progression, appelee a l'identique par la fin de seance en
+   direct et par le rejeu de l'historique. Toute divergence entre les deux
+   se paierait par un ecart entre ce que l'app annonce le soir et ce
+   qu'elle recalcule le lendemain : la regle vit donc a un seul endroit.
+     e    : exercice du catalogue
+     base : charge de depart
+     fb   : {ok, diff, done, sets}
+     st   : {kg, fail, streak} — mute en place */
+function progApply(e,base,fb,st){
+  const c=completionOf(fb),step=progStep(e);
+  if(fb.ok==="non"||fb.diff==="echec"){
+    /* Un echec sur la derniere serie et un echec des la premiere ne disent
+       pas la meme chose : la charge etait trop lourde d'un cran, ou
+       franchement trop lourde. */
+    st.kg=r25(base*(c<PROG_COMPLET?.90:.95));st.fail++;st.streak=0;return;
+  }
+  if(c<PROG_COMPLET){
+    /* Seance trop incomplete pour conclure. Elle reste dans l'historique,
+       dans le volume et dans la depense — elle ne pese simplement pas sur
+       la charge. Sans ce garde-fou, faire deux series sur quatre et cocher
+       "correct" faisait monter comme si les quatre avaient ete faites :
+       l'utilisateur echouait deux seances plus tard sans comprendre. */
+    st.kg=base;st.streak=0;return;
+  }
+  const bon=fb.ok==="oui"&&(fb.diff==="facile"||fb.diff==="correct");
+  const dur=fb.ok==="oui"&&fb.diff==="dur";
+  if(bon||dur){
+    if(c<1){st.kg=base;st.fail=0;return}   /* compte, mais n'avance pas */
+    const seuil=dur?PROG_STREAK_DUR:PROG_STREAK;
+    st.streak++;
+    if(st.streak>=seuil){st.kg=base+step;st.streak=0}else st.kg=base;
+    st.fail=0;return;
+  }
+  st.kg=base;st.fail=0;st.streak=0;
+}
 /* ---------------- Mise a jour depuis l'historique ----------------
    Rejoue les seances archivees de la plus ancienne a la plus recente et
    applique, exercice par exercice, la meme regle de progression qu'en fin
@@ -3383,14 +3458,7 @@ function historyUpdate(p,apply){
     const o=st[x.id];o.n++;
     const base=(x.kg!=null&&!isNaN(x.kg))?x.kg:o.kg;
     if(base==null)return;
-    const step=e.typ==="c"?2.5:1;
-    if(x.ok==="oui"&&(x.diff==="facile"||x.diff==="correct")){
-      o.streak++;
-      if(o.streak>=PROG_STREAK){o.kg=base+step;o.streak=0}else o.kg=base;
-      o.fail=0;
-    }
-    else if(x.ok==="non"||x.diff==="echec"){o.kg=r25(base*.95);o.fail++;o.streak=0}
-    else{o.kg=base;o.fail=0;o.streak=0}
+    progApply(e,base,x,o);
   })});
   Object.keys(st).forEach(id=>{
     const o=st[id],e=byId(id);
@@ -3400,7 +3468,12 @@ function historyUpdate(p,apply){
       out.charges.push({n:e.n,de:cur,a:o.kg,seances:o.n});
       if(apply)p.ovr[id]=String(o.kg);
     }
-    if(o.fail>=2)out.alertes.push({n:e.n,fail:o.fail});
+    /* Deux echecs de suite : la progression lineaire est arrivee au bout.
+       L'app alertait sans rien proposer. Elle propose maintenant de reculer
+       d'un cran — 90 % de la charge, volume inchange — ce qui remonte plus
+       haut qu'insister. Proposition seulement : rien n'est applique. */
+    if(o.fail>=2)out.alertes.push({n:e.n,fail:o.fail,id:id,
+      allege:(o.kg!=null&&o.kg>0)?r25(o.kg*.90):null});
     /* le compteur de seances reussies d'affilee est repris tel quel : les
        prochaines seances en direct continuent le decompte au lieu de
        redemarrer a zero. */
@@ -3408,6 +3481,100 @@ function historyUpdate(p,apply){
   });
   if(apply)saveP();
   return out;
+}
+
+/* ---------------- Reestimation continue des charges de reference ------
+   Les 1RM de reference sont saisis une fois a l'assistant puis figes pour
+   toujours, alors que chaque seance archive le poids souleve. Or la charge
+   de tous les exercices derives est un pourcentage de ces references : un
+   1RM sous-estime de 15 % — courant, le bareme de l'assistant est
+   volontairement bas — sous-prescrit la moitie du programme pendant des
+   mois. Corriger la reference fait progresser d'un coup tous les derives,
+   sans toucher a la regle de montee.
+
+   On PROPOSE, on n'applique jamais seul : c'est la regle deja tenue par
+   historyUpdate.
+
+   Trois garde-fous, tous dans le sens de la sous-estimation :
+   - Epley surestime nettement au-dela de dix repetitions : les series plus
+     longues sont ignorees, sinon une serie de 20 a charge legere gonfle le
+     1RM et casse tout le programme ;
+   - le nombre exact de repetitions n'est pas archive, seulement la
+     fourchette prescrite : on compte le BAS de la fourchette, jamais le
+     haut ;
+   - la seance doit etre complete et l'objectif atteint.
+   Consequence voulue : l'estimation part d'une serie de travail
+   sous-maximale, donc elle reste en dessous du vrai 1RM. Elle ne se
+   declenche que quand la reference stockee est franchement trop basse. */
+const RM_CANON={dc:"dc_barre",squat:"squat",sdt:"sdt",row:"rowing_barre"};
+const RM_FENETRE_J=56;   /* huit semaines */
+const RM_REPS_MAX=10;    /* borne de validite d'Epley */
+const RM_SEUIL=2.5;      /* en deca, le bruit de mesure domine */
+/* Plafond d'un seul ajustement. Personne ne gagne 10 % de son maximum en
+   huit semaines : au-dela, c'est soit une charge mal saisie, soit une
+   reference qui etait tres fausse. Dans les deux cas on avance d'un cran
+   et on repropose la fois suivante si l'ecart persiste, plutot que de
+   represcrire d'un coup tout le programme sur un chiffre douteux. */
+const RM_HAUSSE_MAX=.10;
+
+/* Bas de la fourchette de repetitions prescrite ("8-10" -> 8). */
+function repsLowF(r){
+  if(!r)return 0;
+  const m=String(r).match(/(\d+)\s*-\s*(\d+)/);
+  if(m)return +m[1];
+  const n=String(r).match(/(\d+)/);
+  return n?+n[1]:0;
+}
+
+function rmSuggest(p){
+  const out=[];
+  if(!p||!p.cfg||!p.cfg.rm||!p.hist||!p.hist.length)return out;
+  const d=new Date();d.setDate(d.getDate()-RM_FENETRE_J);
+  const limite=d.toISOString().slice(0,10);
+  Object.keys(RM_CANON).forEach(k=>{
+    const id=RM_CANON[k],e=byId(id);if(!e)return;
+    const cur=parseFloat(p.cfg.rm[k]);
+    let best=0,quand=null,det=null;
+    p.hist.forEach(r=>{
+      if(!r.date||r.date<limite)return;
+      (r.ex||[]).forEach(x=>{
+        if(x.id!==id||x.ok!=="oui"||x.diff==="echec")return;
+        if(x.kg==null||isNaN(x.kg)||!(x.kg>0))return;
+        if(x.sets>0&&x.done!=null&&x.done<x.sets)return;
+        const reps=repsLowF(x.reps);
+        if(!(reps>0)||reps>RM_REPS_MAX)return;
+        const est=Math.round(epley(x.kg,reps)*2)/2;
+        if(est>best){best=est;quand=r.date;det={kg:x.kg,reps:reps}}
+      });
+    });
+    if(!(best>0))return;
+    const prop=(cur>0)?Math.min(best,Math.round(cur*(1+RM_HAUSSE_MAX)*2)/2):best;
+    if(!(cur>0)||prop>=cur+RM_SEUIL)
+      out.push({ref:k,id:id,n:e.n,de:(cur>0?cur:null),a:prop,brut:best,
+        plafonne:(cur>0&&prop<best),date:quand,d:det});
+  });
+  return out;
+}
+
+/* Applique les references retenues ET re-prescrit les charges des
+   exercices derives. Sans cette seconde moitie, changer la reference
+   n'aurait aucun effet : les charges sont figees dans le programme au
+   moment de la generation. Une charge corrigee a la main fait foi et
+   n'est jamais ecrasee. */
+function rmApply(p,rs){
+  const refs={};
+  rs.forEach(r=>{p.cfg.rm[r.ref]=String(r.a);p.cfg["rmest_"+r.ref]=true;refs[r.ref]=1});
+  let n=0;
+  ((p.prog&&p.prog.sessions)||[]).forEach(s=>(s.exos||[]).forEach(x=>{
+    const e=byId(x.id);
+    if(!e||!e.ref||!e.pct||!refs[e.ref])return;
+    if(p.ovr&&p.ovr[x.id]!=null)return;
+    if(x.src!=="auto")return;
+    const np=prescribe(e,p.cfg);
+    if(np.charge!=null&&np.charge!==x.charge){x.charge=np.charge;n++}
+  }));
+  saveP();
+  return n;
 }
 
 /* Sauvegarde d'un profil : enregistrer le fichier ou copier le texte,
@@ -5236,7 +5403,11 @@ function renderRest(p,pg){
       +'<small>Activité déclarée — Forge ne la suit pas.</small></span></p>';
   }
   h+=reposTx(weekDate(dow)+"|"+dow)+'</div>';
-  h+='<div class="restgap"></div>';
+  /* L'espace qui separe l'inspiration de la porte de sortie n'a de sens que
+     le jour meme : il eloigne volontairement la seance libre du titre. Sur un
+     jour consulte il n'y a pas de porte de sortie, seulement une note d'une
+     ligne — la garder laissait un trou de cent pixels au milieu de l'ecran. */
+  h+='<div class="restgap'+(isToday?'':' court')+'"></div>';
   /* La porte de sortie, tout en bas et sans aplat : le repos reste la
      recommandation, la seance libre est possible, pas suggeree. */
   if(isToday){
@@ -5976,16 +6147,19 @@ function renderSession(p,s,ti,pg){
       const e=byId(x.id),l=p.logs.find(z=>z.k===logKey(s.sid,x.id))||{};
       const ov=p.ovr[x.id],base=ov!=null?parseFloat(ov):x.charge;
       if(base==null||isNaN(base))return;
-      const step=e.typ==="c"?2.5:1;let nv=base;
-      const good=l.ok==="oui"&&(l.diff==="facile"||l.diff==="correct");
-      const bad=l.ok==="non"||l.diff==="echec";
-      if(good){
-        const ns=(p.streak[x.id]||0)+1;
-        if(ns>=PROG_STREAK){nv=base+step;p.streak[x.id]=0}
-        else{p.streak[x.id]=ns;const rest=PROG_STREAK-ns;
-          prop.push(e.n+" : encore "+rest+" séance"+(rest>1?"s":"")+" réussie"+(rest>1?"s":"")+" pour passer à "+kg(base+step))}
-      }else if(bad){nv=r25(base*.95);p.streak[x.id]=0}
-      else p.streak[x.id]=0;
+      /* Exactement la regle du rejeu de l'historique — voir progApply. Les
+         series cochees viennent de l'enregistrement qu'on vient de
+         construire, pas d'un second comptage qui pourrait en differer. */
+      const ra=rec.ex.find(z=>z.id===x.id)||{};
+      const fb={ok:l.ok,diff:l.diff,
+        done:ra.done,sets:(ra.sets!=null?ra.sets:x.sets)};
+      const stx={kg:base,fail:0,streak:(p.streak[x.id]||0)};
+      progApply(e,base,fb,stx);
+      const nv=stx.kg;p.streak[x.id]=stx.streak;
+      if(nv===base&&stx.streak>0){
+        const seuil=(fb.ok==="oui"&&fb.diff==="dur")?PROG_STREAK_DUR:PROG_STREAK,
+              rest=seuil-stx.streak;
+        if(rest>0)prop.push(e.n+" : encore "+rest+" séance"+(rest>1?"s":"")+" réussie"+(rest>1?"s":"")+" pour passer à "+kg(base+progStep(e)))}
       if(nv!==base){p.ovr[x.id]=String(nv);prop.push(e.n+" → "+kg(nv))}
     });
     /* Sur traction et dips, une seance reussie et facile ne se traduisait
@@ -7173,14 +7347,40 @@ function renderHist(p,pg){
       if(hu.charges.length>12)h+='<p class="mut">… et '+(hu.charges.length-12)+' autre'+(hu.charges.length-12>1?"s":"")+'.</p>';
     }
     if(hu.alertes.length){
+      /* Quand la charge ne monte plus, reculer d'un cran remonte plus haut
+         qu'insister. L'app se contentait d'alerter ; elle propose
+         maintenant l'allegement, et ne l'applique que sur appui. */
+      const a2=hu.alertes.filter(a=>a.fail>=3);
       h+='<div class="alert w"><b>À surveiller</b>'
-        +hu.alertes.map(a=>esc(a.n)+' — '+a.fail+' échecs consécutifs').join('<br>')
-        +'<br>Deux échecs de suite sur le même mouvement, ce n\'est pas une charge à baisser encore : c\'est souvent un exercice qui ne te convient pas. Utilise « Changer » sur la ligne de l\'exercice pour le remplacer.</div>';
+        +hu.alertes.map(a=>esc(a.n)+' — '+a.fail+' échecs consécutifs'
+          +(a.allege?' · une semaine à '+kg(a.allege)+' repartirait plus haut':'')).join('<br>')
+        +'<br>Reculer d\'un cran pendant une semaine, volume inchangé, remonte plus haut qu\'insister. '
+        +(a2.length?'Au-delà de trois échecs, repasse plutôt par l\'assistant sur ce mouvement : la charge de référence n\'est probablement plus la bonne. ':'')
+        +'Si ça se répète sur le même exercice quelle que soit la charge, utilise « Changer » sur sa ligne pour le remplacer.'
+        +'<div style="margin-top:8px"><button class="mini" id="halleg">Appliquer l\'allègement</button></div></div>';
     }
     h+='<button class="btn sm" id="hupd">Mettre à jour mes séances</button>'
       +'<p class="mut">Applique ces charges à toutes tes séances. Les séances sont déjà ajustées automatiquement à chaque archivage : ce bouton sert à rattraper un historique importé, une longue coupure, ou une charge que tu as corrigée à la main.</p>';
   }
   h+='</div>';
+
+  /* Les charges de reference pilotent tous les exercices derives. Elles
+     etaient saisies une fois et jamais revues : c'est le plus gros
+     gisement de sous-prescription de l'app. */
+  const rs=rmSuggest(p);
+  if(rs.length){
+    h+='<div class="card"><h4>Charges de référence</h4>'
+      +'<p class="mut">Tes 1RM de référence calculent la charge de tous les exercices dérivés. Ceux-ci datent de l\'assistant ; tes séances récentes disent mieux :</p>'
+      +'<table class="t"><tr><th>Mouvement</th><th class="r">Actuel</th><th class="r">Estimé</th></tr>'
+      +rs.map(r=>'<tr><td>'+esc(r.n)+'<br><span class="mut" style="font-size:.66rem">'
+        +kg(r.d.kg)+' sur au moins '+r.d.reps+' répétitions · '+esc(shortDate(r.date))+'</span></td>'
+        +'<td class="r">'+(r.de!=null?kg(r.de):"—")+'</td><td class="r">'+kg(r.a)+'</td></tr>').join("")
+      +'</table>'
+      +'<button class="btn sm" id="rmupd">Mettre à jour mes références</button>'
+      +(rs.some(r=>r.plafonne)?'<p class="mut">Une de ces estimations a été plafonnée à +10 % : l\'écart est trop grand pour être rattrapé d\'un coup. Si tes prochaines séances le confirment, l\'app te le reproposera.</p>':'')
+      +'<p class="mut">Estimation Epley sur tes séries réussies et complètes, bornée à 10 répétitions et comptée au bas de la fourchette prescrite : elle sous-estime plutôt qu\'elle ne gonfle. Rien ne bouge tant que tu n\'as pas appuyé, et une charge que tu as corrigée à la main n\'est jamais écrasée.</p>'
+      +'</div>';
+  }
 
   /* Les seances archivees sont la matiere premiere du recalcul : elles
      vivent dans le meme onglet que la mise a jour qu'elles alimentent. */
@@ -7203,6 +7403,23 @@ function renderHist(p,pg){
 
   wireTabs(pg,"data-histab",v=>{HISTAB=v;renderMain(p)});
   pg.querySelectorAll("[data-hdel]").forEach(x=>x.onclick=()=>{p.hist.splice(+x.dataset.hdel,1);saveP();renderMain(p)});
+
+  const rmb=document.getElementById("rmupd");
+  if(rmb)rmb.onclick=()=>{
+    const rs2=rmSuggest(p);
+    if(!rs2.length){toast("Rien à mettre à jour");return}
+    const n=rmApply(p,rs2);
+    toast(rs2.length+" référence"+(rs2.length>1?"s":"")+" à jour"
+      +(n?" · "+n+" charge"+(n>1?"s":"")+" recalculée"+(n>1?"s":""):""));
+    renderMain(p)};
+
+  const hal=document.getElementById("halleg");
+  if(hal)hal.onclick=()=>{
+    const r=historyUpdate(p,false);let n=0;
+    r.alertes.forEach(a=>{if(a.id&&a.allege>0){p.ovr[a.id]=String(a.allege);n++}});
+    if(n){saveP();toast(n+" charge"+(n>1?"s":"")+" allégée"+(n>1?"s":"")+" — remonte à partir de là")}
+    else toast("Rien à alléger");
+    renderMain(p)};
 
   const hup=document.getElementById("hupd");
   if(hup)hup.onclick=()=>{
