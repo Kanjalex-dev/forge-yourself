@@ -175,66 +175,6 @@ display:flex;align-items:center;justify-content:center;font-weight:700;color:var
 .tbar{height:5px;background:var(--sf);border-radius:3px;overflow:hidden}
 .tbar i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2));width:0}
 .tsub{font-size:.64rem;color:var(--mut);text-align:center;margin-top:4px}
-/* Bandeau de cycle : UN FILET, PAS UNE CARTE. Ni fond, ni bordure, ni rayon.
-   La premiere maquette l'encadrait comme la carte de seance du jour : deux
-   objets de meme facture, celui du haut gagnait par position, et il fallait
-   rattraper la seance avec un fond selectionne — le symptome, pas la cause.
-   Un bandeau qui ne mene nulle part, ne porte aucune action et se refuse un
-   chevron n'a aucun des quatre attributs qui disent « objet separe ». */
-.cyw{max-width:680px;margin:0 auto;padding:4px 14px 11px;border-bottom:1px solid var(--line)}
-.cyh{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
-.cyh .g{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
-.cyh .d{font-family:var(--mono);font-size:.68rem;color:var(--mut);font-variant-numeric:tabular-nums}
-/* Trois valeurs de laiton, pas deux : ecoule a 38 %, semaine en cours plein,
-   restant en sf3. Avec deux, l'ecoule et le courant etaient le meme aplat et
-   la jauge ne disait pas « ou j'en suis », seulement « combien est fait ». */
-.cyj{display:flex;gap:3px}
-.cyj span{flex:1;height:4px;border-radius:2px;background:var(--sf3)}
-.cyj span.f{background:rgba(217,164,65,.38)}
-.cyj span.now{background:var(--brand)}
-.cymot{margin:9px 0 0;font-size:.78rem;color:var(--mut);line-height:1.5;text-align:center}
-/* Historique des cycles, onglet Suivi */
-.cyl{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--line);
- width:100%;text-align:left;background:none;border-left:0;border-right:0;border-top:0;color:inherit;
- font:inherit;cursor:pointer}
-.cyl:last-child{border-bottom:none}
-.cyl .no{font-family:var(--mono);font-size:.72rem;color:var(--mut);font-weight:700;
- font-variant-numeric:tabular-nums;width:26px;flex:0 0 auto}
-.cyl .m{flex:1;min-width:0}
-.cyl .m b{display:block;font-size:.84rem;font-weight:600}
-.cyl .m span{font-size:.72rem;color:var(--mut)}
-.cyl .m span b{display:inline;font-family:var(--mono);font-weight:400;font-variant-numeric:tabular-nums}
-.cyl .q{font-family:var(--mono);font-size:.78rem;color:var(--txt);font-variant-numeric:tabular-nums}
-.cyl .ch{color:var(--mut);font-size:.9rem;flex:0 0 auto}
-/* Les trois chiffres du bilan : une rangee de mesures, SANS encadre. Avec un
-   fond et une bordure ils gagnaient sur le tableau des charges, qui est le
-   vrai contenu de l'ecran. */
-.cytrois{display:flex;gap:10px;margin:0 0 16px;padding-bottom:16px;border-bottom:1px solid var(--line)}
-.cytrois>div{flex:1}
-.cytrois .l{display:block;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;
- color:var(--mut);font-weight:700;margin-bottom:6px}
-.cytrois .v{display:block;font-family:var(--mono);font-size:1.22rem;font-weight:700;
- font-variant-numeric:tabular-nums;line-height:1}
-.cytrois .v i{font-style:normal;font-size:.62em;color:var(--mut);font-weight:400}
-.cytrois .v.pr{color:var(--pr)}
-.cyref{display:flex;justify-content:space-between;align-items:center;padding:8px 0;
- border-bottom:1px solid var(--line);font-size:.86rem}
-.cyref:last-child{border-bottom:none}
-.cyref .r{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--mut)}
-/* tabular-nums aligne des chiffres, il n'aligne pas un groupe de longueur
-   variable : sans ces largeurs, « 60 → 67,5 » et « 100 → 110 » decalent la
-   fleche d'une ligne a l'autre. */
-.cyref .r s{display:inline-block;min-width:3.4em;text-align:right;color:var(--mut);text-decoration:none}
-.cyref .r i{font-style:normal;color:var(--dim)}
-.cyref .r b{display:inline-block;min-width:4.8em;text-align:right;color:var(--ok)}
-.cydurs{display:flex;gap:8px;margin:0 0 14px}
-.cydur{flex:1;background:none;border:1px solid var(--line);border-radius:11px;padding:13px 8px;
- color:var(--txt);font:inherit;font-size:.8rem;font-weight:600;cursor:pointer;min-height:48px}
-.cydur.on{background:rgba(217,164,65,.09);border-color:rgba(217,164,65,.42)}
-.cydur i{display:block;font-style:normal;font-size:.58rem;letter-spacing:.07em;
- text-transform:uppercase;color:var(--brand);font-weight:700;margin-top:4px}
-.cyreco{display:block;font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;
- font-weight:700;color:var(--ink);opacity:.72;margin-bottom:3px}
 /* Compteur de medailles dans l'en-tete : la recompense est visible depuis
    l'ecran d'entrainement, pas seulement enterree dans Suivi. */
 /* La recompense est ce qui ramene : elle merite la meme presence que
@@ -2519,261 +2459,8 @@ function newProfile(name){
       rm:{dc:"",squat:"",sdt:"",row:""},days:[0,2,4],acts:{},must:[],excl:[],
       dur:60,pain:[],body:{sex:"",age:"",ht:"",wt:"",act:"sed"}},
     prog:null,logs:[],hist:[],used:{},ovr:{},notes:{},blog:[],
-    set:{timer:true,sound:true,vib:true,portrait:true,pal:"laiton"},
-    cycle:null,cycles:[],wizStep:0,done:false};
+    set:{timer:true,sound:true,vib:true,portrait:true,pal:"laiton"},wizStep:0,done:false};
   PROFILES.push(p);ACTIVE=p.id;saveP();return p;
-}
-
-/* Report de la proposition de cycle, le temps de la session. Volontairement
-   NON persiste : un « plus tard » ne doit pas se transformer en refus
-   definitif qu'on ne sait plus annuler. */
-let CYCLE_REPORTE=false, CYCLE_SUITE=false;
-
-/* Le bilan de fin de cycle. DEUX objets encadres, pas cinq : les trois
-   chiffres de tete sont une rangee de mesures SANS encadre — sinon ils
-   gagnent sur le tableau des charges, qui est le vrai contenu, la seule
-   preuve tangible que six semaines ont servi a quelque chose. */
-function sheetCycleBilan(p){
-  const c=p.cycle, b=cycleBilan(p,c,today(),c.rmDebut||{},cyclePrs(p,c));
-  const g=GOALS[c.goal]?GOALS[c.goal].n:c.goal;
-  const t=Math.round(b.tonnage/100)/10;
-  let h='<div class="sheet" id="cysheet"><div class="shveil" data-cyclose></div>'
-    +'<div class="shbox" role="dialog" aria-modal="true" aria-labelledby="cy-t">'
-    +'<div class="shgrab"></div>'
-    +'<div class="shhd"><h2 id="cy-t">Cycle '+c.no+'</h2></div>'
-    +'<p class="mut" style="margin:0 0 14px">'+c.semaines+' semaines, du '+esc(c.debut)
-    +' au '+esc(cycleFin(c))+'. Objectif : '+esc(g.toLowerCase())+'.</p>'
-    +'<div class="cytrois">'
-    +'<div><span class="l">Séances</span><span class="v">'+b.faites
-    +'<i> / '+b.prevues+'</i></span></div>'
-    +'<div><span class="l">Tonnage</span><span class="v">'+String(t).replace(".",",")+'<i> t</i></span></div>'
-    +'<div><span class="l">Records</span><span class="v pr">'+b.records+'</span></div>'
-    +'</div>';
-  if(b.hausses.length){
-    h+='<div class="card"><h4>Charges de référence</h4>';
-    b.hausses.forEach(x=>{
-      /* cfg.rm porte les cles des quatre mouvements de reference — dc,
-         squat, sdt, row — et NON des identifiants du catalogue. Une recherche
-         dans EX tombe juste par accident sur squat et sdt, et affiche « dc »
-         brut pour le developpe couche : releve a la recette. REFN est la
-         table faite pour ca. */
-      const nom=REFN[x.id]||(EX.find(e=>e.id===x.id)||{}).n||x.id;
-      h+='<div class="cyref"><span>'+esc(nom.charAt(0).toUpperCase()+nom.slice(1))+'</span>'
-        +'<span class="r"><s>'+fmtKg(x.avant)+'</s> <i aria-label="passe à">→</i> <b>'
-        +fmtKg(x.apres)+' kg</b></span></div>';
-    });
-    h+='</div>';
-  }
-  h+='<button type="button" class="btn" id="cynext">Choisir la suite</button>'
-    +'<button type="button" class="shlater" data-cyclose>Plus tard</button>'
-    +'</div></div>';
-  return h;
-}
-
-/* Les trois issues. Une seule est marquee « Recommande » — la meme convention
-   que la palette Laiton dans les reglages. La troisieme existe parce que
-   repeter un exercice sert a le maitriser : une app qui ne propose que du neuf
-   pousse a changer avant d'avoir appris. */
-function sheetCycleSuite(p){
-  const c=p.cycles&&p.cycles[0];
-  const no=c?c.no:0;
-  return '<div class="sheet" id="cysuite"><div class="shveil" data-cyclose></div>'
-    +'<div class="shbox" role="dialog" aria-modal="true" aria-labelledby="cs-t">'
-    +'<div class="shgrab"></div>'
-    +'<div class="shhd"><h2 id="cs-t">La suite</h2></div>'
-    +'<button type="button" class="shrow hi" id="cysame">'
-    /* Une seule issue porte « Recommande » — la meme convention que la palette
-       Laiton dans les reglages. Une marque, un sens, reemployee. */
-    +'<span class="vtx"><span class="cyreco">Recommandé</span>'
-    +'<b>Continuer sur le même objectif</b>'
-    +'<small>Six nouvelles semaines, et des exercices différents des tiens : '
-    +'d\'autres variantes, mêmes schémas moteurs.</small></span></button>'
-    +'<button type="button" class="shrow" id="cygoal">'
-    +'<span class="vtx"><b>Changer d\'objectif</b>'
-    +'<small>Repasser par l\'assistant. Tes charges de référence et ton '
-    +'historique sont conservés.</small></span></button>'
-    +'<button type="button" class="shrow" id="cyagain">'
-    +'<span class="vtx"><b>Reprendre le même</b>'
-    +'<small>Exactement les mêmes exercices, six semaines de plus. Utile quand '
-    +'un mouvement n\'est pas encore maîtrisé.</small></span></button>'
-    +'<button type="button" class="shlater" data-cyclose>Plus tard</button>'
-    +'</div></div>';
-}
-
-/* La proposition d'ouverture, pour un profil qui n'a jamais eu de cycle —
-   c'est la « migration » : un ecran, pas un script. */
-function sheetCycleOuvrir(p){
-  let d='';
-  CYCLE_DUREES.forEach(w=>{
-    d+='<button type="button" class="cydur'+(w===CYCLE_DEFAUT?" on":"")+'" data-cydur="'+w+'">'
-      +w+' semaines'+(w===CYCLE_DEFAUT?'<i>Recommandé</i>':'')+'</button>';
-  });
-  return '<div class="sheet" id="cyopen"><div class="shveil" data-cyclose></div>'
-    +'<div class="shbox" role="dialog" aria-modal="true" aria-labelledby="co-t">'
-    +'<div class="shgrab"></div>'
-    +'<div class="shhd"><h2 id="co-t">Donner une fin à ton programme</h2></div>'
-    +'<p class="mut" style="margin:0 0 14px">Ton programme n\'a pas de terme. '
-    +'Un cycle lui en donne un : à la fin, tu vois ce que tu as soulevé, et tu '
-    +'décides de la suite. Ton programme et ton historique ne changent pas.</p>'
-    +'<div class="cydurs">'+d+'</div>'
-    +'<button type="button" class="btn" id="cygo">Lancer le cycle 1</button>'
-    +'<button type="button" class="shlater" data-cyclose>Plus tard</button>'
-    +'</div></div>';
-}
-
-/* Records battus pendant la fenetre du cycle. Derive de l'historique : on
-   rejoue les charges exercice par exercice et on compte les depassements
-   stricts du meilleur anterieur, la seance du jour exclue — exactement la
-   regle de l'ecran Records. */
-function cyclePrs(p,c){
-  const dans=cycleSeances(p,c,today());
-  const avant=(p.hist||[]).filter(r=>r&&r.date&&r.date<c.debut);
-  const best={};
-  avant.forEach(r=>(r.ex||[]).forEach(e=>{const k=parseFloat(e.kg);
-    if(isFinite(k)) best[e.id]=Math.max(best[e.id]||0,k)}));
-  let n=0;
-  dans.slice().reverse().forEach(r=>(r.ex||[]).forEach(e=>{const k=parseFloat(e.kg);
-    if(!isFinite(k)) return;
-    if(best[e.id]!=null&&k>best[e.id]) n++;
-    best[e.id]=Math.max(best[e.id]||0,k)}));
-  return n;
-}
-
-/* ---------------- Cycle de programme ----------------
-   Une ENVELOPPE DE CALENDRIER autour du programme, et rien de plus.
-
-   Ce que le cycle n'est pas : une periodisation. Il ne decide jamais de ce que
-   le moteur prescrit — ni la charge, ni le volume, ni le choix des exercices.
-   generate(), pickEx(), prescribe() et analyze() l'ignorent completement, et
-   c'est cette propriete qui rend la fonctionnalite bon marche : aucune
-   reference de conformite ne depend d'elle.
-
-   Ce que le cycle est : un compteur de semaines avec une fin, qui permet trois
-   choses que l'app ne savait pas faire — dire ou on en est, solder ce qui vient
-   de se passer, et repartir avec d'autres exercices sur le meme objectif.
-   Cette derniere est un simple cfg.rot+1 suivi d'une regeneration, puisque
-   generate() est deterministe.
-
-   LA REGLE A NE PAS FRANCHIR : le jour ou prescribe() lit un champ du cycle,
-   l'app iOS cesse d'etre le jumeau verifie de l'app web. La semaine de
-   decharge est exactement ce cas, et c'est pour ca qu'elle n'est pas ici. */
-
-/* Les durees proposees. 6 par defaut : la regle de montee fait monter une
-   charge apres deux seances reussies consecutives, trois si l'utilisateur
-   declare « dur ». A trois seances par semaine un exercice revient une a deux
-   fois par semaine, donc sur QUATRE semaines l'utilisateur le plus lent peut
-   ne connaitre qu'une seule montee — le bilan n'a rien a montrer, et un bilan
-   vide est pire que pas de bilan. Sur six, il y en a trois au minimum.
-   Douze a ete ecarte : c'est le plan perpetuel avec une date au bout. */
-const CYCLE_DUREES=[4,6,8], CYCLE_DEFAUT=6;
-/* Le seuil unique de realisation, partage avec la progression. */
-const CYCLE_SEUIL=0.75;
-/* Le declencheur de proposition de variation. LES DEUX CONDITIONS COMPTENT
-   AUTANT L'UNE QUE L'AUTRE. Six repetitions seules ne sont pas un probleme :
-   la revue JSCR 2022 conclut que la variation systematique aide et que la
-   variation aleatoire degrade, et l'essai Baz-Valle 2019 montre a volume egal
-   que des exercices fixes font au moins aussi bien que des exercices changes a
-   chaque seance — la variete achete de l'adherence, pas du gain. Six
-   repetitions SANS AUCUNE MONTEE DE CHARGE, en revanche, sont un plateau.
-   Proposer sur la seule repetition reproduirait l'anti-pattern de Fitbod. */
-const CYCLE_REPETITIONS=6, CYCLE_FENETRE=3;
-
-/* Une charge s'ecrit sans decimale inutile, et avec la virgule francaise. */
-function fmtKg(v){const x=Math.round(v*10)/10;
-  return (x%1===0?String(x):x.toFixed(1)).replace(".",",")}
-function cycleJours(a,b){return Math.round((new Date(b+"T00:00:00")-new Date(a+"T00:00:00"))/864e5)}
-function cycleAjout(d,j){const t=new Date(d+"T00:00:00");t.setDate(t.getDate()+j);
-  return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0")}
-
-/* Dernier jour inclus. Un cycle de n semaines ouvert un lundi finit le dimanche
-   de la n-ieme semaine : la semaine civile n'est jamais coupee en deux. */
-function cycleFin(c){return c&&c.semaines>0?cycleAjout(c.debut,7*c.semaines-1):null}
-
-/* Numero de la semaine en cours, de 1 a semaines. null AVANT le debut comme
-   APRES la fin : dans les deux cas il n'y a pas de semaine courante, et un
-   appelant qui recevrait 0 ou semaines+1 dessinerait une jauge fausse. */
-function cycleSemaine(c,d){
-  if(!c||!(c.semaines>0)) return null;
-  const e=cycleJours(c.debut,d||today());
-  if(e<0) return null;
-  const w=Math.floor(e/7)+1;
-  return w<=c.semaines?w:null;
-}
-function cycleEchu(c,d){const f=cycleFin(c);return !!f&&(d||today())>f}
-function cycleDerniereSemaine(c,d){return cycleSemaine(c,d)===c.semaines}
-
-/* Seances prevues sur la duree. On lit le PROGRAMME, pas cfg.days : c'est le
-   programme qui fait foi, et un jour coche sans seance generee — aucun candidat
-   pour aucun creneau — ne doit pas gonfler le denominateur du bilan. */
-function cyclePrevues(p,c){return ((p.prog&&p.prog.sessions)||[]).length*(c?c.semaines:0)}
-
-/* Seances archivees dans la fenetre, bornes comprises. Les seances libres
-   comptent : c'est du travail reel, et les exclure punirait celui qui s'est
-   entraine un jour non prevu. */
-function cycleSeances(p,c,borne){
-  const fin=borne||c.fin||cycleFin(c);
-  if(!fin) return [];
-  return (p.hist||[]).filter(r=>r&&r.date&&r.date>=c.debut&&r.date<=fin);
-}
-function cycleRealisation(c){
-  if(!c||c.faites==null||!(c.prevues>0)) return null;
-  return c.faites/c.prevues;
-}
-/* Un cycle ne compte pour la medaille que s'il a ete reellement mene. */
-function cycleCompte(c){const r=cycleRealisation(c);return r!=null&&r>=CYCLE_SEUIL}
-
-function cycleOuvrir(p,semaines,d){
-  const duree=CYCLE_DUREES.indexOf(semaines)>=0?semaines:CYCLE_DEFAUT;
-  const no=((p.cycles&&p.cycles[0]&&p.cycles[0].no)||0)+1;
-  p.cycle={no:no,debut:d||today(),semaines:duree,goal:p.cfg.goal,rotation:p.cfg.rot||0};
-  return p.cycle;
-}
-/* Solde le cycle et l'archive EN TETE, du plus recent au plus ancien — le meme
-   ordre que hist, pour que le code qui lit l'un lise l'autre pareil. */
-function cycleClore(p,d){
-  if(!p.cycle) return null;
-  const c=p.cycle, j=d||today();
-  c.fin=j; c.faites=cycleSeances(p,c,j).length; c.prevues=cyclePrevues(p,c);
-  if(!p.cycles) p.cycles=[];
-  p.cycles.unshift(c); p.cycle=null;
-  return c;
-}
-
-/* Le bilan. Tout est derive de l'historique, rien n'est stocke en double —
-   la meme discipline que les compteurs de medailles.
-   rmAvant : les cfg.rm releves a l'ouverture. C'est la seule donnee que
-   l'appelant doit avoir conservee, elle n'est pas deductible une fois ecrasee. */
-function cycleBilan(p,c,d,rmAvant,records){
-  const seances=cycleSeances(p,c,d||today());
-  /* Le poids de corps n'entre pas dans le tonnage : ce n'est pas une charge
-     soulevee au sens du suivi. */
-  const tonnage=seances.reduce((t,r)=>t+(r.ex||[]).reduce(
-    (u,e)=>u+(parseFloat(e.kg)||0)*(e.done||0),0),0);
-  const apres={};
-  Object.keys(p.cfg.rm||{}).forEach(k=>{const v=parseFloat(p.cfg.rm[k]);if(isFinite(v))apres[k]=v});
-  const hausses=Object.keys(apres).sort().map(id=>({id:id,avant:(rmAvant||{})[id]||0,apres:apres[id]}))
-    .filter(x=>x.apres>x.avant);
-  return {cycle:c,faites:seances.length,prevues:cyclePrevues(p,c),
-    tonnage:tonnage,records:records||0,rmAvant:rmAvant||{},rmApres:apres,hausses:hausses,
-    realisation:cyclePrevues(p,c)>0?seances.length/cyclePrevues(p,c):null};
-}
-
-/* Faut-il PROPOSER — jamais appliquer — de passer au rang de variation suivant.
-   On identifie la seance type par son libelle archive (k), qui est ce que
-   l'historique conserve : le sid n'y est pas stocke. */
-function cycleLassitude(p,libelle){
-  const passees=(p.hist||[]).filter(r=>r&&r.k===libelle);
-  const recentes=passees.slice(0,CYCLE_FENETRE), anterieures=passees.slice(CYCLE_FENETRE);
-  const maxima=lot=>{const m={};lot.forEach(s=>(s.ex||[]).forEach(e=>{
-    const kg=parseFloat(e.kg); if(isFinite(kg)) m[e.id]=Math.max(m[e.id]||0,kg)}));return m};
-  const recent=maxima(recentes), avant=maxima(anterieures);
-  /* Un exercice qui apparait pour la premiere fois n'est pas une progression :
-     sans cette borne, la premiere seance d'un nouveau cycle annulerait
-     toujours la stagnation. */
-  const aProgresse=Object.keys(recent).some(id=>avant[id]!=null&&recent[id]>avant[id]);
-  const stagne=anterieures.length>0&&!aProgresse;
-  return {repetitions:passees.length,stagne:stagne,
-    proposer:passees.length>=CYCLE_REPETITIONS&&stagne};
 }
 
 /* ---------------- Gamification : médailles ----------------
@@ -2814,23 +2501,13 @@ const BADGES=[
      palier 50 records : deux medailles homonymes dans la meme collection se
      lisent comme un bug. Nom distinct, meme intention. */
   {id:"i15",cat:"impr",thr:15,n:"Insatiable",d:"15 séances hors programme"},
-  {id:"i40",cat:"impr",thr:40,n:"Obsessionnel",d:"40 séances hors programme"},
-  /* Sixieme famille : aller au bout d'un cycle de programme.
-     Elle ne compte QUE les cycles reellement menes — voir cycleCompte().
-     Sans ce filtre elle recompenserait l'ecoulement du calendrier, ce qui est
-     exactement le reproche qu'on fait aux badges saisonniers. */
-  {id:"c1",cat:"cycles",thr:1,n:"Premier cycle",d:"Terminer 1 cycle"},
-  {id:"c2",cat:"cycles",thr:2,n:"Deuxième souffle",d:"Terminer 2 cycles"},
-  {id:"c6",cat:"cycles",thr:6,n:"Au long cours",d:"Terminer 6 cycles"},
-  {id:"c12",cat:"cycles",thr:12,n:"Endurant",d:"Terminer 12 cycles"},
-  {id:"c24",cat:"cycles",thr:24,n:"Inusable",d:"Terminer 24 cycles"}
+  {id:"i40",cat:"impr",thr:40,n:"Obsessionnel",d:"40 séances hors programme"}
 ];
 function badgeStats(p){
   return {seances:(p.hist||[]).length,
     series:(p.hist||[]).reduce((s,r)=>s+(r.done||0),0),
     prs:p.prCount||0, perfect:p.perfectCount||0,
-    impr:(p.hist||[]).filter(r=>r&&r.free).length,
-    cycles:(p.cycles||[]).filter(cycleCompte).length};
+    impr:(p.hist||[]).filter(r=>r&&r.free).length};
 }
 /* Etat complet, trié par catégorie puis seuil croissant — chaque entrée
    porte sa progression pour l'affichage même verrouillée. */
@@ -2846,21 +2523,9 @@ function badgeList(p){
 function badgesNew(prevSt,newSt){
   return BADGES.filter(b=>(newSt[b.cat]||0)>=b.thr&&(prevSt[b.cat]||0)<b.thr);
 }
-/* Une famille dont le compteur ne peut pas bouger aujourd'hui est ecartee de
-   la course a la prochaine medaille. Releve par les tests a l'ajout de la
-   famille « Cycles » : son premier palier est a 1, donc pour tout utilisateur
-   n'ayant jamais ouvert de cycle la distance restante valait 1 — la plus
-   courte possible — et « Premier cycle » devenait la prochaine medaille de
-   TOUT LE MONDE, y compris des utilisateurs existants a la mise a jour.
-   L'app se serait mise a designer un objectif non commence a la place de
-   celui que l'utilisateur poursuivait. */
-function badgeAtteignable(cat,p){
-  if(cat!=="cycles") return true;
-  return !!p.cycle || (p.cycles||[]).length>0;
-}
 function nextBadge(p){
   const st=badgeStats(p);
-  const locked=BADGES.filter(b=>badgeAtteignable(b.cat,p)&&(st[b.cat]||0)<b.thr)
+  const locked=BADGES.filter(b=>(st[b.cat]||0)<b.thr)
     .sort((a,b2)=>(a.thr-(st[a.cat]||0))-(b2.thr-(st[b2.cat]||0)));
   return locked[0]||null;
 }
@@ -4744,27 +4409,6 @@ function renderMain(p){
     +'<svg width="26" height="26" viewBox="0 0 42 42" aria-hidden="true">'
     +'<circle cx="21" cy="21" r="19" fill="var(--brand)"/><circle cx="21" cy="21" r="12.5" fill="var(--sf2)"/>'
     +'<circle cx="21" cy="21" r="6" fill="var(--brand)"/></svg><b>'+earnedN+'</b></button></header>';
-  /* Bandeau de cycle. Il precede la barre d'evenement, qui n'existe que pour
-     les utilisateurs ayant declare une date d'objectif. Les deux empilees sont
-     a verifier a la recette : deux jauges fines qui disent deux choses
-     differentes, ce n'est pas la meme faute que deux cartes, mais ca se voit. */
-  if(SECT==="train"&&p.cycle){
-    const w=cycleSemaine(p.cycle)||0;
-    let j='';
-    for(let i=1;i<=p.cycle.semaines;i++)
-      j+='<span class="'+(i<w?'f':(i===w?'now':''))+'"></span>';
-    h+='<div class="cyw"><div class="cyh">'
-      +'<span class="g">Cycle '+p.cycle.no+'</span>'
-      +'<span class="d">Semaine '+w+' / '+p.cycle.semaines+'</span></div>'
-      +'<div class="cyj" role="img" aria-label="Semaine '+w+' sur '+p.cycle.semaines+'">'+j+'</div>'
-      /* Une seule phrase, et seulement la derniere semaine. Elle annonce la fin
-         sans la dramatiser et sans promettre une decharge : la decharge n'est
-         pas dans cette version, et une promesse non tenue coute plus cher que
-         le silence. */
-      +(cycleDerniereSemaine(p.cycle)
-        ?'<p class="cymot">Dernière semaine. À la fin, le bilan et le choix de la suite.</p>':'')
-      +'</div>';
-  }
   /* barre temporelle */
   if(c.startDate&&c.eventDate){
     const s=new Date(c.startDate+"T00:00:00"),e=new Date(c.eventDate+"T00:00:00"),n=new Date();
@@ -4805,13 +4449,6 @@ function renderMain(p){
     }
     h+='</div>';
   }
-  /* Fin de cycle : le bilan, puis le choix de la suite. Rendu ICI plutot
-     qu'au moment de l'archivage d'une seance, parce que le cycle peut echoir
-     un jour ou l'utilisateur ne s'entraine pas — et qu'il doit alors le voir
-     a la prochaine ouverture de l'app, pas trois seances plus tard. */
-  if(CYCLE_SUITE) h+=sheetCycleSuite(p);
-  else if(p.cycle&&cycleEchu(p.cycle)&&!CYCLE_REPORTE) h+=sheetCycleBilan(p);
-  else if(!p.cycle&&!(p.cycles||[]).length&&!CYCLE_REPORTE) h+=sheetCycleOuvrir(p);
   h+='<div id="pg"></div>';
   const curDay=sess[TAB]||sess[0];
   h+='<nav class="bnav">'
@@ -4825,36 +4462,6 @@ function renderMain(p){
     +'</nav>';
   APP.innerHTML=h;
   document.getElementById("switch").onclick=()=>{VIEW="home";render()};
-  /* ---- Cablage du cycle ----
-     « Plus tard » ne persiste rien : il met en sourdine pour la session. Un
-     refus definitif qu'on ne sait plus annuler serait pire que la relance. */
-  APP.querySelectorAll("[data-cyclose]").forEach(b=>b.onclick=()=>{
-    CYCLE_REPORTE=true;CYCLE_SUITE=false;renderMain(p)});
-  let d=CYCLE_DEFAUT;
-  APP.querySelectorAll("[data-cydur]").forEach(b=>b.onclick=()=>{
-    d=+b.dataset.cydur;
-    APP.querySelectorAll("[data-cydur]").forEach(x=>x.classList.toggle("on",x===b));
-    const go=document.getElementById("cygo");if(go)go.textContent="Lancer le cycle 1"});
-  const cygo=document.getElementById("cygo");
-  if(cygo)cygo.onclick=()=>{cycleOuvrir(p,d);saveP();toast("Cycle 1 lancé");renderMain(p)};
-  /* Le bilan solde AVANT d'ouvrir la feuille de choix : une fois le cycle
-     echu, il est termine, que l'utilisateur choisisse une suite ou non. */
-  const cynext=document.getElementById("cynext");
-  if(cynext)cynext.onclick=()=>{cycleClore(p);saveP();CYCLE_SUITE=true;renderMain(p)};
-  const cysame=document.getElementById("cysame");
-  if(cysame)cysame.onclick=()=>{
-    /* Meme objectif, autres exercices : c'est exactement ce que fait
-       « Renouveler les exercices ». generate() est deterministe, donc
-       incrementer la rotation suffit — rien d'autre a inventer. */
-    p.cfg.rot=(p.cfg.rot||0)+1;p.prog=generate(p.cfg);
-    cycleOuvrir(p,CYCLE_DEFAUT);CYCLE_SUITE=false;saveP();
-    toast("Cycle "+p.cycle.no+" lancé");renderMain(p)};
-  const cyagain=document.getElementById("cyagain");
-  if(cyagain)cyagain.onclick=()=>{
-    cycleOuvrir(p,CYCLE_DEFAUT);CYCLE_SUITE=false;saveP();
-    toast("Cycle "+p.cycle.no+" lancé");renderMain(p)};
-  const cygoal=document.getElementById("cygoal");
-  if(cygoal)cygoal.onclick=()=>{CYCLE_SUITE=false;p.wizStep=0;p.done=false;saveP();render()};
   const mg=document.getElementById("medgo");
   /* Le compteur de l'en-tete ouvre directement la collection. */
   if(mg)mg.onclick=()=>{SECT="hist";HISTAB="med";PANEL={};renderMain(p);window.scrollTo(0,0)};
@@ -7388,8 +6995,7 @@ const BCATS={
   series:{n:"Volume",d:"Séries effectuées au total",u:"série"},
   prs:{n:"Records",d:"Charges battues sur un mouvement",u:"record"},
   perfect:{n:"Précision",d:"Séances où tous les objectifs sont atteints",u:"séance"},
-  impr:{n:"Imprévu",d:"Séances lancées un jour sans programme",u:"séance"},
-  cycles:{n:"Cycles",d:"Cycles de programme menés à terme",u:"cycle"}
+  impr:{n:"Imprévu",d:"Séances lancées un jour sans programme",u:"séance"}
 };
 /* Onglet Medailles : la collection complete, famille par famille, avec la
    progression vers le palier suivant. C'est l'ecran de recompense — il ne
@@ -7726,41 +7332,6 @@ function renderHist(p,pg){
   }
 
   if(HISTAB==="prog"){
-  /* Le cycle en cours, puis l'archive. Le compteur est dans le TITRE de la
-     carte — « Cycles terminés · 2 » — et pas en gros chiffre : il compte, il
-     ne se celebre pas. Et le ratio seances faites / prevues NE SE COLORE PAS.
-     Une premiere version le peignait en sauge au-dessus de 75 % et en laiton
-     d'alerte en dessous : warn porterait alors une information tout seul
-     (la DA impose un triangle), warn et brand sont a 1,17:1 dans la meme
-     carte, et un ratio a 61 % peint en alerte dit « tu n'as pas assez fait ».
-     Le seuil de 75 % reste dans le moteur ; il ne monte pas a l'ecran. */
-  if(p.cycle){
-    const w=cycleSemaine(p.cycle)||0;
-    let j='';
-    for(let i=1;i<=p.cycle.semaines;i++)
-      j+='<span class="'+(i<w?'f':(i===w?'now':''))+'"></span>';
-    h+='<div class="card"><h4>Cycle '+p.cycle.no+' — en cours</h4>'
-      +'<div class="cyh"><span class="g">'+esc(GOALS[p.cycle.goal]?GOALS[p.cycle.goal].n:p.cycle.goal)+'</span>'
-      +'<span class="d">Semaine '+w+' / '+p.cycle.semaines+'</span></div>'
-      +'<div class="cyj">'+j+'</div></div>';
-  }
-  const clos=(p.cycles||[]);
-  if(clos.length){
-    h+='<div class="card"><h4>Cycles terminés · '+clos.filter(cycleCompte).length+'</h4>';
-    clos.forEach(cy=>{
-      const g=GOALS[cy.goal]?GOALS[cy.goal].n:cy.goal;
-      h+='<button type="button" class="cyl" data-cycle="'+cy.no+'">'
-        +'<span class="no">'+String(cy.no).padStart(2,"0")+'</span>'
-        +'<span class="m"><b>'+esc(g)+' · '+cy.semaines+' semaines</b>'
-        +'<span>'+esc(cy.debut)+' → '+esc(cy.fin||"")+'</span></span>'
-        +'<span class="q">'+(cy.faites||0)+' / '+(cy.prevues||0)+'</span>'
-        /* Le chevron est legitime ici : l'ecran existe, c'est le bilan
-           archive. Sur le bandeau de l'ecran d'entrainement il n'y en a pas,
-           parce qu'un chevron promet un ecran. */
-        +'<span class="ch" aria-hidden="true">›</span></button>';
-    });
-    h+='</div>';
-  }
   const hu=historyUpdate(p,false);
   h+='<div class="card"><h4>Mise à jour du programme</h4>';
   if(!p.hist.length)
