@@ -148,12 +148,13 @@ font-size:0;line-height:0;font-weight:400;font-style:normal}
    c'est le rapport trait/boite qui fait la finesse. */
 .bntab span{font-size:.62rem;font-weight:600}
 .bntab{min-height:48px;gap:4px}
-.bntab.on{color:var(--bg);background:var(--brand)}
+/* Planche 13 (25/09) : plus d'aplat, l'onglet actif prend l'accent de sa section. */
+.bntab.on{color:var(--brand);background:none;font-weight:700}
 /* La destination active reprend l'accent de sa propre section plutot que
    toujours l'or : la nav elle-meme annonce dans quelle section on est. */
-body[data-sect="hist"] .bntab.on{background:var(--sec-hist-ac);color:#F2F6FC}
-body[data-sect="nut"] .bntab.on{background:var(--sec-nut-ac);color:#0D1710}
-body[data-sect="shop"] .bntab.on{background:var(--sec-shop-ac);color:var(--ink)}
+body[data-sect="hist"] .bntab.on{color:var(--sec-hist-ac)}
+body[data-sect="nut"] .bntab.on{color:var(--sec-nut-ac)}
+body[data-sect="shop"] .bntab.on{color:var(--sec-shop-ac)}
 .num{font-variant-numeric:tabular-nums;font-family:var(--mono)}
 /* Les nombres qui comptent — charges, minuteur, records — passent en
    monospace tabulaire : lisible d'un coup d'oeil, aligne en colonnes. */
@@ -1340,6 +1341,43 @@ line-height:1.45;margin:0 0 12px}
 .fbilan summary{display:flex;align-items:center;justify-content:space-between;gap:10px;
 padding:12px 0;cursor:pointer;list-style:none;font-size:.78rem;font-weight:600;color:var(--txt)}
 .fbilan summary::-webkit-details-marker{display:none}
+
+/* Tout bloc repliable porte un chevron (25/09). */
+.fbilan summary::after,.wzmore summary::after{content:"";width:7px;height:7px;flex:0 0 auto;margin:0 3px 0 0;
+border-right:2px solid var(--mut);border-bottom:2px solid var(--mut);border-radius:1px;
+transform:translateY(-2px) rotate(45deg);transition:transform .2s ease}
+.fbilan[open] summary::after,.wzmore[open] summary::after{transform:translateY(2px) rotate(-135deg)}
+.fbilan summary .fbst{margin-left:auto}
+/* Séries d'approche : à quoi sert la zone, lisible sans l'ouvrir. */
+.wup summary{flex-wrap:wrap}
+.wuintro{flex:1 0 100%;font-size:.7rem;line-height:1.4;color:var(--mut);padding:0 0 10px;margin-top:-4px}
+/* Le mot de la dernière série validée. */
+.motser{margin-left:auto;max-width:55%;text-align:right;font-size:.72rem;font-weight:600;line-height:1.3;color:var(--brand)}
+.motser.pos{color:var(--ok)}.motser.att{color:var(--warn)}
+.fbbr{flex:1 0 100%;height:0}
+.frest .motser{display:block;margin:0 0 8px;max-width:none;text-align:left}
+/* La prochaine fois (planche 15, variante C). */
+.pf{margin-top:14px}
+.pf .cap{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--brand)}
+.pf .ct{font-size:.86rem;color:var(--txt);margin:5px 0 8px}
+.pf .ct b{color:var(--ok)}
+.pf .acq{background:var(--sf2);border-radius:12px;padding:0 12px}
+.pf .ar{display:flex;align-items:center;gap:10px;min-height:48px;border-top:1px solid var(--line)}
+.pf .ar:first-child{border-top:0}
+.pf .ar .ic{width:22px;flex:0 0 auto;color:var(--ok);display:flex;justify-content:center}
+.pf .nm{flex:1;min-width:0;font-size:.82rem;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pf .v{text-align:right;white-space:nowrap;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.pf .v .l1{font-size:.75rem;color:var(--mut)}
+.pf .v .l1 b{font-size:1rem;font-weight:600;color:var(--ok)}
+.pf .v .l2{font-size:.7rem;color:var(--ok)}
+.pf .sub{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--mut);margin:12px 2px 2px}
+.pf .wr{display:flex;align-items:center;gap:10px;min-height:44px;border-top:1px solid var(--line)}
+.pf .wr:first-of-type{border-top:0}
+.pf .dots{width:27px;flex:0 0 auto;display:flex;gap:3px}
+.pf .dots i{width:7px;height:7px;border-radius:50%;border:1.5px solid var(--mut);box-sizing:border-box}
+.pf .wr .nm{font-weight:500}
+.pf .wr .v{font-size:.75rem;color:var(--mut)}.pf .wr .v b{color:var(--txt);font-weight:600}
+.pf .var{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:.76rem;color:var(--mut)}
 .fbilan .fbst{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:var(--mut)}
 .fbilan[open] summary{border-bottom:1px solid var(--line)}
 .fbrow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:11px 0}
@@ -2039,7 +2077,7 @@ html.ready #boot{opacity:0;pointer-events:none}
    FORGE — générateur + suivi de programme, multi-profils, hors ligne
    Toutes les données restent dans le localStorage de l'appareil.
    ================================================================ */
-const VER="1.6";
+const VER="1.8";
 const K="fg_";
 function G(k,d){try{const v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function S(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
@@ -3494,6 +3532,96 @@ const CHEER_EX=["Exercice bouclé.","Celui-là est plié.","Rangé. Au suivant."
   "Terminé, proprement.","Toutes les séries y sont."];
 const CHEER_HALF=["Moitié de séance. Le plus dur est derrière.",
   "La moitié est faite : le rythme est bon.","Mi-parcours. On ne lâche pas."];
+
+/* ---- Mot de la dernière série validée (25/09, parité iOS `Encouragement`).
+   Il dit ce que la série vient de montrer, sinon où l'on en est. ---- */
+function fourchette(rx){
+  const tete=String(rx||"").split(" ou ")[0].trim();
+  if(/s$/.test(tete))return null;
+  const n=(tete.match(/\d+/g)||[]).map(Number);
+  if(!n.length)return null;
+  return [n[0],n.length>1?n[1]:n[0]];
+}
+function encMsg(p,s,x){
+  const toutes=x.allSets||x.sets;let faites=0,der=-1;
+  for(let j=0;j<toutes;j++)if(G("chk_"+sKey(p,s.sid,x.id,j),false)){faites++;der=j}
+  if(!faites||!toutes)return null;
+  if(faites>=toutes)return {t:"Toutes les séries y sont. Ton bilan ?",c:""};
+  const r=der>=0?G("srep_"+sKey(p,s.sid,x.id,der),null):null,fr=fourchette(x.reps);
+  if(r!=null&&fr){
+    if(+r>fr[1])return {t:"Au-dessus de la fourchette : la charge montera.",c:"pos"};
+    if(+r<fr[0])return {t:"Sous la fourchette. Garde la technique.",c:"att"};
+  }
+  if(faites===1){
+    const ov=p.ovr[x.id],base=ov!=null?parseFloat(ov):x.charge;
+    const ch=G("skg_"+sKey(p,s.sid,x.id,der),null)!=null?+G("skg_"+sKey(p,s.sid,x.id,der),null):base;
+    const h=(p.hist||[]).find(z=>z.date!==today()&&(z.ex||[]).some(e=>e.id===x.id&&e.kg>0));
+    const dern=h?h.ex.find(e=>e.id===x.id).kg:null;
+    if(ch>0&&dern>0&&ch>dern)return {t:"+"+kg(ch-dern)+" sur la dernière fois.",c:"pos"};
+    return {t:"Première en boîte.",c:""};
+  }
+  if(faites===toutes-1)return {t:"Plus qu'une.",c:""};
+  const pool=["Le rythme est bon.","Propre. On continue.","Validée. Respire."];
+  return {t:pool[(faites-2)%pool.length],c:""};
+}
+function encHTML(p,s,x,focus){
+  const m=encMsg(p,s,x);
+  if(!m||(focus&&m.c===""&&m.t.indexOf("bilan")>=0))return focus?"":'<span class="motser"></span><span class="fbbr"></span>';
+  return '<span class="motser'+(m.c?" "+m.c:"")+'">'+esc(m.t)+'</span>'+(focus?"":'<span class="fbbr"></span>');
+}
+/* ---- Passer à la suite vaut bilan (25/09) : un exercice bouclé au bilan
+   incomplet reçoit l'objectif déduit des répétitions (une série sous le bas
+   de la fourchette → non) et le ressenti « correct ». Rien n'est écrasé ;
+   le partenaire de biset est épargné ; un toast le dit. ---- */
+function objectifAtteint(p,s,x){
+  const fr=fourchette(x.reps);if(!fr)return true;
+  const toutes=x.allSets||x.sets;
+  for(let j=0;j<toutes;j++){const r=G("srep_"+sKey(p,s.sid,x.id,j),null);if(r!=null&&+r<fr[0])return false}
+  return true;
+}
+function autoBilan(p,s,plan,sauf,seul){
+  let n=0,manque=false;
+  plan.items.forEach(x=>{
+    if(seul&&x.id!==seul)return;
+    if(sauf&&(x.id===sauf.id||(sauf.ss&&x.ss===sauf.ss)))return;
+    const toutes=x.allSets||x.sets;if(!toutes)return;
+    for(let j=0;j<toutes;j++)if(!G("chk_"+sKey(p,s.sid,x.id,j),false))return;
+    const k=logKey(s.sid,x.id);let l=p.logs.find(z=>z.k===k);
+    if(l&&l.ok&&l.diff)return;
+    if(!l){l={k:k};p.logs.push(l)}
+    if(!l.ok){l.ok=objectifAtteint(p,s,x)?"oui":"non";if(l.ok==="non")manque=true}
+    if(!l.diff)l.diff="correct";
+    n++;
+  });
+  if(n){saveP();toast(manque?"Bilan enregistré : objectif manqué (répétitions sous la fourchette) · correct. Modifiable sur la carte."
+                            :"Bilan enregistré : objectif atteint · correct. Modifiable sur la carte.")}
+  return n;
+}
+/* ---- La prochaine fois (planche 15, variante C) ---- */
+function propHTML(prop){
+  const acq=prop.filter(q=>q.t==="up"||q.t==="lest"),por=prop.filter(q=>q.t==="rest"),vr=prop.find(q=>q.t==="var");
+  if(!prop.length)return "";
+  let ct;
+  if(acq.length)ct='<b>'+(acq.length===1?"1 charge monte.":acq.length+" charges montent.")+'</b>'
+    +(por.length?" "+(por.length===1?"1 autre à portée.":por.length+" autres à portée."):"");
+  else ct=por.length===1?"1 charge à portée.":por.length+" charges à portée.";
+  let h='<div class="pf"><div class="cap">La prochaine fois</div><p class="ct">'+ct+'</p>';
+  if(acq.length){
+    h+='<div class="acq">'+acq.map(q=>{
+      const dep=(q.t==="up"&&q.de>0&&q.de<q.a)?q.de:null;
+      return '<div class="ar" aria-label="'+esc(q.lbl)+'"><span class="ic"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M4 7l4-4 4 4"/></svg></span>'
+        +'<span class="nm">'+esc(q.n)+'</span><span class="v"><div class="l1">'+(q.t==="lest"?"lest ":"")
+        +(dep?esc(kg(dep).replace(" kg",""))+" → ":"")+'<b>'+esc(kg(q.a).replace(" kg",""))+'</b> kg</div>'
+        +(dep?'<div class="l2">+'+esc(kg(q.a-dep))+'</div>':"")+'</span></div>'}).join("")+'</div>';
+  }
+  if(por.length){
+    h+='<div class="sub">'+(por.every(q=>q.k===1)?"À une séance réussie":"À portée")+'</div><div>'
+      +por.map(q=>'<div class="wr" aria-label="'+esc(q.lbl)+'"><span class="dots">'+"<i></i>".repeat(Math.min(q.k,3))+'</span>'
+        +'<span class="nm">'+esc(q.n)+'</span><span class="v">→ <b>'+esc(kg(q.a).replace(" kg",""))+'</b> kg</span></div>').join("")+'</div>';
+  }
+  if(vr)h+='<div class="var"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4v6h6M20 20v-6h-6"/><path d="M20 10A8 8 0 0 0 6 6L4 10M4 14a8 8 0 0 0 14 4l2-4"/></svg>'+esc(vr.lbl)+'</div>';
+  return h+'</div>';
+}
 function pickCheer(pool,seed){return pool[hashStr(String(seed))%pool.length]}
 function endMessage(tl,prs,newBadges,perfect){
   if(newBadges.length===1) return "Nouvelle médaille : "+newBadges[0].n+" — "+newBadges[0].d.toLowerCase()+".";
@@ -5585,6 +5713,7 @@ function migrateKeys(p){
    Le comportement est prouve identique a l'ancien gestionnaire — voir
    forge-swift/doc/BACKLOG-APP.md. */
 function archiverSeance(p,s,ti,plan,dm,jour,lire){
+    autoBilan(p,s,plan,null,null);
     const prevBadgeSt=badgeStats(p);
     const tl=tally(p,s,plan,lire);
     const rec={date:jour,k:s.k,day:s.day,done:tl.done+tl.bonus,tot:tl.tot,dur:dm,
@@ -5665,8 +5794,8 @@ function archiverSeance(p,s,ti,plan,dm,jour,lire){
       if(nv===base&&stx.streak>0){
         const seuil=(fb.ok==="oui"&&fb.diff==="dur")?PROG_STREAK_DUR:PROG_STREAK,
               rest=seuil-stx.streak;
-        if(rest>0)prop.push(e.n+" : encore "+rest+" séance"+(rest>1?"s":"")+" réussie"+(rest>1?"s":"")+" pour passer à "+kg(base+progStep(e)))}
-      if(nv!==base){p.ovr[x.id]=String(nv);prop.push(e.n+" → "+kg(nv))}
+        if(rest>0)prop.push({t:"rest",n:e.n,k:rest,a:base+progStep(e),lbl:e.n+" : encore "+rest+" séance"+(rest>1?"s":"")+" réussie"+(rest>1?"s":"")+" pour passer à "+kg(base+progStep(e))})}
+      if(nv!==base){p.ovr[x.id]=String(nv);prop.push({t:"up",n:e.n,de:base,a:nv,lbl:e.n+" → "+kg(nv)})}
     });
     /* Sur traction et dips, une seance reussie et facile ne se traduisait
        par rien : l'app n'avait aucun levier. Elle propose maintenant du lest. */
@@ -5677,7 +5806,7 @@ function archiverSeance(p,s,ti,plan,dm,jour,lire){
       if(!p.lest)p.lest={};
       const cur=lestOf(p,e),nv=cur+2.5;
       p.lest[e.id]=String(nv);
-      prop.push(e.n+" → lest "+kg(nv));
+      prop.push({t:"lest",n:e.n,a:nv,lbl:e.n+" → lest "+kg(nv)});
     });
     p.logs=p.logs.filter(l=>l.k.indexOf(s.sid+"_")!==0);delete p.notes[s.sid];
     if(p.dayDur)delete p.dayDur[s.sid];
@@ -5692,7 +5821,7 @@ function archiverSeance(p,s,ti,plan,dm,jour,lire){
     /* alternance automatique des exercices, si elle est demandee */
     if(p.set.autovary){
       const vr=varySession(p,ti,1);
-      if(vr.changed)prop.push("Séance variée pour la prochaine fois : "+vr.changed+" exercice"+(vr.changed>1?"s":"")+" remplacé"+(vr.changed>1?"s":""));
+      if(vr.changed)prop.push({t:"var",lbl:"Séance variée pour la prochaine fois : "+vr.changed+" exercice"+(vr.changed>1?"s":"")+" remplacé"+(vr.changed>1?"s":"")});
     }
     const newBadges=badgesNew(prevBadgeSt,badgeStats(p));
     /* la derniere medaille gagnee est retenue pour porter la pastille
@@ -5835,6 +5964,7 @@ function renderFocus(p,s,ti,plan,order){
     +'<span class="frl">Repos calculé · <b id="frtot">'+mmss(smartRest(p,s,x,e,Math.max(0,cur)))+'</b></span>'
     +'<button type="button" class="frb" id="frplus">+30 s</button>'
     +'<button type="button" class="frb" id="frskip">Passer</button></div>'
+    +encHTML(p,s,x,true)
     +'<div class="frbar"><i id="frbi"></i></div>'
     /* Planche 05, B1 : la vignette ne se montre au repos que quand la
        DERNIERE serie de l'exercice est engagee. Avant, elle dirait de penser
@@ -5893,6 +6023,7 @@ function renderFocus(p,s,ti,plan,order){
     if(allDone){
       if(lastEx){FOCOVR[ti+"_"+today()]=false;closeFocus();renderMain(p);
         const fin=document.getElementById("finish");if(fin)fin.click();return}
+      autoBilan(p,s,plan,null,x.id);
       go(i+1);return;
     }
     /* Les repetitions et la charge sont deja ecrites au moment ou la
@@ -5901,6 +6032,7 @@ function renderFocus(p,s,ti,plan,order){
        anciens champs de saisie, et il faisait echouer tout le gestionnaire
        — le bouton ne validait plus rien. */
     S("chk_"+sKey(p,s.sid,x.id,cur),true);
+    autoBilan(p,s,plan,x,null);
     /* le repos demarre tout seul : c'est la raison d'etre du mode focus.
        Dans un biset, c'est la transition vers l'autre exercice, ou le repos
        de fin de tour — et on change d'ecran tout seul, pour que l'alternance
@@ -6046,9 +6178,10 @@ function warmupHTML(p,s,x,e,ch,xi){
       +'<span class="wuv">'+r.reps+' × <b>'+esc(kg(r.kg))+'</b></span></div>';
   }).join("");
   return '<details class="wup"'+(n&&n<w.length?" open":"")+'><summary>'
-    +'<span class="wusum">Montée en charge</span>'
+    +'<span class="wusum">Séries d\'approche</span>'
     +'<span class="wucnt">'+n+'/'+w.length+'</span>'
     +'<span class="wuchev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 10l6 6 6-6"/></svg></span>'
+    +'<span class="wuintro">Avant ta 1<sup>re</sup> série à '+esc(kg(ch))+' : quelques répétitions plus légères pour préparer le geste et les articulations. Coche-les au fur et à mesure.</span>'
     +'</summary><div class="wubody">'+rows
     +'<p class="wunote">Hors décompte : ces séries ne comptent ni dans le volume ni dans les séries de la séance. Repos court, 45 s.</p>'
     +'</div></details>';
@@ -6828,6 +6961,7 @@ function renderSession(p,s,ti,pg){
     h+='<div class="fb"><span class="lb">Objectif atteint ?</span>'
       +'<button data-ok="'+ti+"|"+xi+'|oui" class="'+(fb.ok==="oui"?"oui":"")+'">Oui</button>'
       +'<button data-ok="'+ti+"|"+xi+'|non" class="'+(fb.ok==="non"?"non":"")+'">Non</button>'
+      +encHTML(p,s,x,false)
       +'<span class="lb">Ressenti</span>'
       +DIFFS.map(d=>'<button data-df="'+ti+"|"+xi+"|"+d+'" class="'+(fb.diff===d?"dsel":"")+'">'+DIFFL[d]+'</button>').join("")
       +(doneN>=allS0?exDoneHTML(p,s,x,e):'')
@@ -6973,7 +7107,7 @@ function renderSession(p,s,ti,pg){
       if(cnt){const all=det.querySelectorAll("[data-wurow]").length;
         let nn=0;det.querySelectorAll("[data-wurow]").forEach(r2=>{if(r2.classList.contains("ok"))nn++});
         cnt.textContent=nn+"/"+all}
-      if(on&&e)startT(45,"Montée en charge · "+e.n);
+      if(on&&e)startT(45,"Séries d'approche · "+e.n);
     };
     row.onclick=()=>tg();
     row.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();tg()}};
@@ -7002,11 +7136,16 @@ function renderSession(p,s,ti,pg){
         cnt.classList.toggle("ok",fin);
         card.classList.toggle("done",fin);
       }
+      if(card){const ms=card.querySelector(".motser");if(ms){const t=document.createElement("span");t.innerHTML=encHTML(p,s,x,false);ms.replaceWith(t.firstChild)}}
       /* ---- Encouragements : trois moments, pas un de plus ---- */
       if(on){
         row.classList.remove("pulse");void row.offsetWidth;row.classList.add("pulse");
         if(fin&&card){markExDone(p,s,x,card);advanceIfDone(p,s,ti,plan,order,+xi)}
-        else if(nDone===allSets-1)toast(pickCheer(CHEER_LAST,x.id+"|"+nDone));
+        /* l'avant-dernière série n'a plus de toast : le mot de série le dit */
+        if(autoBilan(p,s,plan,x,null))plan.items.forEach((y,yj)=>{
+          const l=p.logs.find(z=>z.k===logKey(s.sid,y.id))||{};
+          document.querySelectorAll('[data-ok^="'+ti+'|'+yj+'|"]').forEach(b=>{const v=b.dataset.ok.split("|")[2];b.className=l.ok===v?v:""});
+          document.querySelectorAll('[data-df^="'+ti+'|'+yj+'|"]').forEach(b=>{b.className=l.diff===b.dataset.df.split("|")[2]?"dsel":""})});
         const tl2=tally(p,s,plan),dn2=tl2.done+tl2.bonus;
         /* la mi-seance ne se signale qu'une fois, au moment exact ou on la franchit */
         if(!fin&&tl2.tot>3&&dn2*2>=tl2.tot&&(dn2-1)*2<tl2.tot)
@@ -7220,7 +7359,7 @@ function renderSession(p,s,ti,pg){
         +'</div></details>';
     }
     else if(kc!=null) hh+='<p class="mut">Ordre de grandeur, pas une mesure : ce type d\'estimation a une marge de 20 à 30 % d\'une personne à l\'autre.</p>';
-    if(prop.length) hh+='<p class="mut" style="margin-top:8px"><b style="color:var(--brand)">Ajusté pour la prochaine fois</b><br>'+prop.map(esc).join('<br>')+'</p>';
+    if(prop.length) hh+=propHTML(prop);
     mdOpen({title:"Séance terminée",msg:"",html:hh,ok:"Voir dans Suivi",cancel:"Fermer",cb:function(v){if(v){SECT="hist";renderMain(p)}}});
     renderMain(p)};
 }
