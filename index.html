@@ -357,6 +357,17 @@ body[data-sect="hist"] .stab.on{color:#F2F6FC}
 body[data-sect="nut"] .stabs{background:var(--sec-nut-card);border-color:rgba(111,160,122,.24)}
 body[data-sect="nut"] .stabs .stind{background:var(--sec-nut-ac)}
 @media (prefers-reduced-motion:reduce){.stabs .stind{transition:none}.stab:active{transform:none}}
+/* Revue DA du 25/09 (parité iOS) : un seul aplat par écran, celui de
+   l'action. Sous-onglets et jour choisi passent en contour. */
+.stabs .stind{background:rgba(217,164,65,.12)!important;box-shadow:inset 0 0 0 1px var(--brand)}
+body[data-sect="hist"] .stabs .stind{background:rgba(90,140,184,.12)!important;box-shadow:inset 0 0 0 1px var(--sec-hist-ac)}
+body[data-sect="nut"] .stabs .stind{background:rgba(111,160,122,.12)!important;box-shadow:inset 0 0 0 1px var(--sec-nut-ac)}
+.stab.on{color:var(--brand)}
+body[data-sect="hist"] .stab.on{color:var(--sec-hist-ac)}
+body[data-sect="nut"] .stab.on{color:var(--sec-nut-ac)}
+.dcell.on{background:#2A2113!important;box-shadow:inset 0 0 0 1px var(--brand)}
+.dcell.on .dl{color:var(--brand)}
+.dcell.on .dv{color:var(--brand);font-weight:700}
 /* La section change de contenu sans changer de page : un fondu court
    signale que c'est le meme ecran qui se recompose. */
 /* ================================================================
