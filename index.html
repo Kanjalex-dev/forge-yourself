@@ -274,6 +274,9 @@ cursor:pointer;font-family:inherit}
 .dcell .dl{font-size:.61rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--mut)}
 .dcell .dv{font-family:var(--mono);font-size:.68rem;line-height:1;color:var(--brand2);
 display:flex;align-items:center;justify-content:center;height:12px}
+.sother{margin:10px 0 0;font-size:.7rem;line-height:1.45;color:var(--mut)}
+.page.autrejour .ckbox,.page.autrejour .wurow{opacity:.4}
+.page.autrejour [data-ckrow]{cursor:default}
 .dcell.rest{cursor:default}
 .dcell.rest .dv{color:#4B5563}
 /* aujourd'hui est toujours reperable, meme quand c'est un jour de repos
@@ -2788,7 +2791,9 @@ function cycleDerniereSemaine(c,d){return cycleSemaine(c,d)===c.semaines}
 /* Seances prevues sur la duree. On lit le PROGRAMME, pas cfg.days : c'est le
    programme qui fait foi, et un jour coche sans seance generee — aucun candidat
    pour aucun creneau — ne doit pas gonfler le denominateur du bilan. */
-function cyclePrevues(p,c){return ((p.prog&&p.prog.sessions)||[]).length*(c?c.semaines:0)}
+/* Une seance libre n'entre pas au denominateur : le jour ou elle existe, elle
+   gonflait les seances prevues (3 x 6 = 18 devenait 24). Elle compte au numerateur. */
+function cyclePrevues(p,c){return ((p.prog&&p.prog.sessions)||[]).filter(z=>!z.free).length*(c?c.semaines:0)}
 
 /* Seances archivees dans la fenetre, bornes comprises. Les seances libres
    comptent : c'est du travail reel, et les exclure punirait celui qui s'est
@@ -6422,8 +6427,10 @@ function renderRest(p,pg){
   const act=(c.acts&&c.acts[dow])||"";
   const isAct=act&&act!=="—"&&act!=="Repos";
   const wdone=weekDoneDays(p);
-  const doneW=(p.prog.sessions||[]).filter(z=>wdone[z.day]).length;
-  const totW=(p.prog.sessions||[]).length;
+  /* Les seances libres ont leur propre compteur (" · N libres") : les compter
+     ici aussi les faisait apparaitre deux fois. */
+  const doneW=(p.prog.sessions||[]).filter(z=>!z.free&&wdone[z.day]).length;
+  const totW=(p.prog.sessions||[]).filter(z=>!z.free).length;
   const dateTxt=weekDate(dow)+(isToday?" · aujourd'hui":"");
   const freeW=freeWeekCount(p);
   /* La legende de la bande des sept jours reste : elle tient sur une ligne et
@@ -6475,6 +6482,11 @@ function renderSession(p,s,ti,pg){
   const pain=p.cfg.pain||[];
   const dm=dayDur(p,s),plan=planSession(s,dm,p.cfg),def=p.cfg.dur||60;
   const t0=tally(p,s,plan),tot=t0.tot,done=t0.done,pct=t0.pct;
+  /* Regle produit (25/09) : on ne lance que la seance du jour. Une seance
+     d'un autre jour se consulte ; un jour de repos, c'est la seance libre.
+     Une seance deja entamee n'est jamais bloquee en cours de route. */
+  const autreJour=!s.free&&s.day!==(new Date().getDay()+6)%7
+    &&!STARTED[ti+"_"+today()]&&(t0.done+t0.bonus)===0;
   /* La vue par defaut d'une seance est desormais l'accordeon (liste complete,
      modifiable) : on n'y saute plus automatiquement en mode focus. Le passage
      en focus est un choix explicite — via le bouton "Démarrer la séance" (qui
@@ -6483,7 +6495,7 @@ function renderSession(p,s,ti,pg){
   const fkey=ti+"_"+today();
   const foc=FOCOVR[fkey]===true;
   FOCUS[ti]=foc;
-  let h='<div class="page on">';
+  let h='<div class="page on'+(autreJour?' autrejour':'')+'">';
   /* Titre de la seance en tete, comme la maquette : on sait d'abord ce
      qu'on fait aujourd'hui, la barre de progression vient ensuite. */
   /* Titre, avancement et duree sur la meme ligne, puis le filet de
@@ -6512,6 +6524,9 @@ function renderSession(p,s,ti,pg){
   if(STOPPED[fkey])h+='<div class="stopban"><b>Séance arrêtée</b>'
     +'<span>Rien n\'a été enregistré. Tu peux la relancer quand tu veux, elle repart du début.</span></div>';
   h+='<div class="prog"><i style="width:'+pct+'%"></i></div>';
+  /* Sous le filet d'avancement, comme sur l'iOS. */
+  if(autreJour)
+    h+='<p class="sother">Séance prévue un autre jour : elle se consulte ici et se lance le jour prévu.</p>';
   const op=PANEL[ti]||null;
   /* Un seul point d'entree pour les reglages de la seance, plutot qu'une
      rangee de cinq raccourcis heritee de l'ancienne interface : la nouvelle
@@ -6870,7 +6885,7 @@ function renderSession(p,s,ti,pg){
      fond et le filet : elle ne recouvre rien, elle prend sa place. Son
      contenu suit l'etat de la seance — ce qu'on va lancer, ou l'avancement,
      ou l'archivage, qui n'est plus enterre en bas de page. */
-  h+=buildActBar(p,s,ti,plan,fkey);
+  if(!autreJour)h+=buildActBar(p,s,ti,plan,fkey);
   pg.innerHTML=h;
   document.body.classList.add("ab-on");
   /* Les deux hauteurs sont mesurees plutot que supposees : la navigation
@@ -6945,6 +6960,7 @@ function renderSession(p,s,ti,pg){
   /* La ligne entiere est la cible : on tape a cote des champs, pas dessus. */
   pg.querySelectorAll("[data-wurow]").forEach(row=>{
     const tg=()=>{
+      if(autreJour)return;
       const [xi,wi]=row.dataset.wurow.split("|");
       const x=plan.items[+xi],e=byId(x.id);
       const k="wu_"+sKey(p,s.sid,x.id,wi);
@@ -6964,6 +6980,7 @@ function renderSession(p,s,ti,pg){
   });
   pg.querySelectorAll("[data-ckrow]").forEach(row=>{
     const toggle=()=>{
+      if(autreJour)return;
       const [xi,si]=row.dataset.ckrow.split("|");
       const x=plan.items[+xi],k="chk_"+sKey(p,s.sid,x.id,si);
       const on=!G(k,false);
