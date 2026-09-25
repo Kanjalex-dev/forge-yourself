@@ -1364,9 +1364,18 @@ transform:translateY(-2px) rotate(45deg);transition:transform .2s ease}
 .wuintro{flex:1 0 100%;font-size:.7rem;line-height:1.4;color:var(--mut);padding:0 0 10px;margin-top:-4px}
 /* Le mot de la dernière série validée. */
 .motser{margin-left:auto;max-width:55%;text-align:right;font-size:.72rem;font-weight:600;line-height:1.3;color:var(--brand)}
-.motser.pos{color:var(--ok)}.motser.att{color:var(--warn)}
+.motser.pos{color:var(--ok)}.motser.att{color:var(--mut)}
 .fbbr{flex:1 0 100%;height:0}
 .frest .motser{display:block;margin:0 0 8px;max-width:none;text-align:left}
+/* Plateau (planche 17·4) : constat, pas d'ambre. */
+.plt{margin-top:14px;background:var(--sf2);border-radius:10px;padding:11px 12px 2px}
+.plt .cap{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--brand)}
+.plt .pr{padding:10px 0;border-top:1px solid var(--line)}
+.plt .pr:first-of-type{border-top:0}
+.plt p{margin:0 0 8px;font-size:.85rem;color:var(--txt)}
+.plt .acts{display:flex;gap:8px;align-items:center}
+.plt .acts .btn.g{width:auto;min-height:44px;padding:10px 14px;font-size:.8rem;margin:0}
+.plt .keep{background:0;border:0;color:var(--mut);font:600 .8rem var(--font,inherit);min-height:44px;padding:0 10px;cursor:pointer}
 /* La prochaine fois (planche 15, variante C). */
 .pf{margin-top:14px}
 .pf .cap{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--brand)}
@@ -2088,7 +2097,7 @@ html.ready #boot{opacity:0;pointer-events:none}
    FORGE — générateur + suivi de programme, multi-profils, hors ligne
    Toutes les données restent dans le localStorage de l'appareil.
    ================================================================ */
-const VER="1.8";
+const VER="1.9";
 const K="fg_";
 function G(k,d){try{const v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function S(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
@@ -3607,6 +3616,44 @@ function autoBilan(p,s,plan,sauf,seul){
   if(n){saveP();toast(manque?"Bilan enregistré : objectif manqué (répétitions sous la fourchette) · correct. Modifiable sur la carte."
                             :"Bilan enregistré : objectif atteint · correct. Modifiable sur la carte.")}
   return n;
+}
+/* ---- Plateau (planche 17·4) — même règle que Plateau.exercices (ForgeCore) ----
+   Six apparitions ; la meilleure charge des trois dernières ne dépasse pas celle
+   des trois d'avant. Jamais en sèche. « Garder » vaut pour cet exercice et ce profil. */
+function plRefus(p){try{return JSON.parse(localStorage.getItem("fg_plateau_"+p.id)||"[]")}catch(e){return []}}
+function plateauIds(p,rec){
+  if(!p||!rec||p.cfg.goal==="seche"||rec.free)return [];
+  const ref=plRefus(p);
+  return rec.ex.filter(x=>x.done>0&&x.kg!=null&&ref.indexOf(x.id)<0).map(x=>x.id).filter(id=>{
+    const ch=p.hist.map(h=>{const y=(h.ex||[]).find(e=>e.id===id&&e.done>0);return y?y.kg:null}).filter(v=>v!=null);
+    if(ch.length<6)return false;
+    return Math.max.apply(null,ch.slice(0,3))<=Math.max.apply(null,ch.slice(3,6));
+  });
+}
+function plCible(p,rec,id){
+  const ss=(p.prog&&p.prog.sessions)||[];
+  let ti=ss.findIndex(q=>!q.free&&q.day===rec.day&&q.k===rec.k);
+  if(ti<0)ti=ss.findIndex(q=>!q.free&&q.day===rec.day);
+  if(ti<0)return null;
+  const xi=ss[ti].exos.findIndex(y=>y.id===id);
+  return xi<0?null:[ti,xi];
+}
+function plateauHTML(p,rec){
+  const ids=plateauIds(p,rec).filter(id=>plCible(p,rec,id));
+  if(!ids.length)return "";
+  return '<div class="plt"><div class="cap">Plateau</div>'+ids.map(id=>{
+    const c=plCible(p,rec,id),x=rec.ex.find(e=>e.id===id);
+    return '<div class="pr" data-plid="'+esc(id)+'"><p>'+esc(x?x.n:id)+' : 6 séances sans progrès.</p><div class="acts">'
+      +'<button class="btn g" onclick="plVariante('+c[0]+','+c[1]+')">Essayer une variante</button>'
+      +'<button class="keep" onclick="plGarder(this)">Garder</button></div></div>'}).join("")+'</div>';
+}
+function plVariante(ti,xi){mdClose(false);setTimeout(()=>variantDialog(prof(),ti,xi),60)}
+function plGarder(b){
+  const p=prof(),row=b.closest("[data-plid]");if(!p||!row)return;
+  const r=plRefus(p);r.push(row.dataset.plid);
+  try{localStorage.setItem("fg_plateau_"+p.id,JSON.stringify(r))}catch(e){}
+  const box=row.parentNode;row.remove();
+  if(!box.querySelector("[data-plid]"))box.remove();
 }
 /* ---- La prochaine fois (planche 15, variante C) ---- */
 function propHTML(prop){
@@ -7371,6 +7418,7 @@ function renderSession(p,s,ti,pg){
     }
     else if(kc!=null) hh+='<p class="mut">Ordre de grandeur, pas une mesure : ce type d\'estimation a une marge de 20 à 30 % d\'une personne à l\'autre.</p>';
     if(prop.length) hh+=propHTML(prop);
+    hh+=plateauHTML(p,rec);
     mdOpen({title:"Séance terminée",msg:"",html:hh,ok:"Voir dans Suivi",cancel:"Fermer",cb:function(v){if(v){SECT="hist";renderMain(p)}}});
     renderMain(p)};
 }
