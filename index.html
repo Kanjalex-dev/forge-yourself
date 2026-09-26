@@ -1893,6 +1893,8 @@ table.t th.r{text-align:right}
 #tmr{position:fixed;left:0;right:0;bottom:0;z-index:44;display:none;background:#060B14F2;border-top:1px solid var(--brand);
 padding:10px 14px calc(10px + env(safe-area-inset-bottom));align-items:center;gap:10px;backdrop-filter:blur(8px)}
 #tmr.on{display:flex}
+#tmrx{position:absolute;left:14px;right:14px;bottom:calc(100% + 8px);background:var(--bg);border-radius:12px}
+#tmrx[hidden]{display:none} #tmrx .exdone{margin:0}
 #tmr .v{font-size:1.45rem;font-weight:700;color:var(--brand);font-variant-numeric:tabular-nums;min-width:70px}
 #tmr .l{flex:1;font-size:.68rem;color:var(--mut)}
 #tmr button{background:var(--sf2);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:9px 10px;
@@ -2295,7 +2297,7 @@ html.ready #boot{opacity:0;pointer-events:none}
    FORGE — générateur + suivi de programme, multi-profils, hors ligne
    Toutes les données restent dans le localStorage de l'appareil.
    ================================================================ */
-const VER="1.9.15";
+const VER="1.9.16";
 const K="fg_";
 function G(k,d){try{const v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function S(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
@@ -2827,7 +2829,7 @@ function painLabel(pain){
    en dessous le volume manque, au-dela le rendement de chaque serie
    supplementaire chute nettement. */
 const DURS=[
- {m:20,n:"Express",s:"1 à 2 exercices",
+ {m:20,n:"Express",s:"2 à 3 exercices",
   d:"Les mouvements de base, rien d'autre. Sert à entretenir quand la journée ne laisse pas le choix — pas à progresser."},
  {m:40,n:"Court",s:"3 à 6 exercices",
   d:"Le meilleur rapport résultat/temps quand la semaine est chargée : tu gardes l'essentiel du stimulus et tu perds surtout de l'accessoire."},
@@ -3876,9 +3878,9 @@ function planSession(s,minutes,cfg){
        trous — dix minutes perdues sur un format de quarante. */
     const better=Math.abs(t+estJuge-budget)<Math.abs(t-budget);
     let garde=!stop&&(n<2||better);
-    /* v1.9.12 P7b : en 20 min, rien après le premier exercice si la séance
-       dépasse 22 minutes. */
-    if(garde&&n>=1&&minutes<=20&&(t+estJuge+warmupTime(minutes))>minutes*60*1.10)garde=false;
+    /* v1.9.16 express : en 20 min, les deux premiers exercices entrent
+       toujours ; au-delà, rien si la séance dépasse 25 minutes. */
+    if(garde&&n>=2&&minutes<=20&&(t+estJuge+warmupTime(minutes))>minutes*60*1.25)garde=false;
     if(x.ss)paire={ss:x.ss,garde:garde};
     if(garde){wsu.enregistrer(e);t+=y.est;n++;sets+=y.sets;y.inPlan=true;items.push(y)}
     else{stop=true;
@@ -3887,10 +3889,24 @@ function planSession(s,minutes,cfg){
   /* Format long : si toute la trame tient et qu'il reste du temps, on ajoute
      une serie aux gros mouvements plutot que d'empiler des accessoires —
      c'est le volume sur les mouvements de base qui construit. */
+  /* v1.9.16 express : au-delà de 25 minutes, une série de moins à
+     l'exercice retenu qui en a le plus (le plus tardif à égalité), jamais
+     sous deux séries. */
+  if(minutes<=20){
+    const plafond=Math.trunc(minutes*60*1.25),ech=warmupTime(minutes);
+    for(;;){
+      if(t+ech<=plafond)break;
+      let c=null;
+      items.forEach(y=>{if(y.inPlan===true&&y.est>0&&y.sets>2&&byId(y.id)&&(c===null||y.sets>=c.sets))c=y});
+      if(!c)break;
+      const nouv=exoTime(Object.assign({},c,{sets:c.sets-1}),byId(c.id),nv)+(c.wu||0);
+      t+=nouv-c.est;c.est=nouv;c.sets--;sets--;
+    }
+  }
   /* v1.9.12 P7c : en 90 min (niveau 3), trois passes — composés, composés,
      isolations — pour que le format se remplisse ; seulement les exercices
      retenus (comme iOS). */
-  const passes=minutes>=90?[true,true,false]:[true];
+  /* v1.9.16 express */const passes=minutes>=90?[true,true,false]:[true];
   if(!stop&&budget-t>budget*.10){
     passes.forEach(comp=>items.forEach(y=>{
       const e=byId(y.id);
@@ -4372,7 +4388,10 @@ function paintT(){
   const bi=document.getElementById("frbi");
   if(bi)bi.style.width=(tTotal>0?Math.max(0,Math.min(100,100*(tTotal-tLeft)/tTotal)):0)+"%";
 }
-function startT(sec,lbl){const p=prof();if(!p||!p.set.timer)return;
+function tmrEx(html){let b=document.getElementById("tmrx");
+  if(!b){b=document.createElement("div");b.id="tmrx";tEl.appendChild(b)}
+  b.innerHTML=html||"";b.hidden=!html}
+function startT(sec,lbl){const p=prof();if(!p||!p.set.timer)return;tmrEx("");
   stopT(false);armBeep(sec);tLeft=sec;tTotal=sec;tLbl=lbl||"Repos";tL.textContent=tLbl;tEl.classList.remove("fin");tEl.classList.add("on");
   tEndAt=Date.now()+sec*1000;
   document.body.classList.add("tmr-on");
@@ -4380,7 +4399,7 @@ function startT(sec,lbl){const p=prof();if(!p||!p.set.timer)return;
   tId=setInterval(()=>{tLeft=Math.max(0,Math.round((tEndAt-Date.now())/1000));paintT();
     if(tLeft<=0)finishT(false)},1000)}
 function stopT(h){if(tId){clearInterval(tId);tId=null}
-  if(h!==false){tEl.classList.remove("on");document.body.classList.remove("tmr-on");releaseWakeLock()}
+  if(h!==false){tEl.classList.remove("on");document.body.classList.remove("tmr-on");releaseWakeLock();tmrEx("")}
   paintT()}
 /* +30 s, appele aussi bien par la barre du bas que par celle du focus. */
 function addT(sec){
@@ -7767,7 +7786,7 @@ function renderSession(p,s,ti,pg){
            numerique au milieu d'une serie. */
         +'<button type="button" class="spill" data-pick="rep|'+xi+"|"+i+'" aria-label="'+(e.hold?"Secondes tenues":"Répétitions")+' de la série '+(i+1)+'"><em>'+(e.hold?"sec":"reps")+'</em><b>'+esc(rv)+'</b></button>'
         +'<button type="button" class="spill" data-pick="kg|'+xi+"|"+i+'" aria-label="Charge de la série '+(i+1)+'"><em>kg</em><b>'+(kv===""||kv==null?"—":esc(kv))+'</b></button>'
-        +(i===curRow?'<span class="scu">En cours</span>':'')
+        
         +'</div>';
     }
     h+='</div>';
@@ -7942,7 +7961,11 @@ function renderSession(p,s,ti,pg){
       row.classList.toggle("ok",on);
       row.setAttribute("aria-pressed",on?"true":"false");
       const bx=row.querySelector(".ckbox");if(bx)bx.classList.toggle("on",on);
-      if(on){const rp=reposApres(p,s,plan.items,+xi,+si);startT(rp.sec,rp.label)}
+      if(on){const rp=reposApres(p,s,plan.items,+xi,+si);startT(rp.sec,rp.label);
+         const allS=x.allSets||x.sets;let nS=0;
+         for(let z=0;z<allS;z++)if(G("chk_"+sKey(p,s.sid,x.id,z),false))nS++;
+         tmrEx(nS>=allS&&tId?exDoneHTML(p,s,x,byId(x.id)):"")}
+       else tmrEx("");
       refreshProgress(p,s,pg,plan);
       /* La ligne change de forme (repliee / ouverte) et la suivante devient
          « en cours » : on redessine. */
