@@ -2297,7 +2297,7 @@ html.ready #boot{opacity:0;pointer-events:none}
    FORGE — générateur + suivi de programme, multi-profils, hors ligne
    Toutes les données restent dans le localStorage de l'appareil.
    ================================================================ */
-const VER="1.9.18";
+const VER="1.9.19";
 const K="fg_";
 function G(k,d){try{const v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function S(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
@@ -2482,7 +2482,7 @@ const EX=[
 {id:"bulgare",n:"Split squat bulgare",pat:"knee_uni",prim:["quad","fess"],sec:["add"],eq:"halteres",lvl:2,rest:90,typ:"c",img:"bulgare.webp",
  d:{a:"Pied arrière sur un banc, pied avant à 60-70 cm devant.",b:"Descends verticalement, genou arrière proche du sol, pousse sur le talon avant.",c:"Pied avant trop près du banc."}},
 {id:"fentes",n:"Fentes marchées",pat:"knee_uni",prim:["quad","fess"],sec:["add"],eq:"halteres",lvl:1,rest:90,typ:"c",img:"fentes.webp",
- d:{a:"Haltères le long du corps, buste droit.",b:"Grand pas, genou arrière vers le sol, pousse sur le talon avant.",c:"Pas trop courts : le genou avant part devant les orteils."}},
+ d:{a:"Haltères le long du corps, buste droit.",b:"Grand pas, genou arrière vers le sol, pousse sur le talon avant.",c:"Pas trop courts : le talon avant décolle et la charge bascule sur l'avant du pied."}},
 {id:"leg_ext",n:"Leg extension",pat:"knee_iso",prim:["quad"],sec:[],eq:"machine",lvl:1,rest:70,typ:"i",img:"leg_ext.webp",
  d:{a:"Axe du genou aligné avec l'axe de la machine.",b:"Tends les jambes, contracte 1 s en haut, retour lent.",c:"Donner un à-coup pour lancer la charge."}},
 /* --- DOMINANTE HANCHE --- */
@@ -2545,7 +2545,7 @@ const EX=[
 {id:"squat_pdc",n:"Squat au poids du corps",pat:"knee",prim:["quad"],sec:["fess","abs"],eq:"pdc",lvl:1,rest:75,typ:"c",img:"squat_pdc.webp",
  d:{a:"Pieds largeur épaules légèrement ouverts, bras devant pour l'équilibre.",b:"Descends hanches en arrière jusqu'à cuisses parallèles, remonte en poussant le sol.",c:"Talons qui décollent ou genoux qui rentrent."}},
 {id:"fentes_pdc",n:"Fentes au poids du corps",pat:"knee_uni",prim:["quad","fess"],sec:["add"],eq:"pdc",lvl:1,rest:70,typ:"c",img:"fentes_pdc.webp",
- d:{a:"Debout, buste droit, mains sur les hanches.",b:"Grand pas en avant, genou arrière vers le sol, pousse sur le talon avant pour revenir.",c:"Pas trop court : le genou avant dépasse largement les orteils."}},
+ d:{a:"Debout, buste droit, mains sur les hanches.",b:"Grand pas en avant, genou arrière vers le sol, pousse sur le talon avant pour revenir.",c:"Pas trop courts : le talon avant décolle et la charge bascule sur l'avant du pied."}},
 {id:"chaise",hold:true,n:"Chaise contre un mur",pat:"knee_iso",prim:["quad"],sec:["fess"],eq:"pdc",lvl:1,rest:60,typ:"i",img:"chaise.webp",
  d:{a:"Dos plaqué au mur, cuisses parallèles au sol, genoux à 90°.",b:"Tiens la position 30 à 60 s en respirant normalement.",c:"Remonter progressivement le bassin pour soulager."}},
 {id:"pont_fessier",n:"Pont fessier au sol",pat:"hip",prim:["fess"],sec:["isch","abs"],eq:"pdc",lvl:1,rest:60,typ:"c",img:"pont_fessier.webp",
@@ -2636,7 +2636,7 @@ const EX=[
 {id:"tri_oh_elast",n:"Extension triceps élastique",pat:"arm_t",prim:["tri"],sec:[],eq:"elastique",lvl:1,rest:60,typ:"i",img:"tri_oh_elast.webp",
  d:{a:"Élastique ancré bas derrière toi, mains au-dessus de la tête, coudes serrés.",b:"Tends les bras vers le haut, résiste au retour.",c:"Reculer les coudes à chaque répétition : la tension quitte le triceps."}},
 {id:"pecdeck",n:"Pec-deck",pat:"push_h_iso",prim:["pecs"],sec:["delt_a"],eq:"machine",lvl:1,rest:70,typ:"i",img:"pecdeck.webp",
- d:{a:"Dos plaqué, coudes à hauteur d'épaules, légèrement fléchis.",b:"Rapproche les bras devant toi, une seconde de contraction, retour contrôlé.",c:"Aller chercher trop loin en arrière : l'étirement en fin de course ne gagne rien et charge l'épaule."}},
+ d:{a:"Dos plaqué, coudes à hauteur d'épaules, légèrement fléchis.",b:"Rapproche les bras devant toi, une seconde de contraction, retour contrôlé.",c:"Ouvrir au-delà de la ligne des épaules : l'épaule part en avant sous charge."}},
 {id:"ecarte_trx",n:"Écartés en suspension",pat:"push_h_iso",prim:["pecs"],sec:[],eq:"pdc",lvl:2,rest:70,typ:"i",img:"ecarte_trx.webp",
  d:{a:"Sangles réglées court, corps gainé en planche inclinée, bras tendus devant.",b:"Ouvre les bras en croix, referme en serrant les pectoraux.",c:"Casser la ligne du corps aux hanches — recule les pieds pour alléger plutôt que plier."}},
 {id:"curl_trx",n:"Curl en suspension",pat:"arm_b",prim:["bic"],sec:["avb"],eq:"pdc",lvl:1,rest:60,typ:"i",img:"curl_trx.webp",
@@ -2700,7 +2700,7 @@ const EX=[
  d:{a:"Debout contre la barre guidée, prise pronation un peu plus large que les épaules.",b:"Tire la barre le long du buste en menant par les coudes, jusqu'au bas de la poitrine.",c:"Prise serrée et barre sous le menton : l'épaule se coince en haut."}},
 {id:"rot_ext_poulie",n:"Rotation externe à la poulie",pat:"pull_h_iso",prim:["delt_p"],sec:[],eq:"poulie",lvl:1,rest:45,typ:"i",img:"rot_ext_poulie.webp",
  d:{a:"De profil à la poulie réglée à hauteur de coude, coude collé au flanc et plié à 90°.",b:"Tourne l'avant-bras vers l'extérieur sans décoller le coude, retour lent.",c:"Charger lourd et tourner le buste : c'est un travail de précision, léger."}},
-{id:"shrug_poulie",n:"Shrug à la poulie",pat:"pull_h_iso",prim:["traps"],sec:[],eq:"poulie",lvl:1,rest:60,typ:"i",img:"shrug_poulie.webp",
+{id:"shrug_poulie",n:"Shrug à la poulie",pat:"traps_iso",prim:["traps"],sec:[],eq:"poulie",lvl:1,rest:60,typ:"i",img:"shrug_poulie.webp",
  d:{a:"Face à la poulie basse, barre droite en main, bras tendus, buste droit.",b:"Monte les épaules vers les oreilles, une seconde en haut, descente contrôlée.",c:"Plier les coudes pour tirer : les bras restent tendus."}},
 {id:"squat_smith",n:"Squat à la Smith machine",pat:"knee",prim:["quad"],sec:["fess"],eq:"machine",lvl:1,rest:120,typ:"c",img:"squat_smith.webp",
  d:{a:"Barre guidée sur le haut du dos, pieds légèrement devant la barre, largeur d'épaules.",b:"Descends hanches en arrière jusqu'aux cuisses parallèles, remonte en poussant dans tout le pied.",c:"Pieds sous la barre : les genoux partent loin devant et le bas du dos s'arrondit."}},
@@ -2708,9 +2708,9 @@ const EX=[
  d:{a:"Barre guidée sur le haut du dos, un pied devant, l'autre en appui sur l'avant-pied derrière.",b:"Descends verticalement jusqu'à frôler le sol du genou arrière, remonte par le talon avant.",c:"Écart trop court entre les pieds : le talon avant décolle."}},
 {id:"sissy_machine",n:"Sissy squat à la machine",pat:"knee_iso",prim:["quad"],sec:[],eq:"machine",lvl:2,rest:70,typ:"i",img:"sissy_machine.webp",
  d:{a:"Mollets calés sous les rouleaux, pieds sur la plateforme, buste droit.",b:"Bascule les genoux vers l'avant en gardant hanches et buste alignés, remonte en contractant les cuisses.",c:"Plier les hanches pour descendre : ça devient un squat."}},
-{id:"hip_ext_poulie",n:"Extension de hanche à la poulie basse",pat:"hip_iso",prim:["fess"],sec:["isch"],eq:"poulie",lvl:1,rest:60,typ:"i",img:"hip_ext_poulie.webp",
+{id:"hip_ext_poulie",n:"Extension de hanche à la poulie basse",pat:"glute_iso",prim:["fess"],sec:["isch"],eq:"poulie",lvl:1,rest:60,typ:"i",img:"hip_ext_poulie.webp",
  d:{a:"Face à la poulie basse, sangle à la cheville, mains en appui sur le montant.",b:"Pousse la jambe en arrière jusqu'à l'alignement du corps, serre le fessier, retour contrôlé.",c:"Cambrer le bas du dos pour gagner de l'amplitude."}},
-{id:"reverse_hyper",n:"Reverse hyperextension",pat:"hip_iso",prim:["fess","isch"],sec:["lomb"],eq:"machine",lvl:2,rest:75,typ:"i",img:"reverse_hyper.webp",
+{id:"reverse_hyper",n:"Reverse hyperextension",pat:"glute_iso",prim:["fess","isch"],sec:["lomb"],eq:"machine",lvl:2,rest:75,typ:"i",img:"reverse_hyper.webp",
  d:{a:"Buste à plat sur le plateau, hanches au bord, jambes pendantes, mains aux poignées.",b:"Monte les jambes tendues jusqu'à l'horizontale en serrant les fessiers, redescends sans élan.",c:"Balancer les jambes et monter au-delà de l'horizontale."}},
 {id:"mollets_presse",n:"Mollets à la presse",pat:"calf",prim:["mol"],sec:[],eq:"machine",lvl:1,rest:60,typ:"i",img:"mollets_presse.webp",
  d:{a:"Assis dans la presse, avant-pieds au bas du plateau, jambes tendues sans verrouiller.",b:"Pousse le plateau avec la pointe des pieds, pause en haut, étirement complet en bas.",c:"Laisser les genoux plier pour aider la poussée."}},
@@ -2720,7 +2720,7 @@ const EX=[
  d:{a:"Pupitre face à la poulie basse, aisselles calées sur le haut du pupitre, barre en supination.",b:"Monte la barre en gardant les bras plaqués, redescends lentement jusqu'à l'extension.",c:"Soulever les coudes du pupitre en fin de montée."}},
 {id:"flex_lat_poulie",n:"Flexion latérale à la poulie basse",pat:"core",prim:["obl"],sec:["lomb"],eq:"poulie",lvl:1,rest:45,typ:"i",img:"flex_lat_poulie.webp",
  d:{a:"De profil à la poulie basse, poignée dans la main côté poulie, pieds largeur de hanches.",b:"Penche-toi vers la poulie puis redresse-toi en contractant l'oblique opposé.",c:"Tourner le buste ou pencher en avant : le mouvement reste dans le plan latéral."}},
-{id:"adduct_machine",n:"Adduction à la machine",pat:"hip_iso",prim:["add"],sec:[],eq:"machine",lvl:1,rest:60,typ:"i",img:"adduct_machine.webp",
+{id:"adduct_machine",n:"Adduction à la machine",pat:"add_iso",prim:["add"],sec:[],eq:"machine",lvl:1,rest:60,typ:"i",img:"adduct_machine.webp",
  d:{a:"Assis, dos calé, coussins contre l'intérieur des genoux, écartement réglé à une amplitude confortable.",b:"Serre les cuisses jusqu'à ce que les coussins se touchent, une seconde d'arrêt, retour lent.",c:"Laisser les coussins claquer au retour : la charge s'accompagne jusqu'à l'ouverture."}}
 ];
 const byId=id=>EX.find(e=>e.id===id);
@@ -3063,10 +3063,10 @@ function cyclePrs(p,c){
   const dans=cycleSeances(p,c,today());
   const avant=(p.hist||[]).filter(r=>r&&r.date&&r.date<c.debut);
   const best={};
-  avant.forEach(r=>(r.ex||[]).forEach(e=>{const k=parseFloat(e.kg);
+  avant.forEach(r=>(r.ex||[]).forEach(e=>{if(!(exFaites(e)>0))return;const k=parseFloat(e.kg);
     if(isFinite(k)) best[e.id]=Math.max(best[e.id]||0,k)}));
   let n=0;
-  dans.slice().reverse().forEach(r=>(r.ex||[]).forEach(e=>{const k=parseFloat(e.kg);
+  dans.slice().reverse().forEach(r=>(r.ex||[]).forEach(e=>{if(!(exFaites(e)>0))return;const k=parseFloat(e.kg);
     if(!isFinite(k)) return;
     if(best[e.id]!=null&&k>best[e.id]) n++;
     best[e.id]=Math.max(best[e.id]||0,k)}));
@@ -3146,9 +3146,13 @@ function cyclePrevues(p,c){return ((p.prog&&p.prog.sessions)||[]).filter(z=>!z.f
 /* Seances archivees dans la fenetre, bornes comprises. Les seances libres
    comptent : c'est du travail reel, et les exclure punirait celui qui s'est
    entraine un jour non prevu. */
+/* v1.9.19 M11 : series cochees d'une ligne d'archive (sans champ done : sets). */
+function exFaites(e){return (e.done==null||isNaN(e.done))?(+e.sets||0):+e.done}
 function cycleSeances(p,c,borne){
-  const fin=borne||c.fin||cycleFin(c);
+  let fin=borne||c.fin||cycleFin(c);
   if(!fin) return [];
+  /* v1.9.19 M6 : jamais au-dela de la fin prevue */
+  const fp=cycleFin(c);if(fp&&fp<fin)fin=fp;
   return (p.hist||[]).filter(r=>r&&r.date&&r.date>=c.debut&&r.date<=fin);
 }
 function cycleRealisation(c){
@@ -3206,7 +3210,7 @@ function cycleBilan(p,c,d,rmAvant,records){
   /* Le poids de corps n'entre pas dans le tonnage : ce n'est pas une charge
      soulevee au sens du suivi. */
   const tonnage=seances.reduce((t,r)=>t+(r.ex||[]).reduce(
-    (u,e)=>u+(parseFloat(e.kg)||0)*(e.done||0),0),0);
+    (u,e)=>u+(parseFloat(e.kg)||0)*repsMid(e.reps)*exFaites(e),0),0);   /* v1.9.19 M16 */
   /* v1.9.15 : un cycle clos se lit sur ce qu'il a stocké. */
   const apres=cycleRefsFin(p,c)||{};
   const hausses=connues
@@ -3257,6 +3261,7 @@ function cycleLassitude(p,libelle){
   const passees=(p.hist||[]).filter(r=>r&&r.k===libelle);
   const recentes=passees.slice(0,CYCLE_FENETRE), anterieures=passees.slice(CYCLE_FENETRE);
   const maxima=lot=>{const m={};lot.forEach(s=>(s.ex||[]).forEach(e=>{
+    if(!(exFaites(e)>0))return;   /* v1.9.19 M11 */
     const kg=parseFloat(e.kg); if(isFinite(kg)) m[e.id]=Math.max(m[e.id]||0,kg)}));return m};
   const recent=maxima(recentes), avant=maxima(anterieures);
   /* Un exercice qui apparait pour la premiere fois n'est pas une progression :
@@ -3700,7 +3705,8 @@ function pickPair(pa,pb,cfg,taken,usedAll,seed){
      qu'ENTRE couples de meme note, comme le fait pickFor pour un exercice. */
   /* v1.9.11 P3 : un biset n'est jamais un mouvement principal -> rang aplati */
   const allow=EQ_ALLOW[cfg.eq]||[],rank=EQ_RANK2[cfg.eq]||{};
-  const ok=e=>allow.indexOf(e.eq)>=0&&cfg.excl.indexOf(e.id)<0&&taken.indexOf(e.id)<0
+  /* v1.9.19 M12 : isolations seulement (arm_t contient dips, pompe diamant...) */
+  const ok=e=>e.typ==="i"&&allow.indexOf(e.eq)>=0&&cfg.excl.indexOf(e.id)<0&&taken.indexOf(e.id)<0
     &&!spared(e,cfg.pain)&&e.lvl<=cfg.lvl;
   const rk=e=>rank[e.eq]!=null?rank[e.eq]:5;
   const As=EX.filter(e=>e.pat===pa&&ok(e)),Bs=EX.filter(e=>e.pat===pb&&ok(e));
@@ -3879,7 +3885,9 @@ function planSession(s,minutes,cfg){
     x=repsOv(x,e,cfg);   /* v1.9.12 P4 */
     const y=compress(x,e,lvl);
     y.est=exoTime(y,e,nv);
-    const wt=wsu.apercu(e),wu=wuTime(e,x.charge,wt);
+    /* v1.9.19 M15 : la charge du jour (forcee d'abord), pas la prescrite */
+    const chj=(cfg.chJour&&cfg.chJour[x.id]!==undefined)?cfg.chJour[x.id]:x.charge;
+    const wt=wsu.apercu(e),wu=wuTime(e,chj,wt);
     /* C'est tout l'interet d'un biset, et la duree doit le voir : entre deux
        series du premier exercice, on fait une serie du second. Son repos a lui
        se reduit donc a la transition entre les deux postes — 15 s. Le repos
@@ -3939,15 +3947,27 @@ function planSession(s,minutes,cfg){
      isolations — pour que le format se remplisse ; seulement les exercices
      retenus (comme iOS). */
   /* v1.9.16 express */const passes=minutes>=90?[true,true,false]:[true];
+  /* v1.9.19 M12 : un biset recoit sa serie AUX DEUX MEMBRES ENSEMBLE, ou a
+     aucun — servie a un seul, elle desequilibrait le couple. */
   if(!stop&&budget-t>budget*.10){
-    passes.forEach(comp=>items.forEach(y=>{
+    /* y.est porte le temps d'approche : le supplement se calcule sur le
+       seul temps de travail. */
+    const extraDe=(z,ez)=>exoTime(Object.assign({},z,{sets:z.sets+1}),ez,nv)+(z.wu||0)-z.est;
+    const ajoute=(z,x)=>{z.sets++;z.allSets=Math.max(z.allSets,z.sets);z.est+=x;t+=x;sets++;z.bump=true};
+    passes.forEach(comp=>items.forEach((y,yi)=>{
       const e=byId(y.id);
       if(!e||y.inPlan!==true||!(y.est>0)||(e.typ==="c")!==comp||budget-t<=0)return;
-      /* y.est porte le temps d'approche : le supplement se calcule sur le
-         seul temps de travail. */
-      const extra=exoTime(Object.assign({},y,{sets:y.sets+1}),e,nv)+(y.wu||0)-y.est;
-      if(t+extra<=budget){y.sets++;y.allSets=Math.max(y.allSets,y.sets);
-        y.est+=extra;t+=extra;sets++;y.bump=true}
+      const r=bsRole(items,yi);
+      if(r&&r.role==="A"){
+        const z=items[r.j],ez=byId(z.id);
+        if(!ez||!(z.est>0))return;
+        const x1=extraDe(y,e),x2=extraDe(z,ez);
+        if(t+x1+x2<=budget){ajoute(y,x1);ajoute(z,x2)}
+        return;
+      }
+      if(r&&r.role==="B")return;
+      const extra=extraDe(y,e);
+      if(t+extra<=budget)ajoute(y,extra);
     }));
   }
   const nSwap=items.filter(y=>y.swapFrom).length;
@@ -4067,7 +4087,7 @@ function encMsg(p,s,x){
     if(+r<fr[0])return {t:"Sous la fourchette. Garde la technique.",c:"att"};
   }
   if(faites===1){
-    const ov=p.ovr[x.id],base=ov!=null?parseFloat(ov):x.charge;
+    const base=chJour(p,s,x);
     const ch=G("skg_"+sKey(p,s.sid,x.id,der),null)!=null?+G("skg_"+sKey(p,s.sid,x.id,der),null):base;
     const h=(p.hist||[]).find(z=>z.date!==today()&&(z.ex||[]).some(e=>e.id===x.id&&e.kg>0));
     const dern=h?h.ex.find(e=>e.id===x.id).kg:null;
@@ -4784,19 +4804,24 @@ function varySession(p,ti,dir){
     if(!x.orig)x.orig=x.id;
     const orig=x.orig,base=byId(orig);
     if(!base||x.forced){taken.push(x.id);return}
+    /* v1.9.19 M7 : le biset survit a la variation, rang 0 compris */
+    const ss=x.ss,avecSs=o=>{if(ss)o.ss=ss;return o};
     if(rank===0){
-      if(x.id!==orig){s.exos[xi]=Object.assign({id:orig},prescribe(base,p.cfg),{orig:orig});changed++}
+      if(x.id!==orig){s.exos[xi]=avecSs(Object.assign({id:orig},prescribe(base,p.cfg),{orig:orig}));changed++}
       taken.push(s.exos[xi].id);return;
     }
     /* on ecarte ce qui est deja pris dans la seance, dans sa version courante
        comme dans sa version d'origine, pour ne pas creer de doublon */
     const busy=taken.concat(s.exos.filter((y,j)=>j!==xi).map(y=>y.orig||y.id))
                     .concat(s.exos.filter((y,j)=>j!==xi).map(y=>y.id));
-    const v=variantsOf(base,p.cfg,busy);
+    let v=variantsOf(base,p.cfg,busy);
+    /* v1.9.19 M7 : dans un biset, jamais deux exercices a la barre */
+    if(ss){const pj=s.exos.findIndex((y,j)=>j!==xi&&y.ss===ss),pe=pj>=0?byId(s.exos[pj].id):null;
+      if(pe)v=v.filter(o=>!memePoste(o.e,pe))}
     if(!v.length){taken.push(x.id);return}
     const pick=v[(rank-1)%v.length].e;
     if(pick.id!==x.id){
-      s.exos[xi]=Object.assign({id:pick.id},prescribe(pick,p.cfg),{orig:orig});
+      s.exos[xi]=avecSs(Object.assign({id:pick.id},prescribe(pick,p.cfg),{orig:orig}));
       changed++;
     }
     taken.push(s.exos[xi].id);
@@ -4841,7 +4866,7 @@ const PROG_STREAK_DUR=3;
    rien sur la charge. Trois series sur quatre est un choix, pas une
    donnee : c'est le seuil ou l'ecart de volume cesse d'etre un alea de
    seance. */
-const PROG_COMPLET=.75;
+const PROG_COMPLET=.75; /* v1.9.19 revue moteur */
 /* v1.9.12 P13 : isolation aux haltères -> 3 bonnes séances avant +1 kg. */
 const PROG_STREAK_HI=3;
 function progSeuil(e,dur){
@@ -4859,7 +4884,9 @@ function progRepsCap(e){return e.hold?60:15}
 function progRepsStep(e){return e.hold?5:1}
 function progCible(r){return Math.round(repsMidF(r))}
 function progRepsApply(e,base,fb,st){
-  const c=completionOf(fb);st.cible=base;
+  st.cible=base;
+  if(progNonTente(fb))return;   /* v1.9.19 M8 */
+  const c=completionOf(fb);
   if(fb.ok==="non"||fb.diff==="echec"){st.fail++;st.streak=0;return}
   if(c<PROG_COMPLET){st.streak=0;return}
   const bon=fb.ok==="oui"&&(fb.diff==="facile"||fb.diff==="correct");
@@ -4880,6 +4907,9 @@ function progRepsRejeu(p){
   hist.forEach(r=>{(r.ex||[]).forEach(x=>{
     if(!x.id||!ids[x.id])return;
     const e=byId(x.id);if(!progRepsOk(e))return;
+    /* v1.9.19 M9 : un exercice a tenir ne se lit que sur une archive en
+       secondes ; « 12-15 » d'une ancienne archive donnait « 14 s ». */
+    if(e.hold&&!/^\s*\d+\s*s\s*$/.test(String(x.reps==null?"":x.reps)))return;
     const base=progCible(x.reps);if(!(base>0))return;
     const o=st[x.id]||(st[x.id]={cible:base,fail:0,streak:0});
     progRepsApply(e,base,x,o);
@@ -4935,13 +4965,31 @@ function completionOf(fb){
      base : charge de depart
      fb   : {ok, diff, done, sets}
      st   : {kg, fail, streak} — mute en place */
+/* v1.9.19 M8 : un exercice non tente (hors format, saute) — des series
+   prevues, aucune cochee, aucun ressenti — ne dit rien : charge, serie de reussites et
+   echecs restent ou ils etaient. Jumeau de Progression.nonTente. */
+function progNonTente(fb){
+  return fb.ok==null&&fb.diff==null&&+fb.sets>0&&fb.done!=null&&!isNaN(fb.done)&&+fb.done===0;
+}
+/* v1.9.19 M1 : TOUTE baisse de charge passe ici. base*f arrondi VERS LE BAS
+   au pas de descente (pas de montee plafonne a 2,5 kg), toujours strictement
+   sous base (sinon base - pas), jamais sous zero. L'arrondi au plus proche
+   sur 2,5 kg faisait MONTER les petites charges (echec a 4 kg -> 5).
+   Jumeau de Progression.baisser. */
+function progBaisse(e,base,f){
+  const st=e?Math.min(progStep(e),2.5):2.5;
+  let v=Math.round(Math.floor(base*f/st+1e-9)*st*100)/100;
+  if(v>=base)v=Math.round((base-st)*100)/100;
+  return Math.max(0,v);
+}
 function progApply(e,base,fb,st){
+  if(progNonTente(fb)){st.kg=base;return}   /* v1.9.19 M8 */
   const c=completionOf(fb),step=progStep(e);
   if(fb.ok==="non"||fb.diff==="echec"){
     /* Un echec sur la derniere serie et un echec des la premiere ne disent
        pas la meme chose : la charge etait trop lourde d'un cran, ou
        franchement trop lourde. */
-    st.kg=r25(base*(c<PROG_COMPLET?.90:.95));st.fail++;st.streak=0;return;
+    st.kg=progBaisse(e,base,c<PROG_COMPLET?.90:.95);st.fail++;st.streak=0;return;
   }
   if(c<PROG_COMPLET){
     /* Seance trop incomplete pour conclure. Elle reste dans l'historique,
@@ -4989,6 +5037,26 @@ function progRejeu(p){
 /* La charge CALCULEE d'un exercice aujourd'hui : la ou le rejeu de
    l'historique l'a menee. null sans historique exploitable — l'appelant
    retombe sur la prescription. C'est ce que rend « Auto » (26/09 soir). */
+/* v1.9.19 M13 : LA charge du jour d'un exercice de la seance : la charge
+   forcee si elle existe (illisible : NaN, comme avant), sinon la prescrite.
+   Sur une seance libre, le coefficient d'humeur s'applique AUSSI a la charge
+   forcee — il ne touchait que la prescrite, que l'affichage et l'archivage
+   ne lisent qu'a defaut. Jumeau de MoteurSeance.chargeDuJour. */
+function chJour(p,s,x){
+  const ov=p.ovr[x.id];
+  if(ov==null)return x.charge;
+  const f=parseFloat(ov);
+  if(isNaN(f))return f;
+  if(s&&s.free){const ck=moodOf(s.mood).ck;if(ck!==1&&f>0)return progBaisse(byId(x.id),f,ck)}
+  return f;
+}
+/* Les charges du jour qui priment sur la prescription (charges forcees),
+   pour planSession (cfg.chJour) : temps des series d'approche (M15). */
+function chJourMap(p,s){
+  const m={};
+  Object.keys(p.ovr||{}).forEach(id=>{const v=chJour(p,s,{id:id,charge:null});m[id]=(v==null||isNaN(v))?null:v});
+  return m;
+}
 function progCharge(p,id){
   const o=progRejeu(p)[id];
   return (o&&o.kg!=null&&o.kg>0)?o.kg:null;
@@ -5015,7 +5083,7 @@ function historyUpdate(p,apply){
        d'un cran — 90 % de la charge, volume inchange — ce qui remonte plus
        haut qu'insister. Proposition seulement : rien n'est applique. */
     if(o.fail>=2)out.alertes.push({n:e.n,fail:o.fail,id:id,
-      allege:(o.kg!=null&&o.kg>0)?r25(o.kg*.90):null});
+      allege:(o.kg!=null&&o.kg>0)?progBaisse(e,o.kg,.90):null});
     /* le compteur de seances reussies d'affilee est repris tel quel : les
        prochaines seances en direct continuent le decompte au lieu de
        redemarrer a zero. */
@@ -5111,9 +5179,10 @@ function rmApply(p,rs){
     const e=byId(x.id);
     if(!e||!e.ref||!e.pct||!refs[e.ref])return;
     if(p.ovr&&p.ovr[x.id]!=null)return;
-    if(x.src!=="auto")return;
+    /* v1.9.19 M5 : un exercice prescrit au ressenti (sans charge) recoit la sienne */
+    if(x.src!=="auto"&&x.charge!=null)return;
     const np=prescribe(e,p.cfg);
-    if(np.charge!=null&&np.charge!==x.charge){x.charge=np.charge;n++}
+    if(np.charge!=null&&np.charge!==x.charge){x.charge=np.charge;x.src="auto";n++}
   }));
   saveP();
   return n;
@@ -6452,7 +6521,7 @@ const LVLREST={1:.92,2:1,3:1.1};
 function smartRest(p,s,x,e,setIdx){
   let r=x.rest;
   if(e.typ==="c")r*=(LVLREST[p.cfg.lvl]||1);
-  const ov=p.ovr[x.id],ch=ov!=null?parseFloat(ov):x.charge;
+  const ch=chJour(p,s,x);
   if(e.ref&&e.pct&&ch!=null&&!isNaN(ch)){
     const rm=parseFloat(p.cfg.rm[e.ref]);
     if(rm>0&&ch/rm>=.85)r*=1.2;
@@ -6538,7 +6607,7 @@ function archiverSeance(p,s,ti,plan,dm,jour,lire){
     const prs=[];
     plan.items.forEach(x=>{
       const e=byId(x.id),l=p.logs.find(z=>z.k===logKey(s.sid,x.id))||{};
-      const ov=p.ovr[x.id],ch=ov!=null?parseFloat(ov):x.charge;
+      const ch=chJour(p,s,x);   /* v1.9.19 M13 */
       /* Chaque serie cochee peut avoir sa propre charge (saisie dans la
          ligne de serie) qui prime sur la charge prescrite partagee : c'est
          la plus lourde des series validees qui compte pour l'historique,
@@ -6601,6 +6670,7 @@ function archiverSeance(p,s,ti,plan,dm,jour,lire){
       const ra=rec.ex.find(z=>z.id===x.id)||{};
       const fb={ok:l.ok,diff:l.diff,
         done:ra.done,sets:(ra.sets!=null?ra.sets:x.sets)};
+      if(progNonTente(fb))return;   /* v1.9.19 M8 : ni proposition ni compteur */
       const stx={kg:base,fail:0,streak:(p.streak[x.id]||0)};
       progApply(e,base,fb,stx);
       const nv=stx.kg;p.streak[x.id]=stx.streak;
@@ -6624,6 +6694,9 @@ function archiverSeance(p,s,ti,plan,dm,jour,lire){
       const e=byId(x.id);if(!e||!LEST_AUTO[e.id])return;
       const l=p.logs.find(z=>z.k===logKey(s.sid,x.id))||{};
       if(l.ok!=="oui"||l.diff!=="facile")return;
+      /* v1.9.19 M10 : seance assez complete, comme la charge */
+      const ra=rec.ex.find(z=>z.id===x.id)||{};
+      if(completionOf({done:ra.done,sets:(ra.sets!=null?ra.sets:x.sets)})<PROG_COMPLET)return;
       if(!p.lest)p.lest={};
       const cur=lestOf(p,e),nv=cur+2.5;
       p.lest[e.id]=String(nv);
@@ -6668,7 +6741,7 @@ function renderFocus(p,s,ti,plan,order){
   FOCUS["i"+ti]=i;
   const o=order[i],x=o.x,xi=o.xi,e=byId(x.id);
   if(!e){closeFocus();return}
-  const ov=p.ovr[x.id],ch=ov!=null?parseFloat(ov):x.charge;
+  const ov=p.ovr[x.id],ch=chJour(p,s,x);
   const allS=x.allSets||x.sets;
   const img=e.img&&!x.spared&&IMG(e.img);
   const fb=p.logs.find(l=>l.k===logKey(s.sid,x.id))||{};
@@ -6952,7 +7025,7 @@ function applyComeback(p,plan,cut){
   plan.items.forEach(x=>{
     const ov=p.ovr[x.id],base=ov!=null?parseFloat(ov):x.charge;
     if(base==null||isNaN(base)||base<=0)return;
-    const nv=r25(base*(1-cut/100));
+    const nv=progBaisse(byId(x.id),base,1-cut/100);   /* v1.9.19 M1 */
     if(nv>0&&nv!==base){p.ovr[x.id]=String(nv);n++}
   });
   p.cbDone=today();saveP();
@@ -7091,7 +7164,7 @@ function exDoneHTML(p,s,x,e){
   for(let j=0;j<all;j++){
     const r=G("srep_"+sKey(p,s.sid,x.id,j),null),k=G("skg_"+sKey(p,s.sid,x.id,j),null);
     const rr=(r!=null&&r!=="")?parseFloat(r):repsMid(x.reps);
-    const kk=(k!=null&&k!=="")?parseFloat(k):(p.ovr[x.id]!=null?parseFloat(p.ovr[x.id]):x.charge);
+    const kk=(k!=null&&k!=="")?parseFloat(k):chJour(p,s,x);
     if(rr>0)reps+=rr;
     if(rr>0&&kk>0)vol+=rr*kk;
   }
@@ -7461,7 +7534,7 @@ function renderRest(p,pg){
 }
 function renderSession(p,s,ti,pg){
   const pain=p.cfg.pain||[];
-  const dm=dayDur(p,s),plan=planSession(s,dm,Object.assign({},p.cfg,{warmup:wuOn(p),ovrReps:p.ovrReps||{}})),def=p.cfg.dur||60;
+  const dm=dayDur(p,s),plan=planSession(s,dm,Object.assign({},p.cfg,{warmup:wuOn(p),ovrReps:p.ovrReps||{},chJour:chJourMap(p,s)})),def=p.cfg.dur||60;
   const t0=tally(p,s,plan),tot=t0.tot,done=t0.done,pct=t0.pct;
   /* Regle produit (25/09) : on ne lance que la seance du jour. Une seance
      d'un autre jour se consulte ; un jour de repos, c'est la seance libre.
@@ -7711,7 +7784,7 @@ function renderSession(p,s,ti,pg){
     const e=byId(x.id);if(!e)return;
     const coll=ACC[ti]!==pos;
     const ov=p.ovr[x.id];
-    const ch=ov!=null?parseFloat(ov):x.charge;
+    const ch=chJour(p,s,x);
     const allS0=allSetsOf(x),doneN=doneCountOf(x);
     if(!x.inPlan&&!x.spared&&!sepBonus&&!foc){sepBonus=true;
       h+='<div class="plansep">Au-delà de '+dm+' min</div>';}
@@ -8043,7 +8116,7 @@ function renderSession(p,s,ti,pg){
     const allS=x.allSets||x.sets,rest=allS-si-1;
     const key=(kind==="rep"?"srep_":"skg_")+sKey(p,s.sid,x.id,si);
     const cur=G(key,null);
-    const ch0=p.ovr[x.id]!=null?parseFloat(p.ovr[x.id]):x.charge;
+    const ch0=chJour(p,s,x);
     const val=cur!=null?cur:(kind==="rep"?Math.round(repsMid(x.reps)):((ch0!=null&&!isNaN(ch0))?ch0:0));
     openPick({
       title:(kind==="rep"?(e.hold?"Temps tenu":"Répétitions"):"Charge"),
