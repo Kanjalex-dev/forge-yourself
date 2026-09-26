@@ -2297,7 +2297,7 @@ html.ready #boot{opacity:0;pointer-events:none}
    FORGE — générateur + suivi de programme, multi-profils, hors ligne
    Toutes les données restent dans le localStorage de l'appareil.
    ================================================================ */
-const VER="1.9.17";
+const VER="1.9.18";
 const K="fg_";
 function G(k,d){try{const v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function S(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
@@ -2783,7 +2783,7 @@ const ZLIST={
  lombaires:["sdt","rdl","sdt_tendu","sdt_sumo","good_morning_pdc","rowing_barre","squat","front_squat","hip_thrust","superman","dragon_flag"],
  epaule:["dips","dips_banc","dips_machine","traction_lestee","pullover","arnold","pompe","pike_pu"],
  coude:["dips","dips_banc","dips_machine","pompe_diamant","ab_wheel"],
- hanche:["good_morning_pdc"],
+ hanche:["good_morning_pdc","hip_ext_poulie","reverse_hyper"], /* v1.9.18 hanche */
  cheville:["squat_saute","pistol","mollets_marche"],
  nuque:["shrug"]
 };
