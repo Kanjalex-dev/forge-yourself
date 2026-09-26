@@ -2150,7 +2150,7 @@ html.ready #boot{opacity:0;pointer-events:none}
    FORGE — générateur + suivi de programme, multi-profils, hors ligne
    Toutes les données restent dans le localStorage de l'appareil.
    ================================================================ */
-const VER="1.9.10";
+const VER="1.9.12";
 const K="fg_";
 function G(k,d){try{const v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function S(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
@@ -2435,9 +2435,9 @@ const EX=[
  d:{a:"Buste penché à 45°, bras collé au corps, coude à 90°.",b:"Tends le bras vers l'arrière jusqu'à l'extension complète, contracte 1 s.",c:"Laisser le coude descendre pendant l'extension."}},
 {id:"rowing_tbar",n:"Rowing T-bar",pat:"pull_h",prim:["lats","rhomb"],sec:["bic","lomb"],eq:"machine",lvl:2,rest:120,typ:"c",img:"rowing_tbar.webp",
  d:{a:"Buste penché, poitrine contre le support, poignées en prise neutre.",b:"Tire les coudes vers l'arrière en serrant les omoplates, descente contrôlée.",c:"Arrondir le dos en fin de série."}},
-{id:"pullover",n:"Pull-over à la barre",pat:"pull_v",prim:["lats"],sec:["pecs","tri"],eq:"barre",lvl:2,rest:90,typ:"i",img:"pullover.webp",
+{id:"pullover",n:"Pull-over à la barre",pat:"pull_v_iso",prim:["lats"],sec:["pecs","tri"],eq:"barre",lvl:2,rest:90,typ:"i",img:"pullover.webp",
  d:{a:"Allongé sur un banc, barre bras tendus au-dessus de la poitrine.",b:"Descends la barre derrière la tête en gardant les bras quasi tendus, jusqu'à l'étirement.",c:"Cambrer le dos pour gagner de l'amplitude."}},
-{id:"shrug",n:"Shrug à la barre",pat:"pull_h_iso",prim:["traps"],sec:[],eq:"barre",lvl:1,rest:70,typ:"i",img:"shrug.webp",
+{id:"shrug",n:"Shrug à la barre",pat:"traps_iso",prim:["traps"],sec:[],eq:"barre",lvl:1,rest:70,typ:"i",img:"shrug.webp",
  d:{a:"Debout, barre à bout de bras devant les cuisses, bras tendus.",b:"Hausse les épaules vers les oreilles, pause 1 s en haut, descente lente.",c:"Faire des rotations d'épaules : inutile et à risque."}},
 {id:"hack_squat",n:"Hack squat machine",pat:"knee",prim:["quad"],sec:["fess"],eq:"machine",lvl:2,rest:120,typ:"c",img:"hack_squat.webp",
  d:{a:"Dos et bassin plaqués au dossier, pieds largeur épaules au milieu du plateau.",b:"Descends jusqu'à 90° de genou minimum, remonte sans verrouiller sèchement.",c:"Décoller les talons ou laisser les genoux rentrer."}},
@@ -2502,11 +2502,11 @@ const EX=[
  d:{a:"À plat ventre, élastique ancré devant, cheville dans la boucle.",b:"Ramène le talon vers la fesse, retour lent en résistant.",c:"Décoller le bassin pour gagner de l'amplitude."}},
 {id:"legext_elast",n:"Leg extension élastique",pat:"knee_iso",prim:["quad"],sec:[],eq:"elastique",lvl:1,rest:60,typ:"i",img:"legext_elast.webp",
  d:{a:"Assis, élastique ancré derrière, cheville dans la boucle, genou à 90°.",b:"Tends la jambe, une seconde en haut, retour contrôlé.",c:"Verrouiller le genou d'un coup sec en fin de course."}},
-{id:"lomb_banc",n:"Extension lombaire au banc",pat:"pull_h_iso",prim:["lomb"],sec:["fess","isch"],eq:"machine",lvl:1,rest:70,typ:"i",img:"lomb_banc.webp",
+{id:"lomb_banc",n:"Extension lombaire au banc",pat:"lomb_iso",prim:["lomb"],sec:["fess","isch"],eq:"machine",lvl:1,rest:70,typ:"i",img:"lomb_banc.webp",
  d:{a:"Banc à 45°, hanches au bord du support, dos neutre.",b:"Descends en fléchissant les hanches, remonte jusqu'à l'alignement du corps.",c:"Monter au-delà de l'alignement en hyperextension — aucun gain, une compression de plus."}},
 {id:"pecdeck_inv",n:"Pec-deck inversé",pat:"pull_h_iso",prim:["delt_p"],sec:["rhomb"],eq:"machine",lvl:1,rest:65,typ:"i",img:"pecdeck_inv.webp",
  d:{a:"Face au dossier, bras tendus devant à hauteur d'épaules.",b:"Ouvre les bras en arrière en menant par les coudes, retour contrôlé.",c:"Hausser les épaules : ce sont les trapèzes qui travaillent, pas le deltoïde postérieur."}},
-{id:"shrug_halt",n:"Shrugs haltères",pat:"pull_h_iso",prim:["traps"],sec:["avb"],eq:"halteres",lvl:1,rest:65,typ:"i",img:"shrug_halt.webp",
+{id:"shrug_halt",n:"Shrugs haltères",pat:"traps_iso",prim:["traps"],sec:["avb"],eq:"halteres",lvl:1,rest:65,typ:"i",img:"shrug_halt.webp",
  d:{a:"Debout, un haltère dans chaque main le long du corps, bras tendus.",b:"Monte les épaules vers les oreilles, une seconde en haut, descente lente.",c:"Faire des rotations d'épaules — mouvement vertical uniquement."}},
 {id:"squat_cosaque",n:"Squat cosaque",pat:"knee_uni",prim:["add","quad"],sec:["fess"],eq:"pdc",lvl:2,rest:70,typ:"c",img:"squat_cosaque.webp",
  d:{a:"Pieds très écartés, orteils vers l'avant, buste droit.",b:"Descends sur une jambe en gardant l'autre tendue, talon au sol, puis change de côté.",c:"Décoller le talon de la jambe fléchie : réduis l'amplitude plutôt que de compenser."}},
@@ -2550,19 +2550,19 @@ const byId=id=>EX.find(e=>e.id===id);
 const SPLITS={
   ppl:{n:"Push / Pull / Legs",d:"Pousser, tirer, jambes — le meilleur compromis volume/récupération à 3 ou 6 séances.",
     sess:[
-      {k:"Push",pats:["push_h","push_v","push_h","push_v_iso","arm_t","arm_t"],xtra:["push_h_iso","push_v_iso"]},
-      {k:"Pull",pats:["pull_v","pull_h","pull_h","pull_h_iso","arm_b","arm_b"],xtra:["pull_h_iso","core"]},
-      {k:"Legs",pats:["knee","hip","hip","knee_uni","knee_iso","core"],xtra:["calf","hip_iso"]}
+      {k:"Push",pats:["push_h","push_v","push_h","push_v_iso","arm_t"],xtra:["push_h_iso","arm_t"]},
+      {k:"Pull",pats:["pull_v","pull_h","pull_h_iso","pull_h","arm_b"],xtra:["arm_b","core"]},
+      {k:"Legs",pats:["knee","hip","knee_uni","hip_iso","knee_iso","calf"],xtra:["hip","core"]}
     ]},
   fullbody:{n:"Full body",d:"Tout le corps à chaque séance — idéal 2 à 3 séances par semaine, très efficace pour les débutants.",
     sess:[
-      {k:"Full A",pats:["knee","push_h","pull_h","hip_iso","push_v_iso","core"],xtra:["arm_b","calf"]},
-      {k:"Full B",pats:["hip","push_v","pull_v","knee_iso","arm_b","core"],xtra:["arm_t","calf"]},
+      {k:"Full A",pats:["knee","push_h","pull_h","hip_iso","pull_h_iso","core"],xtra:["push_v_iso","arm_b"]},
+      {k:"Full B",pats:["hip","push_v","pull_v","knee_iso","calf","core"],xtra:["arm_b","arm_t"]},
       {k:"Full C",pats:["knee_uni","push_h","pull_h","arm_t","calf","core"],xtra:["push_v_iso","hip_iso"]}
     ]},
   upperlower:{n:"Haut / Bas",d:"Haut du corps et bas du corps en alternance — bon rapport fréquence/récupération sur 4 séances.",
     sess:[
-      {k:"Haut",pats:["push_h","pull_v","push_v","pull_h","arm_b","arm_t"],xtra:["push_h_iso","pull_h_iso"]},
+      {k:"Haut",pats:["push_h","pull_v","push_v","pull_h","pull_h_iso","arm_b"],xtra:["push_h_iso","arm_t"]},
       {k:"Bas",pats:["knee","hip","knee_uni","hip_iso","calf","core"],xtra:["knee_iso","hip"]}
     ]},
   bro:{n:"Un groupe par séance",d:"Volume élevé par groupe musculaire, fréquence faible. À réserver aux niveaux avancés avec 5 séances ou plus.",
@@ -2604,6 +2604,7 @@ const ZLIST={
  lombaires:["sdt","rdl","sdt_tendu","sdt_sumo","good_morning_pdc","rowing_barre","squat","front_squat","hip_thrust","superman","dragon_flag"],
  epaule:["dips","dips_banc","dips_machine","traction_lestee","pullover","arnold","pompe","pike_pu"],
  coude:["dips","dips_banc","dips_machine","pompe_diamant","ab_wheel"],
+ hanche:["good_morning_pdc"],
  cheville:["squat_saute","pistol","mollets_marche"],
  nuque:["shrug"]
 };
@@ -2611,7 +2612,9 @@ function loadsZone(e,z){
   const p=e.pat,m=e.prim.concat(e.sec||[]);
   if((ZLIST[z]||[]).indexOf(e.id)>=0)return true;
   if(z==="genou")   return /^knee/.test(p);
-  if(z==="hanche")  return /^hip/.test(p)||/_uni$/.test(p)||m.indexOf("add")>=0;
+  /* v1.9.11 P8 : la charniere COMPOSEE, pas le leg curl (hip_iso, flexion
+     de genou) ; la seule charniere hip_iso est dans ZLIST.hanche. */
+  if(z==="hanche")  return p==="hip"||/_uni$/.test(p)||m.indexOf("add")>=0;
   if(z==="lombaires")return m.indexOf("lomb")>=0;
   if(z==="epaule")  return /^push_v/.test(p)||m.indexOf("delt_a")>=0||m.indexOf("delt_l")>=0||m.indexOf("delt_p")>=0;
   if(z==="coude")   return /^arm_/.test(p);
@@ -2679,16 +2682,34 @@ function painLabel(pain){
    en dessous le volume manque, au-dela le rendement de chaque serie
    supplementaire chute nettement. */
 const DURS=[
- {m:20,n:"Express",s:"2 à 3 exercices",
+ {m:20,n:"Express",s:"1 à 2 exercices",
   d:"Les mouvements de base, rien d'autre. Sert à entretenir quand la journée ne laisse pas le choix — pas à progresser."},
- {m:40,n:"Court",s:"4 exercices",
+ {m:40,n:"Court",s:"3 à 6 exercices",
   d:"Le meilleur rapport résultat/temps quand la semaine est chargée : tu gardes l'essentiel du stimulus et tu perds surtout de l'accessoire."},
- {m:60,n:"Standard",s:"5 à 6 exercices",
+ {m:60,n:"Standard",s:"5 à 8 exercices",
   d:"Le format de référence. Assez de volume pour progresser, et tu t'arrêtes avant que la qualité d'exécution ne se dégrade."},
- {m:90,n:"Longue",s:"7 à 8 exercices",
-  d:"Volume élevé ou spécialisation sur un groupe. Au-delà d'environ 75 minutes de travail effectif, chaque série supplémentaire rapporte beaucoup moins."}
+ {m:75,n:"Longue",s:"6 à 8 exercices",
+  d:"Volume élevé ou spécialisation sur un groupe. Au-delà d'environ 75 minutes de travail effectif, chaque série supplémentaire rapporte beaucoup moins."},
+ {m:90,n:"Très longue",s:"7 à 8 exercices, plus de séries",lvl:3,
+  d:"Réservé au niveau avancé : tout le volume d'une séance lourde, séries supplémentaires comprises, avec les repos longs qu'elle demande."}
 ];
 function durOf(m){return DURS.find(d=>d.m===m)||DURS[2]}
+/* v1.9.12 lots 2 et 3 de l'audit du générateur */
+/* P7c : le 90 min au niveau 3 seulement ; sous le niveau 3, 90 -> 75.
+   Jumeaux de Tables.formats(niveau:) et MigrationDurees (iOS). */
+function dursFor(lvl){return DURS.filter(d=>(+lvl||1)>=(d.lvl||1))}
+function durPour(m,lvl){return ((+lvl||1)<3&&m>=90)?75:m}
+function migrateDur(p){
+  if(!p||!p.cfg)return false;
+  let ch=false;const l=p.cfg.lvl;
+  const d=durPour(p.cfg.dur,l);if(d!==p.cfg.dur){p.cfg.dur=d;ch=true}
+  if(p.dayDur)Object.keys(p.dayDur).forEach(k=>{const x=p.dayDur[k];
+    if(x&&durPour(x.m,l)!==x.m){x.m=durPour(x.m,l);ch=true}});
+  return ch;
+}
+/* P9 : 60 ans et plus -> avertissement et séries d'approche forcées. */
+function ageAvance(cfg){const a=parseFloat(((cfg&&cfg.body)||{}).age);return a>=60}
+function wuOn(p){return p.set.warmup!==false||ageAvance(p.cfg)}
 const EQ_ALLOW={salle:["barre","halteres","machine","poulie","elastique","pdc"],
   restreint:["halteres","elastique","pdc"],pdc:["pdc"]};
 
@@ -3145,17 +3166,39 @@ function nextBadge(p){
    un élastique là où une barre est disponible */
 const EQ_RANK={salle:{barre:0,machine:1,poulie:1,halteres:1,pdc:2,elastique:3},
   restreint:{halteres:0,pdc:1,elastique:1},pdc:{pdc:0}};
-function pickFor(pat,cfg,taken,usedAll,seed){
-  const allow=EQ_ALLOW[cfg.eq],rank=EQ_RANK[cfg.eq]||{};
+/* v1.9.11 lot 1 de l'audit du générateur */
+/* P3 : rang APLATI pour tous les creneaux sauf le mouvement principal (premier
+   creneau d'un schema compose dans la seance) — la barre ne gagne plus tout,
+   la graine fait vraiment tourner. tables.json > materielRangSecondaire. */
+const EQ_RANK2={salle:{barre:0,machine:0,poulie:0,halteres:0,pdc:1,elastique:2},
+  restreint:{halteres:0,pdc:1,elastique:1},pdc:{pdc:0}};
+const PAT_COMPOSE=["push_h","push_v","pull_h","pull_v","knee","hip","knee_uni"];
+/* P10 : exercices du programme en cours reellement faits (seances du
+   programme, pas les libres, depuis prog.gen). Jumeau de
+   Generateur.exercicesPrecedents (iOS). */
+function prevExos(p){
+  const gen=p&&p.prog&&p.prog.gen;if(!gen)return [];
+  const ids=[];
+  (p.hist||[]).forEach(h=>{if(!h||h.free||!(h.date>=gen))return;
+    (h.ex||[]).forEach(x=>{if(x&&x.id&&ids.indexOf(x.id)<0)ids.push(x.id)})});
+  return ids;
+}
+/* v1.9.12 P4 : jamais tirés sous le niveau 3, même par relâchement. */
+const EX_AVANCES=["nordic","pistol","dragon_flag"];
+function pickFor(pat,cfg,taken,usedAll,seed,principal){
+  /* principal absent (seance libre) = mouvement principal : rang d'origine */
+  const allow=EQ_ALLOW[cfg.eq],rank=(principal===false?EQ_RANK2:EQ_RANK)[cfg.eq]||{};
   /* jamais deux fois le même exercice dans une séance */
   const ok=e=>allow.indexOf(e.eq)>=0&&cfg.excl.indexOf(e.id)<0&&taken.indexOf(e.id)<0
-    &&!spared(e,cfg.pain);
+    &&!spared(e,cfg.pain)&&!(cfg.lvl<3&&EX_AVANCES.indexOf(e.id)>=0);   /* v1.9.12 P4 */
   let relax=false;
   let cands=EX.filter(e=>e.pat===pat&&e.lvl<=cfg.lvl&&ok(e));
-  if(!cands.length){cands=EX.filter(e=>e.pat===pat&&ok(e));relax=true}      /* on relâche le niveau avant le schéma moteur */
+  /* v1.9.11 P8 : relachement borne a niveau + 1, jamais plus */
+  const cap=cfg.lvl+1;
+  if(!cands.length){cands=EX.filter(e=>e.pat===pat&&e.lvl<=cap&&ok(e));relax=true}      /* on relâche le niveau avant le schéma moteur */
   if(!cands.length){                                                        /* puis on élargit à la même famille de mouvement */
     const fam=pat.replace(/_iso$|_uni$/,"");
-    cands=EX.filter(e=>e.pat.indexOf(fam)===0&&ok(e));relax=true;
+    cands=EX.filter(e=>e.pat.indexOf(fam)===0&&e.lvl<=cap&&ok(e));relax=true;
   }
   if(!cands.length) return null;                                            /* aucun candidat : slot supprimé, pas de doublon */
   const must=cands.filter(e=>cfg.must.indexOf(e.id)>=0);
@@ -3185,11 +3228,15 @@ const HOLD_SEC=[30,45,60];
 /* Une valeur, pas une fourchette (26/09 soir) : la progression lit le
    ressenti et les séries tenues, jamais le nombre de répétitions. `reps`
    reste une chaîne pour l'historique (« 8 », « 45 s »). */
+/* v1.9.12 P4 : un exercice au poids du corps AU-DESSUS du niveau (sorti par
+   relâchement) a une cible plafonnée — 5 répétitions, 20 s — et une série
+   de moins (prescribe). Jumeau de Prescripteur.auDessusDuNiveau. */
+function pdcDessus(e,lvl){return e.eq==="pdc"&&e.lvl>lvl}
 function prescribeReps(e,lvl,g){
-  const i=Math.min(Math.max(+lvl||1,1),3)-1;
-  if(e.hold)return HOLD_SEC[i]+" s";
-  if(e.typ==="i")return String(g.repsI);
-  return String(g.repsC[i]!=null?g.repsC[i]:g.repsC[g.repsC.length-1]);
+  const i=Math.min(Math.max(+lvl||1,1),3)-1,cap=pdcDessus(e,lvl);
+  if(e.hold){const t=HOLD_SEC[i];return (cap?Math.min(t,20):t)+" s"}
+  const n=e.typ==="i"?g.repsI:(g.repsC[i]!=null?g.repsC[i]:g.repsC[g.repsC.length-1]);
+  return String(cap?Math.min(n,5):n);
 }
 /* Travail d'une série, en secondes sous tension : le temps prescrit sur un
    exercice à tenir, 40 s forfaitaires sur le reste du gainage, sinon
@@ -3267,7 +3314,8 @@ function migrateReps(p){
 }
 function prescribe(e,cfg){
   const g=GOALS[cfg.goal];
-  const sets=e.typ==="c"?(cfg.lvl===1?g.setsC-1:g.setsC):g.setsI;
+  let sets=e.typ==="c"?(cfg.lvl===1?g.setsC-1:g.setsC):g.setsI;
+  if(pdcDessus(e,cfg.lvl))sets=Math.max(1,sets-1);   /* v1.9.12 P4 */
   const reps=prescribeReps(e,cfg.lvl,g);
   const rest=Math.round(e.rest*g.restMul/5)*5;
   let charge=null,src="rpe";
@@ -3454,7 +3502,8 @@ function pickPair(pa,pb,cfg,taken,usedAll,seed){
      retrouvait avec une leg extension a l'elastique en pleine salle.
      On enumere donc tous les couples valides, on les note, et on ne varie
      qu'ENTRE couples de meme note, comme le fait pickFor pour un exercice. */
-  const allow=EQ_ALLOW[cfg.eq]||[],rank=EQ_RANK[cfg.eq]||{};
+  /* v1.9.11 P3 : un biset n'est jamais un mouvement principal -> rang aplati */
+  const allow=EQ_ALLOW[cfg.eq]||[],rank=EQ_RANK2[cfg.eq]||{};
   const ok=e=>allow.indexOf(e.eq)>=0&&cfg.excl.indexOf(e.id)<0&&taken.indexOf(e.id)<0
     &&!spared(e,cfg.pain)&&e.lvl<=cfg.lvl;
   const rk=e=>rank[e.eq]!=null?rank[e.eq]:5;
@@ -3492,11 +3541,13 @@ function creneaux(tpl,cfg){
   bs.forEach(p=>{const i=reste.indexOf(p);if(i>=0)reste.splice(i,1)});
   return pats.slice(0,pos).concat([{bs:bs}],reste);
 }
-function generate(cfg){
+function generate(cfg,prev){
   const split=SPLITS[cfg.split];
   const days=cfg.days.slice().sort((a,b)=>a-b);
   const sessions=[];
-  const usedAll=[];   /* mémoire sur tout le programme : évite deux séances identiques */
+  /* mémoire sur tout le programme : évite deux séances identiques ; amorcée
+     par les exercices du programme remplacé (v1.9.11 P10) */
+  const usedAll=(prev||[]).slice();
   days.forEach((d,i)=>{
     const tpl=split.sess[i%split.sess.length];
     const taken=[];const exos=[];
@@ -3504,6 +3555,7 @@ function generate(cfg){
        decide ensuite combien d'exercices entrent dans le format. Changer de
        duree ne regenere donc rien et ne perd aucune charge saisie. */
     let nbs=0;
+    const vusPat=[];   /* v1.9.11 P3 : premier creneau d'un schema compose = principal */
     creneaux(tpl,cfg).forEach((pat,j)=>{
       const seed=i*3+j+(cfg.rot||0);
       if(pat&&pat.bs){
@@ -3514,7 +3566,9 @@ function generate(cfg){
           exos.push(Object.assign({id:e.id,ss:ss},prescribe(e,cfg)))});
         return;
       }
-      const e=pickFor(pat,cfg,taken,usedAll,seed);
+      const principal=PAT_COMPOSE.indexOf(pat)>=0&&vusPat.indexOf(pat)<0;
+      vusPat.push(pat);
+      const e=pickFor(pat,cfg,taken,usedAll,seed,principal);
       /* 7.1A : creneau de poussee rempli par un ecarte (ou vide) et aucune
          poussee encore dans la seance -> la poussee adaptee passe devant. */
       if(isPushPat(pat)&&!(e&&isPushPat(e.pat))
@@ -3540,7 +3594,7 @@ function generate(cfg){
     });
     best.exos.push(Object.assign({id:id,forced:true},prescribe(e,cfg)));
   });
-  return {gen:today(),split:cfg.split,sessions:sessions};
+  return {gen:today(),split:cfg.split,sessions:sessions,v:PROG_V};
 }
 
 /* ---------------- Temps de séance ----------------
@@ -3554,10 +3608,23 @@ function repsMidF(r){
   const n=String(r).match(/(\d+)/);
   return n?+n[1]:10;
 }
-function exoTime(x,e){
+/* v1.9.12 P7a : niveau donné, le repos suit le minuteur — multiplicateur de
+   niveau sur les composés (0,92 / 1 / 1,1) et rampe de fatigue (moyenne
+   ×1,06 dès 2 séries). Sans niveau : l'ancienne formule. */
+const RESTLVL={1:.92,2:1,3:1.1},RAMPE=1.06;
+function exoTime(x,e,nv){
   const work=setWork(x,e);
   const setup=(e.typ==="c")?75:45;
-  return Math.round(setup+x.sets*work+x.sets*x.rest);
+  let r=x.sets*x.rest;
+  if(nv){if(e.typ==="c")r*=(RESTLVL[nv]||1);if(x.sets>1)r*=RAMPE}
+  return Math.round(setup+x.sets*work+r);
+}
+/* v1.9.12 P4 : la cible progressée (p.ovrReps, passée dans cfg.ovrReps)
+   remplace la prescription d'un exercice qui progresse en répétitions. */
+function repsOv(x,e,cfg){
+  const c=cfg&&cfg.ovrReps&&cfg.ovrReps[e.id];
+  if(!(c>0)||!progRepsOk(e))return x;
+  return Object.assign({},x,{reps:e.hold?c+" s":String(c)});
 }
 function warmupTime(m){return m<=20?240:(m<=40?360:420)}
 function compLevel(m){return m<=20?2:(m<=40?1:0)}
@@ -3594,7 +3661,9 @@ function planSession(s,minutes,cfg){
   /* Séries d'approche : décidées dans l'ordre des exercices RETENUS et
      comptées dans leur temps (paliers réels × 65 s, dans y.wu et y.est). */
   const wsu=WarmupSuivi(cfg.warmup!==false);
-  const wuTime=(e,ch,tiers)=>{const w=tiers>0?warmupSets(null,null,e,ch,tiers):null;return w?w.length*WUP_SET_SEC:0};
+  const wuTime=(e,ch,tiers)=>{const w=tiers>0?warmupSets(null,null,e,ch,tiers):null;
+    return w?w.length*WUP_SET_SEC:(warmupLight(e,ch,tiers)?WUP_SET_SEC:0)};   /* v1.9.12 P11 */
+  const nv=cfg.lvl;
   s.exos.forEach(x0=>{
     let x=x0;
     if(!bsOk&&x.ss){x=Object.assign({},x0);delete x.ss}
@@ -3611,8 +3680,9 @@ function planSession(s,minutes,cfg){
         items.push(Object.assign({},x,{allSets:x.sets,inPlan:false,spared:true,est:0}));return;
       }
     }
+    x=repsOv(x,e,cfg);   /* v1.9.12 P4 */
     const y=compress(x,e,lvl);
-    y.est=exoTime(y,e);
+    y.est=exoTime(y,e,nv);
     const wt=wsu.apercu(e),wu=wuTime(e,x.charge,wt);
     /* C'est tout l'interet d'un biset, et la duree doit le voir : entre deux
        series du premier exercice, on fait une serie du second. Son repos a lui
@@ -3620,7 +3690,7 @@ function planSession(s,minutes,cfg){
        affiche (y.rest) ne change pas : c'est l'estimation de duree qui en
        tient compte, pour que le format du jour laisse entrer le biset. */
     const suivBs=x.ss?s.exos[s.exos.indexOf(x0)+1]:null;  /* x.ss absent si bsOk faux */
-    if(suivBs&&suivBs.ss===x.ss)y.est=exoTime(Object.assign({},y,{rest:BS_TRANSITION}),e);
+    if(suivBs&&suivBs.ss===x.ss)y.est=exoTime(Object.assign({},y,{rest:BS_TRANSITION}),e,nv);
     y.allSets=x.sets;
     /* Un biset se garde ou se retire EN ENTIER. La troncature par la fin ne
        doit jamais laisser le premier exercice d'un couple et couper le second :
@@ -3629,7 +3699,7 @@ function planSession(s,minutes,cfg){
        le premier est juge sur la duree des DEUX. */
     if(x.ss&&paire&&paire.ss===x.ss){
       if(paire.garde){y.est+=wu;y.wu=wu;y.wt=wt;wsu.enregistrer(e);t+=y.est;n++;sets+=y.sets;y.inPlan=true;items.push(y)}
-      else{const z=Object.assign({},x);z.allSets=x.sets;z.inPlan=false;z.est=exoTime(x,e);items.push(z)}
+      else{const z=Object.assign({},x);z.allSets=x.sets;z.inPlan=false;z.est=exoTime(x,e,nv);items.push(z)}
       paire=null;return;
     }
     y.est+=wu;y.wu=wu;y.wt=wt;
@@ -3637,31 +3707,38 @@ function planSession(s,minutes,cfg){
     if(x.ss){
       const suiv=s.exos[s.exos.indexOf(x0)+1];
       const es=suiv&&suiv.ss===x.ss?byId(suiv.id):null;
-      if(es)estJuge+=exoTime(compress(suiv,es,lvl),es);
+      if(es)estJuge+=exoTime(compress(repsOv(suiv,es,cfg),es,lvl),es,nv);
     }
     /* On retient l'exercice s'il rapproche du budget plutot que de l'en
        eloigner : s'arreter net au premier depassement laisserait de longs
        trous — dix minutes perdues sur un format de quarante. */
     const better=Math.abs(t+estJuge-budget)<Math.abs(t-budget);
-    const garde=!stop&&(n<2||better);
+    let garde=!stop&&(n<2||better);
+    /* v1.9.12 P7b : en 20 min, rien après le premier exercice si la séance
+       dépasse 22 minutes. */
+    if(garde&&n>=1&&minutes<=20&&(t+estJuge+warmupTime(minutes))>minutes*60*1.10)garde=false;
     if(x.ss)paire={ss:x.ss,garde:garde};
     if(garde){wsu.enregistrer(e);t+=y.est;n++;sets+=y.sets;y.inPlan=true;items.push(y)}
     else{stop=true;
-      const z=Object.assign({},x);z.allSets=x.sets;z.inPlan=false;z.est=exoTime(x,e);items.push(z)}
+      const z=Object.assign({},x);z.allSets=x.sets;z.inPlan=false;z.est=exoTime(x,e,nv);items.push(z)}
   });
   /* Format long : si toute la trame tient et qu'il reste du temps, on ajoute
      une serie aux gros mouvements plutot que d'empiler des accessoires —
      c'est le volume sur les mouvements de base qui construit. */
+  /* v1.9.12 P7c : en 90 min (niveau 3), trois passes — composés, composés,
+     isolations — pour que le format se remplisse ; seulement les exercices
+     retenus (comme iOS). */
+  const passes=minutes>=90?[true,true,false]:[true];
   if(!stop&&budget-t>budget*.10){
-    items.forEach(y=>{
+    passes.forEach(comp=>items.forEach(y=>{
       const e=byId(y.id);
-      if(!e||e.typ!=="c"||budget-t<=0)return;
+      if(!e||y.inPlan!==true||!(y.est>0)||(e.typ==="c")!==comp||budget-t<=0)return;
       /* y.est porte le temps d'approche : le supplement se calcule sur le
          seul temps de travail. */
-      const extra=exoTime(Object.assign({},y,{sets:y.sets+1}),e)+(y.wu||0)-y.est;
+      const extra=exoTime(Object.assign({},y,{sets:y.sets+1}),e,nv)+(y.wu||0)-y.est;
       if(t+extra<=budget){y.sets++;y.allSets=Math.max(y.allSets,y.sets);
         y.est+=extra;t+=extra;sets++;y.bump=true}
-    });
+    }));
   }
   const nSwap=items.filter(y=>y.swapFrom).length;
   return {items:items,n:n,sets:sets,minutes:minutes,lvl:lvl,spared:nSpared,swaps:nSwap,
@@ -3828,10 +3905,19 @@ function autoBilan(p,s,plan,sauf,seul){
    Six apparitions ; la meilleure charge des trois dernières ne dépasse pas celle
    des trois d'avant. Jamais en sèche. « Garder » vaut pour cet exercice et ce profil. */
 function plRefus(p){try{return JSON.parse(localStorage.getItem("fg_plateau_"+p.id)||"[]")}catch(e){return []}}
+/* v1.9.12 P4 : un exercice au poids du corps archivé à sa cible plafond
+   (15, 60 s), bonne séance : proposer la variante plus dure (sèche comprise). */
+function plPlafond(x){
+  const e=byId(x.id);if(!progRepsOk(e))return false;
+  if(!(x.ok==="oui"&&(x.diff==="facile"||x.diff==="correct")))return false;
+  if(completionOf(x)<PROG_COMPLET)return false;
+  return progCible(x.reps)>=progRepsCap(e);
+}
 function plateauIds(p,rec){
-  if(!p||!rec||p.cfg.goal==="seche"||rec.free)return [];
-  const ref=plRefus(p);
-  return rec.ex.filter(x=>x.done>0&&x.kg!=null&&ref.indexOf(x.id)<0).map(x=>x.id).filter(id=>{
+  if(!p||!rec||rec.free)return [];
+  const ref=plRefus(p),seche=p.cfg.goal==="seche";
+  return rec.ex.filter(x=>x.done>0&&ref.indexOf(x.id)<0&&(plPlafond(x)||(!seche&&x.kg!=null))).map(x=>x.id).filter(id=>{
+    const xa=rec.ex.find(z=>z.id===id);if(xa&&plPlafond(xa))return true;
     const ch=p.hist.map(h=>{const y=(h.ex||[]).find(e=>e.id===id&&e.done>0);return y?y.kg:null}).filter(v=>v!=null);
     if(ch.length<6)return false;
     return Math.max.apply(null,ch.slice(0,3))<=Math.max.apply(null,ch.slice(3,6));
@@ -3850,7 +3936,8 @@ function plateauHTML(p,rec){
   if(!ids.length)return "";
   return '<div class="plt"><div class="sub">Plateau</div>'+ids.map(id=>{
     const c=plCible(p,rec,id),x=rec.ex.find(e=>e.id===id);
-    return '<div class="pr" data-plid="'+esc(id)+'"><p>'+esc(x?x.n:id)+' : 6 séances sans progrès.</p><div class="acts">'
+    const pf=x&&plPlafond(x),eh=pf&&(byId(id)||{}).hold;
+    return '<div class="pr" data-plid="'+esc(id)+'"><p>'+esc(x?x.n:id)+(pf?' : '+progCible(x.reps)+(eh?' s tenues':' répétitions réussies')+'. Passe à une variante plus dure ?':' : 6 séances sans progrès.')+'</p><div class="acts">'
       +'<button class="btn g" onclick="plVariante('+c[0]+','+c[1]+')">Essayer une variante</button>'
       +'<button class="keep" onclick="plGarder(this)">Garder</button></div></div>'}).join("")+'</div>';
 }
@@ -3864,7 +3951,7 @@ function plGarder(b){
 }
 /* ---- La prochaine fois (planche 15, variante C) ---- */
 function propHTML(prop,plt){plt=plt||"";
-  const acq=prop.filter(q=>q.t==="up"||q.t==="lest"),por=prop.filter(q=>q.t==="rest"),vr=prop.find(q=>q.t==="var");
+  const acq=prop.filter(q=>q.t==="up"||q.t==="lest"||q.t==="reps"),por=prop.filter(q=>q.t==="rest"),vr=prop.find(q=>q.t==="var");
   if(!prop.length&&!plt)return "";
   let ct="";
   if(acq.length)ct='<b>'+(acq.length===1?"1 charge monte.":acq.length+" charges montent.")+'</b>'
@@ -3873,6 +3960,10 @@ function propHTML(prop,plt){plt=plt||"";
   let h='<div class="pf"><div class="cap">La prochaine fois</div>'+(acq.length||por.length?'<p class="ct">'+ct+'</p>':'');
   if(acq.length){
     h+='<div class="acq">'+acq.map(q=>{
+      if(q.t==="reps"){const u=q.hold?"s":"rép.";   /* v1.9.12 P4 */
+        return '<div class="ar" aria-label="'+esc(q.lbl)+'"><span class="ic"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M4 7l4-4 4 4"/></svg></span>'
+          +'<span class="nm">'+esc(q.n)+'</span><span class="v"><div class="l1">'+q.de+' → <b>'+q.a+'</b> '+u+'</div>'
+          +'<div class="l2">+'+(q.a-q.de)+' '+u+'</div></span></div>'}
       const dep=(q.t==="up"&&q.de>0&&q.de<q.a)?q.de:null;
       return '<div class="ar" aria-label="'+esc(q.lbl)+'"><span class="ic"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M4 7l4-4 4 4"/></svg></span>'
         +'<span class="nm">'+esc(q.n)+'</span><span class="v"><div class="l1">'+(q.t==="lest"?"lest ":"")
@@ -3980,9 +4071,9 @@ function conflicts(cfg){
     d:"Le volume hebdomadaire par groupe musculaire restera trop faible pour construire du muscle, même en multipliant les séances. C'est un format d'entretien : passe à 40 minutes au minimum, ou change d'objectif."});
   if(dur<=20&&nd<=3) out.push({t:"Environ "+(nd*dur)+" minutes d'entraînement par semaine",
     d:nd+" séances de "+dur+" minutes suffisent à entretenir, pas à progresser. Ajoute une séance, ou allonge le format."});
-  if(dur>=90&&cfg.lvl===1) out.push({t:"Séances de 90 minutes à un niveau débutant",
+  if(dur>=75&&cfg.lvl===1) out.push({t:"Séances de 75 minutes ou plus à un niveau débutant",
     d:"À ce stade, 45 minutes produisent les mêmes progrès. Le temps supplémentaire ajoute de la fatigue et du risque d'abandon, pas du muscle."});
-  if(dur>=90&&nd>=5) out.push({t:nd+" séances de 90 minutes",
+  if(dur>=75&&nd>=5) out.push({t:nd+" séances de 75 minutes ou plus",
     d:Math.round(nd*dur/60)+" heures d'entraînement par semaine. Peu de récupérations tiennent ce rythme en dehors d'un cadre professionnel. Réduis la durée ou la fréquence."});
   if(cfg.split==="bro"&&dur<=40) out.push({t:"Un groupe par séance en "+dur+" minutes",
     d:"Ce split mise sur un volume élevé par groupe, travaillé une seule fois par semaine. En "+dur+" minutes, chaque groupe recevra bien trop peu de séries. Choisis Haut/Bas ou Full body."});
@@ -4017,6 +4108,12 @@ function conflicts(cfg){
   }
   if(need.length) out.push({t:"Charges de référence manquantes : "+need.join(", "),
     d:"Sans 1RM, ces exercices s'afficheront en RPE seulement, sans charge chiffrée. Tu peux les estimer depuis une série récente au chapitre « Tes charges »."});
+  /* v1.9.12 P9 : 60 ans et plus — avertir, jamais filtrer. Seulement au
+     niveau 3 ou quand un squat / une charnière à la barre est possible. */
+  const lourd=allow.indexOf("barre")>=0&&EX.some(e=>e.eq==="barre"&&e.typ==="c"&&(e.pat==="knee"||e.pat==="hip")
+    &&e.lvl<=cfg.lvl&&cfg.excl.indexOf(e.id)<0&&!spared(e,cfg.pain));
+  if(ageAvance(cfg)&&(cfg.lvl===3||lourd)) out.push({t:"60 ans et plus : charnières lourdes et niveau avancé",
+    d:"Préfère les machines les premières semaines : même travail, trajectoire guidée, moins de charge sur le dos. Les séries d'approche restent actives quel que soit le réglage."});
   /* niveau déclaré vs charges */
   const sq=parseFloat(cfg.rm.squat);
   if(cfg.lvl===3&&sq>0&&sq<70) out.push({t:"Niveau « avancé » et squat à "+sq+" kg",
@@ -4147,8 +4244,8 @@ document.addEventListener("visibilitychange",()=>{
 document.getElementById("tmrs").onclick=()=>stopT(true);
 document.getElementById("tmrp").onclick=()=>addT(30);
 let tstT=null;
-function toast(m){const e=document.getElementById("tst");e.textContent=m;e.classList.add("on");
-  clearTimeout(tstT);tstT=setTimeout(()=>e.classList.remove("on"),2200)}
+function toast(m,ms){const e=document.getElementById("tst");e.textContent=m;e.classList.add("on");
+  clearTimeout(tstT);tstT=setTimeout(()=>e.classList.remove("on"),ms||2200)}
 
 /* ---------------- Dialogues internes ----------------
    prompt() et confirm() natifs sont bloques dans un cadre publie :
@@ -4532,6 +4629,62 @@ const PROG_STREAK_DUR=3;
    donnee : c'est le seuil ou l'ecart de volume cesse d'etre un alea de
    seance. */
 const PROG_COMPLET=.75;
+/* v1.9.12 P13 : isolation aux haltères -> 3 bonnes séances avant +1 kg. */
+const PROG_STREAK_HI=3;
+function progSeuil(e,dur){
+  if(dur)return PROG_STREAK_DUR;
+  if(e.eq==="halteres"&&e.typ!=="c")return PROG_STREAK_HI;
+  return PROG_STREAK;
+}
+/* v1.9.12 P4 : progression par répétitions au poids du corps (sauf lest
+   automatique). Même bonne séance, même seuil que la charge ; +1 répétition
+   (+5 s) jusqu'à 15 (60 s) ; un échec ne fait pas descendre la cible.
+   Jumeau de Progression.pasRepetitions (iOS). */
+const PROG_V=2;
+function progRepsOk(e){return !!e&&e.eq==="pdc"&&!LEST_AUTO[e.id]}
+function progRepsCap(e){return e.hold?60:15}
+function progRepsStep(e){return e.hold?5:1}
+function progCible(r){return Math.round(repsMidF(r))}
+function progRepsApply(e,base,fb,st){
+  const c=completionOf(fb);st.cible=base;
+  if(fb.ok==="non"||fb.diff==="echec"){st.fail++;st.streak=0;return}
+  if(c<PROG_COMPLET){st.streak=0;return}
+  const bon=fb.ok==="oui"&&(fb.diff==="facile"||fb.diff==="correct");
+  const dur=fb.ok==="oui"&&fb.diff==="dur";
+  if(bon||dur){
+    st.fail=0;if(c<1)return;
+    st.streak++;
+    if(st.streak>=progSeuil(e,dur)){st.streak=0;const cap=progRepsCap(e);
+      st.cible=base>=cap?base:Math.min(cap,base+progRepsStep(e))}
+    return;
+  }
+  st.fail=0;st.streak=0;
+}
+function progRepsRejeu(p){
+  const st={};if(!p.prog)return st;
+  const ids={};p.prog.sessions.forEach(s=>s.exos.forEach(x=>{ids[x.id]=1}));
+  const hist=p.hist.slice().sort((a,b)=>a.date<b.date?-1:1);
+  hist.forEach(r=>{(r.ex||[]).forEach(x=>{
+    if(!x.id||!ids[x.id])return;
+    const e=byId(x.id);if(!progRepsOk(e))return;
+    const base=progCible(x.reps);if(!(base>0))return;
+    const o=st[x.id]||(st[x.id]={cible:base,fail:0,streak:0});
+    progRepsApply(e,base,x,o);
+  })});
+  return st;
+}
+/* Pose les cibles rejouées dans p.ovrReps ; rend celles qui ont monté. */
+function progRepsAppliquer(p,cour){
+  const st=progRepsRejeu(p),ids=Object.keys(st).sort();
+  if(!ids.length)return [];
+  if(!p.ovrReps)p.ovrReps={};
+  const out=[];
+  ids.forEach(id=>{const a=st[id].cible;
+    const de=p.ovrReps[id]!=null?p.ovrReps[id]:(cour&&cour[id]!=null?cour[id]:null);
+    if(de!=null&&a>de)out.push({id:id,de:de,a:a});
+    p.ovrReps[id]=a});
+  return out;
+}
 
 /* Pas de montee. Trois corrections par rapport au pas unique d'origine :
    - les grosses chaines bilaterales (squat, souleve de terre, hip thrust)
@@ -4589,7 +4742,7 @@ function progApply(e,base,fb,st){
   const dur=fb.ok==="oui"&&fb.diff==="dur";
   if(bon||dur){
     if(c<1){st.kg=base;st.fail=0;return}   /* compte, mais n'avance pas */
-    const seuil=dur?PROG_STREAK_DUR:PROG_STREAK;
+    const seuil=progSeuil(e,dur);
     st.streak++;
     if(st.streak>=seuil){st.kg=base+step;st.streak=0}else st.kg=base;
     st.fail=0;return;
@@ -5256,14 +5409,22 @@ function splitReco(n){
   if(n<=2)return {k:"fullbody",d:"Deux séances par semaine, chaque groupe musculaire doit être touché à chaque fois : le full body est la seule répartition qui le permet."};
   if(n===3)return {k:"ppl",d:"Trois séances, c'est la répartition qui laisse à chaque groupe une semaine complète de récupération sans sacrifier le volume."};
   if(n===4)return {k:"upperlower",d:"Quatre séances : deux hauts, deux bas. Chaque moitié du corps est travaillée deux fois par semaine, ce qui est le meilleur rythme pour progresser."};
-  return {k:"ppl",d:"Cinq séances ou plus : le push / pull / legs se répète dans la semaine, chaque groupe est stimulé deux fois sans séance interminable."};
+  /* v1.9.11 P5 : en PPL a 5 jours, les jambes n'avaient qu'une seance */
+  if(n===5)return {k:"upperlower",d:"Cinq séances : haut et bas du corps en alternance. Chaque groupe est travaillé au moins deux fois par semaine — en push / pull / legs, les jambes n'auraient eu qu'une séance."};
+  return {k:"ppl",d:"Six séances ou plus : le push / pull / legs se répète dans la semaine, chaque groupe est stimulé deux fois sans séance interminable."};
 }
-function estimRM(lvl,ref){
+/* v1.9.12 P6 : ratios prudents × poids de corps, neutres en sexe. */
+const RM_RATIO={dc:[.5,.75,1],squat:[.6,.9,1.2],sdt:[.75,1.1,1.4],row:[.45,.65,.85]};
+function estimRM(lvl,ref,wt){
   /* Estimation prudente quand l'utilisateur ne connait pas ses maximums :
      des ordres de grandeur, volontairement bas. Les trois premieres seances
-     les corrigent a partir de ce qui est reellement souleve. */
+     les corrigent a partir de ce qui est reellement souleve. Le plus bas du
+     barème et de ratio × poids de corps. */
   const base={dc:{1:40,2:70,3:100},squat:{1:50,2:90,3:130},sdt:{1:60,2:110,3:160},row:{1:35,2:60,3:85}};
-  return (base[ref]||{})[lvl]||null;
+  const b=(base[ref]||{})[lvl]||null;
+  const w=parseFloat(wt),r=RM_RATIO[ref];
+  if(b==null||!(w>0)||!r||r[lvl-1]==null)return b;
+  return Math.min(b,r25(r[lvl-1]*w));
 }
 function renderWiz(p){
   const c=p.cfg;
@@ -5336,7 +5497,7 @@ function renderWiz(p){
       +'</div>'
       +'<p class="wzhint">'+(c.days.length?c.days.length+' jour'+(c.days.length>1?"s":"")+' par semaine.':'Sélectionne au moins un jour.')+'</p>';
     h+='<div class="wzlb" style="margin-top:20px">Durée d\'une séance</div><div class="wzdur">'
-      +DURS.map(o=>'<button type="button" class="wzd'+((c.dur||60)===o.m?" on":"")+'" data-durw="'+o.m+'">'+o.m+'</button>').join("")
+      +dursFor(c.lvl).map(o=>'<button type="button" class="wzd'+((c.dur||60)===o.m?" on":"")+'" data-durw="'+o.m+'">'+o.m+'</button>').join("")
       +'</div>'
       +'<p class="wzhint">'+esc(durOf(c.dur||60).n)+' — '+esc(durOf(c.dur||60).s)+'. Modifiable jour par jour ensuite.</p>';
     const rc=splitReco(c.days.length||3);
@@ -5418,10 +5579,8 @@ function renderWiz(p){
         +'<p>'+esc(noms.join(" · "))+'</p></div>';
     });
     if(cf.length)cf.forEach(x=>{h+='<div class="alert w"><b>'+esc(x.t)+'</b>'+esc(x.d)+'</div>'});
-    /* 9A (26/09) : les bisets se découvrent ici, niveau 2 et plus, séance de plus de 60 min. */
-    if((c.lvl||1)>=2&&bisetsDureeOk(c.dur)&&!c.biset)
-      h+='<div class="wzbis"><p>Les bisets enchaînent deux exercices opposés, sans repos entre les deux : même travail, séance plus courte.</p>'
-        +'<button type="button" class="btn g sm" id="wzbis">Activer les bisets</button></div>';
+    /* v1.9.12 P15 : plus de proposition de bisets ici — là où ils sont permis
+       (75 et 90 min), ils ne font gagner aucune minute. Réglables dans Profil. */
     h+='<div class="infobox" style="margin-top:12px"><span class="ibico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></span>'
       +'<span class="ibtx">Tu pourras remplacer n\'importe quel exercice, écarter une zone ou changer le format d\'une séance à tout moment — rien n\'est figé.</span></div>';
     /* L'apparence se choisit ici plutot que dans un chapitre a elle : c'est
@@ -5459,11 +5618,11 @@ function renderWiz(p){
   const nk=document.getElementById("wznork");
   if(nk)nk.onclick=()=>{
     [["dc"],["squat"],["sdt"],["row"]].forEach(r=>{
-      const v=estimRM(c.lvl,r[0]);
+      const v=estimRM(c.lvl,r[0],(c.body||{}).wt);
       if(v){c.rm[r[0]]=String(v);c["rmest_"+r[0]]=true}});
     saveP();toast("Maximums estimés depuis ton niveau");renderWiz(p)};
 
-  q("[data-lvl]").forEach(o=>o.onclick=()=>{c.lvl=+o.dataset.lvl;saveP();renderWiz(p)});
+  q("[data-lvl]").forEach(o=>o.onclick=()=>{c.lvl=+o.dataset.lvl;c.dur=durPour(c.dur||60,c.lvl);saveP();renderWiz(p)});
   q("[data-split]").forEach(o=>o.onclick=()=>{c.split=o.dataset.split;saveP();renderWiz(p)});
   q("[data-durw]").forEach(o=>o.onclick=()=>{c.dur=+o.dataset.durw;saveP();renderWiz(p)});
   q("[data-goal]").forEach(o=>o.onclick=()=>{c.goal=o.dataset.goal;saveP();renderWiz(p)});
@@ -5689,6 +5848,9 @@ function renderMain(p){
   if(SECT==="nut"&&!nutriOuverte(p))SECT="train";
   document.body.dataset.sect=SECT;
   applyPortrait(p);applyPal(p);pruneFree(p);
+  /* v1.9.12 : programme régénéré au chargement -> dit une fois, ton neutre. */
+  if(SECT==="train"&&p.progMaj){delete p.progMaj;saveP();
+    toast("Ton programme a été mis à jour avec les derniers réglages de Forge. Ton historique et tes charges sont conservés.",5000)}
   /* En-tete : le compteur de medailles remplace la pastille de niveau — le
      niveau est une donnee figee qu'on retrouve dans Profil, la medaille est
      la recompense vivante que la maquette met a droite du titre, et elle
@@ -5831,7 +5993,8 @@ function renderMain(p){
     /* Meme objectif, autres exercices : c'est exactement ce que fait
        « Renouveler les exercices ». generate() est deterministe, donc
        incrementer la rotation suffit — rien d'autre a inventer. */
-    p.cfg.rot=(p.cfg.rot||0)+1;p.prog=generate(p.cfg);
+    const faits=prevExos(p);   /* v1.9.11 P10 */
+    p.cfg.rot=(p.cfg.rot||0)+1;p.prog=generate(p.cfg,faits);
     cycleOuvrir(p,(p.set&&p.set.cycDur)||CYCLE_DEFAUT);CYCLE_SUITE=false;saveP();
     toast("Cycle "+p.cycle.no+" lancé");renderMain(p)};
   const cyagain=document.getElementById("cyagain");
@@ -6188,10 +6351,18 @@ function archiverSeance(p,s,ti,plan,dm,jour,lire){
       progApply(e,base,fb,stx);
       const nv=stx.kg;p.streak[x.id]=stx.streak;
       if(nv===base&&stx.streak>0){
-        const seuil=(fb.ok==="oui"&&fb.diff==="dur")?PROG_STREAK_DUR:PROG_STREAK,
+        const seuil=progSeuil(e,fb.ok==="oui"&&fb.diff==="dur"),
               rest=seuil-stx.streak;
         if(rest>0)prop.push({t:"rest",n:e.n,k:rest,a:base+progStep(e),lbl:e.n+" : encore "+rest+" séance"+(rest>1?"s":"")+" réussie"+(rest>1?"s":"")+" pour passer à "+kg(base+progStep(e))})}
       if(nv!==base){p.ovr[x.id]=String(nv);prop.push({t:"up",n:e.n,de:base,a:nv,lbl:e.n+" → "+kg(nv)})}
+    });
+    /* v1.9.12 P4 : cibles de répétitions au poids du corps, par rejeu. */
+    const cour={};
+    plan.items.forEach(x=>{const e=byId(x.id);if(progRepsOk(e))cour[x.id]=progCible(x.reps)});
+    progRepsAppliquer(p,cour).forEach(m=>{
+      if(!plan.items.some(y=>y.id===m.id))return;
+      const e=byId(m.id);
+      prop.push({t:"reps",n:e.n,de:m.de,a:m.a,hold:!!e.hold,lbl:e.n+" → "+m.a+(e.hold?" s":" répétitions")});
     });
     /* Sur traction et dips, une seance reussie et facile ne se traduisait
        par rien : l'app n'avait aucun levier. Elle propose maintenant du lest. */
@@ -6518,7 +6689,7 @@ function comebackGap(p){
   if(isNaN(t))return null;
   const d=Math.round((new Date(today()+"T00:00:00")-t)/86400000);
   if(!(d>=10))return null;
-  const cut=d>=45?null:(d>=21?12:7);
+  const cut=d>=45?20:(d>=21?12:7);   /* v1.9.12 P14 */
   return {days:d,cut:cut};
 }
 function comebackApplied(p){return (p.cbDone||null)===today()}
@@ -6563,8 +6734,24 @@ function warmupSets(p,x,e,ch,tiers){
   });
   return out.length>=2?out:null;
 }
+/* v1.9.12 P11 : composé qui devrait s'échauffer mais sans charge connue
+   (hors poids du corps) : une série « Léger × 10 », sans chiffre. */
+function warmupLight(e,ch,tiers){return !!e&&e.typ==="c"&&tiers>0&&e.eq!=="pdc"&&(ch==null||isNaN(ch))}
 function warmupHTML(p,s,x,e,ch,xi){
   const w=warmupSets(p,x,e,ch,x.wt||0);
+  if(!w&&warmupLight(e,ch,x.wt||0)){
+    const k="wu_"+sKey(p,s.sid,x.id,0),on=G(k,false);
+    return '<details class="wup" open><summary>'
+      +'<span class="wusum">Séries d\'approche</span>'
+      +'<span class="wucnt">'+(on?1:0)+'/1</span>'
+      +'<span class="wuintro">Pas encore de charge connue : une série légère, bien en dessous de ta charge de travail, pour préparer le geste et les articulations.</span>'
+      +'</summary><div class="wubody">'
+      +'<div class="wurow'+(on?" ok":"")+'" data-wurow="'+xi+'|0" role="button" tabindex="0" aria-pressed="'+(on?"true":"false")+'">'
+      +'<span class="ckbox'+(on?" on":"")+'" aria-hidden="true"></span><span class="wul">E1</span><span class="wubb"></span>'
+      +'<span class="wuv"><b>Léger × 10</b></span></div>'
+      +'<p class="wunote">Hors décompte : ces séries ne comptent ni dans le volume ni dans les séries de la séance. Repos court, 45 s.</p>'
+      +'</div></details>';
+  }
   if(!w)return "";
   let n=0;
   const rows=w.map((r,i)=>{
@@ -7020,7 +7207,7 @@ function renderRest(p,pg){
 }
 function renderSession(p,s,ti,pg){
   const pain=p.cfg.pain||[];
-  const dm=dayDur(p,s),plan=planSession(s,dm,Object.assign({},p.cfg,{warmup:p.set.warmup!==false})),def=p.cfg.dur||60;
+  const dm=dayDur(p,s),plan=planSession(s,dm,Object.assign({},p.cfg,{warmup:wuOn(p),ovrReps:p.ovrReps||{}})),def=p.cfg.dur||60;
   const t0=tally(p,s,plan),tot=t0.tot,done=t0.done,pct=t0.pct;
   /* Regle produit (25/09) : on ne lance que la seance du jour. Une seance
      d'un autre jour se consulte ; un jour de repos, c'est la seance libre.
@@ -7134,7 +7321,7 @@ function renderSession(p,s,ti,pg){
       +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>';
     /* Duree du jour, reglee sur place : c'est le reglage le plus frequent. */
     h+='<div class="srow2"><span class="srl">Durée d\'aujourd\'hui</span>'
-      +'<div class="seg sm">'+DURS.map(o=>'<button'+(o.m===dm?' class="on"':'')+' data-dur="'+o.m+'">'+o.m+'</button>').join("")+'</div></div>'
+      +'<div class="seg sm">'+dursFor(p.cfg.lvl).map(o=>'<button'+(o.m===dm?' class="on"':'')+' data-dur="'+o.m+'">'+o.m+'</button>').join("")+'</div></div>'
       +'<p class="sf">'+esc(durOf(dm).n)+' — '+esc(durOf(dm).s)+'. Le choix ne vaut que pour aujourd\'hui.</p>'
       +((!bisetsDureeOk(dm)&&s.exos.some(x=>x.ss))?'<p class="sf">Bisets suspendus aujourd\'hui : ils ne sont proposés qu\'au-delà de 60 minutes. Les deux exercices se font séparément, avec leur repos.</p>':'');
     /* Minuteur : un interrupteur, pas un bouton a deviner. */
@@ -9344,7 +9531,7 @@ function renderProfil(p,pg){
     +'<div class="fld half"><label>Objectif</label><select id="p-g">'
     +Object.keys(GOALS).map(k=>'<option value="'+k+'"'+(c.goal===k?" selected":"")+'>'+GOALS[k].n+'</option>').join("")+'</select></div></div>'
     +'<div class="fld"><label>Durée habituelle d\'une séance</label><select id="p-d">'
-    +DURS.map(d=>'<option value="'+d.m+'"'+((c.dur||60)===d.m?" selected":"")+'>'+d.m+' min — '+d.n+'</option>').join("")+'</select></div>'
+    +dursFor(c.lvl).map(d=>'<option value="'+d.m+'"'+((c.dur||60)===d.m?" selected":"")+'>'+d.m+' min — '+d.n+'</option>').join("")+'</select></div>'
     +'<p class="mut">Le niveau reste affiché en haut de l\'app et sur l\'écran de sélection des profils — il suit le profil s\'il est transmis à quelqu\'un.</p></div>';
   if(PT==="toi")h+='<div class="card"><h4>1RM de référence</h4><div class="grid2">'
     +[["dc","Développé couché"],["squat","Squat"],["sdt","Soulevé de terre"],["row","Rowing"]].map(r=>
@@ -9373,7 +9560,8 @@ function renderProfil(p,pg){
     +'<button class="mini'+(p.set.sound?" on":"")+'" id="s-s">Bip</button>'
     +(HAS_VIB?'<button class="mini'+(p.set.vib?" on":"")+'" id="s-v">Vibration</button>':'')
     +'<button class="mini'+(portraitOn(p)?" on":"")+'" id="s-p">Écran vertical</button>'
-    +'<button class="mini'+(p.set.warmup!==false?" on":"")+'" id="s-w">Séries d\'approche</button></div>'
+    +'<button class="mini'+(wuOn(p)?" on":"")+'" id="s-w"'+(ageAvance(c)?' disabled aria-disabled="true"':'')+'>Séries d\'approche</button></div>'
+    +(ageAvance(c)?'<p class="mut" style="margin-top:8px">Toujours actives à partir de 60 ans.</p>':'')
     +'<p class="mut" style="margin-top:8px">Séries d\'approche : avant le premier gros mouvement de la séance et le premier de chaque nouvelle zone (poussée, tirage, jambes), quelques répétitions plus légères, comptées dans la durée estimée. Jamais sur le gainage.</p>'
     +'<p class="mut" style="margin-top:8px">« Écran vertical » refuse la mise en page paysage : si le téléphone tourne, l\'app demande de le remettre droit au lieu de tout réorganiser. Un vrai verrou d\'orientation n\'existe pas dans Safari — il faudrait une app installée depuis l\'App Store.</p>'
     +(HAS_VIB?'':'<p class="mut" style="margin-top:8px">La vibration n\'existe pas dans Safari iOS : seul le bip signale la fin du repos.</p>')
@@ -9386,7 +9574,7 @@ function renderProfil(p,pg){
       +'<button class="mini'+(bOn&&bDispo?" on":"")+'" id="s-bs"'+(bDispo?"":" disabled")+'>Séances plus courtes, plus intenses</button>'
       +'<p class="mut" style="margin-top:8px">Deux exercices de groupes <b>opposés</b> s\'enchaînent sans repos entre eux — pectoraux et dos, biceps et triceps, quadriceps et ischios. Le repos se prend à la fin du tour. La séance raccourcit ; la fatigue cardiaque, elle, monte.</p>'
       +(bNiv?'':'<p class="mut">Réservé aux niveaux intermédiaire et avancé. Sur une reprise ou un début de pratique, l\'enchaînement coûte plus en qualité d\'exécution qu\'il ne fait gagner de temps.</p>')
-      +(bNiv&&!bDur?'<p class="bsmsg">Proposé seulement pour les séances de <b>plus de 60 minutes</b> (durée habituelle de 90 minutes, dans Profil → Identité). En dessous, les gros mouvements occupent déjà tout le temps : un biset n\'y entrerait qu\'en retirant un exercice de base, et la séance y perdrait plus qu\'elle n\'y gagne.'+(bOn?' Ton choix est gardé : il reprend effet dès que tu repasses à 90 minutes.':'')+'</p>':'')
+      +(bNiv&&!bDur?'<p class="bsmsg">Proposé seulement pour les séances de <b>plus de 60 minutes</b> (durée habituelle de 75 ou 90 minutes, dans Profil → Identité). En dessous, les gros mouvements occupent déjà tout le temps : un biset n\'y entrerait qu\'en retirant un exercice de base, et la séance y perdrait plus qu\'elle n\'y gagne.'+(bOn?' Ton choix est gardé : il reprend effet dès que tu repasses à 75 minutes ou plus.':'')+'</p>':'')
       +'<p class="mut">Un biset par séance, en fin de séance, après les gros mouvements.</p>'
       +'</div>';
   }
@@ -9449,6 +9637,7 @@ function renderProfil(p,pg){
   on("p-l","onchange",e=>{c.lvl=+e.target.value;
     /* Le reglage biset ne survit pas a une retrogradation de niveau. */
     if(c.lvl<2)c.biset=false;
+    migrateDur(p);   /* v1.9.12 P7c : sous le niveau 3, 90 -> 75 */
     saveP();renderMain(p)});
   on("s-bs","onclick",()=>{c.biset=!(c.biset===true);
     p.prog=generate(c);pruneChecks(p);saveP();
@@ -9469,11 +9658,12 @@ function renderProfil(p,pg){
   on("p-regen","onclick",()=>askConfirm("Renouveler les exercices ?",
     "Toutes les séances reçoivent de nouveaux exercices. Les charges saisies sont conservées, les séries cochées en cours sont perdues.","Renouveler",ok=>{
       if(!ok)return;
-      c.rot=(c.rot||0)+1;p.prog=generate(c);pruneChecks(p);saveP();toast("Nouveaux exercices");renderMain(p)}));
+      const faits=prevExos(p);   /* v1.9.11 P10 */
+      c.rot=(c.rot||0)+1;p.prog=generate(c,faits);pruneChecks(p);saveP();toast("Nouveaux exercices");renderMain(p)}));
   const tg=(id,k)=>on(id,"onclick",()=>{p.set[k]=!p.set[k];saveP();renderMain(p)});
   tg("s-t","timer");tg("s-s","sound");if(HAS_VIB)tg("s-v","vib");
   on("s-p","onclick",()=>{p.set.portrait=!portraitOn(p);saveP();applyPortrait(p);renderMain(p)});
-  on("s-w","onclick",()=>{p.set.warmup=!(p.set.warmup!==false);saveP();renderMain(p)});
+  on("s-w","onclick",()=>{if(ageAvance(c))return;p.set.warmup=!(p.set.warmup!==false);saveP();renderMain(p)});
   APP.querySelectorAll("[data-cycdur]").forEach(b=>b.onclick=()=>{
     p.set.cycDur=+b.dataset.cycdur;saveP();renderMain(p)});
   pg.querySelectorAll("[data-palk]").forEach(b=>b.onclick=()=>{
@@ -9509,6 +9699,35 @@ window.addEventListener("load",bootDone);
 /* ---------------- Démarrage : profil actif rechargé automatiquement ---------------- */
 PROFILES.forEach(p=>{try{migrateKeys(p);pruneChecks(p);migrateBW(p);migrateKcal(p)}catch(e){}});
 PROFILES.forEach(p=>{try{migrateReps(p)}catch(e){}});
+/* v1.9.12 : durées 90 -> 75 sous le niveau 3, puis régénération unique des
+   programmes d'avant (prog.v < PROG_V), reportée si une séance du programme
+   est en cours aujourd'hui. Jumeau de RegenerationProgramme (iOS). */
+function progEnCours(p){
+  const t=today(),pre=K+"sstart_"+p.id+"_",suf="_"+t;
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(!k||k.indexOf(pre)!==0||k.slice(-suf.length)!==suf)continue;
+    const sid=k.slice(pre.length,k.length-suf.length);
+    const s=((p.prog&&p.prog.sessions)||[]).find(q=>q.sid===sid);
+    if(!s||s.free)continue;
+    if(!(p.hist||[]).some(h=>h.date===t&&h.k===s.k&&h.day===s.day))return true;
+  }
+  return false;
+}
+function regenProg(p){
+  if(!p||!p.prog||!p.cfg||!((p.prog.v||0)<PROG_V))return false;
+  if(progEnCours(p))return false;
+  const ss=p.prog.sessions||[];
+  if(!ss.some(s=>!s.free)){p.prog.v=PROG_V;return true}
+  const np=generate(p.cfg);
+  np.gen=p.prog.gen||np.gen;
+  np.sessions=np.sessions.concat(ss.filter(s=>s.free));
+  p.prog=np;delete p.vary;p.progMaj=true;
+  try{pruneChecks(p)}catch(e){}
+  return true;
+}
+PROFILES.forEach(p=>{try{migrateDur(p)}catch(e){}});
+PROFILES.forEach(p=>{try{regenProg(p)}catch(e){}});
 saveP();
 if(ACTIVE&&prof()){VIEW=prof().done?"app":"wiz";syncToday(prof());}
 else VIEW="home";
