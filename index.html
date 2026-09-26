@@ -114,8 +114,9 @@ display:flex;align-items:center;justify-content:center}
 border:1px solid var(--line);background:var(--sf2);border-radius:11px;padding:9px 6px;
 cursor:pointer;font-family:inherit;color:var(--mut)}
 .moodc.on{border-color:var(--brand);background:var(--sf3);color:var(--txt)}
-.moodc i{font-style:normal;font-size:1.15rem;line-height:1}
+.moodc i{font-style:normal;line-height:0;color:var(--txt)}.moodc.on i{color:var(--brand)}
 .moodc b{font-size:.68rem;font-weight:600}
+.wzbis{margin-top:12px;background:var(--sf2);border-radius:10px;padding:12px}.wzbis p{margin:0 0 10px;font-size:.82rem;color:var(--txt)}
 .moodtx{margin:0 0 12px;font-size:.73rem;line-height:1.5;color:var(--brand-lt);
 border-left:2px solid var(--brand);padding-left:10px}
 .freetag{display:inline-flex;align-items:center;gap:5px;font-size:.55rem;font-weight:800;
@@ -984,6 +985,17 @@ overflow-wrap:anywhere;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;
 padding:11px 6px 10px;border-radius:10px;background:var(--sf2);border:1px solid var(--line)}
 .pcell b{font-family:var(--mono);font-size:.78rem;font-weight:600;color:var(--txt)}
 .pcell span{font-size:.65rem;line-height:1.2;color:var(--mut)}
+/* Familles repliables de la grille des 30 g (26/09) : intitule en capitales. */
+.pfam+.pfam{border-top:1px solid var(--line)}
+.pfam>summary{display:flex;align-items:center;gap:10px;min-height:44px;list-style:none;cursor:pointer;
+-webkit-tap-highlight-color:transparent}
+.pfam>summary::-webkit-details-marker{display:none}
+.pfamt{flex:1 1 auto;min-width:0;font-size:.66rem;font-weight:700;letter-spacing:.05em;
+text-transform:uppercase;color:var(--mut)}
+.pfamc{flex:0 0 auto;color:var(--mut);display:flex;transition:transform .22s var(--emph)}
+.pfam[open]>summary .pfamc{transform:rotate(180deg)}
+.pfam .pgrid{margin:0 0 10px}
+@media (prefers-reduced-motion:reduce){.pfamc{transition:none}}
 /* Journee type */
 .mealgrid{display:flex;flex-direction:column;gap:7px;margin:10px 0}
 .mealc{display:flex;gap:11px;align-items:flex-start;padding:11px;border-radius:10px;
@@ -1368,7 +1380,7 @@ transform:translateY(-2px) rotate(45deg);transition:transform .2s ease}
 .fbbr{flex:1 0 100%;height:0}
 .frest .motser{display:block;margin:0 0 8px;max-width:none;text-align:left}
 /* Plateau (planche 17·4) : constat, pas d'ambre. */
-.plt{margin-top:14px;background:var(--sf2);border-radius:10px;padding:11px 12px 2px}
+.plt{margin-top:12px}
 .plt .cap{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--brand)}
 .plt .pr{padding:10px 0;border-top:1px solid var(--line)}
 .plt .pr:first-of-type{border-top:0}
@@ -1677,7 +1689,7 @@ border-right:1px solid var(--line);align-self:stretch;
 display:flex;align-items:center;line-height:1;
 font-family:var(--mono);font-variant-numeric:tabular-nums}
 /* Un exercice boucle prend le vert, comme sa carte. */
-.exo.done .eh .ix{color:var(--ok)}
+.exo .eh .ix{color:var(--mut)}.exo.cur .eh .ix{color:var(--brand)}.exo.done .eh .ix{color:var(--ok)}
 /* Exercice ouvert : le nom peut passer sur deux lignes plutot que d'etre
    coupe par le bouton Changer — un nom d'exercice tronque ne sert a rien. */
 .exo:not(.coll) .eh .nm{font-family:var(--disp);font-variation-settings:"wdth" 108;
@@ -2097,7 +2109,7 @@ html.ready #boot{opacity:0;pointer-events:none}
    FORGE — générateur + suivi de programme, multi-profils, hors ligne
    Toutes les données restent dans le localStorage de l'appareil.
    ================================================================ */
-const VER="1.9.1";
+const VER="1.9.5";
 const K="fg_";
 function G(k,d){try{const v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function S(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
@@ -2560,6 +2572,36 @@ function loadsZone(e,z){
   return false;
 }
 function spared(e,pain){return (pain||[]).some(z=>loadsZone(e,z))}
+/* v1.9.3 7.1A pushEpauleOk */
+/* Arbitrage 7.1A du 26/09. La zone epaule ecarte tout ce qui touche le
+   deltoide avant, donc tous les developpes et pompes : sans repli, la
+   seance Push devient trois ecartes et deux triceps. On tolere UNE poussee
+   horizontale ou le deltoide avant n'est que secondaire, hors barre (prise
+   imposee), hors liste explicite de l'epaule, et qui ne charge aucune
+   autre zone menagee. Pendant de Selecteur.pousseeAdaptee (Swift). */
+function pushEpauleOk(e,pain){
+  pain=pain||[];
+  if(pain.indexOf("epaule")<0||e.pat!=="push_h"||e.eq==="barre"||e.prim.indexOf("delt_a")>=0)return false;
+  if((ZLIST.epaule||[]).indexOf(e.id)>=0)return false;
+  return !pain.some(z=>z!=="epaule"&&loadsZone(e,z));
+}
+/* Deterministe, sans graine : rang du materiel, niveau le plus proche sans
+   le depasser, un exercice encore inutilise, puis l'ordre du catalogue.
+   null sans epaule menagee ou sans rien de compatible : on ne force rien. */
+function pickPushEpaule(cfg,taken,usedAll){
+  if((cfg.pain||[]).indexOf("epaule")<0)return null;
+  const allow=EQ_ALLOW[cfg.eq]||[],rank=EQ_RANK[cfg.eq]||{};
+  const c=EX.filter(e=>pushEpauleOk(e,cfg.pain)&&allow.indexOf(e.eq)>=0
+    &&(cfg.excl||[]).indexOf(e.id)<0&&taken.indexOf(e.id)<0);
+  if(!c.length)return null;
+  const sc=e=>(rank[e.eq]!=null?rank[e.eq]:5)*10+Math.max(0,e.lvl-cfg.lvl);
+  const best=Math.min.apply(null,c.map(sc));
+  let pool=c.filter(e=>sc(e)===best);
+  const fresh=pool.filter(e=>usedAll.indexOf(e.id)<0);
+  if(fresh.length)pool=fresh;
+  return pool[0];
+}
+function isPushPat(p){return p==="push_h"||p==="push_v"}
 /* Un exercice écarté pour cause de zone sensible est REMPLACÉ, pas
    supprimé : on cherche le plus proche équivalent qui ne charge pas
    l'articulation — même schéma moteur d'abord, puis même famille de
@@ -3341,6 +3383,13 @@ function generate(cfg){
         return;
       }
       const e=pickFor(pat,cfg,taken,usedAll,seed);
+      /* 7.1A : creneau de poussee rempli par un ecarte (ou vide) et aucune
+         poussee encore dans la seance -> la poussee adaptee passe devant. */
+      if(isPushPat(pat)&&!(e&&isPushPat(e.pat))
+        &&!exos.some(y=>{const b=byId(y.id);return b&&isPushPat(b.pat)})){
+        const a=pickPushEpaule(cfg,taken.concat(e?[e.id]:[]),usedAll);
+        if(a){taken.push(a.id);usedAll.push(a.id);exos.push(Object.assign({id:a.id},prescribe(a,cfg)))}
+      }
       if(!e)return;
       taken.push(e.id);usedAll.push(e.id);
       exos.push(Object.assign({id:e.id},prescribe(e,cfg)));
@@ -3401,7 +3450,12 @@ function planSession(s,minutes,cfg){
   const lvl=compLevel(minutes),budget=minutes*60-warmupTime(minutes);
   const items=[];let t=0,n=0,stop=false,sets=0,nSpared=0,paire=null;
   /* exercices déjà retenus, pour ne pas proposer deux fois le même */
-  const taken=s.exos.map(x=>x.id).filter(id=>{const b=byId(id);return b&&!spared(b,pain)});
+  /* 7.1A : la PREMIERE poussee adaptee de la seance est gardee (le
+     generateur l'a posee expres) ; les suivantes restent ecartees. */
+  const adaptX=s.exos.find(y=>{const b=byId(y.id);return b&&pushEpauleOk(b,pain)});
+  const adaptId=adaptX?adaptX.id:null;
+  const sparedP=b=>b.id!==adaptId&&spared(b,pain);
+  const taken=s.exos.map(x=>x.id).filter(id=>{const b=byId(id);return b&&!sparedP(b)});
   /* Une duree du jour de 60 min ou moins suspend les bisets du programme :
      les deux exercices redeviennent ordinaires, repos compris. */
   const bsOk=bisetsDureeOk(minutes);
@@ -3410,7 +3464,7 @@ function planSession(s,minutes,cfg){
     if(!bsOk&&x.ss){x=Object.assign({},x0);delete x.ss}
     let e=byId(x.id);
     if(!e){items.push(Object.assign({},x,{inPlan:false,est:0}));return}
-    if(spared(e,pain)){
+    if(sparedP(e)){
       nSpared++;
       const sub=cfg.eq?substitute(e,cfg,taken):null;
       if(sub){
@@ -3641,7 +3695,7 @@ function plCible(p,rec,id){
 function plateauHTML(p,rec){
   const ids=plateauIds(p,rec).filter(id=>plCible(p,rec,id));
   if(!ids.length)return "";
-  return '<div class="plt"><div class="cap">Plateau</div>'+ids.map(id=>{
+  return '<div class="plt"><div class="sub">Plateau</div>'+ids.map(id=>{
     const c=plCible(p,rec,id),x=rec.ex.find(e=>e.id===id);
     return '<div class="pr" data-plid="'+esc(id)+'"><p>'+esc(x?x.n:id)+' : 6 séances sans progrès.</p><div class="acts">'
       +'<button class="btn g" onclick="plVariante('+c[0]+','+c[1]+')">Essayer une variante</button>'
@@ -3656,14 +3710,14 @@ function plGarder(b){
   if(!box.querySelector("[data-plid]"))box.remove();
 }
 /* ---- La prochaine fois (planche 15, variante C) ---- */
-function propHTML(prop){
+function propHTML(prop,plt){plt=plt||"";
   const acq=prop.filter(q=>q.t==="up"||q.t==="lest"),por=prop.filter(q=>q.t==="rest"),vr=prop.find(q=>q.t==="var");
-  if(!prop.length)return "";
-  let ct;
+  if(!prop.length&&!plt)return "";
+  let ct="";
   if(acq.length)ct='<b>'+(acq.length===1?"1 charge monte.":acq.length+" charges montent.")+'</b>'
     +(por.length?" "+(por.length===1?"1 autre à portée.":por.length+" autres à portée."):"");
-  else ct=por.length===1?"1 charge à portée.":por.length+" charges à portée.";
-  let h='<div class="pf"><div class="cap">La prochaine fois</div><p class="ct">'+ct+'</p>';
+  else if(por.length)ct=por.length===1?"1 charge à portée.":por.length+" charges à portée.";
+  let h='<div class="pf"><div class="cap">La prochaine fois</div>'+(acq.length||por.length?'<p class="ct">'+ct+'</p>':'');
   if(acq.length){
     h+='<div class="acq">'+acq.map(q=>{
       const dep=(q.t==="up"&&q.de>0&&q.de<q.a)?q.de:null;
@@ -3678,7 +3732,7 @@ function propHTML(prop){
         +'<span class="nm">'+esc(q.n)+'</span><span class="v">→ <b>'+esc(kg(q.a).replace(" kg",""))+'</b> kg</span></div>').join("")+'</div>';
   }
   if(vr)h+='<div class="var"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4v6h6M20 20v-6h-6"/><path d="M20 10A8 8 0 0 0 6 6L4 10M4 14a8 8 0 0 0 14 4l2-4"/></svg>'+esc(vr.lbl)+'</div>';
-  return h+'</div>';
+  return h+plt+'</div>';
 }
 function pickCheer(pool,seed){return pool[hashStr(String(seed))%pool.length]}
 function endMessage(tl,prs,newBadges,perfect){
@@ -4035,9 +4089,14 @@ function variantDialog(p,ti,xi){
   const muscOpts=Object.keys(MUS).filter(m=>EX.some(z=>z.prim.indexOf(m)>=0));
   let sheet=null; // "eq" | "lvl" | "musc" | null
   function baseOk(z){return z.id!==e.id&&(p.cfg.excl||[]).indexOf(z.id)<0&&taken.indexOf(z.id)<0&&!spared(z,p.cfg.pain)}
+  /* 7.2A : ce que les zones a menager masquent parmi ce qui correspondrait
+     a la recherche et aux filtres. Pendant de Remplacement.masquesParZones. */
+  let showMasked=false;
+  function maskOk(z){return z.id!==e.id&&(p.cfg.excl||[]).indexOf(z.id)<0&&taken.indexOf(z.id)<0&&spared(z,p.cfg.pain)}
   function computeSim(){return variantsOf(e,p.cfg,taken)}
-  function computeList(){
-    let list=EX.filter(baseOk);
+  function computeMasked(){return (p.cfg.pain||[]).length?computeList(maskOk):[]}
+  function computeList(ok){
+    let list=EX.filter(ok||baseOk);
     if(filt.eqSet.size&&filt.eqSet.size<eqKeys.length) list=list.filter(z=>filt.eqSet.has(z.eq));
     if(filt.lvl!=null) list=list.filter(z=>z.lvl===filt.lvl);
     if(filt.musc) list=list.filter(z=>z.prim.indexOf(filt.musc)>=0||(z.sec||[]).indexOf(filt.musc)>=0);
@@ -4064,6 +4123,22 @@ function variantDialog(p,ti,xi){
       +'<button type="button" class="vscr-pick" data-vs="'+z.id+'" aria-label="Choisir '+esc(z.n)+'">+</button>'
       +'</div>';
   }
+  /* Masque par une zone : grise, sans bouton, la raison en clair. */
+  function cardMasked(z){
+    const zs=(p.cfg.pain||[]).filter(k=>loadsZone(z,k));
+    const why='Masqué par ta zone à ménager : '+painLabel(zs);
+    return '<div class="vscr-card" style="opacity:.4" aria-disabled="true" title="'+esc(why)+'">'
+      +'<div class="vscr-tx"><b style="color:var(--mut)">'+esc(z.n)+'</b><div class="vscr-tags">'
+        +'<span class="vscr-tag">'+esc(painLabel(zs))+'</span>'
+      +'</div></div></div>';
+  }
+  function maskedHtml(){
+    const m=computeMasked();
+    if(!m.length)return '';
+    return '<div class="vscr-count" id="vmask">'+m.length+' exercice'+(m.length>1?'s masqués':' masqué')
+      +' par tes zones à ménager · <button type="button" id="vmaskbtn" style="background:none;border:0;padding:0;color:inherit;text-decoration:underline;font:inherit;cursor:pointer">'
+      +(showMasked?'Masquer':'Voir')+'</button></div>';
+  }
   function listHtml(){
     if(filt.mode==="sim"){
       const v=computeSim();
@@ -4083,6 +4158,8 @@ function variantDialog(p,ti,xi){
     }else{
       html='<div class="vscr-grp">'+v.length+' exercice'+(v.length>1?"s":"")+'</div>'+v.map(card).join("");
     }
+    if(showMasked){const m=computeMasked();
+      if(m.length)html+='<div class="vscr-grp">Masqués par tes zones à ménager</div>'+m.map(cardMasked).join("")}
     return html;
   }
   function sheetHtml(){
@@ -4137,7 +4214,8 @@ function variantDialog(p,ti,xi){
           +'<button type="button" class="vscr-fbtn'+(filt.musc?" on":"")+'" id="vfmusc">'+(filt.musc?esc(MUS[filt.musc]):"Muscle")+'</button>'
           +'<button type="button" class="vscr-fbtn clear" id="vfclear">Effacer</button>'
         +'</div>'
-        +'<div class="vscr-count">'+esc(eqSummary())+'</div>')
+        +'<div class="vscr-count">'+esc(eqSummary())+'</div>'
+        +'<div id="vmaskwrap">'+maskedHtml()+'</div>')
       +'<div class="vscr-list" id="vlist">'+listHtml()+'</div>'
       +(sheet?'<div class="vscr-sheetwrap"><div class="vscr-veil" id="vsveil"></div>'
         +'<div class="vscr-sheet"><div class="vscr-grab"></div>'+sheetHtml()+'</div></div>':'');
@@ -4161,6 +4239,7 @@ function variantDialog(p,ti,xi){
         if(el){el.focus();el.selectionStart=el.selectionEnd=el.value.length}
         return}
       ov.querySelector("#vlist").innerHTML=listHtml();
+      const mw=ov.querySelector("#vmaskwrap");if(mw){mw.innerHTML=maskedHtml();wireMask()}
       ov.querySelectorAll("[data-vmode]").forEach(b=>{
         const n=b.dataset.vmode==="sim"?computeSim().length:computeList().length;
         b.textContent=(b.dataset.vmode==="sim"?"Similaires · ":"Bibliothèque · ")+n});
@@ -4173,6 +4252,11 @@ function variantDialog(p,ti,xi){
     const veil=ov.querySelector("#vsveil");if(veil)veil.onclick=()=>{sheet=null;render2()};
     wireList();
     wireSheet();
+    wireMask();
+  }
+  function wireMask(){
+    const b=ov.querySelector("#vmaskbtn");
+    if(b)b.onclick=()=>{showMasked=!showMasked;render2()};
   }
   function wireList(){
     ov.querySelectorAll("[data-vs]").forEach(btn=>btn.onclick=()=>{
@@ -5129,6 +5213,10 @@ function renderWiz(p){
         +'<p>'+esc(noms.join(" · "))+'</p></div>';
     });
     if(cf.length)cf.forEach(x=>{h+='<div class="alert w"><b>'+esc(x.t)+'</b>'+esc(x.d)+'</div>'});
+    /* 9A (26/09) : les bisets se découvrent ici, niveau 2 et plus, séance de plus de 60 min. */
+    if((c.lvl||1)>=2&&bisetsDureeOk(c.dur)&&!c.biset)
+      h+='<div class="wzbis"><p>Les bisets enchaînent deux exercices opposés, sans repos entre les deux : même travail, séance plus courte.</p>'
+        +'<button type="button" class="btn g sm" id="wzbis">Activer les bisets</button></div>';
     h+='<div class="infobox" style="margin-top:12px"><span class="ibico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></span>'
       +'<span class="ibtx">Tu pourras remplacer n\'importe quel exercice, écarter une zone ou changer le format d\'une séance à tout moment — rien n\'est figé.</span></div>';
     /* L'apparence se choisit ici plutot que dans un chapitre a elle : c'est
@@ -5206,7 +5294,8 @@ function renderWiz(p){
   /* Memes champs que l'onglet Nutrition, meme regle : un poids saisi est
      aussi un releve date, sinon la courbe de suivi demarre vide. */
   q("[data-b]").forEach(i=>i.onchange=()=>{
-    const wb=body(p);wb[i.dataset.b]=i.value;
+    const wb=body(p);/* v1.9.5 valeurRetenue */if(["age","ht","wt"].includes(i.dataset.b)&&String(i.value).trim()===""&&wb[i.dataset.b]!=null&&wb[i.dataset.b]!==""){i.value=wb[i.dataset.b];return}
+    wb[i.dataset.b]=i.value;
     if(i.dataset.b==="wt"){
       const w=parseFloat(i.value);
       if(w>0){if(!p.blog)p.blog=[];
@@ -5251,6 +5340,8 @@ function renderWiz(p){
     WIZ=Math.min(WSTEPS.length,WIZ+1);WIZSPLIT=false;renderWiz(p)};
   const pv=document.getElementById("wprev");if(pv)pv.onclick=()=>{WIZ=Math.max(0,WIZ-1);WIZSPLIT=false;renderWiz(p)};
   const b2=document.getElementById("wback2");if(b2)b2.onclick=()=>{WIZ=0;WIZSPLIT=false;renderWiz(p)};
+  const wzb=document.getElementById("wzbis");if(wzb)wzb.onclick=()=>{
+    p.cfg.biset=true;p.prog=generate(p.cfg);saveP();toast("Bisets activés — programme recalculé");renderWiz(p)};
   APP.querySelectorAll("[data-wpal]").forEach(b=>b.onclick=()=>{
     p.set.pal=b.dataset.wpal;saveP();applyPal(p);renderWiz(p)});
   const gn=document.getElementById("wgen");if(gn)gn.onclick=()=>{
@@ -6407,6 +6498,14 @@ const MOODS=[
   {k:"tendu",e:"😤",n:"Tendu",ds:0,ck:0.95,
    t:"Personne ne pense à autre chose sous une série difficile. C'est ce que tu viens chercher — la technique passe quand même avant la charge."}
 ];
+/* Arbitrage 1A (26/09) : pictos au trait, couleur de l'état, au lieu des emojis. */
+const MOOD_SVG={
+ feu:'<path d="M12 3c1 3.2 4.5 5 4.5 9.2A4.5 4.5 0 0 1 12 17a4.5 4.5 0 0 1-4.5-4.8C7.5 9.8 9.5 8.6 10 6c1.2 1.1 1.8 2.4 2 3.6"/><path d="M9 21h6"/>',
+ bien:'<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
+ moyen:'<path d="M7 18h10.5a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 7.3 9.6 4.2 4.2 0 0 0 7 18z"/>',
+ fatigue:'<path d="M19 14.5A8 8 0 0 1 9.5 5a8 8 0 1 0 9.5 9.5z"/>',
+ tendu:'<path d="M13 2 5 13.5h6L10 22l8-11.5h-6z"/>'};
+function moodIco(k){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(MOOD_SVG[k]||"")+'</svg>'}
 function moodOf(k){return MOODS.find(m=>m.k===k)||MOODS[1]}
 /* Zones proposees. Ce sont des schemas moteurs, pas des noms de muscles :
    le tirage vient du meme moteur que l'application entiere. */
@@ -6502,7 +6601,7 @@ function freeStep(p,st){
           +'Les progrès se font pendant le repos, pas pendant la séance. Si tu la lances quand même, allège les charges et raccourcis le format.</div>':'')
         +'<span class="fy-lbl2">Comment tu te sens ?</span>'
         +'<div class="moodrow">'+MOODS.map(m=>'<button type="button" class="moodc'
-          +(st.mood===m.k?" on":"")+'" data-fmd="'+m.k+'"><i>'+m.e+'</i><b>'+esc(m.n)+'</b></button>').join("")+'</div>'
+          +(st.mood===m.k?" on":"")+'" data-fmd="'+m.k+'"><i>'+moodIco(m.k)+'</i><b>'+esc(m.n)+'</b></button>').join("")+'</div>'
         +'<p class="moodtx">L\'humeur ajuste le <b>volume et l\'intensité</b>, pas le contenu. '
         +esc(moodOf(st.mood).n.toLowerCase()==="fatigué"?"Fatigué, tu auras la même séance en plus court et moins chargé.":moodOf(st.mood).t)+'</p>'
         +'<span class="fy-lbl2">Combien de temps ?</span>'
@@ -6913,6 +7012,9 @@ function renderSession(p,s,ti,pg){
       +'<p class="leg">Serviette et gourde valent pour toutes les séances ; le reste dépend du matériel du jour.</p>'
       +'</div></div>';
   }
+  /* 2A : l'exercice en cours = le premier du plan qui a encore une série, séance lancée. */
+  const XCUR=(STARTED[ti+"_"+today()]||(t0.done+t0.bonus)>0)?(plan.items.find(y=>{
+    const all=y.allSets||y.sets;for(let i=0;i<all;i++)if(!G("chk_"+sKey(p,s.sid,y.id,i),false))return true;return false})||{}).id:null;
   order.forEach((o,pos)=>{
     const x=o.x,xi=o.xi;
     const e=byId(x.id);if(!e)return;
@@ -6932,7 +7034,7 @@ function renderSession(p,s,ti,pg){
     const bsr=bsRole(plan.items,xi);
     if(bsr&&bsr.role==="A"){const eb=byId(plan.items[bsr.j].id);
       h+='<div class="bshd"><b>Biset</b><span>'+esc(e.n)+' puis '+esc(eb?eb.n:"")+', sans repos entre les deux. Repos à la fin du tour.</span></div>'}
-    h+='<div class="exo'+(coll?" coll":"")+(xdone?" done":"")+(x.inPlan?"":(x.spared?" spared":" bonus"))+'">'
+    h+='<div class="exo'+(coll?" coll":"")+(xdone?" done":"")+(x.id===XCUR?" cur":"")+(x.inPlan?"":(x.spared?" spared":" bonus"))+'">'
       +'<div class="eh">'
       /* Ligne repliee : vignette + resume chiffre, comme la planche — on
          reconnait l'exercice et on sait ce qu'il demande sans le deplier.
@@ -6964,6 +7066,7 @@ function renderSession(p,s,ti,pg){
       +'<span data-cc="'+xi+'" class="chip'+loadTxt(p,x,e,ov,ch).c+'">'+loadTxt(p,x,e,ov,ch).t+'</span>'
       +'<span class="chip">'+x.rpe+'</span><span class="chip">repos <b>'+mmss(smartRest(p,s,x,e))+'</b></span>'
       +(x.forced?'<span class="chip" style="border:1px solid var(--brand2);color:var(--brand2)">imposé</span>':'')
+      +(x.inPlan&&pushEpauleOk(e,pain)?'<span class="chip" style="border:1px solid var(--mut);color:var(--mut)">adapté à ton épaule</span>':'')
       /* Le "i" se range au bout de la ligne des tags, cale a droite : c'est
          cette ligne qu'il explique, et il n'encombre plus le selecteur. */
       +((ch==null||isNaN(ch))?'<button class="ibtn end" data-inf="c'+xi+'" aria-label="D\'où vient cette charge" title="D\'où vient cette charge">i</button>':'')
@@ -7421,8 +7524,8 @@ function renderSession(p,s,ti,pg){
         +'</div></details>';
     }
     else if(kc!=null) hh+='<p class="mut">Ordre de grandeur, pas une mesure : ce type d\'estimation a une marge de 20 à 30 % d\'une personne à l\'autre.</p>';
-    if(prop.length) hh+=propHTML(prop);
-    hh+=plateauHTML(p,rec);
+    /* 3B : le plateau vit dans « La prochaine fois », même seul. */
+    hh+=propHTML(prop,plateauHTML(p,rec));
     mdOpen({title:"Séance terminée",msg:"",html:hh,ok:"Voir dans Suivi",cancel:"Fermer",cb:function(v){if(v){SECT="hist";renderMain(p)}}});
     renderMain(p)};
 }
@@ -7538,7 +7641,14 @@ const FICO={
   whey:'<path d="M7 8h10l-.8 12.1A2 2 0 0 1 14.2 22H9.8a2 2 0 0 1-2-1.9L7 8z"/><path d="M6.5 8 8 4.4A2 2 0 0 1 9.9 3h4.2a2 2 0 0 1 1.9 1.4L17.5 8z"/><path d="M8.6 13h6.8"/>',
   cereale:'<path d="M12 21V9"/><path d="M12 12c0-3-2-5-5-5 0 3 2 5 5 5zM12 12c0-3 2-5 5-5 0 3-2 5-5 5zM12 18c0-3-2-5-5-5 0 3 2 5 5 5zM12 18c0-3 2-5 5-5 0 3-2 5-5 5z"/>',
   fruit:'<path d="M12 8c-1-2.5-3.2-3.6-5.2-2.8C4.3 6.2 3.5 9.6 5 13.5c1.2 3.1 3.4 5.6 5 5.6M12 8c1-2.5 3.2-3.6 5.2-2.8 2.5 1 3.3 4.4 1.8 8.3-1.2 3.1-3.4 5.6-5 5.6"/><path d="M12 8V4.5M12 4.5c1.6 0 2.6-1 2.8-2.3-1.6-.2-2.6.7-2.8 2.3z"/>',
-  eau:'<path d="M12 3s6 6.4 6 11a6 6 0 0 1-12 0c0-4.6 6-11 6-11z"/><path d="M9 14.5a3 3 0 0 0 3 3"/>'
+  eau:'<path d="M12 3s6 6.4 6 11a6 6 0 0 1-12 0c0-4.6 6-11 6-11z"/><path d="M9 14.5a3 3 0 0 0 3 3"/>',
+  /* Ajouts du 26/09 : grille des 30 g en familles, au meme trait. */
+  barre:'<path d="M5.5 8h13A1.5 1.5 0 0 1 20 9.5v5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 14.5v-5A1.5 1.5 0 0 1 5.5 8z"/><path d="M4 9 2.5 10.5 4 12l-1.5 1.5L4 15M20 9l1.5 1.5L20 12l1.5 1.5L20 15"/><path d="M8 12h8"/>',
+  bouteille:'<path d="M10 5v2.2L7.8 9.6A3 3 0 0 0 7 11.6V20a1.5 1.5 0 0 0 1.5 1.5h7A1.5 1.5 0 0 0 17 20v-8.4a3 3 0 0 0-.8-2L14 7.2V5"/><path d="M9.5 5h5V3a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 0-.5.5v2z"/><path d="M7 13.5h10M7 17.5h10"/>',
+  pain:'<path d="M6 20v-8.5A4.4 4.4 0 0 1 4 7.8C4 5.2 7.6 3 12 3s8 2.2 8 4.8a4.4 4.4 0 0 1-2 3.7V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z"/>',
+  noix:'<path d="M17.4 4.7c1.2 4.5.5 8.9-1.8 12.2a5.5 5.5 0 0 1-9-6.3c2.3-3.3 6.2-5.4 10.8-5.9z"/><path d="M14.9 8.4c-2.7 1.3-4.8 3.5-6.2 6.7"/>',
+  fromage:'<path d="M3 11 16 4.5c2.8 1 4.8 3.4 5 6.5v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-7z"/><path d="M3 11h18"/><circle cx="8" cy="14.8" r="1.4"/><circle cx="14.6" cy="14.2" r="1"/><circle cx="17.4" cy="16.6" r=".8"/>',
+  crevette:'<path d="M16 5.1A8 8 0 1 0 12 20"/><path d="M15.2 9.2A3.8 3.8 0 1 0 12 15.8"/><path d="M16 5.1l-.8 4.1M12 15.8V20"/><path d="M4 12h4.2M6.3 6.3l3 3M6.3 17.7l3-3"/><path d="M12 17.9l3.4-2.4v4.8L12 17.9z"/><path d="M16 5.1c1.9-1.3 3.9-1.6 6-1.1M15.6 7.1c1.9-.1 3.6.5 5 1.7"/>'
 };
 function fIco(k,cls){
   return '<svg class="fico '+(cls||"")+'" width="24" height="24" viewBox="0 0 24 24" fill="none" '
@@ -7549,13 +7659,39 @@ function fIco(k,cls){
    volume, pas une prescription : on veut que l'utilisateur sache a quoi
    ressemble sa cible dans une assiette. */
 const PRO30=[
-  ["volaille","Blanc de poulet","130 g"],["viande","Bœuf maigre","150 g"],
-  ["poisson","Cabillaud","150 g"],["poisson","Thon","120 g"],
-  ["oeuf","Œufs entiers","5"],["laitage","Skyr / fromage blanc 0 %","300 g"],
-  ["tofu","Tofu ferme","200 g"],["legumineuse","Lentilles cuites","250 g"],
-  ["whey","Whey","1 dose (30 g)"],["volaille","Dinde","140 g"],
-  ["poisson","Sardines égouttées","130 g"],["legumineuse","Pois chiches cuits","350 g"]
+  {t:"Viandes et poissons",a:[
+    ["volaille","Blanc de poulet","130 g"],["volaille","Dinde","140 g"],
+    ["viande","Bœuf maigre","150 g"],["viande","Steak haché 5 %","150 g"],
+    ["viande","Jambon blanc (≈ 4 tranches)","150 g"],["viande","Filet de porc","140 g"],
+    ["poisson","Cabillaud","150 g"],["poisson","Saumon","150 g"],
+    ["poisson","Thon","120 g"],["poisson","Sardines égouttées","130 g"],
+    ["crevette","Crevettes cuites","130 g"]]},
+  {t:"Œufs et laitiers",a:[
+    ["oeuf","Œufs entiers","5"],["oeuf","Blancs d'œufs","250 g"],
+    ["laitage","Skyr / fromage blanc 0 %","300 g"],["laitage","Cottage cheese","270 g"],
+    ["laitage","Yaourt grec 0 %","300 g"],["fromage","Emmental","110 g"],
+    ["bouteille","Lait demi-écrémé","90 cl"]]},
+  {t:"Produits protéinés",a:[
+    ["whey","Whey","1 dose (30 g)"],["bouteille","Yaourt à boire protéiné","1 à 1½"],
+    ["laitage","Crème dessert protéinée","1½"],["barre","Barre protéinée","1½ à 2"],
+    ["cereale","Céréales protéinées","100 g"],["pain","Pain protéiné","150 g"]]},
+  {t:"Végétal",a:[
+    ["tofu","Tofu ferme","200 g"],["tofu","Tempeh","160 g"],
+    ["tofu","Seitan","120 g"],["legumineuse","Edamame","270 g"],
+    ["legumineuse","Lentilles cuites","250 g"],["legumineuse","Pois chiches cuits","350 g"],
+    ["legumineuse","Haricots rouges cuits","350 g"]]},
+  {t:"Pour comparer : céréales et oléagineux",a:[
+    ["cereale","Flocons d'avoine","230 g"],["pain","Pain complet","320 g"],
+    ["cereale","Quinoa cuit","680 g"],["cereale","Pâtes complètes cuites","540 g"],
+    ["noix","Beurre de cacahuète","120 g"],["noix","Amandes","140 g"]]}
 ];
+/* Familles ouvertes de la grille (la premiere au depart) : gardees d'un
+   rendu a l'autre, le toggle des <details> ne remonte pas, d'ou la capture. */
+const PFAM={0:true};
+document.addEventListener("toggle",e=>{
+  const d=e.target;
+  if(d&&d.classList&&d.classList.contains("pfam"))PFAM[d.dataset.fam]=d.open;
+},true);
 /* Journee type : une illustration d'assemblage, pas un menu a suivre. Trois
    niveaux selon la cible proteique par repas, pour que l'exemple reste
    credible a 20 g comme a 45 g. */
@@ -7583,7 +7719,7 @@ const NTIPS=[
 
 function renderNutri(p,pg){
   const c=p.cfg,b=body(p);
-  const NTABS=[["rep","Repères"],["jour","Journée type"],["cons","Conseils"]];
+  const NTABS=[["rep","Mes chiffres"],["jour","Journée type"],["cons","Conseils"]];
   if(!NTABS.some(t=>t[0]===NUTAB))NUTAB="rep";
   const NT=NUTAB;
   let h='<div class="page on"><div class="secrule nut"></div><h2 class="sc">Nutrition</h2>'
@@ -7606,7 +7742,7 @@ function renderNutri(p,pg){
    +'</div>';
 
   if(!bodyOK(b)){
-    h+='<div class="empty">Renseigne au moins le poids, la taille et l\'âge dans l\'onglet « Repères » pour obtenir tes repères.</div></div></div>';
+    h+='<div class="empty">Renseigne au moins le poids, la taille et l\'âge dans l\'onglet « Mes chiffres » pour obtenir tes repères.</div></div></div>';
     pg.innerHTML=h;bindBody(p,pg);wireTabs(pg,"data-nutab",v=>{NUTAB=v;renderMain(p)});return;
   }
   const n=nutri(p);
@@ -7703,9 +7839,13 @@ function renderNutri(p,pg){
   const blocs=Math.round(n.pro/30*10)/10;
   if(NT==="jour")h+='<div class="card"><h4>Environ 30 g de protéines</h4>'
    +'<p class="mut" style="margin-top:-4px">Ta cible du jour représente <b class="macg">'+String(blocs).replace(".",",")+'</b> de ces portions.</p>'
-   +'<div class="pgrid">'
-   +PRO30.map(f=>'<div class="pcell">'+fIco(f[0])+'<b>'+esc(f[2])+'</b><span>'+esc(f[1])+'</span></div>').join("")
-   +'</div>'
+   +PRO30.map((g,i)=>'<details class="pfam" data-fam="'+i+'"'+(PFAM[i]?" open":"")+'><summary>'
+     +'<span class="pfamt">'+esc(g.t)+'</span>'
+     +'<span class="pfamc"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></summary>'
+     +'<div class="pgrid">'
+     +g.a.map(f=>'<div class="pcell">'+fIco(f[0])+'<b>'+esc(f[2])+'</b><span>'+esc(f[1])+'</span></div>').join("")
+     +'</div></details>').join("")
+   +'<p class="mut">Ces aliments comptent, mais pas comme source principale : 120 g de beurre de cacahuète, c\'est environ 700 kcal. Produits protéinés : la teneur varie selon la marque, lis l\'étiquette.</p>'
    +'<p class="mut">Les valeurs sont arrondies : une source animale apporte l\'essentiel des acides aminés en une portion, une source végétale demande de varier dans la journée.</p></div>';
 
   const tips={
@@ -7756,6 +7896,7 @@ function renderNutri(p,pg){
 function bindBody(p,pg){
   const b=body(p);
   pg.querySelectorAll("[data-b]").forEach(i=>i.onchange=()=>{
+    if(["age","ht","wt"].includes(i.dataset.b)&&String(i.value).trim()===""&&b[i.dataset.b]!=null&&b[i.dataset.b]!==""){i.value=b[i.dataset.b];return}
     b[i.dataset.b]=i.value;
     /* un poids saisi ici est aussi un relevé daté, visible dans le Suivi */
     if(i.dataset.b==="wt"){
@@ -9006,6 +9147,7 @@ function renderProfil(p,pg){
   /* Le champ d'age de l'encart Nutrition : un rendu complet, pour que la barre
      du bas retrouve l'onglet des la saisie. */
   pg.querySelectorAll('[data-b]').forEach(i=>i.onchange=()=>{
+    if(["age","ht","wt"].includes(i.dataset.b)&&String(i.value).trim()===""&&body(p)[i.dataset.b]!=null&&body(p)[i.dataset.b]!==""){i.value=body(p)[i.dataset.b];return}
     body(p)[i.dataset.b]=i.value;saveP();renderMain(p)});
   const gs=document.getElementById("goshop");
   if(gs)gs.onclick=()=>{SECT="shop";SHOPGO=null;renderMain(p);window.scrollTo(0,0)};
