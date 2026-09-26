@@ -391,6 +391,80 @@ animation:exdIn .3s cubic-bezier(.3,1.2,.4,1) both}
 .exdone .exdt span{display:block;font-size:.68rem;color:var(--mut);margin-top:2px}
 /* Le bandeau d'encouragement de Suivi : une phrase, tiree de ce que les
    donnees disent reellement — jamais une formule generique. */
+/* v1.9.15 planche 22 */
+/* Bandeau de Suivi (3.1C) : fond carte, filet acier 26 %, liseré gauche de
+   3 px à l'accent — la seule carte à liseré de l'app. Record : pr. */
+.bndx{position:relative;display:flex;align-items:center;gap:11px;min-height:56px;margin:0 0 14px;
+padding:10px 13px 10px 15px;border-radius:12px;background:var(--sec-hist-card);
+border:1px solid rgba(74,124,168,.26);overflow:hidden;box-sizing:border-box}
+.bndx.solo{min-height:48px}
+.bndx::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--sec-hist-ac)}
+.bndx.rec::before{background:var(--pr)}
+.bndx .bpi{flex:0 0 32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+background:rgba(74,124,168,.14);color:var(--sec-hist-ac)}
+.bndx.rec .bpi{background:rgba(201,106,78,.14);color:var(--pr)}
+.bndx .btx{flex:1;min-width:0}
+.bndx .btx b{display:block;font-size:.8125rem;font-weight:700;color:var(--txt);line-height:1.3}
+.bndx .btx span{font-size:.75rem;color:var(--mut);line-height:1.35;display:-webkit-box;
+-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.bndx .bch{flex:0 0 auto;text-align:right;white-space:nowrap}
+.bndx .bch b{display:block;font-family:var(--mono);font-size:1.375rem;font-weight:600;color:var(--sec-hist-ac);line-height:1.1}
+.bndx.rec .bch b{color:var(--pr)}
+.bndx .bch i{font-style:normal;font-size:.6875rem;color:var(--mut)}
+@media (prefers-reduced-motion:no-preference){.bndx{animation:bndIn .22s ease-out both}}
+@keyframes bndIn{from{opacity:0}to{opacity:1}}
+/* Historique par cycle (1A). */
+.cyc{background:var(--sec-hist-card);border:1px solid var(--line);border-radius:12px;padding:0 12px;margin:0 0 10px}
+.cyc.open{padding-bottom:12px}
+.cyh2{display:flex;align-items:center;gap:11px;width:100%;min-height:52px;background:none;border:0;padding:0;
+color:inherit;font:inherit;text-align:left;cursor:pointer}
+.cyh2 .no{flex:0 0 26px;font-family:var(--mono);font-size:.72rem;font-weight:600;color:var(--mut)}
+.cyh2 .m{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.cyh2 .m b{font-size:.84rem;font-weight:600}
+.cyh2 .m span{font-size:.72rem;color:var(--mut)}
+.cyh2 .q{font-family:var(--mono);font-size:.78rem;white-space:nowrap}
+.chv{flex:0 0 auto;color:var(--mut);transition:transform .2s;display:inline-flex}
+.open>.cyh2 .chv,.hrow.open>button .chv{transform:rotate(180deg)}
+.hbig{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.hbig b{font-family:var(--mono);font-size:2.125rem;font-weight:600;letter-spacing:-1px;color:var(--txt);line-height:1.05}
+.hbig span{font-size:.8125rem;color:var(--mut)}
+.cycours .cyj{margin:10px 0 8px}
+.rfl{display:flex;align-items:center;gap:6px;padding:5px 0;font-size:.78rem}
+.rfl .n{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rfl .a,.rfl .s{font-family:var(--mono);color:var(--mut)}
+.rfl .b{font-family:var(--mono);font-weight:600;min-width:44px;text-align:right}
+.hsub{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:10px 0 2px}
+.hrow{border-top:1px solid var(--line)}
+.hrow>button{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;background:none;border:0;padding:0;
+color:inherit;font:inherit;text-align:left;cursor:pointer}
+.hrow .d{flex:0 0 92px;font-family:var(--mono);font-size:.72rem;color:var(--mut);white-space:nowrap;overflow:hidden}
+.hrow .k{flex:1;min-width:0;font-weight:600;font-size:.84rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hrow .s{font-family:var(--mono);font-size:.74rem;color:var(--mut)}
+.hrow .det{padding:0 0 8px}
+.hmore{display:block;width:100%;min-height:44px;border:0;border-top:1px solid var(--line);background:none;
+color:var(--sec-hist-ac);font:inherit;font-weight:600;font-size:.76rem;cursor:pointer}
+.hdang{display:block;width:100%;min-height:48px;margin-top:6px;border:1px solid var(--dang);border-radius:12px;
+background:none;color:var(--dang);font:inherit;font-weight:700;font-size:.85rem;cursor:pointer}
+.hgt{display:flex;align-items:center;gap:8px;margin:18px 0 8px;font-size:.62rem;font-weight:700;letter-spacing:.08em;
+text-transform:uppercase;color:var(--mut)}
+.hgt::after{content:"";flex:1;height:1px;background:var(--line)}
+/* Poids (2C). */
+.phero{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.phero .volbig{color:var(--sec-hist-ac)}
+.phero .pe{margin-left:auto;font-size:.74rem;color:var(--mut)}
+.prow{display:flex;align-items:flex-end;gap:8px}
+.prow .fld{flex:1;margin:0;min-width:0}
+.prow .mini{min-height:46px}
+details.msr{border-top:1px solid var(--line);margin-top:10px}
+details.msr summary{list-style:none;display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;
+font-size:.76rem;font-weight:600;color:var(--txt)}
+details.msr summary::-webkit-details-marker{display:none}
+details.msr summary i{font-style:normal;font-weight:400;font-size:.7rem;color:var(--mut)}
+details.msr summary .chv{margin-left:auto}
+details.msr[open] summary .chv{transform:rotate(180deg)}
+.ldang{display:block;min-height:44px;background:none;border:0;padding:0;color:var(--dang);font:inherit;
+font-weight:600;font-size:.76rem;cursor:pointer}
+.rbig{font-family:var(--mono);font-size:1.375rem;font-weight:600;color:var(--brand)}
 .cheerb{display:flex;align-items:flex-start;gap:10px;margin:0 0 14px;padding:12px 13px;
 border-radius:13px;background:var(--sec-hist-card);border:1px solid rgba(74,124,168,.26)}
 .cheerb .chi{flex:0 0 auto;display:flex;color:var(--sec-hist-ac);margin-top:1px}
@@ -2049,6 +2123,77 @@ color:var(--ok);background:#060B14;border:1px solid var(--ok);border-radius:10px
 #pg.casc .tpane>:nth-child(8){animation-delay:.28s}#pg.casc .tpane>:nth-child(n+9){animation-delay:.32s}
 .volbig,.medbig{font-variant-numeric:tabular-nums}
 @media (prefers-reduced-motion:reduce){.rail.anim .rin{animation:none}.motser{animation:none}#pg.casc .tpane>.card,#pg.casc .tpane>.medhero{animation:none}}
+/* v1.9.13 planche 21 */
+/* 2.1 : un seul rail d'onglets. Actif : filet et icône à l'accent de la
+   section, fond à 9 %, texte txt. Sans débordement : ni fondu ni amorce. */
+.rail button.on svg{color:var(--brand)}
+body[data-sect="hist"] .rail button.on{border-color:var(--sec-hist-ac);background:rgba(74,124,168,.09)}
+body[data-sect="hist"] .rail button.on svg{color:var(--sec-hist-ac)}
+body[data-sect="nut"] .rail button.on{border-color:var(--sec-nut-ac);background:rgba(111,160,122,.09)}
+body[data-sect="nut"] .rail button.on svg{color:var(--sec-nut-ac)}
+.rail.fit{-webkit-mask-image:none;mask-image:none}
+/* v1.9.14 rail collé */
+/* Le rail collé comme la bande des jours : même top, même z-index, fond
+   opaque de la section sur toute la largeur de la page, pas de filet. Les
+   marges gardent l'écart d'avant (2 px dessus, 10 px dessous). */
+.railstk{position:sticky;top:env(safe-area-inset-top,0px);z-index:22;background:var(--bg);
+margin:-4px -14px 4px;padding:6px 14px}
+.railstk .rail{margin:0}
+body[data-sect="hist"] .railstk{background:var(--sec-hist-bg)}
+body[data-sect="nut"] .railstk{background:var(--sec-nut-bg)}
+body[data-sect="prof"] .railstk{background:var(--sec-prof-bg,var(--bg))}
+.rail.fit .rin{padding-right:0}
+/* 1B : blocs ajustés au contenu. */
+.wcard{padding:8px 11px;gap:0}
+.wcard.mus{padding:8px}
+.wcard.mus .wlbl{white-space:nowrap;margin-bottom:6px}
+.wcard .mp svg{width:32px}
+.wcard.mus .wleg{text-align:left;align-self:stretch;margin-top:auto;padding-top:6px}
+.wcard.load .wlbl{min-height:24px;align-items:center;margin:0 0 6px}
+.wcard.load .wlbl .wmat{margin-left:auto;font-family:var(--sans);font-size:11px;font-weight:400;
+text-transform:none;letter-spacing:0;color:var(--mut);overflow:hidden;text-overflow:ellipsis;min-width:0}
+.wcard.load .wlbl .wmat + .rm,.wcard.load .wlbl .wmat + .wauto{margin-left:6px}
+.wcard.load .wlbl .wauto{min-height:24px;height:24px}
+.wcard .bbscene{margin-bottom:6px}
+.wcard.load .cbar.stepper{margin-top:auto}
+.wcard.load input.chbig{width:64px}
+.wcard .wleg.num{white-space:normal;margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+/* Remarque A : sans valeur conseillée, un signe sobre, jamais un blanc. */
+.wnoval{display:flex;flex-direction:column;align-items:center;gap:4px;margin:0 0 6px;
+font-size:11px;line-height:1.3;color:var(--mut);text-align:center}
+.wnoval svg{width:20px;height:20px;stroke:#5B636E;fill:none;stroke-width:1.3;stroke-linecap:round}
+.wdep{display:flex;align-items:baseline;justify-content:center;gap:4px;margin:0 0 6px;white-space:nowrap}
+.wdep b{font-family:var(--mono);font-size:16px;font-weight:400;color:var(--txt)}
+.wdep span{font-size:11px;color:var(--mut)}
+.wcard.load .wlest{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:auto;padding-top:6px}
+.wcard.load .wlest .lestin{width:62px;min-height:44px;background:var(--sf2);border:1px solid var(--line);border-radius:8px;
+padding:6px 8px;color:var(--txt);font-family:var(--mono);font-size:16px}
+.wcard.load .wlest span{font-size:.66rem;color:var(--mut)}
+/* 2.2 : une étiquette, la variation à droite du titre, milliers serrés. */
+.card h4.h4r{display:flex;align-items:baseline;gap:8px}
+.card h4.h4r .dr{margin-left:auto;font-family:var(--mono);font-size:.74rem;text-transform:none;letter-spacing:0;
+color:var(--mut);font-weight:400;white-space:nowrap}
+body[data-sect="hist"] .volbig{color:var(--sec-hist-ac)}
+.volbig i{margin-left:6px;font-family:var(--sans);font-weight:400}
+.volbig .fin{font-size:12px}
+/* 2.3 : le pli de fin (méthode). */
+details.pli{padding:0}
+details.pli summary{list-style:none;display:flex;align-items:center;min-height:44px;padding:0 12px;
+font-size:.76rem;font-weight:600;color:var(--txt);cursor:pointer}
+details.pli summary::-webkit-details-marker{display:none}
+details.pli summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--mut);
+border-bottom:2px solid var(--mut);transform:rotate(45deg);transition:transform .2s}
+details.pli[open] summary::after{transform:rotate(-135deg)}
+details.pli .plic{padding:2px 12px 14px}
+details.pli .plit{font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--mut);margin:0 0 4px}
+details.pli .plic p{margin:0;font-size:.76rem;line-height:1.45;color:var(--txt)}
+/* B : les barres des séries par muscle montent, une fois par ouverture. */
+@keyframes msgrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+#pg.casc .mstrack .msbar{transform-origin:left center;animation:msgrow .4s ease-out both}
+@media (prefers-reduced-motion:reduce){#pg.casc .mstrack .msbar{animation:none}}
+/* 4.2 : l'état du programme en texte principal. */
+.pgres{margin:0;font-size:.78rem;color:var(--txt);line-height:1.4}
+.pgdate{margin:2px 0 8px;font-size:.74rem;color:var(--mut)}
 </style>
 </head>
 <body>
@@ -2066,7 +2211,7 @@ color:var(--ok);background:#060B14;border:1px solid var(--ok);border-radius:10px
 <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M10.7 18.6h2.6"/><path d="M19.5 7.2a8 8 0 0 1 .3 5.6"/><path d="M4.5 7.2a8 8 0 0 0-.3 5.6"/></svg>
 <b>Forge se tient à la verticale</b>
 <span>L'écran est pensé en hauteur : séries, charges et disques s'y lisent d'un coup. Remets le téléphone droit.</span>
-<em>Tu peux autoriser le paysage dans Profil › Séance.</em>
+<em>Tu peux autoriser le paysage dans Profil › Programme.</em>
 </div></div>
 <div id="focus"></div>
 <!-- Feuille de saisie d'une valeur de serie : un tap sur une pastille
@@ -2150,7 +2295,7 @@ html.ready #boot{opacity:0;pointer-events:none}
    FORGE — générateur + suivi de programme, multi-profils, hors ligne
    Toutes les données restent dans le localStorage de l'appareil.
    ================================================================ */
-const VER="1.9.12";
+const VER="1.9.15";
 const K="fg_";
 function G(k,d){try{const v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function S(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
@@ -2982,7 +3127,8 @@ function cycleCompte(c){const r=cycleRealisation(c);return r!=null&&r>=CYCLE_SEU
 function cycleOuvrir(p,semaines,d){
   const duree=CYCLE_DUREES.indexOf(semaines)>=0?semaines:CYCLE_DEFAUT;
   const no=((p.cycles&&p.cycles[0]&&p.cycles[0].no)||0)+1;
-  p.cycle={no:no,debut:d||today(),semaines:duree,goal:p.cfg.goal,rotation:p.cfg.rot||0};
+  /* v1.9.15 : la photo des charges de référence, comme iOS (rmDebut). */
+  p.cycle={no:no,debut:d||today(),semaines:duree,goal:p.cfg.goal,rotation:p.cfg.rot||0,rmDebut:cyclePhotoRm(p)};
   return p.cycle;
 }
 /* Solde le cycle et l'archive EN TETE, du plus recent au plus ancien — le meme
@@ -2991,6 +3137,8 @@ function cycleClore(p,d){
   if(!p.cycle) return null;
   const c=p.cycle, j=d||today();
   c.fin=j; c.faites=cycleSeances(p,c,j).length; c.prevues=cyclePrevues(p,c);
+  /* v1.9.15 : les charges de fin, photographiées une fois pour toutes. */
+  if(c.rmFin==null) c.rmFin=cyclePhotoRm(p);
   if(!p.cycles) p.cycles=[];
   p.cycles.unshift(c); p.cycle=null;
   return c;
@@ -3006,6 +3154,18 @@ function cycleClore(p,d){
    Sans cette distinction, un cycle solde retrospectivement — un programme
    commence avant que les cycles existent — affichait « 0 -> 67,5 kg » sur
    chaque mouvement : une progression depuis rien, entierement fausse. */
+/* v1.9.15 (planche 22) : cfg.rm lisibles, en nombres. */
+function cyclePhotoRm(p){const o={};Object.keys((p.cfg&&p.cfg.rm)||{}).forEach(k=>{const v=parseFloat(p.cfg.rm[k]);if(isFinite(v))o[k]=v});return o}
+/* Charges de fin d'un cycle : en cours -> cfg.rm ; clos -> rmFin, sinon
+   rmDebut du cycle suivant, sinon null. JAMAIS cfg.rm du jour pour un clos. */
+function cycleRefsFin(p,c){
+  if(!c.fin) return cyclePhotoRm(p);
+  if(c.rmFin) return c.rmFin;
+  const tous=(p.cycles||[]).concat(p.cycle?[p.cycle]:[]);
+  const suiv=tous.filter(x=>x.debut>c.debut||(x.debut===c.debut&&x.no>c.no))
+    .sort((a,z)=>a.debut<z.debut?-1:(a.debut>z.debut?1:a.no-z.no))[0];
+  return suiv&&suiv.rmDebut?suiv.rmDebut:null;
+}
 function cycleBilan(p,c,d,rmAvant,records){
   const connues=rmAvant!=null;
   const seances=cycleSeances(p,c,d||today());
@@ -3013,16 +3173,18 @@ function cycleBilan(p,c,d,rmAvant,records){
      soulevee au sens du suivi. */
   const tonnage=seances.reduce((t,r)=>t+(r.ex||[]).reduce(
     (u,e)=>u+(parseFloat(e.kg)||0)*(e.done||0),0),0);
-  const apres={};
-  Object.keys(p.cfg.rm||{}).forEach(k=>{const v=parseFloat(p.cfg.rm[k]);if(isFinite(v))apres[k]=v});
+  /* v1.9.15 : un cycle clos se lit sur ce qu'il a stocké. */
+  const apres=cycleRefsFin(p,c)||{};
   const hausses=connues
     ? Object.keys(apres).sort().map(id=>({id:id,avant:(rmAvant||{})[id]||0,apres:apres[id]}))
         .filter(x=>x.apres>x.avant)
     : [];
-  return {cycle:c,faites:seances.length,prevues:cyclePrevues(p,c),
+  const faites=c.fin&&c.faites!=null?c.faites:seances.length;
+  const prevues=c.fin&&c.prevues!=null?c.prevues:cyclePrevues(p,c);
+  return {cycle:c,faites:faites,prevues:prevues,
     tonnage:tonnage,records:records||0,rmAvant:rmAvant||{},rmApres:apres,
     hausses:hausses,connues:connues,
-    realisation:cyclePrevues(p,c)>0?seances.length/cyclePrevues(p,c):null};
+    realisation:prevues>0?faites/prevues:null};
 }
 
 /* ---- Solder un programme commence avant les cycles ----
@@ -5586,7 +5748,7 @@ function renderWiz(p){
     /* L'apparence se choisit ici plutot que dans un chapitre a elle : c'est
        le seul reglage de l'assistant qui ne change rien au programme. */
     h+='<div class="card" style="margin-top:14px"><h4>Ton apparence</h4>'
-      +'<p class="mut">Modifiable à tout moment dans Profil › Séance.</p>'
+      +'<p class="mut">Modifiable à tout moment dans Profil › Toi.</p>'
       +palChips(p,"data-wpal")+'</div>';
   }
 
@@ -5770,11 +5932,57 @@ function watchBars(){
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>measureBars());
   setTimeout(measureBars,120);setTimeout(measureBars,600);
 }
-function subTabs(tabs,cur,attr){
-  return '<div class="stabs" role="tablist" data-tabs="'+attr+'"><i class="stind"></i>'
+/* v1.9.13 (planche 21, 2.1) : un seul rail d'onglets pour Suivi, Nutrition
+   et Profil — puces en filet, icône 13 px, actif à l'accent de la section.
+   L'amorce (glissé de 14 px) joue une fois par ouverture de section, et
+   seulement si le rail dépasse (railFit, après le rendu). */
+const RAIL_ICO={
+  vol:'<svg viewBox="0 0 24 24"><path d="M5 20v-9M12 20V5M19 20v-8"/></svg>',
+  charge:'<svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M5 15l5-5 4 3 6-7"/></svg>',
+  poids:'<svg viewBox="0 0 24 24"><path d="M6 9h12l2 11H4z"/><circle cx="12" cy="5.5" r="2"/></svg>',
+  cal:'<svg viewBox="0 0 24 24"><path d="M12 21a6 6 0 0 0 6-6c0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-2 2-3 4-3 8a6 6 0 0 0 6 6z"/></svg>',
+  med:'<svg viewBox="0 0 24 24"><circle cx="12" cy="15" r="5"/><path d="M8 3l4 7 4-7"/></svg>',
+  prog:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>',
+  rep:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/></svg>',
+  jour:'<svg viewBox="0 0 24 24"><path d="M7 3v18M5 3v5a2 2 0 0 0 4 0V3M17 21V3c-2 1-3 4-3 7h3"/></svg>',
+  cons:'<svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg>'};
+function subTabs(tabs,cur,attr,ico){
+  ico=ico||RAIL_ICO;
+  const anim=ANIM_PLAY&&RAIL_AMORCE!==SECT;RAIL_AMORCE=SECT;
+  return '<div class="railstk"><div class="rail'+(anim?" anim":"")+'" role="tablist" data-tabs="'+attr+'"><div class="rin">'
     +tabs.map(t=>'<button type="button" role="tab" aria-selected="'+(cur===t[0]?"true":"false")
-      +'" class="stab'+(cur===t[0]?" on":"")+'" '+attr+'="'+t[0]+'">'+t[1]+'</button>').join("")
-    +'</div>';
+      +'" class="'+(cur===t[0]?"on":"")+'" '+attr+'="'+t[0]+'">'+(ico[t[0]]||"")+esc(t[1])+'</button>').join("")
+    +'</div></div></div>';
+}
+/* Après le rendu : un rail qui tient dans la largeur n'a ni fondu ni
+   amorce ; un rail qui dépasse garde l'onglet actif en vue. */
+function railFit(pg){
+  pg.querySelectorAll(".rail").forEach(r=>{
+    const rin=r.querySelector(".rin"),bs=r.querySelectorAll(".rin button");
+    if(!rin||!bs.length)return;
+    const w=bs[bs.length-1].getBoundingClientRect().right-rin.getBoundingClientRect().left;
+    const dep=w>r.clientWidth-24;
+    r.classList.toggle("fit",!dep);
+    if(!dep){r.classList.remove("anim");return}
+    const on=r.querySelector("button.on");
+    if(on&&on.offsetLeft+on.offsetWidth>r.clientWidth-24)r.scrollLeft=Math.max(0,on.offsetLeft-(r.clientWidth-on.offsetWidth)/2);
+  });
+}
+/* 2.2 : « 2750 », « 31 700 » (espace fine), comme Chiffres.entier (iOS). */
+function milliers(n){n=Math.round(n);const t=String(Math.abs(n));
+  return (n<0?"−":"")+(Math.abs(n)<1e4?t:t.replace(/\B(?=(\d{3})+(?!\d))/g,"\u202F"))}
+function variationTxt(d){return d===0?"= 0 %":(d>0?"▲ +"+d+" %":"▼ −"+(-d)+" %")}
+/* 2.3 : « la semaine n'est pas finie » seulement s'il reste une séance du
+   programme à faire (jumeau de Suivi.seanceRestanteCetteSemaine). */
+function seanceRestante(p){
+  const d=new Date();d.setHours(12,0,0,0);
+  const iso=x=>x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0");
+  const idx=(d.getDay()+6)%7,lun=new Date(d);lun.setDate(d.getDate()-idx);
+  const jours=[0,1,2,3,4,5,6].map(i=>{const x=new Date(lun);x.setDate(lun.getDate()+i);return iso(x)});
+  const faites=(p.hist||[]).filter(h=>jours.indexOf(h.date)>=0),fs={};faites.forEach(h=>fs[h.date]=1);
+  const prevus=[];((p.cfg&&p.cfg.days)||[]).forEach(i=>{i=((i%7)+7)%7;if(prevus.indexOf(i)<0)prevus.push(i)});
+  if(faites.length>=prevus.length)return false;
+  return prevus.some(i=>i>=idx&&!fs[jours[i]]);
 }
 function placeInd(bar,animate){
   const on=bar.querySelector(".stab.on"),ind=bar.querySelector(".stind");
@@ -5789,15 +5997,9 @@ function placeInd(bar,animate){
 function wireTabs(pg,attr,fn){
   const bar=pg.querySelector('[data-tabs="'+attr+'"]');
   if(!bar)return;
-  requestAnimationFrame(()=>placeInd(bar,false));
   bar.querySelectorAll("["+attr+"]").forEach(b=>b.onclick=()=>{
     if(b.classList.contains("on"))return;
-    bar.querySelectorAll(".stab").forEach(x=>{x.classList.remove("on");x.setAttribute("aria-selected","false")});
-    b.classList.add("on");b.setAttribute("aria-selected","true");
-    placeInd(bar,true);
-    b.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"});
-    /* on laisse la pastille partir avant de recomposer la page */
-    setTimeout(()=>fn(b.getAttribute(attr)),110);
+    fn(b.getAttribute(attr));
   });
 }
 /* État d'abonnement simulé (le web n'a pas de boutique) : localStorage.fg_abo
@@ -5838,7 +6040,7 @@ function countUp(el){
 }
 function renderMain(p){
   const c=p.cfg,sess=p.prog.sessions;
-  {const k=animCle();ANIM_PLAY=k!==ANIM_LAST;ANIM_LAST=k;if(SECT!=="prof")RAIL_AMORCE=false}
+  {const k=animCle();ANIM_PLAY=k!==ANIM_LAST;ANIM_LAST=k;if(RAIL_AMORCE!==SECT)RAIL_AMORCE=false}
   /* Chaque section a son propre ton de fond (moins sombre que l'Entrainement,
      jamais une autre identite) : on le porte sur le body pour que la nav
      basse et le reste de la page suivent d'un seul attribut. */
@@ -6027,6 +6229,7 @@ function renderMain(p){
   else if(SECT==="shop") renderShop(p,pg);
   else renderProfil(p,pg);
   if(SECT!=="train")pg.querySelectorAll("[data-count]").forEach(countUp);
+  railFit(pg);
 }
 
 /* Les cles d'etat sont indexees par identifiant de seance et d'exercice,
@@ -8178,9 +8381,9 @@ function renderNutri(p,pg){
   const NTABS=[["rep","Mes chiffres"],["jour","Journée type"],["cons","Conseils"]];
   if(!NTABS.some(t=>t[0]===NUTAB))NUTAB="rep";
   const NT=NUTAB;
-  let h='<div class="page on"><div class="secrule nut"></div><h2 class="sc">Nutrition</h2>'
-   +'<p class="scs">Des repères calculés à partir de ton objectif, du volume réel de ton programme et de tes données corporelles. À ajuster sur ce que tu observes, pas à suivre au gramme près.</p>';
-  h+=subTabs(NTABS,NUTAB,"data-nutab")+'<div class="tpane">';
+  /* 3.1 : plus d'intro ; la mention reste la seule phrase avant le chiffre. */
+  let h='<div class="page on"><div class="secrule nut"></div><h2 class="sc">Nutrition</h2>';
+  h+=subTabs(NTABS,NUTAB,"data-nutab",RAIL_ICO)+'<div class="tpane">';
 
   if(NT==="rep")h+='<div class="card"><h4>Données corporelles</h4>'
    +'<div class="grid2">'
@@ -8225,7 +8428,7 @@ function renderNutri(p,pg){
      qui venait de son entrainement. */
   if(NT==="rep"){
     h+='<div class="card"><h4>D\'où vient ce chiffre</h4>'
-     +'<table class="t"><tr><th>Poste</th><th class="r">kcal / jour</th></tr>'
+     +'<table class="t"><tr><th>Poste</th><th class="r">kcal</th></tr>'
      +'<tr><td>Métabolisme de base</td><td class="r">'+n.bmr+'</td></tr>'
      +'<tr><td>Activité hors entraînement<br><span class="mut" style="font-size:.78em">'+esc((ACT_LVL[b.act]||ACT_LVL.sed).n)+'</span></td><td class="r">+'+(n.kBase-n.bmr)+'</td></tr>'
      +'<tr><td>Entraînement<br><span class="mut" style="font-size:.78em">'+n.nTrain+' séance'+(n.nTrain>1?"s":"")+' par semaine'+(n.fSportPlein>=.25?", plafonné":"")+'</span></td>'
@@ -8234,7 +8437,7 @@ function renderNutri(p,pg){
      +'</table>'
      +'<label class="srow2" style="margin-top:10px;cursor:pointer"><span>Compter l\'entraînement dans la dépense</span>'
      +'<input type="checkbox" id="nutsport"'+(n.sportOn?" checked":"")+'></label>'
-     +'<p class="mut">Le facteur d\'activité déclaré couvre déjà la vie hors séance. La part « entraînement » s\'y ajoute à partir du volume réel du programme, plafonnée à +25 %. Si tu la trouves généreuse, coupe-la : la cible est recalculée.</p>'
+     +'<p class="mut">Le sport s\'ajoute à ton activité déclarée, plafonné à +25 %. Trop généreux ? Coupe-le, la cible suit.</p>'
      +'</div>';
   }
 
@@ -8515,48 +8718,45 @@ function workCard(p,s,x,e,ch,ov,xi,foc){
      dans un seul cadre obligeait a lire de travers. Chacun garde sa hauteur
      et son axe, de sorte que la mise en page ne saute pas d'un exercice a
      l'autre, et le selecteur se centre toujours sous le materiel. */
+  /* v1.9.13 planche 21, 1B : les deux blocs s'ajustent à leur contenu.
+     La scène de 72 px n'existe que pour un dessin ; sinon le mot du
+     matériel passe en bas de casse à droite de l'en-tête. Remarque A : sans
+     valeur conseillée, un signe sobre le dit. */
+  const matW=e.eq==="pdc"?"poids du corps":(e.eq==="machine"||e.eq==="poulie"?"pile guidée":(e.eq==="elastique"?"élastique":"charge libre"));
+  const bwv=e.eq==="pdc"?bwLoad(p,e,null):null;
+  const noval=e.eq==="pdc"?bwv==null:vide;
+  const aRens=e.eq==="pdc"&&bwv==null&&bwCoef(e)!=null&&bwAt(p,null)==null;
   let h='<div class="wsplit'+(CHGFX===x.id?" chgfx":"")+'">'
-    +'<div class="wcard mus"><div class="wlbl">Muscles sollicités</div>'
+    +'<div class="wcard mus"><div class="wlbl">Muscles</div>'
     +'<div class="mp">'+muscleSVG(e.prim,e.sec||[],e.id)+'</div>'
     +'<div class="wleg"><i style="color:var(--musc-p)">■</i> '+esc(e.prim.map(m=>MUS[m]).join(", "))
     +(e.sec&&e.sec.length?'<br><i style="color:var(--musc-s)">■</i> '+esc(e.sec.map(m=>MUS[m]).join(", ")):'')
     +'</div></div>'
-    /* "Auto" appartient au titre de la charge : c'est lui qu'il annule.
-       Il n'apparait que si une charge a ete forcee a la main. */
     +'<div class="wcard load"><div class="wlbl gold">'+(foc?"Sur la barre":"Charge de travail")
+    +(bbs?'':'<span class="wmat">'+matW+'</span>')
     +(foc&&rmTxt?'<span class="rm">'+esc(rmTxt)+'</span>':'')
     +(ov!=null?'<button class="mini xs on wauto" '+(foc?'id="fra"':'data-ra="'+xi+'"')+' title="Revenir à la charge calculée">Auto</button>':'')
-    +'</div>'
-    /* Scene de hauteur constante : le materiel garde le meme axe quel que
-       soit le nombre de disques. */
-    +'<div class="bbscene">'+(bbs
-      ||'<span class="wnone">'+(e.eq==="pdc"?"Poids du corps"
-        :(e.eq==="machine"||e.eq==="poulie"?"Pile guidée":(e.eq==="elastique"?"Élastique":"Charge libre")))+'</span>')+'</div>';
+    +'</div>';
+  if(bbs)h+='<div class="bbscene">'+bbs+'</div>';
+  else if(e.eq==="pdc"&&bwv!=null)h+='<div class="wdep"><b>≈ '+esc(kg(bwv))+'</b><span>déplacés</span></div>';
+  else if(noval)h+='<div class="wnoval"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>'
+    +(aRens?'Poids à renseigner dans Nutrition':'Pas de valeur conseillée')+'</div>';
   if(e.eq!=="pdc"){
     const st=chStep(e),stL=String(st).replace(".",",");
     h+='<div class="cbar stepper">'
       +'<button type="button" class="stepbtn" '+idm+' aria-label="Retirer '+stL+' kg">−</button>'
       +'<input type="number" step="'+st+'" inputmode="decimal" class="chbig" '+idc+' value="'+(vide?"":ch)+'"'
-      +(vide&&lu!=null?' placeholder="'+lu+'"':'')+' aria-label="Charge de travail en kg"><span class="chunit">kg</span>'
+      +' placeholder="'+(vide&&lu!=null?lu:"—")+'" aria-label="Charge de travail en kg"><span class="chunit">kg</span>'
       +'<button type="button" class="stepbtn" '+idp+' aria-label="Ajouter '+stL+' kg">+</button>'
       +'</div>';
-  }
-  /* Legende d'une seule ligne sous le selecteur, toujours au meme endroit. */
-  h+='<div class="wleg num">'+(bbs?esc(loadDetail(e.eq,ch))
-    :(e.eq==="pdc"?(bwLoad(p,e,null)!=null?esc("≈ "+kg(bwLoad(p,e,null))+" déplacés"+(lestOf(p,e)?" + "+kg(lestOf(p,e))+" de lest":"")):"poids à renseigner dans Nutrition")
-      :(vide?"charge libre":esc(kg(ch)))))+'</div>';
-  h+='</div></div>';
-  /* Commandes secondaires sous les deux blocs, alignees a droite. */
-  h+='<div class="wacts">'
-    /* "Prec." faisait doublon avec l'encart "La derniere fois", qui dit la
-       meme chose en plus lisible. */
-    /* Plus de bouton "Courbe" ici : l'evolution d'une charge se lit dans
-       Suivi, ou elle est comparable aux autres. Pendant la seance, la seule
-       question est la charge du jour. */
-    +(e.eq==="pdc"&&LEST_OK[e.id]?'<input type="number" step="0.5" inputmode="decimal" class="lestin" '
+  }else if(LEST_OK[e.id]){
+    h+='<div class="wlest"><input type="number" step="0.5" inputmode="decimal" class="lestin" '
       +(foc?'id="flest"':'data-lest="'+xi+'"')+' value="'+(lestOf(p,e)||"")+'" aria-label="Lest ajouté en kg">'
-      +'<span class="mut" style="font-size:.66rem">kg de lest</span>':'')
-    +'</div>';
+      +'<span>kg de lest</span></div>';
+  }
+  /* La légende ne répète plus : seulement le détail des disques. */
+  if(bbs)h+='<div class="wleg num">'+esc(loadDetail(e.eq,ch))+'</div>';
+  h+='</div></div>';
   if(!foc)h+=(vide?'<div class="leg" data-infb="c'+xi+'" hidden style="margin:6px 0 0">'+esc(freeLoadWhy(e))+'</div>':'');
   return h;
 }
@@ -8914,6 +9114,241 @@ function records(p){
    une formule de politesse. S'il n'y a rien de vrai a dire, il n'y a pas
    de bandeau — un encouragement generique vaut moins que rien.
    ================================================================ */
+
+/* ================================================================
+   v1.9.15 — planche 22 (Cycles.groupesHistorique, Suivi.rapportSurPeriode,
+   BandeauSuivi côté iOS).
+   ================================================================ */
+/* L'historique rangé par cycle, sans perte. Positions dans hist. Une date
+   couverte par deux cycles va au plus récent. */
+function histGroupes(p){
+  const H=p.hist||[];
+  let tous=(p.cycles||[]).filter(c=>c&&c.debut);
+  if(p.cycle&&p.cycle.debut)tous=tous.concat([p.cycle]);
+  if(!tous.length)return H.length?[{sorte:"tout",idx:H.map((_,i)=>i)}]:[];
+  tous.sort((a,z)=>a.debut<z.debut?1:(a.debut>z.debut?-1:z.no-a.no));
+  const prem=tous.map(c=>c.debut).sort()[0];
+  const fen=c=>!c.fin?[c.debut,"9999-12-31"]:[c.debut,c.fin||cycleFin(c)||c.debut];
+  const place=H.map(r=>{
+    if(r.date<prem)return "avant";
+    const i=tous.findIndex(c=>{const f=fen(c);return r.date>=f[0]&&r.date<=f[1]});
+    return i>=0?i:"hors"});
+  const out=[];
+  const ic=tous.findIndex(c=>!c.fin);
+  if(ic>=0)out.push({sorte:"cours",cycle:tous[ic],idx:H.map((_,i)=>i).filter(i=>place[i]===ic)});
+  const blocs=[];
+  tous.forEach((c,i)=>{if(c.fin)blocs.push({cle:fen(c)[1]+"|"+c.debut,g:{sorte:"clos",cycle:c,idx:H.map((_,k)=>k).filter(k=>place[k]===i)}})});
+  const debuts=tous.map(c=>c.debut).sort(),per={};
+  H.forEach((r,i)=>{if(place[i]!=="hors")return;const pd=debuts.filter(d=>d<=r.date).pop()||"";(per[pd]=per[pd]||[]).push(i)});
+  Object.keys(per).forEach(k=>{const ix=per[k];const mx=ix.map(i=>H[i].date).sort().pop();blocs.push({cle:mx+"|~",g:{sorte:"hors",idx:ix}})});
+  blocs.sort((a,z)=>a.cle<z.cle?1:(a.cle>z.cle?-1:0));
+  blocs.forEach(b=>out.push(b.g));
+  const av=H.map((_,i)=>i).filter(i=>place[i]==="avant");
+  if(av.length)out.push({sorte:"avant",idx:av});
+  return out;
+}
+/* Résumé d'un cycle : clos -> valeurs stockées ; en cours -> son groupe et
+   le programme du jour. */
+function cycleResume(p,c,groupe){
+  if(c.fin)return {faites:c.faites!=null?c.faites:cycleSeances(p,c).length,
+    prevues:c.prevues!=null?c.prevues:cyclePrevues(p,c),debut:c.rmDebut||null,fin:cycleRefsFin(p,c)};
+  return {faites:groupe?groupe.idx.length:cycleSeances(p,c).length,prevues:cyclePrevues(p,c),
+    semaine:cycleSemaine(c),debut:c.rmDebut||null,fin:cycleRefsFin(p,c)};
+}
+/* Mensurations appariées (buste ET bassin le même jour). */
+function blogApparies(blog){return (blog||[]).filter(x=>x&&x.ch>0&&x.hp>0&&x.d).slice().sort((a,z)=>a.d<z.d?-1:1)}
+function rapportArr(x){return Math.round(x.ch/x.hp*100)/100}
+/* La phrase du rapport (2C) : recomp / galbe, pente dans ± 0,2, ≥ 2 paires
+   sur ≥ 28 jours, écart ≥ 0,02. Jamais « bon » ni « mauvais ». */
+function rapportSurPeriode(p){
+  const g=p.cfg.goal;
+  if(g!=="recomp"&&g!=="galbe")return null;
+  const tr=weightTrend(p.blog||[],21);
+  if(!tr||Math.abs(tr.perWeek)>.2)return null;
+  const pr=blogApparies(p.blog);
+  if(pr.length<2)return null;
+  const a=pr[0],z=pr[pr.length-1];
+  if(cycleJours(a.d,z.d)<28)return null;
+  const r0=rapportArr(a),r1=rapportArr(z);
+  if(Math.abs(r1-r0)<.02-1e-9)return null;
+  return {depuis:a.d,avant:r0,apres:r1,n:pr.length};
+}
+function vgl(x,n){return x.toFixed(n).replace(".",",")}
+
+/* ---------------- Le bandeau de Suivi (3.1C · 3.2B · 3.3) ---------------- */
+const BND_PH={"retour":{"neutre":["Content de te revoir. %1$@ jours depuis la dernière séance : reprends un cran en dessous, les charges remonteront vite.","%1$@ jours de pause. La première séance sert à retrouver les gestes, pas les records.","Le programme reprend là où il s'était arrêté : %2$@, %3$@ minutes.","%1$@ jours sans séance. La force revient plus vite qu'elle n'est venue la première fois.","Une séance cette semaine, et la semaine repart.","%1$@ jours depuis la dernière séance. Rien de ce qui est écrit ici n'est perdu.","Les charges de référence sont celles d'avant la pause. Baisse-les d'un cran si le premier échauffement le demande.","Te revoilà. Une séance plus courte compte aussi pour une semaine de reprise.","Après %1$@ jours, la première séance est celle qui coûte le plus. Les suivantes coûtent moins.","L'historique n'a pas de trou : il a une pause, datée du %4$@."]},"seance":{"neutre":["%1$@ archivée. %2$@ séries sur %3$@, en %4$@ minutes.","Séance du jour rangée : %2$@ séries sur %3$@. Tout est noté pour la prochaine.","%1$@ faite aujourd'hui. La semaine en compte %5$@ sur %6$@.","%4$@ minutes, %2$@ séries. La journée d'entraînement est close.","%1$@ archivée. Les charges sont notées pour la prochaine fois.","Séance faite. Le programme a ce qu'il lui faut pour la suite.","%2$@ séries validées aujourd'hui. C'est écrit.","%1$@ faite. Prochaine séance prévue %9$@.","Séance archivée : %7$@ kg soulevés aujourd'hui.","Séance n° %8$@ dans l'historique, datée d'aujourd'hui."],"humour":["%1$@ archivée, %2$@ séries sur %3$@. Le canapé a été prévenu.","Séance faite. Tes muscles déposent une réclamation, elle est classée.","%4$@ minutes de fonte. Le reste de la journée peut être moins ambitieux.","Séance faite. Demain, les escaliers seront au courant.","%2$@ séries validées. La barre est rentrée chez elle, toi aussi bientôt.","Séance rangée. Le programme a pris des notes, et il n'oublie rien.","%7$@ kg déplacés aujourd'hui. Un petit déménagement, en somme.","C'est fait. Personne ne te demandera si tu as fait ta séance, mais la réponse est oui.","Séance n° %8$@ archivée. L'historique commence à avoir du caractère."]},"record":{"neutre":["Record cette semaine : %1$@, %2$@ kg.","%8$@ records depuis lundi. Le dernier : %1$@.","%1$@ à %2$@ kg %5$@. Jamais aussi lourd.","Un record cette semaine. La charge de référence peut suivre : voir Programme.","%1$@ : %2$@ kg, %3$@ kg de plus que ton ancien meilleur.","Record battu %5$@ : %1$@, %2$@ kg.","%7$@ records sur ce cycle, dont %4$@ cette semaine.","%1$@ : %2$@ kg. L'ancien record datait du %6$@.","Nouveau meilleur : %1$@. La courbe de Charges le montre.","Record cette semaine. %9$@ records depuis le début du programme."],"humour":["Record : %1$@, %2$@ kg. L'ancien s'en remettra.","%8$@ records depuis lundi. La barre commence à te prendre au sérieux.","%1$@, %2$@ kg. Le sol a senti la différence.","%1$@ à %2$@ kg. %3$@ kg de plus, sans demander la permission.","Record battu %5$@. On ne fait pas de bruit, mais on l'a noté.","%1$@, %2$@ kg. L'ancien record a été prié de libérer la place.","Nouveau meilleur : %1$@. Les chiffres ne flattent personne, ceux-là non plus.","%1$@ à %2$@ kg. Le précédent record tenait depuis le %6$@, respect à lui.","Record cette semaine. La courbe de Charges a pris un petit air fier.","%9$@ records depuis le début. Ça commence à faire une collection."]},"pleine":{"neutre":["%1$@ séances sur %2$@ cette semaine. La semaine est pleine.","Semaine complète : %1$@ séances, %5$@ séries.","Objectif de la semaine tenu : %1$@ sur %2$@.","%1$@ sur %2$@. C'est le rythme qui construit, pas la séance héroïque du dimanche.","Les %2$@ séances prévues sont faites. La suite reprend lundi.","Semaine bouclée, avec %6$@ jours d'avance.","%1$@ séances cette semaine, contre %4$@ la précédente.","Semaine pleine. Ce qui s'ajoute maintenant est du bonus.","%1$@ sur %2$@, et %3$@ kg sur la semaine.","Programme de la semaine tenu. Rien d'autre à faire d'ici lundi."],"humour":["%1$@ sur %2$@. La semaine est pleine, tu peux fermer le couvercle.","Semaine bouclée. Le programme n'a rien à redire, et il aime redire.","%1$@ sur %2$@. Le rythme construit ; la séance héroïque du dimanche peut rester au lit.","Objectif tenu, %6$@ jours d'avance. Ils sont à toi.","Semaine pleine. La suite, c'est du rab.","%1$@ séances sur %2$@. La régularité n'est pas spectaculaire, c'est ce qui la rend redoutable.","Semaine complète. Lundi recommence, mais pas avant lundi.","%1$@ sur %2$@. Le calendrier et toi êtes d'accord, c'est rare.","Semaine tenue. Tu peux dire « j'ai fait ma semaine » : c'est vérifié."]},"portee":{"neutre":["%1$@ séances sur %2$@ cette semaine. La dernière est prévue %3$@.","Encore une séance et la semaine est complète.","%1$@ sur %2$@. %4$@ ferme la semaine %3$@.","Il reste une séance au programme de la semaine : %4$@, %3$@.","Semaine presque complète. La dernière séance est prête.","%1$@ séances faites, une prévue. Le compte est bon si %3$@ suit.","Une séance d'écart avec la semaine pleine.","%1$@ sur %2$@. Les charges de %3$@ sont déjà calculées.","La semaine tient à une séance : %4$@, %5$@ minutes.","Plus qu'une pour boucler la semaine."],"humour":["%1$@ sur %2$@. La dernière t'attend %3$@, elle a l'air sérieuse.","Encore une et la semaine est pleine. Le programme le sait déjà.","Une séance d'écart. On ferme la boutique %3$@.","%1$@ sur %2$@. Il manque une pièce au puzzle, et elle dure %5$@ minutes.","Plus qu'une. La semaine est presque rangée, reste le dernier tiroir.","Semaine presque pleine. La dernière séance a déjà réservé %3$@.","Une séance et c'est plié. %4$@, forcément.","%1$@ sur %2$@. Le programme a prévu %3$@ ; à toi de voir s'il avait raison.","Il manque une séance à la semaine. Elle ne fera pas d'histoire si tu viens.","Presque. Encore une et la semaine se range toute seule."]},"regularite":{"neutre":["%1$@ semaines de suite à %2$@ séances.","Objectif hebdomadaire tenu %1$@ semaines d'affilée.","%1$@ semaines pleines de suite. C'est ce qui se voit dans la courbe de volume.","Depuis le %4$@, chaque semaine a eu ses %2$@ séances.","%1$@ semaines à l'objectif, sans exception.","%3$@ séances en %1$@ semaines, sans semaine creuse.","%1$@ semaines pleines d'affilée. Le programme a pu progresser sur chacune.","Régularité : %1$@ semaines complètes de suite.","%1$@ semaines de suite sans séance manquée au programme.","Depuis %1$@ semaines, le programme se déroule comme il est écrit."],"humour":["%1$@ semaines de suite à %2$@ séances. À ce stade, c'est une habitude, pas un exploit.","%1$@ semaines pleines d'affilée. Le calendrier commence à te craindre.","%1$@ semaines à l'objectif. Même la machine à café de la salle te reconnaît.","Depuis le %4$@, pas une semaine creuse. Le programme n'a pas l'habitude qu'on l'écoute.","%1$@ semaines de suite. La régularité est ennuyeuse, c'est pour ça qu'elle marche.","%3$@ séances en %1$@ semaines. Le canapé a lancé un avis de recherche.","%1$@ semaines pleines. On ne compte plus ; enfin si, on compte : %1$@.","%1$@ semaines d'affilée. La constance ne se voit pas dans le miroir, elle se voit ici.","%1$@ semaines sans trou. Les courbes sont lisses, c'est à toi qu'elles le doivent.","%1$@ semaines de suite. Pas de trophée, juste des charges qui montent."]},"repos":{"neutre":["Pas de séance aujourd'hui, et c'est écrit dans le programme.","Jour de repos au programme. Prochaine séance : %3$@, %4$@.","Rien de prévu aujourd'hui. La récupération fait partie du programme.","Repos prévu. La semaine en est à %1$@ séances sur %2$@.","Jour sans séance. C'est pendant le repos que le muscle se reconstruit.","Pas de séance au programme. Prochaine : %4$@, %5$@ minutes, %3$@.","Repos. Les charges de %3$@ sont déjà calculées.","Jour off au programme : %1$@ séances faites cette semaine.","Aucune séance prévue aujourd'hui. Rien ne presse."],"humour":["Pas de séance aujourd'hui. Les haltères ne t'en veulent pas.","Jour de repos. C'est au programme, donc c'est de l'entraînement.","Rien de prévu. Le muscle travaille en ton absence, il est comme ça.","Repos au programme. Tu as le droit de marcher lentement.","Pas de fonte aujourd'hui. Prochain rendez-vous : %3$@, %4$@.","Jour off. La barre se repose aussi, elle en avait besoin.","Aucune séance prévue. Le canapé est officiellement autorisé.","Repos. Prochaine séance %3$@ : profite de tes escaliers tant qu'ils sont faciles.","Pas de séance. Les courbes ne bougeront pas aujourd'hui, et c'est prévu."]}};
+const BND_ICO={
+  retour:'<path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
+  seance:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.8"/>',
+  record:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',
+  pleine:'<path d="M12 2.8l2.3 1.7 2.8-.1.9 2.7 2.3 1.6-.9 2.7.9 2.7-2.3 1.6-.9 2.7-2.8-.1L12 21.2l-2.3-1.7-2.8.1-.9-2.7-2.3-1.6.9-2.7-.9-2.7 2.3-1.6.9-2.7 2.8.1z"/><path d="M8.6 12.2l2.3 2.3 4.5-4.6"/>',
+  portee:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.3"/>',
+  regularite:'<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  repos:'<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>'};
+function bdAdd(d,n){const t=new Date(d+"T12:00:00");t.setDate(t.getDate()+n);
+  return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0")}
+function bdDow(d){return (new Date(d+"T12:00:00").getDay()+6)%7}
+function bdLundi(d){return bdAdd(d,-bdDow(d))}
+function bdJourNom(d){return new Date(d+"T12:00:00").toLocaleDateString("fr-FR",{weekday:"long"})}
+function bdKg(x){return String(Math.round(x*100)/100).replace(".",",")}
+function bdTonnage(r){let v=0;(r.ex||[]).forEach(e=>{const L=e.kg!=null?e.kg:(e.bw!=null?e.bw:null);
+  if(L!=null)v+=(e.done||0)*repsMid(e.reps)*L});return v}
+function bdFatigue(p){const R=(p.hist||[]).slice(0,3);
+  const hard=R.reduce((n,r)=>n+(r.ex||[]).filter(e=>e.diff==="dur"||e.diff==="echec").length,0);
+  const rated=R.reduce((n,r)=>n+(r.ex||[]).filter(e=>e.diff).length,0);
+  return rated>=8&&hard>=rated*.6}
+/* La cible de la semaine : le nombre de jours du programme, jamais 3 en dur. */
+function bdCible(p){return ((p.cfg&&p.cfg.days)||[]).length}
+function bdPrevus(p){const o=[];((p.cfg&&p.cfg.days)||[]).forEach(i=>{i=((i%7)+7)%7;if(o.indexOf(i)<0)o.push(i)});return o}
+function bdProchain(p,d,inclus){const pv=bdPrevus(p);if(!pv.length)return null;
+  for(let k=inclus?0:1;k<=7;k++){const x=bdAdd(d,k);if(pv.indexOf(bdDow(x))>=0)return x}return null}
+function bdSeance(p,d){if(!d||!p.prog)return null;const i=bdDow(d);
+  const s=(p.prog.sessions||[]).find(z=>z.day===i&&!z.free);return s?s.k:null}
+/* Records battus depuis lundi : dépassement strict, première apparition et
+   exercices à tenir exclus. Du plus ancien au plus récent. */
+function bdRecords(p,auj){
+  const lun=bdLundi(auj),best={},out=[];
+  (p.hist||[]).slice().reverse().forEach(r=>{
+    if(!r.date||r.date>auj)return;
+    (r.ex||[]).forEach(e=>{const k=parseFloat(e.kg);
+      if(!isFinite(k)||!(e.done>0)||(byId(e.id)||{}).hold)return;
+      const a=best[e.id];
+      if(a){if(k>a.kg){if(r.date>=lun)out.push({id:e.id,n:(byId(e.id)||{n:e.n}).n,kg:k,ecart:k-a.kg,date:r.date,avant:a.date});
+        best[e.id]={kg:k,date:r.date}}}
+      else best[e.id]={kg:k,date:r.date}})});
+  return out;
+}
+function bdConstat(p,auj){
+  const H=p.hist||[];if(!H.length||!H[0].date)return null;
+  const der=H[0],lun=bdLundi(auj),dim=bdAdd(lun,6);
+  const dans=(r,l)=>r.date>=l&&r.date<=bdAdd(l,6)&&r.date<=auj;
+  const sem=H.filter(r=>dans(r,lun)),n=sem.length,nAv=H.filter(r=>dans(r,bdAdd(lun,-7))).length;
+  const cible=bdCible(p),dur=p.cfg.dur>0?String(p.cfg.dur):null;
+  const V=o=>{const v={};Object.keys(o).forEach(k=>{if(o[k]!=null)v[k]=o[k]});return v};
+  const depuis=cycleJours(der.date,auj);
+  if(depuis>=14){const pr=bdProchain(p,auj,true);
+    return {ctx:"retour",v:V({1:String(depuis),2:bdSeance(p,pr),3:dur,4:shortDate(der.date)}),ch:String(depuis),lg:"jours"}}
+  if(der.date===auj){const t=Math.round(bdTonnage(der)),pr=bdProchain(p,auj);
+    return {ctx:"seance",v:V({1:der.k,2:String(der.done),3:String(der.tot),4:der.dur>0?String(der.dur):null,
+      5:cible>0?String(n):null,6:cible>0?String(cible):null,7:t>0?milliers(t):null,8:String(H.length),9:pr?bdJourNom(pr):null}),
+      ch:der.done+"/"+der.tot,lg:"séries"}}
+  const R=bdRecords(p,auj);
+  if(R.length){const r=R.slice().sort((a,z)=>a.date<z.date?-1:(a.date>z.date?1:a.ecart-z.ecart)).pop();
+    const cyc=p.cycle?cyclePrs(p,p.cycle):0,tot=p.prCount||0;
+    return {ctx:"record",rec:true,v:V({1:r.n,2:bdKg(r.kg),3:bdKg(r.ecart),4:String(R.length),5:bdJourNom(r.date),
+      6:r.avant?shortDate(r.avant):null,7:cyc>=2&&cyc>=R.length?String(cyc):null,8:R.length>=2?String(R.length):null,
+      9:tot>=2?String(tot):null}),ch:"+"+bdKg(r.ecart)+" kg",lg:null}}
+  if(!(cible>0))return null;
+  if(n>=cible){const t=Math.round(sem.reduce((a,r)=>a+bdTonnage(r),0)),se=sem.reduce((a,r)=>a+(r.done||0),0),av=6-bdDow(auj);
+    return {ctx:"pleine",v:V({1:String(n),2:String(cible),3:t>0?milliers(t):null,4:String(nAv),5:String(se),6:av>=2?String(av):null}),
+      ch:n+"/"+cible,lg:"semaine"}}
+  if(n===cible-1&&seanceRestante(p)){const fs={};sem.forEach(r=>fs[r.date]=1);const pv=bdPrevus(p);
+    let reste=null;for(let i=0;i<7;i++){const x=bdAdd(lun,i);if(x>=auj&&x<=dim&&pv.indexOf(i)>=0&&!fs[x]){reste=x;break}}
+    return {ctx:"portee",v:V({1:String(n),2:String(cible),3:reste?bdJourNom(reste):null,4:bdSeance(p,reste),5:dur}),
+      ch:n+"/"+cible,lg:"semaine"}}
+  /* Régularité : semaines pleines d'affilée depuis la semaine dernière. */
+  const dates=H.map(r=>r.date).filter(Boolean),prem=dates.slice().sort()[0];
+  let l=bdAdd(lun,-7),k=0,tot=0,dep=null;
+  while(bdAdd(l,6)>=prem){const c=dates.filter(d=>d>=l&&d<=bdAdd(l,6)).length;if(c<cible)break;k++;tot+=c;dep=l;l=bdAdd(l,-7)}
+  if(k>=3)return {ctx:"regularite",v:V({1:String(k),2:String(cible),3:String(tot),4:dep?shortDate(dep):null}),ch:String(k),lg:"semaines"};
+  if(bdPrevus(p).indexOf(bdDow(auj))<0){const pr=bdProchain(p,auj);
+    return {ctx:"repos",v:V({1:String(n),2:String(cible),3:pr?bdJourNom(pr):null,4:bdSeance(p,pr),5:dur}),ch:n+"/"+cible,lg:"semaine"}}
+  /* Un jour prévu sans séance encore faite : l'Entraînement s'en charge. */
+  return null;
+}
+/* Neutre : retour, échec à la dernière séance, douleur signalée, fatigue. */
+function bdTon(p,ctx){
+  if(ctx==="retour")return "neutre";
+  if(((p.cfg&&p.cfg.pain)||[]).length)return "neutre";
+  if(bdFatigue(p))return "neutre";
+  if(((p.hist[0]||{}).ex||[]).some(e=>e.diff==="echec"))return "neutre";
+  return "humour";
+}
+function bdMem(){try{return JSON.parse(localStorage.getItem("fg_bandeau")||"{}")||{}}catch(e){return {}}}
+/* Une phrase par jour (même jour + contexte + ton = même phrase), jamais
+   deux fois de suite, pas de retour avant cinq tirages. */
+function bdTirer(p,ctx,ton,auj,cands){
+  const all=bdMem(),m=all[p.id]||{rec:{}};m.rec=m.rec||{};
+  if(m.jour===auj&&m.ctx===ctx&&m.ton===ton&&cands.indexOf(m.cle)>=0)return m.cle;
+  const rec=m.rec[ctx]||[],garde=Math.min(5,cands.length-1),excl=garde>0?rec.slice(-garde):[];
+  let libres=cands.filter(c=>excl.indexOf(c)<0);
+  if(!libres.length)libres=cands.filter(c=>c!==rec[rec.length-1]);
+  if(!libres.length)libres=cands;
+  const c=libres[hashStr(auj+"|"+ctx+"|"+ton)%libres.length];
+  m.jour=auj;m.ctx=ctx;m.ton=ton;m.cle=c;m.rec[ctx]=rec.concat([c]).slice(-10);all[p.id]=m;
+  try{localStorage.setItem("fg_bandeau",JSON.stringify(all))}catch(e){}
+  return c;
+}
+function bandeauSuivi(p){
+  const auj=today(),c=bdConstat(p,auj);if(!c)return "";
+  const ton=bdTon(p,c.ctx),t=c.ctx==="retour"?"neutre":ton;
+  const pool=(BND_PH[c.ctx]||{})[t]||[];
+  const cands=[];pool.forEach((f,i)=>{const pos=(f.match(/%(\d)\$@/g)||[]).map(x=>x[1]);
+    if(pos.every(k=>c.v[k]!=null))cands.push(c.ctx+"."+t+"."+i)});
+  if(!cands.length)return "";
+  const cle=bdTirer(p,c.ctx,ton,auj,cands),modele=pool[+cle.split(".")[2]];
+  const cut=modele.indexOf(". "),a=cut<0?modele:modele.slice(0,cut+1),b=cut<0?"":modele.slice(cut+2).trim();
+  const fill=x=>x.replace(/%(\d)\$@/g,(_,k)=>c.v[k]!=null?c.v[k]:"");
+  return '<div class="bndx'+(c.rec?" rec":"")+(b?"":" solo")+'" data-bnd="'+c.ctx+'" data-ton="'+ton+'">'
+    +'<span class="bpi" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+BND_ICO[c.ctx]+'</svg></span>'
+    +'<span class="btx"><b>'+esc(fill(a))+'</b>'+(b?'<span>'+esc(fill(b))+'</span>':'')+'</span>'
+    +(c.ch?'<span class="bch"><b>'+esc(c.ch)+'</b>'+(c.lg?'<i>'+c.lg+'</i>':'')+'</span>':'')+'</div>';
+}
+/* ---------------- Rendu de l'historique par cycle (1A) ---------------- */
+let HGRP_OPEN={},HROW_OPEN={},HMORE={};
+const HCHV='<span class="chv" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>';
+const REFN2={dc:"Dév. couché",squat:"Squat",sdt:"Soulevé de terre",row:"Rowing barre"};
+function histRefs(deb,fin){
+  const ordre=["dc","squat","sdt","row"],ks=Object.keys(deb||{}).concat(Object.keys(fin||{})).filter((k,i,a)=>a.indexOf(k)===i)
+    .sort((a,z)=>{const x=ordre.indexOf(a),y=ordre.indexOf(z);return (x<0?99:x)-(y<0?99:y)||(a<z?-1:1)});
+  return ks.map(k=>{const a=deb?deb[k]:null,b=fin?fin[k]:null;
+    return '<div class="rfl"><span class="n">'+esc(REFN2[k]||k)+'</span><span class="a">'+(a!=null?bdKg(a):"—")+'</span>'
+      +'<span class="s">'+(a!=null&&a===b?"=":"→")+'</span><span class="b">'+(b!=null?bdKg(b):"—")+'</span></div>'}).join("");
+}
+function histDate(d){const t=new Date(d+"T00:00:00");return isNaN(t)?d:t.toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short"})}
+function histLignes(p,g,cle){
+  const n=HMORE[cle]||4,vis=g.idx.slice(0,n);let h='';
+  vis.forEach(i=>{const r=p.hist[i],id=r.date+"|"+i,o=!!HROW_OPEN[id];
+    h+='<div class="hrow'+(o?" open":"")+'"><button type="button" data-hrow="'+esc(id)+'" aria-expanded="'+o+'">'
+      +'<span class="d">'+esc(histDate(r.date))+'</span><span class="k">'+esc(r.k)+'</span>'
+      +'<span class="s">'+r.done+'/'+r.tot+'</span>'+HCHV+'</button>';
+    if(o){const ch=(r.ex||[]).filter(e=>e.kg!=null).map(e=>esc(e.n.split(" ")[0])+" "+String(e.kg).replace(".",",")).join(" · ");
+      h+='<div class="det">'+(ch?'<p class="mut">'+ch+'</p>':'')+(r.note?'<p class="mut">« '+esc(r.note)+' »</p>':'')
+        +'<button type="button" class="hdang" data-hdel="'+i+'">Supprimer cette séance</button></div>'}
+    h+='</div>'});
+  const reste=g.idx.length-vis.length;
+  if(reste>0)h+='<button type="button" class="hmore" data-hmore="'+esc(cle)+'">'+reste+' séance'+(reste>1?"s":"")+' de plus</button>';
+  return h;
+}
+function histCarteCours(p,g){
+  const c=g.cycle,r=cycleResume(p,c,g),w=r.semaine||c.semaines;
+  let j='';for(let i=1;i<=c.semaines;i++)j+='<span class="'+(i<(r.semaine||0)?'f':(i===r.semaine?'now':''))+'"></span>';
+  let h='<div class="card cycours"><h4 class="h4r">Cycle '+c.no+' · en cours<span class="dr">Semaine '+w+' / '+c.semaines+'</span></h4>'
+    +'<div class="hbig"><b>'+r.faites+' / '+r.prevues+'</b><span>séances depuis le '+esc(shortDate(c.debut))+'</span></div>'
+    +'<div class="cyj">'+j+'</div>';
+  h+=r.debut?histRefs(r.debut,r.fin):'<p class="mut">Ce programme a commencé avant les cycles : il n\'y a pas de charges de départ à comparer.</p>';
+  if(g.idx.length)h+='<p class="hsub">Séances</p>'+histLignes(p,g,"c"+c.no);
+  return h+'</div>';
+}
+function histCarteRepliee(p,g){
+  const H=p.hist,ds=g.idx.map(i=>H[i].date).sort();
+  let cle,no,t,sous,q;
+  if(g.sorte==="clos"){const c=g.cycle,r=cycleResume(p,c,g);cle="c"+c.no;no=String(c.no).padStart(2,"0");
+    t=(GOALS[c.goal]?GOALS[c.goal].n:c.goal)+' · '+c.semaines+' semaines';sous=shortDate(c.debut)+' → '+(c.fin?shortDate(c.fin):"");q=r.faites+' / '+r.prevues}
+  else{cle=g.sorte==="hors"?"h"+(ds[ds.length-1]||""):"avant";no="—";t=g.sorte==="hors"?"Hors cycle":"Avant les cycles";
+    sous=ds.length?shortDate(ds[0])+' → '+shortDate(ds[ds.length-1]):"";q=g.idx.length+' séance'+(g.idx.length>1?"s":"")}
+  const o=!!HGRP_OPEN[cle];
+  let h='<div class="cyc'+(o?" open":"")+'"><button type="button" class="cyh2" data-hgrp="'+esc(cle)+'" aria-expanded="'+o+'">'
+    +'<span class="no">'+no+'</span><span class="m"><b>'+esc(t)+'</b><span>'+esc(sous)+'</span></span>'
+    +'<span class="q">'+esc(q)+'</span>'+HCHV+'</button>';
+  if(o){
+    if(g.cycle){const r=cycleResume(p,g.cycle,g);
+      h+=r.debut?histRefs(r.debut,r.fin):'<p class="mut">Ce programme a commencé avant les cycles : il n\'y a pas de charges de départ à comparer.</p>'}
+    h+=histLignes(p,g,cle);
+    if(g.cycle)h+='<button type="button" class="mini" data-cycle="'+g.cycle.no+'" style="margin-top:8px">Voir le bilan du cycle</button>';
+  }
+  return h+'</div>';
+}
 function histCheer(p){
   const H=(p.hist||[]);
   if(!H.length)return "";
@@ -9004,8 +9439,8 @@ function renderMuscleSets(p){
   const mx=Math.max.apply(null,MUSGRP.map(g=>Math.max(g.hi,d.cur[g.k],d.prev[g.k])))*1.06;
   const low=[],high=[];
   let h='<div class="card"><h4>Séries par muscle · cette semaine</h4>'
-    +'<p class="mut" style="margin-top:-4px">Une série compte pleinement pour le muscle visé, pour moitié pour ceux qui assistent. La bande claire est la fourchette utile.</p>'
     +'<div class="msgrid">';
+  let rang=0;
   MUSGRP.forEach(g=>{
     const v=d.cur[g.k],pv=d.prev[g.k];
     const pct=x=>Math.max(0,Math.min(100,x/mx*100));
@@ -9017,7 +9452,7 @@ function renderMuscleSets(p){
       +'<span class="mstrack">'
       +'<i class="msband" style="left:'+pct(g.lo).toFixed(1)+'%;width:'+(pct(g.hi)-pct(g.lo)).toFixed(1)+'%"></i>'
       +(pv>0?'<i class="msprev" style="left:'+pct(pv).toFixed(1)+'%"></i>':'')
-      +'<i class="msbar'+cls+'" style="width:'+pct(v).toFixed(1)+'%"></i>'
+      +'<i class="msbar'+cls+'" style="width:'+pct(v).toFixed(1)+'%;animation-delay:'+(0.04*(rang++)).toFixed(2)+'s"></i>'
       +'</span>'
       +'<span class="msv'+cls+'">'+String(Math.round(v*10)/10).replace(".",",")+'</span></div>';
   });
@@ -9032,9 +9467,11 @@ function renderMuscleSets(p){
   else if(high.length)
     note="Au-dessus de la fourchette sur "+high.join(", ")+" : au-delà, le volume se paie en récupération sans gain proportionnel.";
   else note="Tous les groupes travaillés sont dans leur fourchette. Rien à corriger.";
-  h+='<p class="mut">'+esc(note)+'</p>'
-    +'<p class="mut">La semaine en cours n\'est pas finie : les barres montent encore jusqu\'à ta dernière séance.</p>'
-    +'</div>';
+  h+='<p class="mut">'+esc(note)+(seanceRestante(p)?" La semaine n'est pas finie : les barres monteront encore.":"")+'</p>'
+    +'</div>'
+    /* 2.3 : la méthode de comptage sort de la carte, dans le pli de fin. */
+    +'<details class="card pli"><summary>Comment c\'est compté</summary><div class="plic">'
+    +'<p class="plit">Séries par muscle</p><p>Une série compte pleinement pour le muscle visé, pour moitié pour ceux qui assistent.</p></div></details>';
   return h;
 }
 function renderHist(p,pg){
@@ -9047,7 +9484,7 @@ function renderHist(p,pg){
   /* Filet d'identite de la section, comme la planche A3. */
   let h='<div class="page on"><div class="histrule"></div>'
     +'<div class="shd2"><h2 class="sc">Suivi</h2><span class="fy-lbl2 b2">Historique &amp; progression</span></div>'
-    +'<p class="scs">Deux progressions à lire ensemble : ce que fait le corps, et ce que font les charges.</p>';
+    +'<p class="scs">Ce que fait le corps, et ce que font les charges.</p>';
   const hard=p.hist.slice(0,3).reduce((n,r)=>n+r.ex.filter(e=>e.diff==="dur"||e.diff==="echec").length,0);
   const rated=p.hist.slice(0,3).reduce((n,r)=>n+r.ex.filter(e=>e.diff).length,0);
   if(rated>=8&&hard>=rated*.6) h+='<div class="alert w"><b>Fatigue cumulée</b>Le ressenti est « dur » ou « échec » sur la majorité des exercices des 3 dernières séances. Une semaine allégée (-20 % de charge, une série en moins) sera plus productive que de forcer la progression.</div>';
@@ -9061,8 +9498,8 @@ function renderHist(p,pg){
   const HTABS=[["vol","Volume"],["charge","Charges"],["poids","Poids"],
     ["cal","Calories"],["med","Médailles"],["prog","Programme"]];
   if(!HTABS.some(t=>t[0]===HISTAB))HISTAB="vol";
-  h+=histCheer(p);
-  h+=subTabs(HTABS,HISTAB,"data-histab")+'<div class="tpane">';
+  h+=bandeauSuivi(p);  /* v1.9.15 : le bandeau à liseré remplace histCheer */
+  h+=subTabs(HTABS,HISTAB,"data-histab",RAIL_ICO)+'<div class="tpane">';
   if(HISTAB==="vol"){
     /* ---------------- Volume, records, medailles ---------------- */
     const volW=weeklyVolume(p),volS=sessionVolume(p);
@@ -9070,19 +9507,19 @@ function renderHist(p,pg){
     vol=volBySession?volS:volW;
     /* Carte volume facon maquette : le chiffre du moment en gros et son
        ecart avec la periode precedente en tete, l'histogramme dessous. */
-    h+='<div class="card"><h4>Volume '+(volBySession?"par séance":"hebdomadaire")+'</h4>';
+    /* Planche 21, 2.2 : une étiquette (la variation à droite du titre), le
+       chiffre posé (2.4), « cette semaine » avec l'unité, une note (2.3). */
+    let dPct=null;
+    if(vol.length>1&&vol[vol.length-2].v>0)dPct=Math.round((vol[vol.length-1].v-vol[vol.length-2].v)/vol[vol.length-2].v*100);
+    h+='<div class="card"><h4 class="h4r">Volume '+(volBySession?"par séance":"hebdomadaire")
+      +(dPct!=null?'<span class="dr">'+variationTxt(dPct)+' vs '+(volBySession?"préc.":"S-1")+'</span>':'')+'</h4>';
     if(!vol.length) h+='<div class="empty">Aucune séance archivée avec des charges : le volume s\'affichera dès la première.</div>';
     else{
-      const dLast=vol[vol.length-1].v;
-      const dPrev=vol.length>1?vol[vol.length-2].v:null;
-      const dPct=(dPrev!=null&&dPrev>0)?Math.round((dLast-dPrev)/dPrev*100):null;
-      h+='<div class="volhd"><div><span class="vollb">'+(volBySession?"Dernière séance":"Cette semaine")+'</span>'
-        +'<span class="volbig" data-count="'+Math.round(dLast*1000)+'">'+String(Math.round(dLast*1000)).replace(/\B(?=(\d{3})+(?!\d))/g," ")+'<i> kg</i></span></div>'
-        +(dPct!=null?'<span class="voldl'+(dPct>=0?" up":" dn")+'">'+(dPct>=0?"▲ +":"▼ ")+Math.abs(dPct)+' % <s>vs '+(volBySession?"préc.":"S-1")+'</s></span>':'')
-        +'</div>';
+      const big=milliers(vol[vol.length-1].v*1000).replace(/\u202F/g,'<span class="fin">\u202F</span>');
+      h+='<div class="volhd"><span class="volbig">'+big+'<i>kg '+(volBySession?"à la dernière séance":"cette semaine")+'</i></span></div>';
       h+='<canvas class="ch bar" id="vch"></canvas>';
-      if(vol.length<2) h+='<p class="mut">Une deuxième séance archivée permettra de comparer.</p>';
-      h+='<p class="mut">Séries effectuées × répétitions × charge. C\'est le meilleur indicateur unique de la charge de travail : s\'il stagne plusieurs semaines alors que le poids monte, la progression vient surtout de l\'intensité.</p>';
+      h+='<p class="mut">'+(vol.length<2?'Une deuxième séance archivée permettra de comparer.'
+        :'Séries × répétitions × charge. S\'il stagne alors que le poids monte, la progression vient de l\'intensité.')+'</p>';
     }
     h+='</div>';
     h+=renderMuscleSets(p);
@@ -9091,6 +9528,17 @@ function renderHist(p,pg){
     /* Tout ce qui repond a "est-ce que je pousse plus lourd ?" : les
        meilleures charges, puis la courbe d'un mouvement precis. */
     const recs=records(p);
+    /* Retour du 26/09 : la courbe d'abord, les records ensuite. */
+    h+='<div class="card"><h4>Évolution par exercice</h4>';
+    const ids=Object.keys(p.used);
+    if(!ids.length) h+='<div class="empty">Saisis des charges pendant tes séances pour voir les courbes.</div>';
+    else{
+      h+='<div class="fld"><label>Exercice</label><select id="hsel">'
+        +ids.map(i=>'<option value="'+i+'">'+esc((byId(i)||{n:i}).n)+'</option>').join("")+'</select></div>'
+        +'<canvas class="ch" id="hch"></canvas>'
+        +'<p class="mut">Une charge qui plafonne trois séances de suite ? Vérifie d\'abord que toutes les répétitions sont tenues.</p>';
+    }
+    h+='</div>';
     if(recs.length){
       h+='<div class="card"><h4 style="color:var(--pr)">Records personnels</h4>'
         +'<p class="mut" style="margin-top:-4px">La charge la plus lourde enregistrée sur chaque mouvement.</p>'
@@ -9100,88 +9548,78 @@ function renderHist(p,pg){
           +'<span class="reckg">'+kg(r.kg)+'</span></div>').join("")
         +'</div>';
     }
-    h+='<div class="card"><h4>Évolution par exercice</h4>';
-    const ids=Object.keys(p.used);
-    if(!ids.length) h+='<div class="empty">Saisis des charges pendant tes séances pour voir les courbes.</div>';
-    else{
-      h+='<div class="fld"><label>Exercice</label><select id="hsel">'
-        +ids.map(i=>'<option value="'+i+'">'+esc((byId(i)||{n:i}).n)+'</option>').join("")+'</select></div>'
-        +'<canvas class="ch" id="hch"></canvas>'
-        +'<p class="mut">Une charge qui plafonne trois séances de suite n\'appelle pas forcément plus de poids : vérifie d\'abord que les répétitions prescrites sont toutes tenues.</p>';
-    }
-    h+='</div>';
   }
   if(HISTAB==="poids"){
-    /* ---------------- Suivi corporel ---------------- */
+    /* ---------------- Poids (planche 22, 2C) : la réponse d'abord ---------------- */
     bl=p.blog.slice().sort((a,z)=>a.d<z.d?-1:1);
-    h+='<div class="card"><h4>Suivi corporel</h4>'
+    const kgs=bl.filter(x=>x.kg!=null);
+    h+='<div class="card"><h4 class="h4r">Poids'+(kgs.length?'<span class="dr">'+kgs.length+' relevés</span>':'')+'</h4>';
+    if(kgs.length){
+      const der=kgs[kgs.length-1];
+      let ec='';
+      if(kgs.length>=2){const d=der.kg-kgs[0].kg;
+        const wk=Math.max(1,Math.round((new Date(der.d)-new Date(kgs[0].d))/6048e5));
+        ec=(d>=0?"+":"")+d.toFixed(1).replace(".",",")+' kg sur '+wk+' semaine'+(wk>1?"s":"")}
+      h+='<div class="phero"><span class="volbig">'+String(der.kg).replace(".",",")+'<i> kg · '+esc(histDate(der.d))+'</i></span>'
+        +(ec?'<span class="pe">'+ec+'</span>':'')+'</div>';
+    }
+    if(kgs.length>=2){
+      h+='<canvas class="ch" id="bch"></canvas>';
+      const tr=weightTrend(p.blog,21);
+      if(tr){
+        const gcfg=p.cfg,gl=GOALS[gcfg.goal],tgt=goalPace(gcfg.goal,parseFloat(b.wt)||tr.last);
+        const sgn=tr.perWeek>=0?"+":"";
+        let verdict;
+        if(tgt==null)verdict="Objectif « "+gl.n.toLowerCase()+" » : c'est la stabilité qui est visée, et la pente en est proche.";
+        else if(tgt===0)verdict=Math.abs(tr.perWeek)<=.2
+          ? "Conforme à l'objectif : poids stable, le progrès se lit sur les charges."
+          : "L'objectif vise un poids stable ; la pente s'en écarte de "+Math.abs(tr.perWeek).toFixed(2).replace(".",",")+" kg par semaine.";
+        else{
+          const ratio=tr.perWeek/tgt;
+          verdict=ratio>=.6&&ratio<=1.6
+            ? "Conforme à l'objectif ("+(tgt>0?"+":"")+tgt.toFixed(2).replace(".",",")+" kg/semaine visés)."
+            : (ratio<.6
+               ? "En dessous du rythme visé ("+(tgt>0?"+":"")+tgt.toFixed(2).replace(".",",")+" kg/semaine). Après trois semaines pleines dans cet état, un ajustement de 150 à 200 kcal est plus efficace qu'attendre."
+               : "Au-dessus du rythme visé ("+(tgt>0?"+":"")+tgt.toFixed(2).replace(".",",")+" kg/semaine) : à ce rythme, la part non désirée augmente.");
+        }
+        /* 2C : le rapport buste / bassin, quand la balance est plate. */
+        const rp=rapportSurPeriode(p);
+        if(rp)verdict+=" Depuis le "+shortDate(rp.depuis)+", le rapport buste / bassin est passé de "+vgl(rp.avant,2)+" à "+vgl(rp.apres,2)+" : quelque chose change, et ce n'est pas la balance qui le montre.";
+        h+='<div class="trendb"><div class="trhd"><span class="vollb">Tendance lissée</span>'
+          +'<b class="trbig">'+sgn+tr.perWeek.toFixed(2).replace(".",",")+' <i>kg/sem.</i></b></div>'
+          +'<p>Sur '+tr.days+' jours et '+tr.n+' relevés. '+esc(verdict)+'</p></div>';
+      }
+      h+='<p class="mut" style="margin-top:8px">Une semaine isolée ne veut rien dire : eau, sel, transit font varier le poids de plus d\'un kilo. C\'est la pente sur trois à quatre semaines qui compte.</p>';
+    }else{
+      h+='<p class="mut" style="margin-top:6px">'+(kgs.length?'Un seul relevé enregistré. Il en faut deux pour tracer une courbe.':'Aucun relevé. Pèse-toi dans les mêmes conditions — au réveil, à jeun — une à trois fois par semaine.')+'</p>';
+    }
+    h+='</div>';
+    /* Relevé du jour : un champ, un bouton ; buste et bassin dans un pli (2.1 : plus de tour de taille). */
+    const derM=bl.filter(x=>x.ch!=null||x.hp!=null).pop();
+    const dernier=bl[bl.length-1],msrOuvert=!!(dernier&&(dernier.ch!=null||dernier.hp!=null));
+    const pr=blogApparies(p.blog);
+    h+='<div class="card"><h4>Relevé du jour</h4>'
+     +'<div class="prow"><div class="fld"><label>Poids (kg)</label><input type="number" step="0.1" inputmode="decimal" id="bw" placeholder="'+(b.wt||"ex. 78")+'"></div>'
+     +'<button class="mini" id="bsave">Enregistrer</button></div>'
+     +'<details class="msr"'+(msrOuvert?' open':'')+'><summary>Ajouter des mensurations <i>'+(derM?'dernières le '+esc(shortDate(derM.d)):'buste, bassin')+'</i>'+HCHV+'</summary>'
      +'<div class="grid2">'
-     +'<div class="fld"><label>Poids du jour (kg)</label><input type="number" step="0.1" inputmode="decimal" id="bw" placeholder="'+(b.wt||"ex. 78")+'"></div>'
-     +'<div class="fld"><label>Tour de taille (cm)</label><input type="number" step="0.5" inputmode="decimal" id="bt" placeholder="facultatif"></div>'
      +'<div class="fld"><label>Tour de buste (cm)</label><input type="number" step="0.5" inputmode="decimal" id="bch2" placeholder="facultatif"></div>'
      +'<div class="fld"><label>Tour de bassin (cm)</label><input type="number" step="0.5" inputmode="decimal" id="bhp" placeholder="facultatif"></div>'
-     +'</div><p class="mut" style="margin-top:6px">Buste et bassin sont facultatifs, mais c\'est leur <b>rapport</b> qui bouge quand le poids ne bouge pas. Mesure-les au même endroit, détendu, une fois par mois suffit.</p>'
-     +'<button class="mini" id="bsave" style="margin-top:10px">Enregistrer le relevé du jour</button>';
-    if(bl.length<2){
-      h+='<p class="mut" style="margin-top:10px">'+(bl.length?'Un seul relevé enregistré. Il en faut deux pour tracer une courbe.':'Aucun relevé. Pèse-toi dans les mêmes conditions — au réveil, à jeun — une à trois fois par semaine.')+'</p>';
-    }else{
-      const kgs=bl.filter(x=>x.kg!=null);
-      const tws=bl.filter(x=>x.tw!=null);
-      h+='<p class="mut" style="margin:10px 0 2px">Poids — '+kgs.length+' relevés</p><canvas class="ch" id="bch"></canvas>';
-      if(kgs.length>=2){
-        const d=kgs[kgs.length-1].kg-kgs[0].kg;
-        const wk=Math.max(1,Math.round((new Date(kgs[kgs.length-1].d)-new Date(kgs[0].d))/6048e5));
-        /* Un seul chiffre de rythme sur cet ecran : la pente lissee plus bas.
-           Le premier-moins-dernier divise par le nombre de semaines donnait
-           une autre valeur, et c'etait celle qui se trompait. */
-        h+='<p class="mut" style="text-align:right">'+(d>=0?"+":"")+d.toFixed(1).replace(".",",")+' kg sur '+wk+' semaine'+(wk>1?"s":"")+'</p>';
-        /* La tendance lissee, qui est la seule lecture honnete du poids :
-           la mesure brute varie de plus d'un kilo pour des raisons d'eau,
-           de sel et de transit. */
-        const tr=weightTrend(p.blog,21);
-        if(tr){
-          const gcfg=p.cfg,gl=GOALS[gcfg.goal],tgt=goalPace(gcfg.goal,parseFloat(b.wt)||tr.last);
-          const sgn=tr.perWeek>=0?"+":"";
-          let verdict;
-          if(tgt==null)verdict="Objectif « "+gl.n.toLowerCase()+" » : c\'est la stabilité qui est visée, et la pente en est proche.";
-          else if(tgt===0)verdict=Math.abs(tr.perWeek)<=.2
-            ? "Conforme à l\'objectif : poids stable, le progrès se lit sur les charges."
-            : "L\'objectif vise un poids stable ; la pente s\'en écarte de "+Math.abs(tr.perWeek).toFixed(2).replace(".",",")+" kg par semaine.";
-          else{
-            const ratio=tr.perWeek/tgt;
-            verdict=ratio>=.6&&ratio<=1.6
-              ? "Conforme à l\'objectif ("+(tgt>0?"+":"")+tgt.toFixed(2).replace(".",",")+" kg/semaine visés)."
-              : (ratio<.6
-                 ? "En dessous du rythme visé ("+(tgt>0?"+":"")+tgt.toFixed(2).replace(".",",")+" kg/semaine). Après trois semaines pleines dans cet état, un ajustement de 150 à 200 kcal est plus efficace qu\'attendre."
-                 : "Au-dessus du rythme visé ("+(tgt>0?"+":"")+tgt.toFixed(2).replace(".",",")+" kg/semaine) : à ce rythme, la part non désirée augmente.");
-          }
-          h+='<div class="trendb"><div class="trhd"><span class="vollb">Tendance lissée</span>'
-            +'<b class="trbig">'+sgn+tr.perWeek.toFixed(2).replace(".",",")+' <i>kg/sem.</i></b></div>'
-            +'<p>Sur '+tr.days+' jours et '+tr.n+' relevés. '+esc(verdict)+'</p></div>';
-        }
-      }
-      if(tws.length>=2) h+='<p class="mut" style="margin:10px 0 2px">Tour de taille — '+tws.length+' relevés</p><canvas class="ch" id="tch"></canvas>';
-      const chs=bl.filter(x=>x.ch!=null),hps=bl.filter(x=>x.hp!=null);
-      if(chs.length>=2) h+='<p class="mut" style="margin:10px 0 2px">Tour de buste — '+chs.length+' relevés</p><canvas class="ch" id="cch2"></canvas>';
-      if(hps.length>=2) h+='<p class="mut" style="margin:10px 0 2px">Tour de bassin — '+hps.length+' relevés</p><canvas class="ch" id="hpch"></canvas>';
-      /* Le rapport buste/bassin ne se calcule que sur les releves ou les DEUX
-         mesures existent le meme jour : un rapport construit a partir de deux
-         dates differentes ne veut rien dire. */
-      const rat=bl.filter(x=>x.ch>0&&x.hp>0);
-      if(rat.length>=2){
-        /* On arrondit AVANT de soustraire : sinon l'ecart affiche contredit
-           les deux valeurs affichees (1,04 -> 1,09 annonce +0,04). */
-        const r0=Math.round(rat[0].ch/rat[0].hp*100)/100,
-              r1=Math.round(rat[rat.length-1].ch/rat[rat.length-1].hp*100)/100;
-        h+='<p class="mut" style="margin:10px 0 2px">Rapport buste / bassin — '+rat.length+' relevés</p><canvas class="ch" id="rch"></canvas>'
-         +'<p class="mut" style="text-align:right">'+r0.toFixed(2).replace(".",",")+' → '+r1.toFixed(2).replace(".",",")
-         +' ('+(r1>=r0?"+":"")+(r1-r0).toFixed(2).replace(".",",")+')</p>'
-         +'<p class="mut">Ce rapport monte quand le buste s\'épaissit ou que le bassin s\'affine. C\'est la seule mesure de cet écran qui bouge pendant une recomposition, quand le poids ne bouge pas.</p>';
-      }
-    }
-    if(bl.length>=2) h+='<p class="mut" style="margin-top:8px">Une semaine isolée ne veut rien dire : eau, sel, transit font varier le poids de plus d\'un kilo. C\'est la pente sur trois à quatre semaines qui compte.</p>';
-    if(bl.length) h+='<button class="mini" id="bdel" style="margin-top:8px;color:var(--dang);border-color:#7f1d1d">Supprimer le dernier relevé</button>';
+     +'</div>'+(pr.length<2?'<p class="mut" style="margin-top:6px">Quand le poids ne bouge pas, c\'est le rapport buste / bassin qui bouge. Deux relevés des deux mesures, le même jour, suffisent pour le tracer.</p>':'')
+     +'</details>';
+    if(bl.length) h+='<button type="button" class="ldang" id="bdel">Supprimer le dernier relevé</button>';
     h+='</div>';
+    /* Buste / bassin : seulement à partir de deux relevés appariés. */
+    if(pr.length>=2){
+      const r0=rapportArr(pr[0]),r1=rapportArr(pr[pr.length-1]);
+      h+='<div class="card"><h4 class="h4r">Buste / bassin<span class="dr">'+pr.length+' relevés</span></h4>'
+        +'<div class="phero"><span class="rbig">'+vgl(r1,2)+'</span><span class="pe">'+vgl(r0,2)+' → '+vgl(r1,2)
+        +' ('+(r1>=r0?"+":"")+vgl(r1-r0,2)+')</span></div><canvas class="ch" id="rch"></canvas>'
+        +'<p class="mut">Ce rapport monte quand le buste s\'épaissit ou que le bassin s\'affine. C\'est la seule mesure de cet écran qui bouge pendant une recomposition, quand le poids ne bouge pas.</p></div>';
+    }
+    /* Tour de taille : plus demandé, sa courbe reste pour qui en a deux. */
+    const tws=bl.filter(x=>x.tw!=null);
+    if(tws.length>=2) h+='<div class="card"><h4 class="h4r">Tour de taille<span class="dr">'+tws.length+' relevés</span></h4><canvas class="ch" id="tch"></canvas></div>';
   }
   if(HISTAB==="cal"){
     const kwW=weeklyKcal(p),kwS=kcalPoints(p);
@@ -9212,33 +9650,11 @@ function renderHist(p,pg){
      (la DA impose un triangle), warn et brand sont a 1,17:1 dans la meme
      carte, et un ratio a 61 % peint en alerte dit « tu n'as pas assez fait ».
      Le seuil de 75 % reste dans le moteur ; il ne monte pas a l'ecran. */
-  if(p.cycle){
-    const w=cycleSemaine(p.cycle)||0;
-    let j='';
-    for(let i=1;i<=p.cycle.semaines;i++)
-      j+='<span class="'+(i<w?'f':(i===w?'now':''))+'"></span>';
-    h+='<div class="card"><h4>Cycle '+p.cycle.no+' — en cours</h4>'
-      +'<div class="cyh"><span class="g">'+esc(GOALS[p.cycle.goal]?GOALS[p.cycle.goal].n:p.cycle.goal)+'</span>'
-      +'<span class="d">Semaine '+w+' / '+p.cycle.semaines+'</span></div>'
-      +'<div class="cyj">'+j+'</div></div>';
-  }
-  const clos=(p.cycles||[]);
-  if(clos.length){
-    h+='<div class="card"><h4>Cycles terminés · '+clos.filter(cycleCompte).length+'</h4>';
-    clos.forEach(cy=>{
-      const g=GOALS[cy.goal]?GOALS[cy.goal].n:cy.goal;
-      h+='<button type="button" class="cyl" data-cycle="'+cy.no+'">'
-        +'<span class="no">'+String(cy.no).padStart(2,"0")+'</span>'
-        +'<span class="m"><b>'+esc(g)+' · '+cy.semaines+' semaines</b>'
-        +'<span>'+esc(cy.debut)+' → '+esc(cy.fin||"")+'</span></span>'
-        +'<span class="q">'+(cy.faites||0)+' / '+(cy.prevues||0)+'</span>'
-        /* Le chevron est legitime ici : l'ecran existe, c'est le bilan
-           archive. Sur le bandeau de l'ecran d'entrainement il n'y en a pas,
-           parce qu'un chevron promet un ecran. */
-        +'<span class="ch" aria-hidden="true">›</span></button>';
-    });
-    h+='</div>';
-  }
+/* v1.9.15 (planche 22, 1A) : le cycle en cours ouvert en tête ; le reste
+     de l'historique est rangé par cycle plus bas, sans limite de 25. */
+  const HG=histGroupes(p);
+  const gCours=HG.find(g=>g.sorte==="cours");
+  if(gCours)h+=histCarteCours(p,gCours);
   const hu=historyUpdate(p,false);
   h+='<div class="card"><h4>Mise à jour du programme</h4>';
   if(!p.hist.length)
@@ -9289,27 +9705,29 @@ function renderHist(p,pg){
       +'</div>';
   }
 
-  /* Les seances archivees sont la matiere premiere du recalcul : elles
-     vivent dans le meme onglet que la mise a jour qu'elles alimentent. */
-  h+='<h2 class="sc" style="margin-top:18px">Séances archivées</h2>';
-  if(!p.hist.length) h+='<div class="empty">Aucune séance archivée. Termine une séance pour la retrouver ici.</div>';
-  p.hist.slice(0,25).forEach((r,i)=>{
-    const dd=new Date(r.date+"T00:00:00");
-    const dt=isNaN(dd)?r.date:dd.toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short"});
-    h+='<div class="card"><div class="row sb"><span style="font-weight:650;font-size:.85rem">'+esc(r.k)+' · '+dt+'</span>'
-      +'<span class="chip">'+r.done+'/'+r.tot+(r.kcal!=null?' · '+r.kcal+' kcal':'')+'</span></div>'
-      +'<div class="mut" style="margin-top:6px">'+r.ex.filter(e=>e.kg!=null).map(e=>esc(e.n.split(" ")[0])+" "+e.kg).join(" · ")+'</div>'
-      +(r.note?'<div class="mut" style="margin-top:4px">« '+esc(r.note)+' »</div>':'')
-      +'<button class="mini" data-hdel="'+i+'" style="margin-top:8px;color:var(--dang);border-color:#7f1d1d">Supprimer</button>'
-      +'</div>';
-  });
+/* v1.9.15 (planche 22, 1A) : l'archive rangée par cycle, repliée. */
+  const HGA=HG.filter(g=>g.sorte!=="cours");
+  if(!p.hist.length&&!p.cycle){h+='<p class="hgt">Séances archivées</p><div class="empty">Aucune séance archivée. Termine une séance pour la retrouver ici.</div>'}
+  else if(HGA.length===1&&HGA[0].sorte==="tout"){
+    h+='<p class="hgt">Séances archivées</p><div class="card">'+histLignes(p,HGA[0],"tout")+'</div>';
+  }else if(HGA.length){
+    const clos=HGA.filter(g=>g.sorte==="clos").map(g=>g.cycle);
+    h+='<p class="hgt">'+(clos.length?'Cycles terminés · '+clos.filter(cycleCompte).length:'Séances archivées')+'</p>';
+    HGA.forEach(g=>{h+=histCarteRepliee(p,g)});
+  }
   }
   if(HISTAB==="med")h+=renderMedalTab(p);
   h+='</div><div style="height:26px"></div></div>';
   pg.innerHTML=h;
 
   wireTabs(pg,"data-histab",v=>{HISTAB=v;renderMain(p)});
-  pg.querySelectorAll("[data-hdel]").forEach(x=>x.onclick=()=>{p.hist.splice(+x.dataset.hdel,1);saveP();renderMain(p)});
+  /* v1.9.15 : une suppression confirmée, depuis la séance dépliée. */
+  pg.querySelectorAll("[data-hdel]").forEach(x=>x.onclick=()=>askConfirm("Supprimer cette séance de l'historique ?",
+    "Elle disparaît de l'historique et des courbes. C'est définitif.","Supprimer",okk=>{
+      if(!okk)return;p.hist.splice(+x.dataset.hdel,1);HROW_OPEN={};saveP();renderMain(p)}));
+  pg.querySelectorAll("[data-hgrp]").forEach(x=>x.onclick=()=>{const k=x.dataset.hgrp;HGRP_OPEN[k]=!HGRP_OPEN[k];renderMain(p)});
+  pg.querySelectorAll("[data-hrow]").forEach(x=>x.onclick=()=>{const k=x.dataset.hrow;HROW_OPEN[k]=!HROW_OPEN[k];renderMain(p)});
+  pg.querySelectorAll("[data-hmore]").forEach(x=>x.onclick=()=>{const k=x.dataset.hmore;HMORE[k]=(HMORE[k]||4)+10;renderMain(p)});
 
   const rmb=document.getElementById("rmupd");
   if(rmb)rmb.onclick=()=>{
@@ -9371,17 +9789,19 @@ function renderHist(p,pg){
   const hc2=document.getElementById("hpch");
   if(hc2)line(hc2,bl.filter(x=>x.hp!=null).map(x=>({v:x.hp,d:shortDate(x.d)})),"#C08BD6");
   const rc2=document.getElementById("rch");
-  if(rc2)line(rc2,bl.filter(x=>x.ch>0&&x.hp>0).map(x=>({v:x.ch/x.hp,d:shortDate(x.d)})),"#D9A441");
+  if(rc2)line(rc2,blogApparies(bl).map(x=>({v:x.ch/x.hp,d:shortDate(x.d)})),"#D9A441");
   /* le volume se lit en barres comparees, la derniere en or (maquette A3) */
   const vc=document.getElementById("vch");
-  if(vc)bars(vc,vol,"#D9A441");
+  if(vc)bars(vc,vol,(getComputedStyle(document.body).getPropertyValue("--sec-hist-ac")||"").trim()||"#4A7CA8");
   const kc2=document.getElementById("kch");
   if(kc2)line(kc2,kw,"#FBBF24");
 
   const sel=document.getElementById("hsel");
   if(sel){const draw=()=>{const arr=(p.used[sel.value]||[]).slice().sort((a,z)=>a.date<z.date?-1:1);
       line(document.getElementById("hch"),arr.map(a=>({v:a.kg,d:shortDate(a.date)})),"#D9A441")};
-    sel.onchange=draw;draw()}
+    /* C : changer d'exercice retrace la courbe (même tracé que les autres). */
+    sel.onchange=()=>{const cv=document.getElementById("hch");if(cv)delete cv.dataset.anim;
+      const k=ANIM_PLAY;ANIM_PLAY=true;draw();ANIM_PLAY=k};draw()}
 }
 
 /* ---------------- Boutique (affiliation) ----------------
@@ -9510,20 +9930,18 @@ function renderProfil(p,pg){
     prog:'<svg viewBox="0 0 24 24"><path d="M3 12h3M18 12h3M6 8v8M18 8v8M9 6v12M15 6v12M9 12h6"/></svg>',
     abo:'<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>',
     don:'<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg>'};
-  const PTABS=[["toi","Toi"],["prog","Programme"],["abo","Abonnement"],["don","Données"]];
-  if(PROFTAB==="id")PROFTAB="toi";if(PROFTAB==="sea")PROFTAB="prog";
+  /* Retour du 26/09 (fin de journée) : trois onglets, l'abonnement dans Toi. */
+  const PTABS=[["toi","Toi"],["prog","Programme"],["don","Données"]];
+  if(PROFTAB==="id")PROFTAB="toi";if(PROFTAB==="sea")PROFTAB="prog";if(PROFTAB==="abo")PROFTAB="toi";
   if(!PTABS.some(t=>t[0]===PROFTAB))PROFTAB="toi";
   const PT=PROFTAB;
-  let h='<div class="page on"><div class="secrule prof"></div><h2 class="sc">Profil</h2><p class="scs">Réglages de ce profil uniquement. Les autres profils ne sont pas affectés.</p>';
+  let h='<div class="page on"><div class="secrule prof"></div><h2 class="sc">Profil</h2><p class="scs">Ces réglages ne valent que pour ce profil.</p>';
   /* Acces a la boutique : une entree, pas un onglet permanent. */
   h+='<button class="vrow2 shopgo" id="goshop">'
     +'<span class="vi">'+shopIco("base")+'</span>'
     +'<span class="vtx"><b>Boutique</b><small>Matériel et nutrition — sélection '+SHOP_MERCHANT+'</small></span>'
     +'<span class="va"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></span></button>';
-  h+='<div class="rail'+(ANIM_PLAY&&!RAIL_AMORCE?" anim":"")+'" role="tablist"><div class="rin">'
-    +PTABS.map(t=>'<button type="button" role="tab" aria-selected="'+(PT===t[0]?"true":"false")+'" class="'+(PT===t[0]?"on":"")+'" data-proftab="'+t[0]+'">'+RI[t[0]]+t[1]+'</button>').join("")
-    +'</div></div><div class="tpane">';
-  RAIL_AMORCE=true;
+  h+=subTabs(PTABS,PT,"data-proftab",RI)+'<div class="tpane">';
   if(PT==="toi")h+='<div class="card"><h4>Identité</h4>'
     +'<div class="fld"><label>Nom</label><input id="p-n" value="'+esc(p.name)+'"></div>'
     +'<div class="row" style="gap:8px"><div class="fld half"><label>Niveau</label>'
@@ -9532,28 +9950,37 @@ function renderProfil(p,pg){
     +Object.keys(GOALS).map(k=>'<option value="'+k+'"'+(c.goal===k?" selected":"")+'>'+GOALS[k].n+'</option>').join("")+'</select></div></div>'
     +'<div class="fld"><label>Durée habituelle d\'une séance</label><select id="p-d">'
     +dursFor(c.lvl).map(d=>'<option value="'+d.m+'"'+((c.dur||60)===d.m?" selected":"")+'>'+d.m+' min — '+d.n+'</option>').join("")+'</select></div>'
-    +'<p class="mut">Le niveau reste affiché en haut de l\'app et sur l\'écran de sélection des profils — il suit le profil s\'il est transmis à quelqu\'un.</p></div>';
+    +'</div>';
+  /* L'abonnement, juste sous l'identité (Toi). */
+  if(PT==="toi"){
+    const e=aboEtat();
+    h+='<div class="card"><h4>Abonnement</h4>'
+      +'<p class="mut" style="margin-top:0">'+(e?"Carnet du jour : tu composes et coches ta séance, Forge n\'en garde rien après minuit."
+        :"Sur le web, l\'accès est ouvert : programme, progression et historique restent sur cet appareil. L\'abonnement existe dans l\'app iOS.")+'</p>'
+      +(e?'<button class="btn g" id="p-abo">Voir les formules</button>':'')
+      +'</div>';
+  }
   if(PT==="toi")h+='<div class="card"><h4>1RM de référence</h4><div class="grid2">'
     +[["dc","Développé couché"],["squat","Squat"],["sdt","Soulevé de terre"],["row","Rowing"]].map(r=>
       '<div class="fld"><label>'+r[1]+'</label><input type="number" step="0.5" inputmode="decimal" data-prm="'+r[0]+'" value="'+esc(c.rm[r[0]])+'"></div>').join("")
     +'</div><p class="mut" style="margin-top:10px">Valeurs en kilogrammes. Modifier un 1RM recalcule les charges du programme. Retest conseillé tous les 2 mois sur 3 à 6 répétitions proches de l\'échec.</p></div>';
   if(PT==="prog")h+='<div class="card"><h4>Programme</h4>'
-    +'<p class="mut">'+SPLITS[c.split].n+' · '+c.days.map(d=>DAYS_FR[d]).join(", ")+' · généré le '+esc(fullDate(p.prog.gen))+'</p>'
-    +'<button class="btn g" id="p-wiz">Reprendre l\'assistant de configuration</button>'
+    +'<p class="pgres">'+SPLITS[c.split].n+' · '+c.days.map(d=>String(DAYS_FR[d]).slice(0,3).toLowerCase()+".").join(", ")+'</p>'
+    +'<p class="pgdate">généré le '+esc(String(fullDate(p.prog.gen)).replace(/ \d{4}$/,""))+'</p>'
+    +'<button class="btn g" id="p-wiz">Refaire l\'assistant</button>'
     +'<button class="btn g" id="p-regen">Renouveler les exercices</button>'
-    +'<p class="mut">Retire les exercices actuels et en tire de nouveaux sur les mêmes schémas moteurs, pour toutes les séances. Tes charges sont conservées ; les séries cochées en cours sont perdues.</p></div>';
+    +'<p class="mut">Renouveler : nouveaux exercices, mêmes mouvements. Charges gardées ; séries cochées aujourd\'hui perdues.</p></div>';
   if(PT==="prog")h+='<div class="card"><h4>Zones à ménager</h4>'
     +'<p class="mut">'+((c.pain&&c.pain.length)
       ?'Actuellement : <b style="color:var(--warn)">'+esc(painLabel(c.pain))+'</b>. Les exercices qui chargent ces articulations sont écartés de tes séances.'
       :'Aucune zone signalée. Si une articulation te fait mal, indique-la : les exercices qui la chargent sortiront des séances.')+'</p>'
     +'<button class="btn g" id="p-pain">Modifier les zones</button>'
-    +((c.pain&&c.pain.length)?'<p class="mut">Pour que le programme reconstruise de vraies séances en contournant la zone — au lieu de simplement écarter des exercices — utilise « Renouveler les exercices » ci-dessus.</p>':'')
+    +((c.pain&&c.pain.length)?'<p class="mut">Pour contourner la zone plutôt qu\'écarter des exercices : renouvelle-les.</p>':'')
     +'</div>';
   /* Planche 05, D1 : l'apparence vient AVANT les reglages fonctionnels.
      C'est le premier reglage qu'on cherche et le seul qui se voit. */
   if(PT==="toi")h+='<div class="card"><h4>Apparence</h4>'
     +palChips(p,"data-palk")
-    +'<p class="mut" style="margin-top:9px">Change les couleurs d\'accent. La mise en page, les tailles et les écrans restent identiques.</p>'
     +'</div>';
   let pendant="";if(PT==="prog")pendant='<div class="card"><h4>Pendant la séance</h4><div class="row wr" style="gap:8px">'
     +'<button class="mini'+(p.set.timer?" on":"")+'" id="s-t">Minuteur</button>'
@@ -9561,10 +9988,10 @@ function renderProfil(p,pg){
     +(HAS_VIB?'<button class="mini'+(p.set.vib?" on":"")+'" id="s-v">Vibration</button>':'')
     +'<button class="mini'+(portraitOn(p)?" on":"")+'" id="s-p">Écran vertical</button>'
     +'<button class="mini'+(wuOn(p)?" on":"")+'" id="s-w"'+(ageAvance(c)?' disabled aria-disabled="true"':'')+'>Séries d\'approche</button></div>'
-    +(ageAvance(c)?'<p class="mut" style="margin-top:8px">Toujours actives à partir de 60 ans.</p>':'')
-    +'<p class="mut" style="margin-top:8px">Séries d\'approche : avant le premier gros mouvement de la séance et le premier de chaque nouvelle zone (poussée, tirage, jambes), quelques répétitions plus légères, comptées dans la durée estimée. Jamais sur le gainage.</p>'
-    +'<p class="mut" style="margin-top:8px">« Écran vertical » refuse la mise en page paysage : si le téléphone tourne, l\'app demande de le remettre droit au lieu de tout réorganiser. Un vrai verrou d\'orientation n\'existe pas dans Safari — il faudrait une app installée depuis l\'App Store.</p>'
-    +(HAS_VIB?'':'<p class="mut" style="margin-top:8px">La vibration n\'existe pas dans Safari iOS : seul le bip signale la fin du repos.</p>')
+    /* 4.1 : une seule note. */
+    +'<p class="mut" style="margin-top:8px">Séries d\'approche : '+(ageAvance(c)?'toujours actives à partir de 60 ans.':'quelques répétitions légères avant chaque gros mouvement.')
+    +' « Écran vertical » demande de remettre le téléphone droit au lieu de passer en paysage.'
+    +(HAS_VIB?'':' Pas de vibration dans Safari iOS : seul le bip signale la fin du repos.')+'</p>'
     +'</div>';
   /* Bisets. Le reglage est desactive sous le niveau 2, et il le dit : un
      reglage grise sans explication se lit comme une panne. */
@@ -9572,9 +9999,9 @@ function renderProfil(p,pg){
     const bOn=c.biset===true, bNiv=c.lvl>=2, bDur=bisetsDureeOk(c.dur), bDispo=bNiv&&bDur;
     h+='<div class="card"><h4>Bisets</h4>'
       +'<button class="mini'+(bOn&&bDispo?" on":"")+'" id="s-bs"'+(bDispo?"":" disabled")+'>Séances plus courtes, plus intenses</button>'
-      +'<p class="mut" style="margin-top:8px">Deux exercices de groupes <b>opposés</b> s\'enchaînent sans repos entre eux — pectoraux et dos, biceps et triceps, quadriceps et ischios. Le repos se prend à la fin du tour. La séance raccourcit ; la fatigue cardiaque, elle, monte.</p>'
+      +'<p class="mut" style="margin-top:8px">Deux groupes <b>opposés</b> enchaînés, repos à la fin du tour. Séance plus courte, cœur plus sollicité.</p>'
       +(bNiv?'':'<p class="mut">Réservé aux niveaux intermédiaire et avancé. Sur une reprise ou un début de pratique, l\'enchaînement coûte plus en qualité d\'exécution qu\'il ne fait gagner de temps.</p>')
-      +(bNiv&&!bDur?'<p class="bsmsg">Proposé seulement pour les séances de <b>plus de 60 minutes</b> (durée habituelle de 75 ou 90 minutes, dans Profil → Identité). En dessous, les gros mouvements occupent déjà tout le temps : un biset n\'y entrerait qu\'en retirant un exercice de base, et la séance y perdrait plus qu\'elle n\'y gagne.'+(bOn?' Ton choix est gardé : il reprend effet dès que tu repasses à 75 minutes ou plus.':'')+'</p>':'')
+      +(bNiv&&!bDur?'<p class="bsmsg">Proposé seulement pour les séances de <b>plus de 60 minutes</b> (durée habituelle de 75 ou 90 minutes, dans Profil › Toi). En dessous, les gros mouvements occupent déjà tout le temps : un biset n\'y entrerait qu\'en retirant un exercice de base, et la séance y perdrait plus qu\'elle n\'y gagne.'+(bOn?' Ton choix est gardé : il reprend effet dès que tu repasses à 75 minutes ou plus.':'')+'</p>':'')
       +'<p class="mut">Un biset par séance, en fin de séance, après les gros mouvements.</p>'
       +'</div>';
   }
@@ -9594,14 +10021,7 @@ function renderProfil(p,pg){
 
   /* Un onglet qui disparait sans un mot est un bug aux yeux de celui qui le
      subit. On dit pourquoi, ou on ne le dit pas du tout — et ici on le dit. */
-  if(PT==="abo"){
-    const e=aboEtat();
-    h+='<div class="card"><h4>Abonnement</h4>'
-      +'<p class="mut" style="margin-top:0">'+(e?"Carnet du jour : tu composes et coches ta séance, Forge n\'en garde rien après minuit."
-        :"Sur le web, l\'accès est ouvert : programme, progression et historique restent sur cet appareil. L\'abonnement existe dans l\'app iOS.")+'</p>'
-      +(e?'<button class="btn g" id="p-abo">Voir les formules</button>':'')
-      +'</div>';
-  }
+
   if(PT==="don"&&!nutriOuverte(p))h+='<div class="card"><h4>Nutrition</h4>'
     +'<p class="mut" style="margin-top:0">L\'onglet Nutrition s\'ouvre à partir de '+NUT_AGE_MIN+' ans. '
     +(parseInt(body(p).age,10)>0
