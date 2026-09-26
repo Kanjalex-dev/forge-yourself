@@ -2150,7 +2150,7 @@ html.ready #boot{opacity:0;pointer-events:none}
    FORGE — générateur + suivi de programme, multi-profils, hors ligne
    Toutes les données restent dans le localStorage de l'appareil.
    ================================================================ */
-const VER="1.9.9";
+const VER="1.9.10";
 const K="fg_";
 function G(k,d){try{const v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function S(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
@@ -3238,6 +3238,32 @@ function warmupTiers(items,actif){
   const su=WarmupSuivi(actif);
   return items.map(y=>{if(y.inPlan===false)return 0;const e=byId(y.id);if(!e)return 0;
     const n=su.apercu(e);su.enregistrer(e);return n});
+}
+/* v1.9.10 migration des prescriptions enregistrées */
+/* Un `reps` stocké est-il à réécrire ? Format courant : un entier seul
+   (« 8 »), ou un entier suivi de « s » sur un exercice à tenir (« 45 s »).
+   Tout le reste l'est : fourchette « 6-12 », « 12-15 ou 40 s », vide,
+   illisible, non-chaîne. Jumeau de MigrationPrescriptions.aMigrer (iOS). */
+function repsToMigrate(r,e){
+  if(typeof r!=="string")return true;
+  const m=/^(\d+)(.*)$/.exec(r);
+  if(!m)return true;
+  return e.hold?m[2]!==" s":m[2]!=="";
+}
+/* Réécrit les `reps` d'avant le 26/09 du programme stocké (séances libres
+   comprises), avec la règle actuelle pour l'objectif et le niveau du profil.
+   Ne touche ni sets, ni rest, ni charge, ni p.hist. Renvoie vrai si changé. */
+function migrateReps(p){
+  if(!p||!p.cfg||!p.prog||!Array.isArray(p.prog.sessions))return false;
+  const g=GOALS[p.cfg.goal];if(!g)return false;
+  let ch=false;
+  p.prog.sessions.forEach(s=>(s&&Array.isArray(s.exos)?s.exos:[]).forEach(x=>{
+    const e=x&&byId(x.id);
+    if(!e||!repsToMigrate(x.reps,e))return;
+    const r=prescribeReps(e,p.cfg.lvl,g);
+    if(r!==x.reps){x.reps=r;ch=true}
+  }));
+  return ch;
 }
 function prescribe(e,cfg){
   const g=GOALS[cfg.goal];
@@ -4804,6 +4830,7 @@ function importProfile(txt){
     /* une sauvegarde peut venir d'une version anterieure : on lui applique
        les memes rattrapages qu'aux profils deja presents sur l'appareil. */
     try{migrateKeys(p);migrateBW(p);migrateKcal(p)}catch(e){}
+    try{migrateReps(p)}catch(e){}
     PROFILES.push(p);ACTIVE=p.id;saveP();toast("Profil importe");VIEW="app";SECT="train";
     syncToday(p);render();return true}
   catch(x){toast("Sauvegarde illisible");return false}
@@ -9481,6 +9508,7 @@ window.addEventListener("load",bootDone);
 
 /* ---------------- Démarrage : profil actif rechargé automatiquement ---------------- */
 PROFILES.forEach(p=>{try{migrateKeys(p);pruneChecks(p);migrateBW(p);migrateKcal(p)}catch(e){}});
+PROFILES.forEach(p=>{try{migrateReps(p)}catch(e){}});
 saveP();
 if(ACTIVE&&prof()){VIEW=prof().done?"app":"wiz";syncToday(prof());}
 else VIEW="home";
