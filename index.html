@@ -2300,7 +2300,7 @@ html.ready #boot{opacity:0;pointer-events:none}
    FORGE — générateur + suivi de programme, multi-profils, hors ligne
    Toutes les données restent dans le localStorage de l'appareil.
    ================================================================ */
-const VER="1.9.23";
+const VER="1.9.24";
 const K="fg_";
 function G(k,d){try{const v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function S(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
@@ -6642,6 +6642,8 @@ function migrateKeys(p){
    forge-swift/doc/BACKLOG-APP.md. */
 /* Bas de la prescription : « 8-12 » -> 8, « 10 » -> 10, « AMRAP » -> null.
    Jumeau de Archivage.repetitionsPrescrites (iOS). */
+/* v1.9.24 releve singulier */
+function nRel(n){return n+(n>1?" relevés":" relevé")}
 function repsPrescrites(r){const m=/^\d+/.exec(String(r==null?"":r));const n=m?parseInt(m[0],10):0;return n>0?n:null}
 function archiverSeance(p,s,ti,plan,dm,jour,lire){
     autoBilan(p,s,plan,null,null);
@@ -9777,7 +9779,7 @@ function renderHist(p,pg){
     /* ---------------- Poids (planche 22, 2C) : la réponse d'abord ---------------- */
     bl=p.blog.slice().sort((a,z)=>a.d<z.d?-1:1);
     const kgs=bl.filter(x=>x.kg!=null);
-    h+='<div class="card"><h4 class="h4r">Poids'+(kgs.length?'<span class="dr">'+kgs.length+' relevés</span>':'')+'</h4>';
+    h+='<div class="card"><h4 class="h4r">Poids'+(kgs.length?'<span class="dr">'+nRel(kgs.length)+'</span>':'')+'</h4>';
     if(kgs.length){
       const der=kgs[kgs.length-1];
       let ec='';
@@ -9836,14 +9838,14 @@ function renderHist(p,pg){
     /* Buste / bassin : seulement à partir de deux relevés appariés. */
     if(pr.length>=2){
       const r0=rapportArr(pr[0]),r1=rapportArr(pr[pr.length-1]);
-      h+='<div class="card"><h4 class="h4r">Buste / bassin<span class="dr">'+pr.length+' relevés</span></h4>'
+      h+='<div class="card"><h4 class="h4r">Buste / bassin<span class="dr">'+nRel(pr.length)+'</span></h4>'
         +'<div class="phero"><span class="rbig">'+vgl(r1,2)+'</span><span class="pe">'+vgl(r0,2)+' → '+vgl(r1,2)
         +' ('+(r1>=r0?"+":"")+vgl(r1-r0,2)+')</span></div><canvas class="ch" id="rch"></canvas>'
         +'<p class="mut">Ce rapport monte quand le buste s\'épaissit ou que le bassin s\'affine. C\'est la seule mesure de cet écran qui bouge pendant une recomposition, quand le poids ne bouge pas.</p></div>';
     }
     /* Tour de taille : plus demandé, sa courbe reste pour qui en a deux. */
     const tws=bl.filter(x=>x.tw!=null);
-    if(tws.length>=2) h+='<div class="card"><h4 class="h4r">Tour de taille<span class="dr">'+tws.length+' relevés</span></h4><canvas class="ch" id="tch"></canvas></div>';
+    if(tws.length>=2) h+='<div class="card"><h4 class="h4r">Tour de taille<span class="dr">'+nRel(tws.length)+'</span></h4><canvas class="ch" id="tch"></canvas></div>';
   }
   if(HISTAB==="cal"){
     const kwW=weeklyKcal(p),kwS=kcalPoints(p);
