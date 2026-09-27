@@ -701,6 +701,9 @@ border-radius:4px;background:linear-gradient(180deg,#9AA3AF 0 38%,#6B7480 38%)}
 .chip.tog.sel{border-color:var(--musc-p);background:#20242b;color:var(--musc-p)}
 .alert{border-radius:12px;padding:10px 12px;font-size:.75rem;margin-bottom:10px;border:1px solid}
 .alert.w{border-color:var(--warn);background:#3B2A0722;color:#E3BE72}
+.enreg{color:var(--ok);font-weight:700;font-size:.8rem;margin:4px 0 2px}
+.abln{background:none;border:0;padding:0;min-height:28px;font:inherit;color:inherit;cursor:pointer;text-align:left}
+.alnk{background:none;border:0;padding:10px 0 4px;min-height:40px;color:var(--brand);font:inherit;font-weight:700;cursor:pointer}
 /* Information de contexte (la veille, le lendemain, un rappel) : c'est du
    temps, donc du bleu — l'or reste la charge et l'action, et le turquoise
    qui trainait ici n'appartenait a aucune des couleurs de la DA. */
@@ -2297,7 +2300,7 @@ html.ready #boot{opacity:0;pointer-events:none}
    FORGE — générateur + suivi de programme, multi-profils, hors ligne
    Toutes les données restent dans le localStorage de l'appareil.
    ================================================================ */
-const VER="1.9.21";
+const VER="1.9.22";
 const K="fg_";
 function G(k,d){try{const v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function S(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
@@ -2969,8 +2972,11 @@ function sheetCycleBilan(p,cycle){
     });
     h+='</div>';
   }
-  h+='<button type="button" class="btn" id="cynext">Choisir la suite</button>'
-    +'<button type="button" class="shlater" data-cyclose>Plus tard</button>'
+  /* v1.9.22 campagne 27/09 */
+  /* Relecture d'un cycle archive pendant qu'un autre tourne : lecture seule. */
+  const suite=!cycle||!p.cycle;
+  h+=(suite?'<button type="button" class="btn" id="cynext">Choisir la suite</button>':'')
+    +'<button type="button" class="shlater" data-cyclose>'+(suite?'Plus tard':'Fermer')+'</button>'
     +'</div></div>';
   return h;
 }
@@ -6379,6 +6385,24 @@ function sKey(p,sid,exid,si){return p.id+"_"+sid+"_"+exid+"_"+si}
    duree theorique. */
 function startKey(p,s){return "sstart_"+p.id+"_"+s.sid+"_"+today()}
 function markStart(p,s){if(!G(startKey(p,s),null))S(startKey(p,s),Date.now())}
+/* Duree archivee : le temps reel ecoule depuis « Demarrer », plafonne au
+   double de la duree estimee de la seance du jour (a defaut, du format) ; le
+   format quand le chrono manque ou tient moins de 5 min. Jumeau de
+   Archivage.dureeRetenue (iOS). */
+/* Planche 24, 3A. Jumeau de ReglesEcrans.seanceReduiteParZones (iOS). */
+/* Planche 24, 2A. L'enregistrement de cette seance fait ce jour-la : meme
+   libelle, meme jour, meme nature. Jumeau de ReglesEcrans.enregistree (iOS). */
+function seanceEnregistree(p,s,jour){
+  return (p.hist||[]).find(r=>r.date===jour&&r.k===s.k&&r.day===s.day&&(!!r.free)===(!!s.free))||null;
+}
+function seanceReduiteParZones(pain,est,dm){
+  return !!(pain&&pain.length)&&dm>0&&est<0.7*dm;
+}
+function dureeRetenue(dm,est,el){
+  if(el==null||el<5)return dm;
+  const base=est>0?est:dm;
+  return Math.min(el,Math.max(5,base*2));
+}
 function sessionElapsed(p,s){
   const t=G(startKey(p,s),null);
   if(!t)return null;
@@ -7137,6 +7161,9 @@ function buildActBar(p,s,ti,plan,fkey){
     else if(abRun)
       ab+='<span class="ablb">En cours'+(abMin!=null?' · '+abMin+' min':'')+'</span>'
         +'<span class="abmt">'+abDone+' / '+abTot+' séries'+(abCur?' · '+esc((byId(abCur.id)||{n:""}).n):'')+'</span>';
+    else if(seanceEnregistree(p,s,today()))
+      ab+='<span class="ablb" style="color:var(--ok)">Faite aujourd\'hui</span>'
+        +'<button type="button" class="abmt abln" id="absuivi">Voir dans Suivi ›</button>';
     else
       ab+='<span class="ablb">Prête à lancer</span>'
         +'<span class="abmt">'+plan.sets+' séries · '+plan.est+' min</span>';
@@ -7147,6 +7174,8 @@ function buildActBar(p,s,ti,plan,fkey){
     else if(abRun)
       ab+='<button type="button" class="abbtn gh" id="abfocus">'
         +'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M9 12h6"/></svg>Focus</button>';
+    else if(seanceEnregistree(p,s,today()))
+      ab+='<button type="button" class="abbtn gh" id="abredo">Refaire</button>';
     else
       ab+='<button type="button" class="abbtn" id="startbtn" aria-expanded="'+(STARTPANEL[ti]===true?"true":"false")+'">Démarrer'
         +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>';
@@ -7156,6 +7185,12 @@ function buildActBar(p,s,ti,plan,fkey){
 function bindActBar(p,s,ti,plan,fkey){
   const startbtn=document.getElementById("startbtn");
   if(startbtn)startbtn.onclick=()=>{STARTPANEL[ti]=true;renderMain(p)};
+  const abredo=document.getElementById("abredo");
+  if(abredo)abredo.onclick=()=>mdOpen({title:"Refaire "+s.k+"\u202f?",
+    msg:"Tu l'as déjà enregistrée aujourd'hui. La refaire ajoutera une seconde séance à ton historique.",
+    ok:"Refaire la séance",cb:ok=>{if(ok){STARTPANEL[ti]=true;renderMain(p)}}});
+  const absuivi=document.getElementById("absuivi");
+  if(absuivi)absuivi.onclick=()=>{SECT="hist";PANEL={};renderMain(p);window.scrollTo(0,0)};
   const abfocus=document.getElementById("abfocus");
   if(abfocus)abfocus.onclick=()=>{FOCOVR[fkey]=true;FOCUS["i"+ti]=0;renderMain(p)};
   const abfinish=document.getElementById("abfinish");
@@ -7575,6 +7610,9 @@ function renderSession(p,s,ti,pg){
      droite empilait deux elements de plus sans rien dire de neuf. */
   h+='<div class="shd"><h2>'+esc(s.k)+'</h2>'
     +'<span class="sdur"><b id="ptxt">'+progressText(t0)+'</b></span></div>';
+  /* Planche 24, 2A : la seance faite se dit faite (vert = « c'est fait »). */
+  {const fa=(!STARTED[ti+"_"+today()]&&(t0.done+t0.bonus)===0)?seanceEnregistree(p,s,today()):null;
+   if(fa)h+='<div class="enreg">Enregistrée aujourd\'hui · '+fa.done+' / '+fa.tot+' séries · '+fa.dur+' min</div>';}
   /* Une seance libre le dit d'entree : elle ne remplace rien, elle s'ajoute.
      Sans cette ligne, on la confondrait avec une seance du programme et on
      croirait que la semaine a change. */
@@ -7740,7 +7778,13 @@ function renderSession(p,s,ti,pg){
         +' par un équivalent qui ne charge pas la zone. ':'')
       +(nOut>0?nOut+' exercice'+(nOut>1?"s":"")+' sans équivalent disponible : retiré'+(nOut>1?"s":"")
         +' de la séance, affiché'+(nOut>1?"s":"")+' barré'+(nOut>1?"s":"")+' plus bas. ':'')
-      +'Les charges de tes exercices habituels sont conservées et reviendront dès que tu retireras la zone.</div>';
+      /* Planche 24, 3A : sous 70 % du format, dire pourquoi la seance est courte. */
+      +(seanceReduiteParZones(pain,plan.est,dm)
+        ?(plan.n===1?'Avec ton matériel, un seul exercice de cette séance reste compatible : '+plan.est+' min au lieu de '+dm+'. '
+          :'Avec ton matériel, seuls '+plan.n+' exercices de cette séance restent compatibles : '+plan.est+' min au lieu de '+dm+'. '):'')
+      +'Les charges de tes exercices habituels sont conservées et reviendront dès que tu retireras la zone.'
+      +(seanceReduiteParZones(pain,plan.est,dm)?'<br><button type="button" class="alnk" data-pan="zones">Modifier les zones ›</button>':'')
+      +'</div>';
   }
   /* La ligne "Veille / Lendemain" a ete retiree : elle rappelait a
      l'utilisateur ce qu'il a lui-meme programme et coutait une ligne avant
@@ -8257,7 +8301,7 @@ function renderSession(p,s,ti,pg){
   document.getElementById("finish").onclick=()=>{
     const lire={chk:(id,i)=>G("chk_"+sKey(p,s.sid,id,i),false),
                 skg:(id,i)=>G("skg_"+sKey(p,s.sid,id,i),null)};
-    const A=archiverSeance(p,s,ti,plan,dm,today(),lire);
+    const A=archiverSeance(p,s,ti,plan,dureeRetenue(dm,plan.est,sessionElapsed(p,s)),today(),lire);
     const rec=A.rec,prs=A.prs,perfect=A.perfect,prop=A.prop,tl=A.tl,kc=A.kc,
           newBadges=A.newBadges,earnedTot=A.earnedTot;
     s.exos.forEach(x=>{for(let i=0;i<x.sets;i++){DEL("chk_"+sKey(p,s.sid,x.id,i));DEL("srep_"+sKey(p,s.sid,x.id,i));DEL("skg_"+sKey(p,s.sid,x.id,i))}});
@@ -8878,7 +8922,7 @@ function workCard(p,s,x,e,ch,ov,xi,foc){
     +'<div class="wleg"><i style="color:var(--musc-p)">■</i> '+esc(e.prim.map(m=>MUS[m]).join(", "))
     +(e.sec&&e.sec.length?'<br><i style="color:var(--musc-s)">■</i> '+esc(e.sec.map(m=>MUS[m]).join(", ")):'')
     +'</div></div>'
-    +'<div class="wcard load"><div class="wlbl gold">'+(foc?"Sur la barre":"Charge de travail")
+    +'<div class="wcard load"><div class="wlbl gold">'+(foc&&e.eq==="barre"?"Sur la barre":"Charge de travail")
     +(bbs?'':'<span class="wmat">'+matW+'</span>')
     +(foc&&rmTxt?'<span class="rm">'+esc(rmTxt)+'</span>':'')
     +(ov!=null?'<button class="mini xs on wauto" '+(foc?'id="fra"':'data-ra="'+xi+'"')+' title="Revenir à la charge calculée">Auto</button>':'')
