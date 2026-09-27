@@ -2300,7 +2300,7 @@ html.ready #boot{opacity:0;pointer-events:none}
    FORGE — générateur + suivi de programme, multi-profils, hors ligne
    Toutes les données restent dans le localStorage de l'appareil.
    ================================================================ */
-const VER="1.9.22";
+const VER="1.9.23";
 const K="fg_";
 function G(k,d){try{const v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function S(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
@@ -3068,14 +3068,19 @@ function sheetCycleOuvrir(p){
 function cyclePrs(p,c){
   const dans=cycleSeances(p,c,today());
   const avant=(p.hist||[]).filter(r=>r&&r.date&&r.date<c.debut);
-  const best={};
+  const best={},bestR={};
   avant.forEach(r=>(r.ex||[]).forEach(e=>{if(!(exFaites(e)>0))return;const k=parseFloat(e.kg);
-    if(isFinite(k)) best[e.id]=Math.max(best[e.id]||0,k)}));
+    if(isFinite(k)) best[e.id]=Math.max(best[e.id]||0,k);
+    else if(e.r>0) bestR[e.id]=Math.max(bestR[e.id]||0,e.r)}));
   let n=0;
   dans.slice().reverse().forEach(r=>(r.ex||[]).forEach(e=>{if(!(exFaites(e)>0))return;const k=parseFloat(e.kg);
-    if(!isFinite(k)) return;
-    if(best[e.id]!=null&&k>best[e.id]) n++;
-    best[e.id]=Math.max(best[e.id]||0,k)}));
+    if(isFinite(k)){
+      if(best[e.id]!=null&&k>best[e.id]) n++;
+      best[e.id]=Math.max(best[e.id]||0,k);
+    }else if(e.r>0){
+      if(bestR[e.id]!=null&&e.r>bestR[e.id]) n++;
+      bestR[e.id]=Math.max(bestR[e.id]||0,e.r);
+    }}));
   return n;
 }
 
@@ -6635,6 +6640,9 @@ function migrateKeys(p){
    les cles de series, enregistrer et afficher restent au gestionnaire.
    Le comportement est prouve identique a l'ancien gestionnaire — voir
    forge-swift/doc/BACKLOG-APP.md. */
+/* Bas de la prescription : « 8-12 » -> 8, « 10 » -> 10, « AMRAP » -> null.
+   Jumeau de Archivage.repetitionsPrescrites (iOS). */
+function repsPrescrites(r){const m=/^\d+/.exec(String(r==null?"":r));const n=m?parseInt(m[0],10):0;return n>0?n:null}
 function archiverSeance(p,s,ti,plan,dm,jour,lire){
     autoBilan(p,s,plan,null,null);
     const prevBadgeSt=badgeStats(p);
@@ -6654,12 +6662,16 @@ function archiverSeance(p,s,ti,plan,dm,jour,lire){
          ligne de serie) qui prime sur la charge prescrite partagee : c'est
          la plus lourde des series validees qui compte pour l'historique,
          les records et les courbes — pas seulement la charge de depart. */
-      let d2=0;const setKgs=[];
+      let d2=0;const setKgs=[],setReps=[];
       for(let i=0;i<(x.allSets||x.sets);i++){
         if(lire.chk(x.id,i)){
           d2++;
           const skg=lire.skg(x.id,i);
           if(skg!=null&&skg!==""&&!isNaN(skg))setKgs.push(parseFloat(skg));
+          /* v1.9.23 record en repetitions */
+          const sr=lire.srep?parseInt(lire.srep(x.id,i),10):NaN;
+          const rr=isFinite(sr)&&sr>0?sr:repsPrescrites(x.reps);
+          if(rr!=null)setReps.push(rr);
         }
       }
       const chEff=setKgs.length?Math.max.apply(null,setKgs):ch;
@@ -6668,8 +6680,15 @@ function archiverSeance(p,s,ti,plan,dm,jour,lire){
          dans cette meme seance a pu s'ecrire dans p.used avant l'archivage
          et fausserait la comparaison avec elle-meme. */
       const prevBest=(p.used[x.id]||[]).filter(a=>a.date!==jour).reduce((m,a)=>a.kg>m?a.kg:m,0);
-      rec.ex.push({n:e.n,id:x.id,sets:x.sets,reps:x.reps,done:d2,
-        kg:(chEff!=null&&!isNaN(chEff))?chEff:null,bw:bl,ok:l.ok||null,diff:l.diff||null});
+      /* Au poids du corps, le record se compte en repetitions : la charge
+         deplacee suit le poids de corps, pas l'effort (27/09, option B). */
+      const rJour=(bl!=null&&!e.hold&&setReps.length)?Math.max.apply(null,setReps):null;
+      const prevR=(p.hist||[]).filter(h=>h&&h.date!==jour).reduce((m,h)=>(h.ex||[]).reduce((m2,z)=>
+        (z.id===x.id&&exFaites(z)>0&&z.r>m2)?z.r:m2,m),0);
+      const exr={n:e.n,id:x.id,sets:x.sets,reps:x.reps,done:d2,
+        kg:(chEff!=null&&!isNaN(chEff))?chEff:null,bw:bl,ok:l.ok||null,diff:l.diff||null};
+      if(rJour!=null)exr.r=rJour;
+      rec.ex.push(exr);
       /* La charge réellement soulevée alimente les courbes et les records,
          y compris quand elle vient du calcul automatique et n'a jamais été
          saisie à la main : sinon suivre le programme sans rien taper ne
@@ -6688,7 +6707,7 @@ function archiverSeance(p,s,ti,plan,dm,jour,lire){
         const arr=p.used[x.id]||[],dd=jour,k=arr.findIndex(a=>a.date===dd);
         if(k>=0){if(bl>arr[k].kg)arr[k].kg=bl}else arr.push({date:dd,kg:bl});
         p.used[x.id]=arr;
-        if(prevBest>0&&bl>prevBest)prs.push({n:e.n,prev:prevBest,kg:bl});
+        if(rJour!=null&&prevR>0&&rJour>prevR)prs.push({n:e.n,prev:prevR,kg:rJour,reps:1});
       }
     });
     p.hist.unshift(rec);
@@ -8300,7 +8319,8 @@ function renderSession(p,s,ti,pg){
   document.getElementById("stopses").onclick=()=>askStopSession(p,s,ti);
   document.getElementById("finish").onclick=()=>{
     const lire={chk:(id,i)=>G("chk_"+sKey(p,s.sid,id,i),false),
-                skg:(id,i)=>G("skg_"+sKey(p,s.sid,id,i),null)};
+                skg:(id,i)=>G("skg_"+sKey(p,s.sid,id,i),null),
+                srep:(id,i)=>G("srep_"+sKey(p,s.sid,id,i),null)};
     const A=archiverSeance(p,s,ti,plan,dureeRetenue(dm,plan.est,sessionElapsed(p,s)),today(),lire);
     const rec=A.rec,prs=A.prs,perfect=A.perfect,prop=A.prop,tl=A.tl,kc=A.kc,
           newBadges=A.newBadges,earnedTot=A.earnedTot;
@@ -8338,7 +8358,8 @@ function renderSession(p,s,ti,pg){
       +(prs.length>1?prs.length+' nouveaux records':'Nouveau record')+'</span>'
       +'<span class="prmot" style="display:block;font-size:.75rem;color:var(--txt);margin:2px 0 4px">'+esc(CHEER_RECORD)+'</span>'
       +prs.map(r=>'<span class="prline"><b>'+esc(r.n)+'</b>'
-        +'<span class="prkg">'+esc(kg(r.kg))+'<s>+'+esc(kg(r.kg-r.prev))+'</s></span></span>').join("")
+        +'<span class="prkg">'+(r.reps?esc(r.kg+" rép.")+'<s>+'+esc((r.kg-r.prev)+" rép.")+'</s>'
+          :esc(kg(r.kg))+'<s>+'+esc(kg(r.kg-r.prev))+'</s>')+'</span></span>').join("")
       +'</div></div>';
     /* Volume souleve plutot que nombre d'exercices : c'est la mesure de
        l'effort du jour, et celle que la maquette met dans le carre. */
@@ -9291,12 +9312,25 @@ function renderMedalTab(p){
 }
 
 /* Meilleure charge enregistree par exercice. */
+/* Fait au poids du corps la derniere fois (repetitions archivees) ? */
+function dernierPdc(p,id){
+  for(const s of (p.hist||[])){const e=(s.ex||[]).find(z=>z.id===id&&exFaites(z)>0);if(e)return e.r!=null}
+  return false;
+}
 function records(p){
-  return Object.keys(p.used).filter(id=>!(byId(id)||{}).hold).map(id=>{
+  const enKg=Object.keys(p.used).filter(id=>!(byId(id)||{}).hold&&!dernierPdc(p,id)).map(id=>{
     const arr=p.used[id]||[];let best=null;
     arr.forEach(a=>{if(best==null||a.kg>best.kg)best=a});
     return best?{id:id,n:(byId(id)||{n:id}).n,kg:best.kg,date:best.date}:null;
-  }).filter(Boolean).sort((a,b)=>b.kg-a.kg);
+  }).filter(Boolean).sort((a,b)=>b.kg-a.kg||(a.id<b.id?-1:1));
+  /* Au poids du corps : le meilleur nombre de repetitions, premiere date. */
+  const m={};
+  (p.hist||[]).slice().reverse().forEach(s=>(s.ex||[]).forEach(e=>{
+    if(!(exFaites(e)>0)||e.r==null||(byId(e.id)||{}).hold)return;
+    if(e.r>((m[e.id]||{}).r||0))m[e.id]={r:e.r,date:s.date}}));
+  const enReps=Object.keys(m).filter(id=>dernierPdc(p,id)).map(id=>({id:id,n:(byId(id)||{n:id}).n,
+    kg:m[id].r,date:m[id].date,reps:1})).sort((a,b)=>b.kg-a.kg||(a.id<b.id?-1:1));
+  return enKg.concat(enReps);
 }
 
 /* ================================================================
@@ -9731,11 +9765,11 @@ function renderHist(p,pg){
     h+='</div>';
     if(recs.length){
       h+='<div class="card"><h4 style="color:var(--pr)">Records personnels</h4>'
-        +'<p class="mut" style="margin-top:-4px">La charge la plus lourde enregistrée sur chaque mouvement.</p>'
+        +'<p class="mut" style="margin-top:-4px">La charge la plus lourde enregistrée sur chaque mouvement ; au poids du corps, le plus de répétitions en une série.</p>'
         +recs.slice(0,12).map(r=>'<div class="recrow"><span class="recico">'
           +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 15l6-7 4 4 5-6"/></svg>'
           +'</span><span class="rectx"><b>'+esc(r.n)+'</b><small>'+esc(shortDate(r.date))+'</small></span>'
-          +'<span class="reckg">'+kg(r.kg)+'</span></div>').join("")
+          +'<span class="reckg">'+(r.reps?esc(r.kg+" rép."):kg(r.kg))+'</span></div>').join("")
         +'</div>';
     }
   }
