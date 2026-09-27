@@ -2297,7 +2297,7 @@ html.ready #boot{opacity:0;pointer-events:none}
    FORGE — générateur + suivi de programme, multi-profils, hors ligne
    Toutes les données restent dans le localStorage de l'appareil.
    ================================================================ */
-const VER="1.9.19";
+const VER="1.9.20";
 const K="fg_";
 function G(k,d){try{const v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function S(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
@@ -2657,7 +2657,7 @@ const EX=[
  d:{a:"Debout, un haltère dans chaque main le long du corps, bras tendus.",b:"Monte les épaules vers les oreilles, une seconde en haut, descente lente.",c:"Faire des rotations d'épaules — mouvement vertical uniquement."}},
 {id:"squat_cosaque",n:"Squat cosaque",pat:"knee_uni",prim:["add","quad"],sec:["fess"],eq:"pdc",lvl:2,rest:70,typ:"c",img:"squat_cosaque.webp",
  d:{a:"Pieds très écartés, orteils vers l'avant, buste droit.",b:"Descends sur une jambe en gardant l'autre tendue, talon au sol, puis change de côté.",c:"Décoller le talon de la jambe fléchie : réduis l'amplitude plutôt que de compenser."}},
-{id:"abduct_elast",n:"Abduction de hanche élastique",pat:"hip_iso",prim:["fess"],sec:["add"],eq:"elastique",lvl:1,rest:55,typ:"i",img:"abduct_elast.webp",
+{id:"abduct_elast",n:"Abduction de hanche élastique",pat:"glute_iso",prim:["fess"],sec:["add"],eq:"elastique",lvl:1,rest:55,typ:"i",img:"abduct_elast.webp",
  d:{a:"Assis, élastique autour des cuisses juste au-dessus des genoux.",b:"Écarte les genoux contre la résistance, une seconde d'arrêt, retour lent.",c:"Se pencher en arrière pour aider : le buste reste droit."}},
 {id:"curl_inv",n:"Curl inversé barre",pat:"arm_b",prim:["avb"],sec:["bic"],eq:"barre",lvl:2,rest:65,typ:"i",img:"curl_inv.webp",
  d:{a:"Debout, barre en prise pronation largeur d'épaules, coudes au corps.",b:"Monte la barre sans bouger les coudes, descente contrôlée.",c:"Prendre trop lourd : les poignets cassent et l'avant-bras ne travaille plus."}},
@@ -3752,17 +3752,24 @@ function generate(cfg,prev){
   const usedAll=(prev||[]).slice();
   days.forEach((d,i)=>{
     const tpl=split.sess[i%split.sess.length];
-    const taken=[];const exos=[];
     /* On genere toujours la seance la plus longue utile ; la duree du jour
        decide ensuite combien d'exercices entrent dans le format. Changer de
        duree ne regenere donc rien et ne perd aucune charge saisie. */
+    /* v1.9.20 : le creneau du biset retire de la trame les accessoires de son
+       schema (le leg curl d'une seance de jambes). Sans couple possible (genou
+       menage : pas de leg extension), la seance est recomposee SANS biset au
+       lieu de perdre aussi son leg curl. Jumeau de Generateur.generer. */
+    const usedAvant=usedAll.slice();
+    const composer=liste=>{
+    const taken=[];const exos=[];let rate=false;
     let nbs=0;
     const vusPat=[];   /* v1.9.11 P3 : premier creneau d'un schema compose = principal */
-    creneaux(tpl,cfg).forEach((pat,j)=>{
+    liste.forEach((pat,j)=>{
+      if(rate)return;
       const seed=i*3+j+(cfg.rot||0);
       if(pat&&pat.bs){
         const pr=pickPair(pat.bs[0],pat.bs[1],cfg,taken,usedAll,seed);
-        if(!pr)return;                       /* pas de couple possible : on n'invente rien */
+        if(!pr){rate=true;return}            /* pas de couple possible : on n'invente rien */
         const ss="bs"+(++nbs);
         pr.forEach(e=>{taken.push(e.id);usedAll.push(e.id);
           exos.push(Object.assign({id:e.id,ss:ss},prescribe(e,cfg)))});
@@ -3782,6 +3789,13 @@ function generate(cfg,prev){
       taken.push(e.id);usedAll.push(e.id);
       exos.push(Object.assign({id:e.id},prescribe(e,cfg)));
     });
+    return rate?null:exos;
+    };
+    let exos=composer(creneaux(tpl,cfg));
+    if(!exos){
+      usedAll.length=0;usedAvant.forEach(x=>usedAll.push(x));
+      exos=composer(creneaux(tpl,Object.assign({},cfg,{biset:false})))||[];
+    }
     /* exercices imposés non encore placés → ajoutés à la séance la plus proche */
     sessions.push({day:d,k:tpl.k,sid:"d"+d+"-"+tpl.k.toLowerCase().replace(/[^a-z0-9]+/g,""),exos:exos});
   });
@@ -4878,7 +4892,10 @@ function progSeuil(e,dur){
    automatique). Même bonne séance, même seuil que la charge ; +1 répétition
    (+5 s) jusqu'à 15 (60 s) ; un échec ne fait pas descendre la cible.
    Jumeau de Progression.pasRepetitions (iOS). */
-const PROG_V=2;
+/* v1.9.20 : 3 = revue du moteur (glute_iso, add_iso, abduct_elast) et biset
+   impossible recompose sans biset. Les programmes de version 2 sont regeneres
+   une fois au chargement (regenProg). */
+const PROG_V=3; /* v1.9.20 regeneration v3 */
 function progRepsOk(e){return !!e&&e.eq==="pdc"&&!LEST_AUTO[e.id]}
 function progRepsCap(e){return e.hold?60:15}
 function progRepsStep(e){return e.hold?5:1}
