@@ -2297,7 +2297,7 @@ html.ready #boot{opacity:0;pointer-events:none}
    FORGE — générateur + suivi de programme, multi-profils, hors ligne
    Toutes les données restent dans le localStorage de l'appareil.
    ================================================================ */
-const VER="1.9.20";
+const VER="1.9.21";
 const K="fg_";
 function G(k,d){try{const v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function S(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
@@ -6407,7 +6407,8 @@ function stopSession(p,s,ti){
       DEL("srep_"+sKey(p,s.sid,x.id,i));DEL("skg_"+sKey(p,s.sid,x.id,i))}});
   p.logs=(p.logs||[]).filter(l=>l.k.indexOf(s.sid+"_")!==0);
   if(p.notes)delete p.notes[s.sid];
-  if(p.dayDur)delete p.dayDur[s.sid];
+  /* v1.9.21 arret seance libre */ /* la duree d'une seance libre fait partie de la demande */
+  if(p.dayDur&&!s.free)delete p.dayDur[s.sid];
   DEL(startKey(p,s));
   const fkey=ti+"_"+today();
   delete STARTED[fkey];delete FOCOVR[fkey];delete FOCUS["i"+ti];delete STARTPANEL[ti];
