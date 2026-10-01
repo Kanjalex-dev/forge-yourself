@@ -2300,7 +2300,7 @@ html.ready #boot{opacity:0;pointer-events:none}
    FORGE — générateur + suivi de programme, multi-profils, hors ligne
    Toutes les données restent dans le localStorage de l'appareil.
    ================================================================ */
-const VER="1.9.24";
+const VER="1.9.25";
 const K="fg_";
 function G(k,d){try{const v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function S(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
@@ -2668,7 +2668,7 @@ const EX=[
  d:{a:"Barre sur les trapèzes, avant-pieds sur une cale, talons dans le vide.",b:"Monte le plus haut possible, une seconde en haut, descente lente en étirement.",c:"Rebondir en bas : le tendon travaille, le muscle non."}},
 {id:"hip_ext_machine",n:"Extension de hanche à la machine",pat:"hip",prim:["fess"],sec:["isch"],eq:"machine",lvl:1,rest:70,typ:"c",img:"hip_ext_machine.webp",
  d:{a:"Buste calé, une jambe en appui, l'autre contre le coussin.",b:"Pousse la jambe en arrière jusqu'à l'alignement, retour contrôlé.",c:"Aller chercher l'amplitude en cambrant le bas du dos."}},
-{id:"dc_incl_barre",n:"Développé incliné barre",pat:"push_h",prim:["pecs","delt_a"],sec:["tri"],eq:"barre",lvl:2,rest:120,typ:"c",img:"dc_incl_barre.webp",
+{id:"dc_incl_barre",n:"Développé incliné barre",pat:"push_h",prim:["pecs","delt_a"],sec:["tri"],eq:"barre",lvl:2,ref:"dc",pct:.6,rest:120,typ:"c",img:"dc_incl_barre.webp",
  d:{a:"Banc à 30°, prise un peu plus large que les épaules, omoplates serrées.",b:"Descends la barre au haut des pectoraux, pousse en ligne droite.",c:"Incliner à 45° ou plus : l'épaule prend le travail du pectoral."}},
 {id:"stepup",n:"Montées sur banc",pat:"knee_uni",prim:["quad","fess"],sec:["isch"],eq:"halteres",lvl:1,rest:75,typ:"c",img:"stepup.webp",
  d:{a:"Un haltère dans chaque main, un pied à plat sur un banc à hauteur de genou.",b:"Monte en poussant sur la jambe du haut sans t'aider de celle du bas, descente lente.",c:"Prendre de l'élan avec la jambe arrière : la jambe de travail ne fait plus le travail."}},
